@@ -9,6 +9,7 @@ using namespace std;
 #define MAX_LOADSTRING 100
 
 
+
 template<class T>
 void DrawGrid(HDC hdc, POINT center, T width, T height, int count);
 void DrawCircle(HDC hdc, POINT pt, BOOL bFlag = FALSE);

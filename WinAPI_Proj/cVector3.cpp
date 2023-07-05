@@ -53,6 +53,11 @@ cVector3 cVector3::operator=(const cVector3& v) const
 	return cVector3(v.x,v.y,v.z);
 }
 
+cVector3 cVector3::operator=(const POINT& v) const
+{
+	return cVector3(v.x,v.y,0);
+}
+
 bool cVector3::operator==(const cVector3& v) const
 {
 	if (x == v.x && y == v.y && z == v.z)
@@ -72,6 +77,11 @@ bool cVector3::operator!=(const cVector3& v) const
 cVector3 cVector3::operator+(const cVector3& v) const
 {
 	return cVector3(x+v.x,y+v.y,z+v.z);
+}
+
+cVector3 cVector3::operator+(const POINT& v) const
+{
+	return cVector3(x+v.x,y+v.y,z);
 }
 
 cVector3 cVector3::operator-(const cVector3& v) const

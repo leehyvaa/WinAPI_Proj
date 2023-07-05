@@ -1,7 +1,7 @@
 #pragma once
+
 #include <iostream>
-
-
+#include <Windows.h>
 class cVector3
 {
 private:
@@ -23,10 +23,14 @@ public:
 
 
 	cVector3 operator=(const cVector3 &v) const;
+	cVector3 operator=(const POINT &v) const;
+
 
 	bool operator==(const cVector3& v) const;
 	bool operator!=(const cVector3& v) const;
 	cVector3 operator+(const cVector3& v) const;
+	cVector3 operator+(const POINT& v) const;
+
 	cVector3 operator-(const cVector3& v) const;
 	cVector3 operator*(double n) const;
 	cVector3 operator/(double n) const;

@@ -12,7 +12,9 @@ protected:
 	int type;
 	HWND hWnd;
 	RECT rectView;
+
 	//HDC hdc;
+	float rotate;
 
 public:
 	CObject();
@@ -46,9 +48,9 @@ class CRectangle : public CObject
 {
 private:
 	float radius;
-	RECT rect;
+	cVector3 vRectPos[4];
 public:
-	CRectangle() : CObject() {}
+	CRectangle() : CObject() { radius = 0; }
 	CRectangle(HWND hWnd, POINT pos);
 	~CRectangle() override;
 	void Update() override;
