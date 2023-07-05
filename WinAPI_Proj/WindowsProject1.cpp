@@ -7,7 +7,7 @@
 
 using namespace std;
 #define MAX_LOADSTRING 100
-//추가13ㅁㄴㅇㅁ
+//추가13ㅁㄴㅇㅁㅓㅏㅏㅓㅏㅓ
 
 template<class T>
 void DrawGrid(HDC hdc, POINT center, T width, T height, int count);
