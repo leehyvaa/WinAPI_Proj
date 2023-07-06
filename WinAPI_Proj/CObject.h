@@ -59,6 +59,23 @@ public:
 
 };
 
+
+
+class CStar : public CObject
+{
+private:
+	float radius;
+	cVector3 vRectPos[10];
+public:
+	CStar() : CObject() { radius = 0; }
+	CStar(HWND hWnd, POINT pos);
+	~CStar() override;
+	void Update() override;
+	void Draw(HDC dc) override;
+	bool Collision() override;
+
+};
+
 //분할하고 2면 머지
 //1이면 머지
 //머지 후에는 조금 전에 분할했던 그룹이랑 다시 정렬

@@ -22,8 +22,9 @@ public:
 	void Setz(double n);
 
 
-	cVector3 operator=(const cVector3 &v) const;
+	cVector3 operator=(const cVector3& v);
 	cVector3 operator=(const POINT &v) const;
+
 
 
 	bool operator==(const cVector3& v) const;

@@ -13,6 +13,8 @@ cVector3::cVector3(double x, double y, double z)
 	this->y = y;
 	this->z = z;
 }
+
+
 cVector3::~cVector3()
 {
 	
@@ -48,8 +50,14 @@ void cVector3::Setz(double n)
 	z = n;
 }
 
-cVector3 cVector3::operator=(const cVector3& v) const
+
+
+cVector3 cVector3::operator=(const cVector3& v) 
 {
+	this->x = v.x;
+	this->y = v.y;
+	this->z = v.z;
+
 	return cVector3(v.x,v.y,v.z);
 }
 
@@ -57,6 +65,7 @@ cVector3 cVector3::operator=(const POINT& v) const
 {
 	return cVector3(v.x,v.y,0);
 }
+
 
 bool cVector3::operator==(const cVector3& v) const
 {

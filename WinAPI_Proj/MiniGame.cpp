@@ -1,21 +1,13 @@
-// WinAPI_Proj.cpp : 애플리케이션에 대한 진입점을 정의합니다.
+// WindowsProject1.cpp : 애플리케이션에 대한 진입점을 정의합니다.
 //
 
 #include "framework.h"
 #include "WinAPI_Proj.h"
-#include <vector>
-#include <math.h>
-#include "CObject.h"
-using namespace std;
+#include <cmath>
 
-#define PI 3.141592
-#define degreeToRadian(degree) ((degree)*PI/180)
+using namespace std;
 #define MAX_LOADSTRING 100
 
-template<class T>
-void DrawCircle(HDC hdc, POINT center, T radius);
-template<class T>
-void DrawGrid(HDC hdc, POINT center, T width, T height, int xCount, int yCount);
 
 // 전역 변수:
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
@@ -53,23 +45,34 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     MSG msg;
 
-    // 기본 메시지 루프입니다
-    
-  
-    while (GetMessage(&msg, nullptr, 0, 0))
+    // 기본 메시지 루프입니다:
+    while (true)
     {
-        if (msg.message == 0)
-            msg.message = WM_PAINT;
-
-        if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
+        if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
         {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
+            if (msg.message == WM_QUIT)
+            {
+                break;
+            }
+            else
+            {
+                TranslateMessage(&msg);
+                DispatchMessage(&msg);
+            }
         }
+        else
+        {
+            //일정 프레임마다 정확하게 작동하도록 코드를 수정해야함
+            // update는 일정 시간마다 작동하고,Render는 매번 작동해도 되고
+            // 일정 시간마다 작동해도 된다.
+            //Update(); 타이머가 하는 역할을 여기로
+            // POINT mousePos; //전역변수로 선언
+            // GetCurSorPos(&mousePos) 이러면 mousePos로 마우스 위치값이 들어감
+            // 
+            //Render(); Paint가 하는 역할을 이쪽으로
+        }
+
     }
-
-
-    
 
     return (int)msg.wParam;
 }
@@ -92,7 +95,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.cbClsExtra = 0;
     wcex.cbWndExtra = 0;
     wcex.hInstance = hInstance;
-    wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_WINAPIPROJ));
+    wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDC_WINAPIPROJ));
     wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
     wcex.lpszMenuName = MAKEINTRESOURCEW(IDC_WINAPIPROJ);
@@ -117,7 +120,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
     hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
 
     HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-        200, 200, 1024, 768, nullptr, nullptr, hInstance, nullptr);
+        CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
 
     if (!hWnd)
     {
@@ -140,76 +143,66 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //  WM_DESTROY  - 종료 메시지를 게시하고 반환합니다.
 //
 //
+
 #define timer_ID_1 11
+#define timer_ID_2 12
+const int circleRadius = 50;
+double LengthPts(POINT pt1, POINT pt2)
+{
+    return (sqrt(
+        ((float)(pt2.x - pt1.x) * (pt2.x - pt1.x)) +
+        ((float)(pt2.y - pt1.y) * (pt2.y - pt1.y))
+    ));
+}
+BOOL InCircle(POINT pt1, POINT pt2)
+{
+    if (LengthPts(pt1, pt2) < circleRadius) return TRUE;
+
+    return FALSE;
+}
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     PAINTSTRUCT ps;
-    HDC hdc ;
+    HDC hdc;
+    static int inputNum = 0;
+
+
+
+    static POINT ptCurPos;
     static POINT ptMousePos;
-    
+
+    static RECT rectView;
+    static bool bFlag = false;
 
 
-    static vector<CObject*> vObj;
-    
 
     switch (message)
     {
-    case WM_TIMER:
-        if (wParam == timer_ID_1)
-        {
-            for (int i = 0; i < vObj.size(); i++)
-            {
-                vObj[i]->Update();
-            }
-            InvalidateRect(hWnd, NULL, TRUE);
-        }
-        break;
     case WM_CREATE:
-        //얘는 생성자처럼 윈도우 생성시 한 번 실행됨
-        SetTimer(hWnd, timer_ID_1, 1, NULL);
+        ptCurPos.x = circleRadius;
+        ptCurPos.y = circleRadius;
+        bFlag = false;
+
+        GetClientRect(hWnd, &rectView);
 
         break;
+
+    case WM_TIMER:
+       
     case WM_KEYDOWN:
     {
-    }
-    break;
+
+       
+    }break;
+
     case WM_KEYUP:
     {
 
-    }
-    break;
-    case WM_MOUSEMOVE:
-    {
-        ptMousePos.x = LOWORD(lParam);
-        ptMousePos.y = HIWORD(lParam);
-        
-    }
-        break;
+        bFlag = FALSE;
+        InvalidateRect(hWnd, NULL, TRUE);
+    }break;
 
-    case WM_LBUTTONDOWN:
-    {
-        static int num = 0;
-        if (num % 3 == 0)
-        {
-            vObj.push_back(new CCircle(hWnd, ptMousePos));
-        }
-        else if( num % 3 == 1)
-        {
-            vObj.push_back(new CRectangle(hWnd, ptMousePos));
-        }
-        else
-        {
-            vObj.push_back(new CStar(hWnd, ptMousePos));
-        }
-        num++;
-        InvalidateRect(hWnd, NULL, TRUE);
-    }
-    break;
-    case WM_LBUTTONUP:
-    {
-        InvalidateRect(hWnd, NULL, TRUE);
-    }
-    break;
+
     case WM_COMMAND:
     {
         int wmId = LOWORD(wParam);
@@ -227,28 +220,46 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
     }
     break;
+    case WM_LBUTTONDOWN:
+        ptMousePos.x = LOWORD(lParam);
+        ptMousePos.y = HIWORD(lParam);
+        if (InCircle(ptMousePos, ptCurPos)) bFlag = TRUE;
+        InvalidateRect(hWnd, NULL, TRUE);
+        break;
+
+    case WM_LBUTTONUP:
+        bFlag = FALSE;
+        InvalidateRect(hWnd, NULL, TRUE);
+
+
+        break;
+
+    case WM_MOUSEMOVE:
+        if (bFlag)
+        {
+            ptCurPos.x = LOWORD(lParam);
+            ptCurPos.y = HIWORD(lParam);
+            InvalidateRect(hWnd, NULL, TRUE);
+        }
+        break;
     case WM_PAINT:
     {
+
+        // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
+
         hdc = BeginPaint(hWnd, &ps);
-        //DrawGrid(hdc, ptMousePos, 100, 100, 10, 10);
 
-
-        for (int i = 0; i < vObj.size(); i++)
-        {
-
-            vObj[i]->Draw(hdc);
-
-        }
 
 
         EndPaint(hWnd, &ps);
     }
     break;
     case WM_DESTROY:
-        KillTimer(hWnd, timer_ID_1);
+
+
+
         PostQuitMessage(0);
         break;
-
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
@@ -274,31 +285,4 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     }
     return (INT_PTR)FALSE;
 }
-
-//스타트 엔드 격자
-
-template<class T>
-void DrawGrid(HDC hdc, POINT center, T width, T height, int xCount, int yCount)
-{
-    POINT start = { center.x - width / 2 , center.y - height / 2 };
-    POINT end = { center.x + width / 2 , center.y + height / 2 };
-
-
-    T xInterval = width / xCount;
-    T yInterval = height / yCount;
-
-    for (int i = 0; i < xCount + 1; i++)
-    {
-        MoveToEx(hdc, start.x + xInterval * i, start.y, NULL);
-        LineTo(hdc, start.x + xInterval * i, end.y);
-    }
-
-    for (int i = 0; i < yCount + 1; i++)
-    {
-        MoveToEx(hdc, start.x, start.y + yInterval * i, NULL);
-        LineTo(hdc, end.x, start.y + yInterval * i);
-    }
-
-}
-
 
