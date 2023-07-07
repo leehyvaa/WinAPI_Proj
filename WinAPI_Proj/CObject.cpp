@@ -8,6 +8,7 @@
 
 
 void DrawRect(HDC hdc, POINT center, cVector3 top, cVector3 bot, cVector3 left, cVector3 right);
+double LengthPts(float pt1_x, float pt1_y, POINT pt2);
 
 CObject::CObject()
 {
@@ -47,7 +48,7 @@ CCircle::CCircle(HWND hWnd,POINT pos)
 
 void CCircle::Update()
 {
-	Collision();
+	
 	
 
 	position.x = position.x + moveSpeed * dirVector.Getx();
@@ -66,10 +67,23 @@ void CCircle::Draw(HDC dc)
 
 }
 
-bool CCircle::Collision()
+bool CCircle::Collision(CObject& vObj)
 {
 	
+	
+	/*BOOL InCircle(POINT pt1, POINT pt2)
+	{
+		if (LengthPts(pt1, pt2) < radius) return TRUE;
 
+		return FALSE;
+	}*/
+
+	if (radius * 2 > LengthPts(vObj.GetPos().x, vObj.GetPos().y, this->position))
+	{
+		dirVector.Setx(-dirVector.Getx());
+		dirVector.Sety(-dirVector.Gety());
+
+	}
 
 
 	if (position.x + radius + moveSpeed * dirVector.Getx() > rectView.right)
@@ -139,7 +153,7 @@ CRectangle::~CRectangle()
 
 void CRectangle::Update()
 {
-	Collision();
+
 	position.x = position.x + moveSpeed * dirVector.Getx();
 	position.y = position.y + moveSpeed * dirVector.Gety();
 
@@ -167,8 +181,15 @@ void CRectangle::Draw(HDC dc)
 	Polygon(dc, p, 4);
 }
 
-bool CRectangle::Collision()
+bool CRectangle::Collision(CObject& vObj)
 {
+
+	if (radius * 2 > LengthPts(vObj.GetPos().x, vObj.GetPos().y, this->position))
+	{
+		dirVector.Setx(-dirVector.Getx());
+		dirVector.Sety(-dirVector.Gety());
+
+	}
 
 
 	if (position.x + radius + moveSpeed * dirVector.Getx() > rectView.right)
@@ -244,7 +265,7 @@ CStar::~CStar()
 
 void CStar::Update()
 {
-	Collision();
+	
 	position.x = position.x + moveSpeed * dirVector.Getx();
 	position.y = position.y + moveSpeed * dirVector.Gety();
 
@@ -290,9 +311,16 @@ void CStar::Draw(HDC dc)
 	Polygon(dc, p, 10);
 }
 
-bool CStar::Collision()
+bool CStar::Collision(CObject &vObj)
 {
 
+
+	if (radius * 2 > LengthPts(vObj.GetPos().x, vObj.GetPos().y, this->position))
+	{
+		dirVector.Setx(-dirVector.Getx());
+		dirVector.Sety(-dirVector.Gety());
+
+	}
 
 	if (position.x + radius + moveSpeed * dirVector.Getx() > rectView.right)
 	{
@@ -325,6 +353,17 @@ bool CStar::Collision()
 	return false;
 
 }
+
+
+
+double LengthPts(float pt1_x,float pt1_y, POINT pt2)
+{
+	return (sqrt(
+		((float)(pt2.x - pt1_x) * (pt2.x - pt1_x)) +
+		((float)(pt2.y - pt1_y) * (pt2.y - pt1_y))
+	));
+}
+
 
 
 

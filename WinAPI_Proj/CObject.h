@@ -2,6 +2,8 @@
 #include "framework.h"
 #include "WinAPI_Proj.h"
 #include "cVector3.h"
+#include <vector>
+using namespace std;
 
 class CObject
 {
@@ -19,10 +21,11 @@ protected:
 public:
 	CObject();
 	CObject(POINT pos,int t);
+	POINT GetPos() { return position; }
 	virtual ~CObject();
 	virtual void Update() = 0;
 	virtual void Draw(HDC dc) = 0;
-	virtual bool Collision() = 0;
+	virtual bool Collision(CObject& vObj) = 0;
 
 
 };
@@ -39,7 +42,7 @@ public:
 	~CCircle() override;
 	void Update() override;
 	void Draw(HDC dc) override;
-	bool Collision() override;
+	bool Collision(CObject& vObj) override;
 
 };
 
@@ -55,7 +58,7 @@ public:
 	~CRectangle() override;
 	void Update() override;
 	void Draw(HDC dc) override;
-	bool Collision() override;
+	bool Collision(CObject& vObj) override;
 
 };
 
@@ -72,7 +75,7 @@ public:
 	~CStar() override;
 	void Update() override;
 	void Draw(HDC dc) override;
-	bool Collision() override;
+	bool Collision(CObject& vObj) override;
 
 };
 

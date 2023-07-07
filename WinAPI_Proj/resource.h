@@ -12,6 +12,13 @@
 #define IDI_SMALL                       108
 #define IDC_WINAPIPROJ                  109
 #define IDR_MAINFRAME                   128
+#define IDD_DIALOG1                     130
+#define ID_BUTTON_PRINT                 1000
+#define IDC_BUTTON2                     1002
+#define ID_BUTTON_END                   1002
+#define IDC_TEXT                        1003
+#define ID_START                        1004
+#define ID_PAUSE                        1005
 #define ID_MENUTEST_32771               32771
 #define ID_MENUTEST_32772               32772
 #define ID_MENUTEST_Button1             32773
@@ -34,9 +41,9 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        130
+#define _APS_NEXT_RESOURCE_VALUE        131
 #define _APS_NEXT_COMMAND_VALUE         32794
-#define _APS_NEXT_CONTROL_VALUE         1000
+#define _APS_NEXT_CONTROL_VALUE         1006
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif

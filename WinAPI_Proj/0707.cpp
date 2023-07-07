@@ -89,12 +89,55 @@ BOOL CALLBACK Dialog_Test1_Proc(HWND hDlg, UINT iMsg, WPARAM wParam, LPARAM lPar
 
     switch (iMsg)
     {
-    case WM_INITDIALOG:
-        return 1;
+    case WM_INITDIALOG :
+    {
+        HWND hBtn = GetDlgItem(hDlg, ID_PAUSE);
+        EnableWindow(hBtn, FALSE);
+    }
+    return 1;
 
     case WM_COMMAND:
         switch (LOWORD(wParam))
         {
+        case ID_START:
+        {
+            HDC hdc = GetDC(hDlg);
+            SetDlgItemText(hDlg, IDC_TEXT, _T("Start"));
+            ReleaseDC(hDlg, hdc);
+
+            HWND hBtn = GetDlgItem(hDlg, ID_START);
+            EnableWindow(hBtn, FALSE);
+
+            hBtn = GetDlgItem(hDlg, ID_PAUSE);
+                EnableWindow(hBtn, TRUE);
+        }
+        break;
+        case ID_PAUSE:
+        {
+            HDC hdc = GetDC(hDlg);
+            SetDlgItemText(hDlg, IDC_TEXT, _T("Pause"));
+            ReleaseDC(hDlg, hdc);
+
+            HWND hBtn = GetDlgItem(hDlg, ID_START);
+            EnableWindow(hBtn, TRUE);
+
+            hBtn = GetDlgItem(hDlg, ID_PAUSE);
+                EnableWindow(hBtn, FALSE);
+        }
+        break;
+
+        case ID_BUTTON_PRINT:
+        {
+            HDC hdc = GetDC(hDlg);
+            TextOut(hdc, 0, 0, _T("Print"), 5);
+
+            SetDlgItemText(hDlg, IDC_TEXT, _T("Print"));
+
+            ReleaseDC(hDlg, hdc);
+        }
+        break;
+
+
         case IDOK:
             EndDialog(hDlg, 0);
             break;
@@ -205,27 +248,27 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     static SIZE size;
 
     static POINT ptCurPos;
-    static POINT ptMousePos,ptMousePosPrev,ptMousePosCrt;
+    static POINT ptMousePos, ptMousePosPrev, ptMousePosCrt;
     static bool drawCheck = false;
     static bool dragCheck = false;
     static int selectedMenu = NONE;
 
 
 
-    static HMENU hMenu,hSubMenu;
+    static HMENU hMenu, hSubMenu;
     static bool bFlag = false;
     static bool cFlag = false;
     static bool dFlag = false;
     static int pCount = 0;
     static vector<CObject> vCopu;
 
-    CreateBitmap();
+    //CreateBitmap();
 
     switch (message)
     {
     case WM_CREATE:
         //얘는 생성자처럼 윈도우 생성시 한 번 실행됨
-        count = 0;
+        /*count = 0;
         yPos = 15;
         strNum = 0;
         CreateCaret(hWnd, NULL, 5, 15);
@@ -235,14 +278,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         EnableMenuItem(hSubMenu, ID_EDITCOPY, MF_GRAYED);
         EnableMenuItem(hSubMenu, ID_EDITPASTE, MF_GRAYED);
         ptCurPos.x = 50;
-        ptCurPos.y = 50;
+        ptCurPos.y = 50;*/
 
 
         break;
 
     case WM_CHAR:
     {
-        
+
 
     } break;
 
@@ -265,7 +308,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 EnableMenuItem(hSubMenu, ID_EDITCOPY, MF_GRAYED);
 
             }
-            
+
 
         }
 
@@ -275,49 +318,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     case WM_MOUSEMOVE:
     {
-        //ptCurPos.x= LOWORD(lParam);
-        //ptCurPos.y = HIWORD(lParam);
-
-        if (dragCheck)
-        {
-            ptMousePosCrt.x= LOWORD(lParam);
-            ptMousePosCrt.y = HIWORD(lParam);
-        InvalidateRect(hWnd, NULL, TRUE);
-        }
+     
 
     }
     break;
 
     case WM_LBUTTONDOWN:
     {
-        ptMousePos.x = LOWORD(lParam);
-        ptMousePos.y = HIWORD(lParam);
-        if (InCircle(ptMousePos, ptCurPos))
-        {
-            UINT state = GetMenuState(hSubMenu, ID_EDITCOPY, MF_BYCOMMAND);
-            if ((state & MF_DISABLED) || (state & MF_GRAYED))
-            {
-                EnableMenuItem(hSubMenu, ID_EDITCOPY, MF_ENABLED);
-            }
-
-            bFlag = TRUE;
-        }
-
-
-        if (bFlag && cFlag)
-        {
-            dFlag = true;
-            bFlag = false;
-            cFlag = false;
-        }
-
-       
-
-
-        ptMousePosPrev.x = LOWORD(lParam);
-        ptMousePosPrev.y = HIWORD(lParam);
-        dragCheck = true;
-        InvalidateRect(hWnd, NULL, TRUE);
+        
     }
     break;
 
@@ -371,7 +379,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         case ID_EDITCOPY:
         {
-    
+
             EnableMenuItem(hSubMenu, ID_EDITCOPY, MF_GRAYED);
             EnableMenuItem(hSubMenu, ID_EDITPASTE, MF_ENABLED);
             //선택된 그림 저장
@@ -416,8 +424,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         //    dFlag = false;
         //    //벡터에다 넣음
         //}
-        
-        DrawBitmap(hWnd, hdc);
+
+       // DrawBitmap(hWnd, hdc);
 
 
 
@@ -426,15 +434,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     break;
     case WM_DESTROY:
 
-        DeleteBitmap();
-        PostQuitMessage(0);
+        //DeleteBitmap();
+       // PostQuitMessage(0);
         break;
 
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
     return 0;
-    
+
 }
 
 // 정보 대화 상자의 메시지 처리기입니다.
@@ -488,7 +496,7 @@ void DrawCircle(HDC hdc, POINT pt, BOOL bFlag)
     if (bFlag)
     {
         SelectObject(hdc, GetStockObject(LTGRAY_BRUSH));
-        
+
     }
     Ellipse(hdc, pt.x - circleRadius, pt.y - circleRadius, pt.x + circleRadius, pt.y + circleRadius);
 
@@ -541,7 +549,7 @@ void CreateBitmap()
 
         GetObject(hTransparentImage, sizeof(BITMAP), &bitTransparent);
     }
-   
+
 }
 
 void DrawBitmap(HWND hWnd, HDC hdc)
@@ -562,7 +570,7 @@ void DrawBitmap(HWND hWnd, HDC hdc)
         DeleteDC(hMemDC);
 
     }
-    
+
     {//시공
         hMemDC = CreateCompatibleDC(hdc);
         hOldBitmap = (HBITMAP)SelectObject(hMemDC, hTransparentImage);

@@ -159,6 +159,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             for (int i = 0; i < vObj.size(); i++)
             {
+                for (int j = 0; j < vObj.size(); j++)
+                {
+                    if(i != j)
+                        vObj[i]->Collision(*vObj[j]);
+                }
+            }
+
+            for (int i = 0; i < vObj.size(); i++)
+            {
                 vObj[i]->Update();
             }
             InvalidateRect(hWnd, NULL, TRUE);

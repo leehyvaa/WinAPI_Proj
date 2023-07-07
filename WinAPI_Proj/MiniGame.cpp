@@ -4,15 +4,24 @@
 #include "framework.h"
 #include "WinAPI_Proj.h"
 #include <cmath>
+#include "GObject.h"
+#include "Player.h"
 
 using namespace std;
 #define MAX_LOADSTRING 100
 
+static vector<GObject*>vObject;
+const HWND* mainHwnd;
+const HDC* mainHdc;
 
 // 전역 변수:
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
 WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
+
+
+void Update();
+void Render();
 
 // 이 코드 모듈에 포함된 함수의 선언을 전달합니다:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -45,6 +54,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     MSG msg;
 
+
+
+
+
+
+
     // 기본 메시지 루프입니다:
     while (true)
     {
@@ -62,6 +77,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         }
         else
         {
+
             //일정 프레임마다 정확하게 작동하도록 코드를 수정해야함
             // update는 일정 시간마다 작동하고,Render는 매번 작동해도 되고
             // 일정 시간마다 작동해도 된다.
@@ -70,6 +86,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             // GetCurSorPos(&mousePos) 이러면 mousePos로 마우스 위치값이 들어감
             // 
             //Render(); Paint가 하는 역할을 이쪽으로
+            Update();
+            Render();
+            
+
         }
 
     }
@@ -77,8 +97,20 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     return (int)msg.wParam;
 }
 
-
-
+void Update()
+{
+    for (int i = 0; i < vObject.size(); i++)
+    {
+        vObject[i]->Update();
+    }
+}
+void Render()
+{
+    for (int i = 0; i < vObject.size(); i++)
+    {
+        vObject[i]->Draw(*mainHdc);
+    }
+}
 //
 //  함수: MyRegisterClass()
 //
@@ -174,6 +206,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     static RECT rectView;
     static bool bFlag = false;
 
+    
+    POINT startPos = { 200,200 };
 
 
     switch (message)
@@ -183,8 +217,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         ptCurPos.y = circleRadius;
         bFlag = false;
 
+        mainHdc = &hdc;
+        mainHwnd = &hWnd;
+
         GetClientRect(hWnd, &rectView);
 
+        
+        vObject.push_back(new Player(startPos,10));
         break;
 
     case WM_TIMER:
