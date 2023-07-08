@@ -55,10 +55,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     MSG msg;
 
 
-
-
-
-
+   
 
     // 기본 메시지 루프입니다:
     while (true)
@@ -66,10 +63,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
         {
             if (msg.message == WM_QUIT)
-            {
                 break;
-            }
-            else
+
+            if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
             {
                 TranslateMessage(&msg);
                 DispatchMessage(&msg);
@@ -226,13 +222,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         vObject.push_back(new Player(startPos,10));
         break;
 
-    case WM_TIMER:
+    
        
-    case WM_KEYDOWN:
-    {
-
-       
-    }break;
+    
 
     case WM_KEYUP:
     {

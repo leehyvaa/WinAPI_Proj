@@ -129,9 +129,11 @@
   <ItemGroup>
     <ClInclude Include="CObject.h" />
     <ClInclude Include="Collider.h" />
+    <ClInclude Include="CCore.h" />
     <ClInclude Include="cVector3.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="GObject.h" />
+    <ClInclude Include="KeyMgr.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
@@ -157,8 +159,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Collider.cpp" />
+    <ClCompile Include="CCore.cpp" />
     <ClCompile Include="cVector3.cpp" />
     <ClCompile Include="GObject.cpp" />
+    <ClCompile Include="KeyMgr.cpp" />
     <ClCompile Include="MiniGame.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
