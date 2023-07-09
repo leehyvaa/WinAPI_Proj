@@ -49,8 +49,8 @@ void cVector3::Setz(double n)
 {
 	z = n;
 }
-
-
+123
+4234234243
 
 cVector3 cVector3::operator=(const cVector3& v) 
 {
