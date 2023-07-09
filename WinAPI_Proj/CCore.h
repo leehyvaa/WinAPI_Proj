@@ -3,12 +3,15 @@
 //객체를 데이터영역에 넣어두는 방식
 class CCore
 {
-
 	SINGLE(CCore);
 
-
+private:
+	HWND m_hWnd;
+	POINT m_ptResolution;
+	HDC m_hDC;
 public:
-	int init();
+	int init(HWND _hWnd, POINT _ptResolution);
+	void Progress();
 	void Update();
 	void Render();
 private:

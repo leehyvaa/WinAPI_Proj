@@ -24,9 +24,9 @@ public:
 	GObject();
 	virtual ~GObject();
 	POINT GetPos() { return position; }
-	virtual void Update() = 0;
-	virtual void Draw(HDC dc) = 0;
-	virtual bool Collision(GObject& vObj) = 0;
+	virtual void Update();
+	virtual void Draw();
+	virtual bool Collision(GObject& vObj);
 
 };
 

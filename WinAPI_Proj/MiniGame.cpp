@@ -20,6 +20,8 @@ const HDC* mainHdc;
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
 WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
+HWND hWnd;
+GObject g_object;
 
 
 // 이 코드 모듈에 포함된 함수의 선언을 전달합니다:
@@ -49,7 +51,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return FALSE;
     }
 
-    if (FAILED(CCore::GetInst()->init()))
+    if (FAILED(CCore::GetInst()->init(hWnd,POINT{768,1000})))
     {
         MessageBox(nullptr, L"Core 객체 초기화 실패", L"ERROR", MB_OK);
         return FALSE;
@@ -88,7 +90,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             // GetCurSorPos(&mousePos) 이러면 mousePos로 마우스 위치값이 들어감
             // 
             //Render(); Paint가 하는 역할을 이쪽으로
-
+            CCore::GetInst()->Progress();
             
 
         }
@@ -139,7 +141,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
     hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
 
-    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
+    hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
         CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
 
     if (!hWnd)
