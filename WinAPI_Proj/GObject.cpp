@@ -1,5 +1,5 @@
+#include "pch.h"
 #include "GObject.h"
-#include"pch.h"
 
 GObject::GObject()
 {

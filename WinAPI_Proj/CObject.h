@@ -32,11 +32,15 @@ public:
 
 
 
+
+
+
 class CCircle : public CObject
 {
 private:
 	float radius;
 public:
+	void abc();
 	CCircle() : CObject() {}
 	CCircle(HWND hWnd, POINT pos);
 	~CCircle() override;

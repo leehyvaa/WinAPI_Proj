@@ -1,32 +1,27 @@
 #pragma once
-#include "framework.h"
-#include "WinAPI_Proj.h"
-#include "cVector3.h"
-#include <vector>
-using namespace std;
-
+#include "pch.h"
 
 class GObject
 {
-protected:
-	POINT position;
-	float moveSpeed;
-	cVector3 dirVector;
-	float scale;
-
-	HWND hWnd;
-	RECT rectView;
-
-	//HDC hdc;
-	float rotate;
+public:
+	Vec2 m_vPos;
+	Vec2 m_vScale;
 
 public:
 	GObject();
 	virtual ~GObject();
-	POINT GetPos() { return position; }
-	virtual void Update();
-	virtual void Draw();
-	virtual bool Collision(GObject& vObj);
+	
+	void SetPos(Vec2 _vPos) { m_vPos = _vPos; }
+	void SetScale(Vec2 _vScale) { m_vScale = _vScale; }
+
+	Vec2 GetPos() { return m_vPos; }
+	Vec2 GetScale() { return m_vScale; }
+
+	
+
+	//virtual void Update();
+	//virtual void Draw();
+	//virtual bool Collision(GObject& vObj);
 
 };
 

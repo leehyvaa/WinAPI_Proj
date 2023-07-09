@@ -133,6 +133,8 @@
     <ClInclude Include="CObject.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="CCore.h" />
+    <ClInclude Include="CTimeMgr.h" />
+    <ClInclude Include="Vec2.h" />
     <ClInclude Include="cVector3.h" />
     <ClInclude Include="define.h" />
     <ClInclude Include="framework.h" />
@@ -175,6 +177,8 @@
     </ClCompile>
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="CCore.cpp" />
+    <ClCompile Include="CTimeMgr.cpp" />
+    <ClCompile Include="Vec2.cpp" />
     <ClCompile Include="cVector3.cpp" />
     <ClCompile Include="GObject.cpp" />
     <ClCompile Include="KeyMgr.cpp" />

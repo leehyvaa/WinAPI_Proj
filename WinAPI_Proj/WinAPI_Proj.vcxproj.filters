@@ -34,17 +34,11 @@
     <Filter Include="Engine\Object">
       <UniqueIdentifier>{da7736a7-cd61-4031-96a2-b28b468592b0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\디폴트">
+      <UniqueIdentifier>{9a1e852b-e2a3-4576-b32b-d16409841cd9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="framework.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="WinAPI_Proj.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -78,15 +72,27 @@
     <ClInclude Include="GObject.h">
       <Filter>Engine\Object</Filter>
     </ClInclude>
+    <ClInclude Include="Vec2.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>헤더 파일\디폴트</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>헤더 파일\디폴트</Filter>
+    </ClInclude>
+    <ClInclude Include="framework.h">
+      <Filter>헤더 파일\디폴트</Filter>
+    </ClInclude>
+    <ClInclude Include="CTimeMgr.h">
+      <Filter>Engine\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CObject.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="CObjectTest.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="cVector3.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Collider.cpp">
@@ -130,6 +136,15 @@
     </ClCompile>
     <ClCompile Include="GObject.cpp">
       <Filter>Engine\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="cVector3.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Vec2.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CTimeMgr.cpp">
+      <Filter>Engine\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

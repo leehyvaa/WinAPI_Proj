@@ -8,6 +8,7 @@
 #include "Player.h"
 #include"pch.h"
 #include "CCore.h"
+#include <vector>
 
 using namespace std;
 #define MAX_LOADSTRING 100

@@ -152,7 +152,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
     static vector<CObject*> vObj;
-    
+  
 
     switch (message)
     {
@@ -200,6 +200,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_LBUTTONDOWN:
     {
         static int num = 0;
+     
         if (num % 3 == 0)
         {
             vObj.push_back(new CCircle(hWnd, ptMousePos));
@@ -215,6 +216,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         num++;
         InvalidateRect(hWnd, NULL, TRUE);
     }
+  
     break;
     case WM_LBUTTONUP:
     {

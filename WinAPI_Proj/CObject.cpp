@@ -19,7 +19,7 @@ CObject::CObject()
 
 CObject::CObject(POINT pos, int t)
 {
-
+	
 
 }
 
@@ -46,6 +46,8 @@ CCircle::CCircle(HWND hWnd,POINT pos)
 	rotate = 0;
 	moveSpeed = rand()%10 +1;
 	radius = 50;
+
+	
 }
 
 void CCircle::Update()
@@ -79,6 +81,7 @@ bool CCircle::Collision(CObject& vObj)
 
 		return FALSE;
 	}*/
+	
 
 	if (radius * 2 > LengthPts(vObj.GetPos().x, vObj.GetPos().y, this->position))
 	{
