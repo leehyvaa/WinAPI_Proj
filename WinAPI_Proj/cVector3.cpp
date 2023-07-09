@@ -1,4 +1,6 @@
 #include "cVector3.h"
+#include"pch.h"
+
 const double PI = std::acos(-1);
 
 cVector3::cVector3()
@@ -49,8 +51,6 @@ void cVector3::Setz(double n)
 {
 	z = n;
 }
-123
-4234234243
 
 cVector3 cVector3::operator=(const cVector3& v) 
 {

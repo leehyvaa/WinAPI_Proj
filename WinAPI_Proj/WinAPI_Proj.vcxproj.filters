@@ -22,6 +22,15 @@
     <Filter Include="Engine\Header">
       <UniqueIdentifier>{fb29b34d-6238-4f0b-8801-01b4dd8ee049}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Manager">
+      <UniqueIdentifier>{1f1248c2-0e84-4666-b636-695988840e3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Manager\KeyMgr">
+      <UniqueIdentifier>{01218b4a-e319-4918-816a-d4198e194bb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\수업">
+      <UniqueIdentifier>{400ff658-7928-4659-8900-6db49c465019}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -57,14 +66,17 @@
     <ClInclude Include="CCore.h">
       <Filter>Engine\Core</Filter>
     </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>Engine\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="define.h">
+      <Filter>Engine\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="CKeyMgr.h">
+      <Filter>Engine\Manager\KeyMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="WinAPI_Proj.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="WindowsProject1.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="CObject.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -74,25 +86,10 @@
     <ClCompile Include="cVector3.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="0703.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="0705.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="0706.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="sample.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="Collider.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="MiniGame.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="0707.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="GObject.cpp">
@@ -101,11 +98,35 @@
     <ClCompile Include="Player.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="CCore.cpp">
+      <Filter>Engine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="0703.cpp">
+      <Filter>소스 파일\수업</Filter>
+    </ClCompile>
+    <ClCompile Include="0705.cpp">
+      <Filter>소스 파일\수업</Filter>
+    </ClCompile>
+    <ClCompile Include="0706.cpp">
+      <Filter>소스 파일\수업</Filter>
+    </ClCompile>
+    <ClCompile Include="0707.cpp">
+      <Filter>소스 파일\수업</Filter>
+    </ClCompile>
+    <ClCompile Include="WinAPI_Proj.cpp">
+      <Filter>소스 파일\수업</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowsProject1.cpp">
+      <Filter>소스 파일\수업</Filter>
+    </ClCompile>
     <ClCompile Include="KeyMgr.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="CCore.cpp">
-      <Filter>Engine\Core</Filter>
+    <ClCompile Include="CKeyMgr.cpp">
+      <Filter>Engine\Manager\KeyMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="sample.cpp">
+      <Filter>소스 파일\수업</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

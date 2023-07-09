@@ -6,6 +6,8 @@
 #include <cmath>
 #include "GObject.h"
 #include "Player.h"
+#include"pch.h"
+#include "CCore.h"
 
 using namespace std;
 #define MAX_LOADSTRING 100
@@ -19,9 +21,6 @@ HINSTANCE hInst;                                // 현재 인스턴스입니다.
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
 WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
 
-
-void Update();
-void Render();
 
 // 이 코드 모듈에 포함된 함수의 선언을 전달합니다:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -49,6 +48,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     {
         return FALSE;
     }
+
+    if (FAILED(CCore::GetInst()->init()))
+    {
+        MessageBox(nullptr, L"Core 객체 초기화 실패", L"ERROR", MB_OK);
+        return FALSE;
+    }
+
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_WINAPIPROJ));
 
@@ -82,8 +88,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             // GetCurSorPos(&mousePos) 이러면 mousePos로 마우스 위치값이 들어감
             // 
             //Render(); Paint가 하는 역할을 이쪽으로
-            Update();
-            Render();
+
             
 
         }
@@ -93,20 +98,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     return (int)msg.wParam;
 }
 
-void Update()
-{
-    for (int i = 0; i < vObject.size(); i++)
-    {
-        vObject[i]->Update();
-    }
-}
-void Render()
-{
-    for (int i = 0; i < vObject.size(); i++)
-    {
-        vObject[i]->Draw(*mainHdc);
-    }
-}
+
 //
 //  함수: MyRegisterClass()
 //
@@ -219,7 +211,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         GetClientRect(hWnd, &rectView);
 
         
-        vObject.push_back(new Player(startPos,10));
+      
         break;
 
     

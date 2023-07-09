@@ -6,6 +6,8 @@
 #include <vector>
 #include <math.h>
 #include "CObject.h"
+#include"pch.h"
+
 using namespace std;
 
 #define PI 3.141592
