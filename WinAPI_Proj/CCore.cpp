@@ -1,9 +1,9 @@
 #include "pch.h"
 #include "CCore.h"
-#include "CTimeMgr.h"
 #include "CKeyMgr.h"
-#include "Vec2.h"
 #include "GObject.h"
+#include "Player.h"
+#include "CTimeMgr.h"
 //CCore* CCore::g_pInst = nullptr;
 CCore::CCore()
 	:m_hWnd(0)
@@ -23,6 +23,7 @@ CCore::~CCore()
 
 
 GObject g_obj;
+Player player;
 
 int CCore::init(HWND _hWnd, POINT _ptResolution)
 {
@@ -49,8 +50,11 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 
 
 
-	g_obj.SetPos(Vec2(m_ptResolution.x / 2.f, m_ptResolution.y / 2.f));
-	g_obj.SetScale(Vec2(20.f, 20.f));
+	//g_obj.SetPos(Vec2(m_ptResolution.x / 2.f, m_ptResolution.y / 2.f));
+	//g_obj.SetScale(Vec2(20.f, 20.f));
+	player.SetPos(Vec2(m_ptResolution.x / 2.f, m_ptResolution.y - m_ptResolution.y/8.f));
+	player.SetScale(Vec2(20.f, 20.f));
+
 
 	return S_OK;
 }
@@ -67,13 +71,15 @@ void CCore::Progress()
 
 void CCore::Update()
 {
-	Vec2 vPos = g_obj.GetPos();
+	/*Vec2 vPos = g_obj.GetPos();
 
 	if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
 		vPos.x += 100.f * fDT;
 
 	vPos.y -= 10.f * fDT;
-	g_obj.SetPos(vPos);
+	g_obj.SetPos(vPos);*/
+
+	player.Update();
 
 }
 
@@ -83,13 +89,18 @@ void CCore::Render()
 	Rectangle(m_memDC, -1,-1,m_ptResolution.x+1,m_ptResolution.y+1);
 
 
-	Vec2 vPos = g_obj.GetPos();
+	player.Draw();
+
+	/*Vec2 vPos = g_obj.GetPos();
 	Vec2 vScale = g_obj.GetScale();
 
 	Rectangle(m_memDC,  int(vPos.x - vScale.x / 2.f)
 					, int(vPos.y - vScale.y / 2.f)
 					, int(vPos.x + vScale.x / 2.f)
-					, int(vPos.y + vScale.y / 2.f));
+					, int(vPos.y + vScale.y / 2.f));*/
+
+
+
 
 	BitBlt(m_hDC, 0, 0, m_ptResolution.x, m_ptResolution.y
 		, m_memDC, 0, 0, SRCCOPY); //소스 비트맵에서 목적비트맵으로 복사

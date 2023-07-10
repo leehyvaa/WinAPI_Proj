@@ -1,11 +1,15 @@
 #pragma once
 #include "pch.h"
-
+#include "Vec2.h"
+#include <vector>
 class GObject
 {
 public:
 	Vec2 m_vPos;
 	Vec2 m_vScale;
+	Vec2 m_vDir;
+	float m_fSpeed;
+
 
 public:
 	GObject();
@@ -19,9 +23,9 @@ public:
 
 	
 
-	//virtual void Update();
-	//virtual void Draw();
-	//virtual bool Collision(GObject& vObj);
+	virtual void Update();
+	virtual void Draw();
+	virtual bool Collision(GObject& _vObj);
 
 };
 

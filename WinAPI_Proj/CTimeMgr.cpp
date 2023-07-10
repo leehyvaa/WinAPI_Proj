@@ -1,6 +1,8 @@
+
 #include "pch.h"
 #include "CTimeMgr.h"
 #include "CCore.h"
+#include <iostream>
 CTimeMgr::CTimeMgr()
 	: m_CurCount{}
 	, m_PrevCount{}

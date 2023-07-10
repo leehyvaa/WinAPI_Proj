@@ -1,16 +1,17 @@
 #pragma once
-#include "pch.h"
 #include "GObject.h"
-#include "CBullet.h"
-class Player : public GObject
+#include "Player.h"
+#include "Vec2.h"
+
+class CBullet : public GObject
 {
 private:
-
+	
 
 public:
-	Player();
-	Player(Vec2 _vPos, Vec2 _vScale);
-	virtual ~Player();
+	CBullet();
+	CBullet(Vec2 _vDir, Vec2 _vPos,float _speed);
+	virtual ~CBullet();
 
 	Vec2 GetPos() { return m_vPos; }
 
@@ -18,6 +19,5 @@ public:
 	virtual void Update() override;
 	virtual void Draw()  override;
 	virtual bool Collision(GObject& vObj) override;
-	virtual void InstBullet();
 };
 

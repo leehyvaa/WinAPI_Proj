@@ -1,6 +1,7 @@
 #pragma once
 #include "define.h"
 #include <Windows.h>
-#include "Vec2.h"
-#include <iostream>
+#include <vector>
+#include <cMath>
+
 using namespace std;

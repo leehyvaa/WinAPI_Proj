@@ -1,14 +1,12 @@
 // WindowsProject1.cpp : 애플리케이션에 대한 진입점을 정의합니다.
 //
 
+#include "pch.h"
 #include "framework.h"
 #include "WinAPI_Proj.h"
-#include <cmath>
+#include "CCore.h"
 #include "GObject.h"
 #include "Player.h"
-#include"pch.h"
-#include "CCore.h"
-#include <vector>
 
 using namespace std;
 #define MAX_LOADSTRING 100

@@ -1,9 +1,9 @@
+#include "pch.h"
 #include "CObject.h"
 #include <cstdlib>
 #include <ctime>
 #include <vector>
 #include <math.h>
-#include "pch.h"
 
 #define PI 3.141592
 #define degreeToRadian(degree) ((degree)*PI/180)
