@@ -6,7 +6,7 @@
 #include "Player.h"
 
 CSpawner::CSpawner()
-//	:m_player(0)
+	:m_player(0)
 {
 	m_fSpeed = 10;
 
@@ -15,11 +15,16 @@ CSpawner::CSpawner()
 	m_vDir.x = 1;
 	type = SPAWNER;
 	m_fStartTimer = 0;
-
+    m_fSpawnTimer=1000.f;
+	m_iSpawnCount=0;
+	m_fDifficult=0;
+	m_bDamaged = false;
+	m_fStartDmgTimer = 0;
+	m_fDamagedCount = 0;
 }
 
 CSpawner::CSpawner(Vec2 _vPos, Vec2 _vScale)
-//	:m_player(0)
+	:m_player(0)
 {
 	m_vPos.x = _vPos.x;
 	m_vPos.y = _vPos.y;
@@ -30,7 +35,12 @@ CSpawner::CSpawner(Vec2 _vPos, Vec2 _vScale)
 	m_vDir.x = 1;
 	type = SPAWNER;
 	m_fStartTimer = 0;
-
+	m_fSpawnTimer = 1000.f;
+	m_iSpawnCount=0;
+	m_fDifficult=0;
+	m_bDamaged = false;
+	m_fStartDmgTimer = 0;
+	m_fDamagedCount = 0;
 }
 
 CSpawner::~CSpawner()
@@ -49,12 +59,24 @@ void CSpawner::Update()
 
 
 	float m_fCountTimer = clock();
-	
-	if (m_fCountTimer-m_fStartTimer >500.f)
+	float m_fDamagedCount = clock();
+
+
+	if (m_fCountTimer-m_fStartTimer >m_fSpawnTimer-m_fDifficult)
 	{
 		m_fStartTimer = clock();
-	
+		m_iSpawnCount++;
+		if (m_iSpawnCount % 5 == 0)
+		{
+			InstBullet();
+			m_fDifficult += 20;
+		}
 		InstEnemy();
+	}
+
+	if (m_bDamaged && (m_fDamagedCount - m_fStartDmgTimer > 800.f))
+	{
+		m_bDamaged = false;
 	}
 
 
@@ -63,24 +85,57 @@ void CSpawner::Update()
 		m_vEnemy[i]->Update();
 	}
 
-	/*for (int i = 0; i < m_vBullet.size(); i++)
+	for (int i = 0; i < m_vBullet.size(); i++)
 	{
 		m_vBullet[i]->Update();
-	}*/
+	}
 }
 
 void CSpawner::Draw()
 {
-	Rectangle(CCore::GetInst()->GetmemDC(), m_vPos.x - m_vScale.x, m_vPos.y - m_vScale.y, m_vPos.x + m_vScale.x, m_vPos.y + m_vScale.y);
+
+	static float landX = 5;
+
+	HBRUSH hBrush, oldBrush;
+
+	
+
+	if (m_bDamaged)
+	{
+		hBrush = CreateSolidBrush(RGB(255, 0, 0));
+		oldBrush = (HBRUSH)SelectObject(CCore::GetInst()->GetmemDC(), hBrush);
+
+		Rectangle(CCore::GetInst()->GetmemDC(), m_vPos.x - m_vScale.x+landX, m_vPos.y - m_vScale.y, m_vPos.x + m_vScale.x+landX, m_vPos.y + m_vScale.y);
+		SelectObject(CCore::GetInst()->GetmemDC(), oldBrush);
+		DeleteObject(hBrush);
+		landX *= -1;
+	}
+	else
+	{
+		hBrush = CreateSolidBrush(RGB(0, 0, 0));
+		oldBrush = (HBRUSH)SelectObject(CCore::GetInst()->GetmemDC(), hBrush);
+
+		Rectangle(CCore::GetInst()->GetmemDC(), m_vPos.x - m_vScale.x, m_vPos.y - m_vScale.y, m_vPos.x + m_vScale.x, m_vPos.y + m_vScale.y);
+		SelectObject(CCore::GetInst()->GetmemDC(), oldBrush);
+		DeleteObject(hBrush);
+	}
 	
 	for (int i = 0; i < m_vEnemy.size(); i++)
 	{
 		m_vEnemy[i]->Draw();
 	}
-	/*for (int i = 0; i < m_vBullet.size(); i++)
+	
+	TCHAR buf2[1024];
+	wsprintf(buf2, TEXT("%dÁ¡"), m_iScore);
+
+	TextOut(CCore::GetInst()->GetmemDC(), 0, 0, buf2, _tcslen(buf2));
+	
+	
+
+	for (int i = 0; i < m_vBullet.size(); i++)
 	{
 		m_vBullet[i]->Draw();
-	}*/
+	}
 
 
 }
@@ -102,7 +157,8 @@ bool CSpawner::Collision(GObject& vObj)
 	if (vObj.type == P_BULLET)
 	{
 		m_iScore += 10;
-		m_vScale.y += 0.1;
+		m_bDamaged = true;
+		m_fStartDmgTimer = clock();
 	}
 
 	return false;
@@ -110,14 +166,19 @@ bool CSpawner::Collision(GObject& vObj)
 
 void CSpawner::InstBullet()
 {
-	POINT ptMouse;
-	GetCursorPos(&ptMouse);
-	ScreenToClient(CCore::GetInst()->GetMainHwnd(), &ptMouse);
 
-	Vec2 vDestPos = { (float)ptMouse.x - m_vPos.x,(float)ptMouse.y - m_vPos.y };
-	Vec2 _Dir = vDestPos.normalize();
+	for (int i = 0; i < 8; i++)
+	{
+		float x = i * 120 - m_vPos.x;
+		float y = 1000 - m_vPos.y;
 
-	//m_vBullet.push_back(new CBullet(_Dir, m_vPos,30.f));
+
+		Vec2 vDestPos{x,y};
+		Vec2 _Dir = vDestPos.normalize();
+
+		m_vBullet.push_back(new CBullet(_Dir, m_vPos, 250.f, *this, E_BULLET));
+	}
+	
 }
 
 void CSpawner::InstEnemy()

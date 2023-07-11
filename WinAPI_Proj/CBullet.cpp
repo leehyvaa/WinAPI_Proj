@@ -13,7 +13,7 @@ CBullet::CBullet(Vec2 _vDir, Vec2 _vPos,  float _speed,GObject& _owner, int _typ
 	m_vPos.y = _vPos.y;
 
 	this->m_vScale = Vec2{ 10,10 };
-	m_fSpeed = 400;
+	m_fSpeed = _speed;
 
 	m_vDir.x = _vDir.x;
 	m_vDir.y = _vDir.y;
@@ -33,22 +33,36 @@ void CBullet::Update()
 
 	for (int i = 0; i < m_owner->m_CollisionObj.size(); i++)
 	{
-		
-		if (m_vScale.x + m_owner->m_CollisionObj[i]->m_vScale.x > LengthPts(m_vPos, m_owner->m_CollisionObj[i]->m_vPos))
+		if (m_owner->type == PLAYER)
 		{
-			Collision(*m_owner->m_CollisionObj[i]);
+			if (m_vScale.x + m_owner->m_CollisionObj[i]->m_vScale.x > LengthPts(m_vPos, m_owner->m_CollisionObj[i]->m_vPos))
+			{
+				Collision(*m_owner->m_CollisionObj[i]);
+				
+			}
 		}
+		else if (m_owner->type == SPAWNER)
+		{
+			if (m_owner->m_CollisionObj[i]->type == PLAYER)
+			{
+				if (m_vScale.x + m_owner->m_CollisionObj[i]->m_vScale.x > LengthPts(m_vPos, m_owner->m_CollisionObj[i]->m_vPos))
+				{
+
+					Collision(*m_owner->m_CollisionObj[i]);
+
+				}
+			}
+			
+		}
+
+		
 
 
 	}
 
 	
 
-	if (m_owner->type == PLAYER)
-	{
-		
-	}
-
+	
 
 	m_vPos.x = m_vPos.x + m_fSpeed * m_vDir.x *fDT;
 	m_vPos.y = m_vPos.y + m_fSpeed * m_vDir.y *fDT;
@@ -83,6 +97,11 @@ bool CBullet::Collision(GObject& vObj)
 	}
 
 
+	m_vPos.x = 0;
+	m_vPos.y = 0;
+
+	m_vScale.x = 0;
+	m_vScale.y = 0;
 
 	return false;
 }

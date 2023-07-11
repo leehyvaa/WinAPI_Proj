@@ -5,14 +5,22 @@ class Player;
 
 class CSpawner :public GObject
 {
-
+public:
+	int m_iScore;
 private:
 	vector<CEnemy*> m_vEnemy;
 	vector<CBullet*> m_vBullet;
 	Player* m_player;
 
-	int m_iScore;
+	
 	float m_fStartTimer;
+	float m_fDifficult;
+	float m_fSpawnTimer;
+	int m_iSpawnCount;
+
+	bool m_bDamaged;
+	float m_fDamagedCount;
+	float m_fStartDmgTimer;
 
 public:
 	CSpawner();

@@ -52,6 +52,9 @@
     <Filter Include="헤더 파일\미니게임">
       <UniqueIdentifier>{9bb38146-1dd3-4b88-bdd9-d8269bd9c4fd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Manager\TimeMgr">
+      <UniqueIdentifier>{8a803213-4a6f-4981-9a28-131e3ea90bae}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WinAPI_Proj.h">
@@ -80,9 +83,6 @@
     </ClInclude>
     <ClInclude Include="framework.h">
       <Filter>헤더 파일\디폴트</Filter>
-    </ClInclude>
-    <ClInclude Include="CTimeMgr.h">
-      <Filter>Engine\Manager</Filter>
     </ClInclude>
     <ClInclude Include="CTool.h">
       <Filter>Engine\Tool</Filter>
@@ -114,11 +114,14 @@
     <ClInclude Include="cVector3.h">
       <Filter>헤더 파일\작업중</Filter>
     </ClInclude>
-    <ClInclude Include="KeyMgr.h">
-      <Filter>헤더 파일\작업중</Filter>
-    </ClInclude>
     <ClInclude Include="Vec2.h">
       <Filter>헤더 파일\작업중</Filter>
+    </ClInclude>
+    <ClInclude Include="struct.h">
+      <Filter>Engine\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="CTimeMgr.h">
+      <Filter>Engine\Manager\TimeMgr</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -151,9 +154,6 @@
     </ClCompile>
     <ClCompile Include="GObject.cpp">
       <Filter>Engine\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="CTimeMgr.cpp">
-      <Filter>Engine\Manager</Filter>
     </ClCompile>
     <ClCompile Include="CTool.cpp">
       <Filter>Engine\Tool</Filter>
@@ -194,11 +194,11 @@
     <ClCompile Include="cVector3.cpp">
       <Filter>소스 파일\작업중</Filter>
     </ClCompile>
-    <ClCompile Include="KeyMgr.cpp">
-      <Filter>소스 파일\작업중</Filter>
-    </ClCompile>
     <ClCompile Include="Vec2.cpp">
       <Filter>소스 파일\작업중</Filter>
+    </ClCompile>
+    <ClCompile Include="CTimeMgr.cpp">
+      <Filter>Engine\Manager\TimeMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

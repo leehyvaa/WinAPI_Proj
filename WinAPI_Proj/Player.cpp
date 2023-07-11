@@ -3,12 +3,13 @@
 #include "CCore.h"
 #include "CTimeMgr.h"
 #include "CSpawner.h"
-
+#include "CKeyMgr.h"
 Player::Player()
 	:m_spawner(0)
 {
-	m_fSpeed = 100;
+	m_fSpeed = 300;
 	type = PLAYER;
+	m_fStartTimer = 0;
 }
 
 Player::Player(Vec2 _vPos, Vec2 _vScale)
@@ -18,10 +19,10 @@ Player::Player(Vec2 _vPos, Vec2 _vScale)
 	m_vPos.y = _vPos.y;
 
     this->m_vScale = _vScale;
-    m_fSpeed = 100;
+    m_fSpeed = 300;
 	type = PLAYER;
-
-
+	m_fStartTimer = 0;
+	
 
 }
 
@@ -36,29 +37,40 @@ Player::~Player()
 
 void Player::Update()
 {
-	if ((GetAsyncKeyState('A') & 0x8000))
+	if (CKeyMgr::GetInst()->GetKeyState(KEY::A) == KEY_STATE::HOLD)
 	{
 
 		m_vPos.x += -m_fSpeed*fDT;
 	}
-	if ((GetAsyncKeyState('D') & 0x8000))
+	if (CKeyMgr::GetInst()->GetKeyState(KEY::D) == KEY_STATE::HOLD)
 	{
 		m_vPos.x += m_fSpeed * fDT;
 	}
-	if ((GetAsyncKeyState('W') & 0x8000))
+	/*if (CKeyMgr::GetInst()->GetKeyState(KEY::W) == KEY_STATE::HOLD)
 	{
 		m_vPos.y += -m_fSpeed * fDT;
 	}
-	if ((GetAsyncKeyState('S') & 0x8000))
+	if (CKeyMgr::GetInst()->GetKeyState(KEY::S) == KEY_STATE::HOLD)
 	{
 		m_vPos.y += m_fSpeed * fDT;
 
+	}*/
+
+
+	float m_fCountTimer = clock();
+
+	if (m_fCountTimer - m_fStartTimer > 300.f)
+	{
+		
+
+		if (CKeyMgr::GetInst()->GetKeyState(KEY::LBUTTON) == KEY_STATE::TAP)
+		{
+			InstBullet();
+			m_fStartTimer = clock();
+		}
 	}
 
-	if ((GetAsyncKeyState(VK_LBUTTON) * 0x8000))
-	{
-		InstBullet();
-	}
+	
 	for (int i = 0; i < m_vBullet.size(); i++)
 	{
 		
@@ -92,12 +104,12 @@ void Player::InstBullet()
 	Vec2 vDestPos = { (float)ptMouse.x-m_vPos.x,(float)ptMouse.y-m_vPos.y};
 	Vec2 _Dir = vDestPos.normalize();
 
-	m_vBullet.push_back(new CBullet(_Dir,m_vPos,100.f,*this,P_BULLET));
+	m_vBullet.push_back(new CBullet(_Dir,m_vPos,2000.f,*this,P_BULLET));
 	
 }
 
 void Player::Damaged()
 {
-	m_vScale.x += 50;
+	CCore::GetInst()->GameOver();
 }
 

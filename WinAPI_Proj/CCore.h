@@ -20,6 +20,7 @@ public:
 	HDC GetmemDC() { return m_memDC; }
 	HWND GetMainHwnd() { return m_hWnd; }
 	POINT GetResolution() { return m_ptResolution; }
+	void GameOver();
 private:
 
 };

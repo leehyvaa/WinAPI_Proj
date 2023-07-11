@@ -142,12 +142,12 @@
     <ClInclude Include="CEnemy.h" />
     <ClInclude Include="CTool.h" />
     <ClInclude Include="CWall.h" />
+    <ClInclude Include="struct.h" />
     <ClInclude Include="Vec2.h" />
     <ClInclude Include="cVector3.h" />
     <ClInclude Include="define.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="GObject.h" />
-    <ClInclude Include="KeyMgr.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Resource.h" />
@@ -177,6 +177,7 @@
     </ClCompile>
     <ClCompile Include="0710.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="CBullet.cpp" />
     <ClCompile Include="CKeyMgr.cpp" />
@@ -198,7 +199,6 @@
     <ClCompile Include="Vec2.cpp" />
     <ClCompile Include="cVector3.cpp" />
     <ClCompile Include="GObject.cpp" />
-    <ClCompile Include="KeyMgr.cpp" />
     <ClCompile Include="MiniGame.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>

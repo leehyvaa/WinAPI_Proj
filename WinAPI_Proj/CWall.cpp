@@ -85,7 +85,7 @@ bool CWall::Collision(GObject& vObj)
 {
 	
 
-	if (m_iHp > 0)
+	if (m_iHp > 1)
 	{
 		
 		m_iHp -= 1;

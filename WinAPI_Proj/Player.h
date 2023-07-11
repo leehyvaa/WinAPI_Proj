@@ -11,8 +11,9 @@ private:
 	vector<CBullet*> m_vBullet;
 	vector<GObject*> m_target;
 	CSpawner* m_spawner;
-	
+	float m_fStartTimer;
 
+	
 public:
 	Player();
 	Player(Vec2 _vPos, Vec2 _vScale);

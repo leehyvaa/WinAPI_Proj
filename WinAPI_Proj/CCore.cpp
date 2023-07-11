@@ -6,6 +6,7 @@
 #include "CTimeMgr.h"
 #include "CSpawner.h"
 #include "CWall.h"
+#include "CommandCenter.h"
 CCore::CCore()
 	:m_hWnd(0)
 	, m_ptResolution{}
@@ -27,16 +28,20 @@ GObject g_obj;
 Player g_player;
 CSpawner g_spawner;
 vector<GObject*> g_vWall;
+GObject* g_Center;
 
 int CCore::init(HWND _hWnd, POINT _ptResolution)
 {
+	
+
+
 	m_hWnd = _hWnd;
 	m_ptResolution = _ptResolution;
 
 	//해상도에 맞게 윈도우 크기 조절
 	RECT rect = { 0,0, m_ptResolution.x, m_ptResolution.y };
 	AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, true);
-	SetWindowPos(m_hWnd, nullptr, 300, 20, rect.right - rect.left, rect.bottom - rect.top, 0);
+	SetWindowPos(m_hWnd, nullptr, 300, 10, rect.right - rect.left, rect.bottom - rect.top, 0);
 
 	m_hDC = GetDC(m_hWnd);
 
@@ -50,7 +55,7 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 	//Manager 초기화
 	CTimeMgr::GetInst()->init();
 	CKeyMgr::GetInst()->init();
-
+	
 
 
 	//g_obj.SetPos(Vec2(m_ptResolution.x / 2.f, m_ptResolution.y / 2.f));
@@ -64,18 +69,20 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 	g_spawner.SetPlayer(g_player);
 	g_player.m_CollisionObj.push_back(&g_spawner);
 	g_spawner.m_CollisionObj.push_back(&g_player);
-
+	
 
 	
 	for (int i = 0; i < 5; i++)
 	{
-		CWall* wall = new CWall(Vec2(78 + i * 153, 950), Vec2(75, 20));
+		CWall* wall = new CWall(Vec2(78 + i * 153, 930), Vec2(78, 20));
 		g_vWall.push_back(wall);
 		g_spawner.m_CollisionObj.push_back(wall);
 	}
 
-
-
+	CommandCenter* center = new CommandCenter(Vec2(384, 990), Vec2(384, 30));
+	g_Center = center;
+	g_spawner.m_CollisionObj.push_back(center);
+	
 	return S_OK;
 }
 
@@ -91,6 +98,7 @@ void CCore::Progress()
 
 void CCore::Update()
 {
+
 	/*Vec2 vPos = g_obj.GetPos();
 
 	if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
@@ -98,6 +106,9 @@ void CCore::Update()
 
 	vPos.y -= 10.f * fDT;
 	g_obj.SetPos(vPos);*/
+	CKeyMgr::GetInst()->Update();
+
+
 
 	g_spawner.Collision(g_player);
 	g_player.Update();
@@ -106,6 +117,7 @@ void CCore::Update()
 	{
 		g_vWall[i]->Draw();
 	}
+	g_Center->Update();
 }
 
 void CCore::Render()
@@ -120,6 +132,9 @@ void CCore::Render()
 	{
 		g_vWall[i]->Draw();
 	}
+	g_Center->Draw();
+
+
 	/*Vec2 vPos = g_obj.GetPos();
 	Vec2 vScale = g_obj.GetScale();
 
@@ -133,6 +148,23 @@ void CCore::Render()
 
 	BitBlt(m_hDC, 0, 0, m_ptResolution.x, m_ptResolution.y
 		, m_memDC, 0, 0, SRCCOPY); //소스 비트맵에서 목적비트맵으로 복사
+
+	
+}
+
+void CCore::GameOver()
+{
+	TCHAR buf[10];
+	wsprintf(buf, TEXT("%d 점"), g_spawner.m_iScore);
+
+	TextOut(CCore::GetInst()->GetmemDC(), 0, 0, buf, _tcslen(buf));
+
+
+	MessageBox(CCore::GetInst()->GetMainHwnd(),buf, L"게임 종료!", MB_OK);
+
+
+	
+	DestroyWindow(GetMainHwnd());
 }
 
 
