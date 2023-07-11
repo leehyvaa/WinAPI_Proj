@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "CTimeMgr.h"
 #include "CSpawner.h"
+#include "CWall.h"
 CCore::CCore()
 	:m_hWnd(0)
 	, m_ptResolution{}
@@ -25,6 +26,8 @@ CCore::~CCore()
 GObject g_obj;
 Player g_player;
 CSpawner g_spawner;
+vector<GObject*> g_vWall;
+
 int CCore::init(HWND _hWnd, POINT _ptResolution)
 {
 	m_hWnd = _hWnd;
@@ -63,6 +66,16 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 	g_spawner.m_CollisionObj.push_back(&g_player);
 
 
+	
+	for (int i = 0; i < 5; i++)
+	{
+		CWall* wall = new CWall(Vec2(78 + i * 153, 950), Vec2(75, 20));
+		g_vWall.push_back(wall);
+		g_spawner.m_CollisionObj.push_back(wall);
+	}
+
+
+
 	return S_OK;
 }
 
@@ -89,6 +102,10 @@ void CCore::Update()
 	g_spawner.Collision(g_player);
 	g_player.Update();
 	g_spawner.Update();
+	for (int i = 0; i < g_vWall.size(); i++)
+	{
+		g_vWall[i]->Draw();
+	}
 }
 
 void CCore::Render()
@@ -99,6 +116,10 @@ void CCore::Render()
 
 	g_player.Draw();
 	g_spawner.Draw();
+	for (int i = 0; i < g_vWall.size(); i++)
+	{
+		g_vWall[i]->Draw();
+	}
 	/*Vec2 vPos = g_obj.GetPos();
 	Vec2 vScale = g_obj.GetScale();
 

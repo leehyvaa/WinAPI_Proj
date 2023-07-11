@@ -50,7 +50,7 @@ void CSpawner::Update()
 
 	float m_fCountTimer = clock();
 	
-	if (m_fCountTimer-m_fStartTimer >2000.f)
+	if (m_fCountTimer-m_fStartTimer >500.f)
 	{
 		m_fStartTimer = clock();
 	
@@ -122,7 +122,7 @@ void CSpawner::InstBullet()
 
 void CSpawner::InstEnemy()
 {
-	CEnemy* enemy = new CEnemy(m_vPos, Vec2(20, 20), 30);
+	CEnemy* enemy = new CEnemy(m_vPos, Vec2(20, 20), 500,*this);
 	m_vEnemy.push_back(enemy);
 	m_player->m_CollisionObj.push_back(enemy);
 }

@@ -1,15 +1,16 @@
 #pragma once
 #include "GObject.h"
-#include "CBullet.h"
-class CEnemy : public GObject
+
+class CWall : public GObject
 {
 private:
-	GObject* m_owner;
+	int m_iHp;
+
 
 public:
-	CEnemy();
-	CEnemy(Vec2 _vPos, Vec2 _vScale, float _speed,GObject& _owner);
-	virtual ~CEnemy();
+	CWall();
+	CWall(Vec2 _vPos, Vec2 _vScale);
+	virtual ~CWall();
 
 	Vec2 GetPos() { return m_vPos; }
 
@@ -17,8 +18,7 @@ public:
 	virtual void Update() override;
 	virtual void Draw()  override;
 	virtual bool Collision(GObject& vObj) override;
-	float LengthPts(Vec2 pt1, Vec2 pt2);
 
-
+	
 };
 

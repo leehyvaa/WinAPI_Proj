@@ -141,6 +141,7 @@
     <ClInclude Include="CTimeMgr.h" />
     <ClInclude Include="CEnemy.h" />
     <ClInclude Include="CTool.h" />
+    <ClInclude Include="CWall.h" />
     <ClInclude Include="Vec2.h" />
     <ClInclude Include="cVector3.h" />
     <ClInclude Include="define.h" />
@@ -193,6 +194,7 @@
     <ClCompile Include="CTimeMgr.cpp" />
     <ClCompile Include="CEnemy.cpp" />
     <ClCompile Include="CTool.cpp" />
+    <ClCompile Include="CWall.cpp" />
     <ClCompile Include="Vec2.cpp" />
     <ClCompile Include="cVector3.cpp" />
     <ClCompile Include="GObject.cpp" />

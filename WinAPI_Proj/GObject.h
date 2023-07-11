@@ -9,6 +9,8 @@ enum collisionType
 	SPAWNER,
 	P_BULLET,
 	E_BULLET,
+	WALL,
+	COMMAND,
 };
 
 class GObject
