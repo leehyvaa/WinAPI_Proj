@@ -1,11 +1,17 @@
 #pragma once
-#include "pch.h"
 #include "GObject.h"
 #include "CBullet.h"
+
+class CSpawner;
+
 class Player : public GObject
 {
 private:
-
+	
+	vector<CBullet*> m_vBullet;
+	vector<GObject*> m_target;
+	CSpawner* m_spawner;
+	
 
 public:
 	Player();
@@ -19,5 +25,8 @@ public:
 	virtual void Draw()  override;
 	virtual bool Collision(GObject& vObj) override;
 	virtual void InstBullet();
+	
+	void Damaged();
+	void SetSpawner(CSpawner& _spawner) { m_spawner = &_spawner; }
 };
 

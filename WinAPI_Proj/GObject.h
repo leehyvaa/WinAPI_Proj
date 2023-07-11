@@ -1,7 +1,16 @@
 #pragma once
-#include "pch.h"
 #include "Vec2.h"
-#include <vector>
+
+enum collisionType
+{
+	NONE,
+	PLAYER,
+	ENEMY,
+	SPAWNER,
+	P_BULLET,
+	E_BULLET,
+};
+
 class GObject
 {
 public:
@@ -9,7 +18,8 @@ public:
 	Vec2 m_vScale;
 	Vec2 m_vDir;
 	float m_fSpeed;
-
+	int type;
+	vector<GObject*> m_CollisionObj;
 
 public:
 	GObject();

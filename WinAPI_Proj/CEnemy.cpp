@@ -12,7 +12,7 @@ CEnemy::CEnemy(Vec2 _vPos, Vec2 _vScale, float _speed)
 	m_vScale = _vScale;
 	m_vDir = Vec2(0, 1);
 	m_fSpeed = _speed;
-
+	type = ENEMY;
 }
 
 CEnemy::~CEnemy()
@@ -34,5 +34,15 @@ void CEnemy::Draw()
 
 bool CEnemy::Collision(GObject& vObj)
 {
+	m_vPos.x = 0;
+	m_vPos.y = 0;
+
+	m_vScale.x = 0;
+	m_vScale.y = 0;
+
 	return false;
+}
+
+void CEnemy::Damaged(float _damage)
+{
 }

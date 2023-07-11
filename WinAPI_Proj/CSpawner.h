@@ -1,15 +1,18 @@
 #pragma once
 #include "GObject.h"
 #include "CEnemy.h"
-#include "Player.h"
-class CSpawner : public Player
+class Player;
+
+class CSpawner :public GObject
 {
 
 private:
 	vector<CEnemy*> m_vEnemy;
 	vector<CBullet*> m_vBullet;
+	Player* m_player;
+
 	int m_iScore;
-	float m_fTimer;
+	float m_fStartTimer;
 
 public:
 	CSpawner();
@@ -22,9 +25,9 @@ public:
 	virtual void Update() override;
 	virtual void Draw()  override;
 	virtual bool Collision(GObject& vObj) override;
-	void InstBullet() override;
+	void InstBullet();
 	void InstEnemy();
-
+	void SetPlayer(Player& _player) {m_player = &_player;}
 
 };
 

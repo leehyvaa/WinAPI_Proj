@@ -4,7 +4,7 @@
 #include "GObject.h"
 #include "Player.h"
 #include "CTimeMgr.h"
-//CCore* CCore::g_pInst = nullptr;
+#include "CSpawner.h"
 CCore::CCore()
 	:m_hWnd(0)
 	, m_ptResolution{}
@@ -23,8 +23,8 @@ CCore::~CCore()
 
 
 GObject g_obj;
-Player player;
-
+Player g_player;
+CSpawner g_spawner;
 int CCore::init(HWND _hWnd, POINT _ptResolution)
 {
 	m_hWnd = _hWnd;
@@ -52,8 +52,15 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 
 	//g_obj.SetPos(Vec2(m_ptResolution.x / 2.f, m_ptResolution.y / 2.f));
 	//g_obj.SetScale(Vec2(20.f, 20.f));
-	player.SetPos(Vec2(m_ptResolution.x / 2.f, m_ptResolution.y - m_ptResolution.y/8.f));
-	player.SetScale(Vec2(20.f, 20.f));
+	g_player.SetPos(Vec2(m_ptResolution.x / 2.f, m_ptResolution.y - m_ptResolution.y/8.f));
+	g_player.SetScale(Vec2(20.f, 20.f));
+	g_spawner.SetPos(Vec2(m_ptResolution.x / 2.f, m_ptResolution.y - m_ptResolution.y / 1.1f));
+	g_spawner.SetScale(Vec2(20.f, 20.f));
+	
+	g_player.SetSpawner(g_spawner);
+	g_spawner.SetPlayer(g_player);
+	g_player.m_CollisionObj.push_back(&g_spawner);
+	g_spawner.m_CollisionObj.push_back(&g_player);
 
 
 	return S_OK;
@@ -79,8 +86,9 @@ void CCore::Update()
 	vPos.y -= 10.f * fDT;
 	g_obj.SetPos(vPos);*/
 
-	player.Update();
-
+	g_spawner.Collision(g_player);
+	g_player.Update();
+	g_spawner.Update();
 }
 
 void CCore::Render()
@@ -89,8 +97,8 @@ void CCore::Render()
 	Rectangle(m_memDC, -1,-1,m_ptResolution.x+1,m_ptResolution.y+1);
 
 
-	player.Draw();
-
+	g_player.Draw();
+	g_spawner.Draw();
 	/*Vec2 vPos = g_obj.GetPos();
 	Vec2 vScale = g_obj.GetScale();
 

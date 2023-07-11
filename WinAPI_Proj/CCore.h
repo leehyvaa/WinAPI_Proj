@@ -1,9 +1,8 @@
 #pragma once
-#include"pch.h"
 //객체를 데이터영역에 넣어두는 방식
 class CCore
 {
-	SINGLE(CCore);
+	SINGLE(CCore)
 
 private:
 	HWND	m_hWnd;

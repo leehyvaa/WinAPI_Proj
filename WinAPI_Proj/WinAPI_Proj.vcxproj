@@ -136,9 +136,11 @@
     <ClInclude Include="CObject.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="CCore.h" />
+    <ClInclude Include="CommandCenter.h" />
     <ClInclude Include="CSpawner.h" />
     <ClInclude Include="CTimeMgr.h" />
     <ClInclude Include="CEnemy.h" />
+    <ClInclude Include="CTool.h" />
     <ClInclude Include="Vec2.h" />
     <ClInclude Include="cVector3.h" />
     <ClInclude Include="define.h" />
@@ -186,9 +188,11 @@
     </ClCompile>
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="CCore.cpp" />
+    <ClCompile Include="CommandCenter.cpp" />
     <ClCompile Include="CSpawner.cpp" />
     <ClCompile Include="CTimeMgr.cpp" />
     <ClCompile Include="CEnemy.cpp" />
+    <ClCompile Include="CTool.cpp" />
     <ClCompile Include="Vec2.cpp" />
     <ClCompile Include="cVector3.cpp" />
     <ClCompile Include="GObject.cpp" />
