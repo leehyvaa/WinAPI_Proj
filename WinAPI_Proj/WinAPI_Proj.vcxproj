@@ -132,7 +132,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="CBullet.h" />
+    <ClInclude Include="CCoreMini.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="CKeyMgr.h" />
+    <ClInclude Include="GMap.h" />
     <ClInclude Include="CObject.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="CCore.h" />
@@ -142,6 +146,8 @@
     <ClInclude Include="CEnemy.h" />
     <ClInclude Include="CTool.h" />
     <ClInclude Include="CWall.h" />
+    <ClInclude Include="GPlayer.h" />
+    <ClInclude Include="PObject.h" />
     <ClInclude Include="struct.h" />
     <ClInclude Include="Vec2.h" />
     <ClInclude Include="cVector3.h" />
@@ -179,8 +185,15 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="0712.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="CBullet.cpp" />
+    <ClCompile Include="CCoreMini.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="CKeyMgr.cpp" />
+    <ClCompile Include="GMap.cpp" />
     <ClCompile Include="CObject.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
@@ -196,6 +209,8 @@
     <ClCompile Include="CEnemy.cpp" />
     <ClCompile Include="CTool.cpp" />
     <ClCompile Include="CWall.cpp" />
+    <ClCompile Include="GPlayer.cpp" />
+    <ClCompile Include="PObject.cpp" />
     <ClCompile Include="Vec2.cpp" />
     <ClCompile Include="cVector3.cpp" />
     <ClCompile Include="GObject.cpp" />

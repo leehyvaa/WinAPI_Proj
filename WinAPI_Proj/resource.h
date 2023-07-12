@@ -19,14 +19,21 @@
 #define IDC_TEXT                        1003
 #define ID_START                        1004
 #define ID_PAUSE                        1005
+#define IDC_BUTTON1                     1007
+#define IDC_BUTTON_DELETE               1007
+#define IDC_COMBO_LIST                  1008
+#define IDC_BUTTON_iNSERT               1009
+#define IDC_EDIT_NAME                   1010
+#define IDC_LIST1                       1011
+#define IDC_LIST_NAME                   1012
+#define IDC_BUTTON3                     1013
+#define IDC_BUTTON_DELETE2              1014
 #define ID_MENUTEST_32771               32771
 #define ID_MENUTEST_32772               32772
 #define ID_MENUTEST_Button1             32773
 #define ID_MENUTEST_BTN1                32775
-#define ID_32777                        32777
 #define ID_MENUTEST_BTN2                32778
 #define ID_DRAW_CIRCLE                  32779
-#define ID_32780                        32780
 #define ID_DRAW_RECTANGLE               32781
 #define ID_DRAW_STAR                    32783
 #define ID_OPENFILE                     32785
@@ -34,6 +41,8 @@
 #define ID_EDITCANCEL                   32789
 #define ID_EDITCOPY                     32791
 #define ID_EDITPASTE                    32793
+#define ID_32794                        32794
+#define ID_DIALOG                       32798
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -42,8 +51,8 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        131
-#define _APS_NEXT_COMMAND_VALUE         32794
-#define _APS_NEXT_CONTROL_VALUE         1006
+#define _APS_NEXT_COMMAND_VALUE         32796
+#define _APS_NEXT_CONTROL_VALUE         1014
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif

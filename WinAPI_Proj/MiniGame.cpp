@@ -22,6 +22,12 @@ WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
 HWND hWnd;
 GObject g_object;
 
+#ifdef UNICODE
+#pragma comment(linker,"/entry:wWinMainCRTStartup /subsystem:console")
+#else
+#pragma comment(linker,"/entry:WinMainCRTStartup /subsystem:console")
+#endif
+
 
 // 이 코드 모듈에 포함된 함수의 선언을 전달합니다:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -50,7 +56,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return FALSE;
     }
 
-    if (FAILED(CCore::GetInst()->init(hWnd,POINT{768,1000})))
+    if (FAILED(CCore::GetInst()->init(hWnd,POINT{780,1020})))
     {
         MessageBox(nullptr, L"Core 객체 초기화 실패", L"ERROR", MB_OK);
         return FALSE;
@@ -62,7 +68,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     MSG msg;
 
 
-   
 
     // 기본 메시지 루프입니다:
     while (true)
