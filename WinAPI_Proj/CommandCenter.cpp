@@ -32,7 +32,7 @@ void CommandCenter::Update()
 
 }
 
-void CommandCenter::Draw()
+void CommandCenter::Render(HDC _dc)
 {
 	HBRUSH hBrush, oldBrush;
 

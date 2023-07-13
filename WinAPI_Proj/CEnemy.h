@@ -15,7 +15,7 @@ public:
 
 
 	virtual void Update() override;
-	virtual void Draw()  override;
+	virtual void Render(HDC _dc)  override;
 	virtual bool Collision(GObject& vObj) override;
 	float LengthPts(Vec2 pt1, Vec2 pt2);
 

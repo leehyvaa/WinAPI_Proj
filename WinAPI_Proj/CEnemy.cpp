@@ -56,7 +56,7 @@ void CEnemy::Update()
 	m_vPos.y = m_vPos.y + m_fSpeed * m_vDir.y * fDT;
 }
 
-void CEnemy::Draw()
+void CEnemy::Render(HDC _dc)
 {
 	Rectangle(CCore::GetInst()->GetmemDC(), m_vPos.x - m_vScale.x, m_vPos.y - m_vScale.y, m_vPos.x + m_vScale.x, m_vPos.y + m_vScale.y);
 

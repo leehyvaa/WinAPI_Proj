@@ -55,6 +55,18 @@
     <Filter Include="Engine\Manager\TimeMgr">
       <UniqueIdentifier>{8a803213-4a6f-4981-9a28-131e3ea90bae}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Scene">
+      <UniqueIdentifier>{89b919e9-adbd-4021-934a-7502f20fd889}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Manager\SceneMgr">
+      <UniqueIdentifier>{199aff8d-2444-4a9d-bef0-136557d3f614}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Scene\CScene_Tool">
+      <UniqueIdentifier>{8e40e6f7-83b8-4411-bc26-a4ec6ecd5499}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Scene\CScene_Start">
+      <UniqueIdentifier>{6753f610-0bb7-4583-9aaa-20d5ae1508cd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WinAPI_Proj.h">
@@ -123,6 +135,33 @@
     <ClInclude Include="CTimeMgr.h">
       <Filter>Engine\Manager\TimeMgr</Filter>
     </ClInclude>
+    <ClInclude Include="GMap.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="GPlayer.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="CScene.h">
+      <Filter>Engine\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="CSceneMgr.h">
+      <Filter>Engine\Manager\SceneMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="CScene_Start.h">
+      <Filter>Engine\Scene\CScene_Start</Filter>
+    </ClInclude>
+    <ClInclude Include="CCoreMini.h">
+      <Filter>헤더 파일\미니게임</Filter>
+    </ClInclude>
+    <ClInclude Include="SecondGameScene1.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Engine\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="CMonster.h">
+      <Filter>Engine\Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -173,9 +212,6 @@
     <ClCompile Include="CWall.cpp">
       <Filter>소스 파일\미니게임</Filter>
     </ClCompile>
-    <ClCompile Include="MiniGame.cpp">
-      <Filter>소스 파일\미니게임</Filter>
-    </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>소스 파일\미니게임</Filter>
     </ClCompile>
@@ -199,6 +235,39 @@
     </ClCompile>
     <ClCompile Include="CTimeMgr.cpp">
       <Filter>Engine\Manager\TimeMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="GMap.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="GPlayer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="MiniGame.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CCoreMini.cpp">
+      <Filter>소스 파일\미니게임</Filter>
+    </ClCompile>
+    <ClCompile Include="CScene.cpp">
+      <Filter>Engine\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="CSceneMgr.cpp">
+      <Filter>Engine\Manager\SceneMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CScene_Start.cpp">
+      <Filter>Engine\Scene\CScene_Start</Filter>
+    </ClCompile>
+    <ClCompile Include="SecondGameScene1.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Engine\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="CMonster.cpp">
+      <Filter>Engine\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="0712.cpp">
+      <Filter>소스 파일\수업</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

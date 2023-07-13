@@ -15,17 +15,18 @@ void GMap::init()
 {
 	for (int i = 0; i < 1000; i++)
 	{
-		for (int j = 0; j < 760; j++)
+		for (int j = 0; j < 750; j++)
 		{
-            m_arrMap[i][j] = Rail;
+            //m_arrMap[i][j] = Rail;
          
-			if(i<=9 || i >= 990)
+			if(i==9 || i == 990)
 				m_arrMap[i][j] = Rail;
-			else if (j <= 9 || i >= 750)
+			else if (j == 9 || j == 740)
 				m_arrMap[i][j] = Rail;
-            else if (i == 4 || i == 995)
+
+            if (i < 9 || i > 990)
                 m_arrMap[i][j] = Wall;
-            else if (j == 4 || i == 755)
+            else if (j < 9 || j > 740)
                 m_arrMap[i][j] = Wall;
 
             
@@ -53,6 +54,31 @@ void GMap::DrawGrid(HDC hdc, POINT center, float width, float height, int xCount
     {
         MoveToEx(hdc, start.x, start.y + yInterval * i, NULL);
         LineTo(hdc, end.x, start.y + yInterval * i);
+    }
+
+}
+
+void GMap::DrawMap()
+{
+    for (int i = 0; i < 1000; i++)
+    {
+        for (int j = 0; j < 750; j++)
+        {
+            cout << m_arrMap[i][j];
+        }
+        cout << endl;
+    }
+
+}
+
+void GMap::UpdateMap()
+{
+    for (int i = 0; i < 1000; i++)
+    {
+        for (int i = 0; i < 750; i++)
+        {
+
+        }
     }
 
 }

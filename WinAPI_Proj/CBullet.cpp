@@ -71,7 +71,7 @@ void CBullet::Update()
 
 }
 
-void CBullet::Draw()
+void CBullet::Render(HDC _dc)
 {
 	Ellipse(CCore::GetInst()->GetmemDC(), m_vPos.x - m_vScale.x, m_vPos.y - m_vScale.y, m_vPos.x + m_vScale.x, m_vPos.y + m_vScale.y);
 }

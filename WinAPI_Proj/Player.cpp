@@ -79,12 +79,12 @@ void Player::Update()
 
 }
 
-void Player::Draw()
+void Player::Render(HDC _dc)
 {
 	Rectangle(CCore::GetInst()->GetmemDC(), m_vPos.x - m_vScale.x, m_vPos.y - m_vScale.y, m_vPos.x + m_vScale.x, m_vPos.y + m_vScale.y);
 	for (int i = 0; i < m_vBullet.size(); i++)
 	{
-		m_vBullet[i]->Draw();
+		m_vBullet[i]->Render(_dc);
 	}
 
 }

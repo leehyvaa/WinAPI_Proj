@@ -13,33 +13,35 @@ enum collisionType
 	COMMAND,
 };
 
-class GObject
+
+class GameObject
 {
-public:
+private:
 	Vec2 m_vPos;
 	Vec2 m_vScale;
 	Vec2 m_vDir;
-	float m_fSpeed;
-	int type;
-	vector<GObject*> m_CollisionObj;
+
 
 public:
-	GObject();
-	virtual ~GObject();
-	
+	GameObject();
+	virtual ~GameObject();
+
 	void SetPos(Vec2 _vPos) { m_vPos = _vPos; }
 	void SetScale(Vec2 _vScale) { m_vScale = _vScale; }
 
 	Vec2 GetPos() { return m_vPos; }
 	Vec2 GetScale() { return m_vScale; }
 
-	
 
-	virtual void Update()=0;
+
+	virtual void Update() = 0;
 	virtual void Render(HDC _dc);
 
 
-	virtual bool Collision(GObject& _vObj);
+	//virtual bool Collision(GameObject& _vObj);
 
 };
+
+#pragma once
+
 

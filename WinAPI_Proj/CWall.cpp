@@ -33,7 +33,7 @@ void CWall::Update()
 
 }
 
-void CWall::Draw()
+void CWall::Render(HDC _dc)
 {
 	HBRUSH hBrush, oldBrush;
 

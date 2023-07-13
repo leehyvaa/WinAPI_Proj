@@ -1,10 +1,12 @@
 #include "pch.h"
 #include "CCore.h"
 #include "CKeyMgr.h"
-#include "GObject.h"
+#include "GameObject.h"
 #include "CTimeMgr.h"
 #include "GMap.h"
 #include "GPlayer.h"
+#include "CSceneMgr.h"
+
 
 CCore::CCore()
 	:m_hWnd(0)
@@ -23,7 +25,6 @@ CCore::~CCore()
 }
 
 
-GObject* g_player;
 int CCore::init(HWND _hWnd, POINT _ptResolution)
 {
 	
@@ -49,9 +50,10 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 	//Manager 초기화
 	CTimeMgr::GetInst()->init();
 	CKeyMgr::GetInst()->init();
+	CSceneMgr::GetInst()->init();
 	GMap::GetInst()->init();
 
-	g_player = new GPlayer(Vec2(9,9), Vec2(5, 5));
+	
 
 
 	return S_OK;
@@ -62,38 +64,30 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 void CCore::Progress()
 {
 	CTimeMgr::GetInst()->Update();
-
-	Update();
-	Render();
-}
-
-void CCore::Update()
-{
 	CKeyMgr::GetInst()->Update();
+	CSceneMgr::GetInst()->Update();
 
 
-	g_player->Update();
 
-}
-
-void CCore::Render()
-{
+	//렌더링
+	//화면 클리어
 	//memDC에다 먼저 그린다
-	Rectangle(m_memDC, -1,-1,m_ptResolution.x+1,m_ptResolution.y+1);
-
-
-	g_player->Draw();
-	POINT pos{ 390,510 };
-	GMap::GetInst()->DrawGrid(CCore::GetInst()->GetmemDC(), pos,760,1000,76,100);
+	Rectangle(m_memDC, -1, -1, m_ptResolution.x + 1, m_ptResolution.y + 1);
 
 
 
+	
+	POINT pos{ 375,500 };
+	GMap::GetInst()->DrawGrid(CCore::GetInst()->GetmemDC(), pos, 730, 980, 1, 1);
+
+
+	CSceneMgr::GetInst()->Render(m_memDC);
 
 	BitBlt(m_hDC, 0, 0, m_ptResolution.x, m_ptResolution.y
 		, m_memDC, 0, 0, SRCCOPY); //소스 비트맵에서 목적비트맵으로 복사
-
-	
 }
+
+
 
 void CCore::GameOver()
 {

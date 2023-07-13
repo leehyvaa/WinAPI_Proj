@@ -91,7 +91,7 @@ void CSpawner::Update()
 	}
 }
 
-void CSpawner::Draw()
+void CSpawner::Render(HDC _dc)
 {
 
 	static float landX = 5;
@@ -122,7 +122,7 @@ void CSpawner::Draw()
 	
 	for (int i = 0; i < m_vEnemy.size(); i++)
 	{
-		m_vEnemy[i]->Draw();
+		m_vEnemy[i]->Render(CCore::GetInst()->GetmemDC());
 	}
 	
 	TCHAR buf2[1024];
@@ -134,7 +134,7 @@ void CSpawner::Draw()
 
 	for (int i = 0; i < m_vBullet.size(); i++)
 	{
-		m_vBullet[i]->Draw();
+		m_vBullet[i]->Render(_dc);
 	}
 
 

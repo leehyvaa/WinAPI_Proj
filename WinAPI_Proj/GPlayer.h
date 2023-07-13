@@ -1,25 +1,27 @@
 #pragma once
-#include "GObject.h"
-class GPlayer : public GObject
+#include "GameObject.h"
+class GPlayer : public GameObject
 {
 
 private:
-
-
+	vector<int> m_arrTempRail_X;
+	vector<int> m_arrTempRail_Y;
+	bool m_OnDrawRail;
 
 public:
 	GPlayer();
 	GPlayer(Vec2 _vPos, Vec2 _vScale);
 	virtual ~GPlayer();
 
-	Vec2 GetPos() { return m_vPos; }
-
+	
 
 	virtual void Update() override;
-	virtual void Draw()  override;
-	virtual bool Collision(GObject& vObj) override;
+	virtual void Render(HDC _dc)  override;
+
 
 	void Damaged();
+	void DrawRail();
+	void ResetRail();
 	
 };
 

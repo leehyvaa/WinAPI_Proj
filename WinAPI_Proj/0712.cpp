@@ -7,6 +7,7 @@
 #include <math.h>
 #include <commdlg.h>
 #include <stdio.h>
+#include <CommCtrl.h>
 #include "CObject.h"
 using namespace std;
 
@@ -29,12 +30,22 @@ void DeleteBitmap();
 #define degreeToRadian(degree) ((degree)*PI/180)
 #define MAX_LOADSTRING 100
 
+
+HWND hModalessDlg;
+
+
+
 template<class T>
 void DrawGrid(HDC hdc, POINT center, T width, T height, int xCount, int yCount);
 
 template<class T>
 void SunFlower(HDC hdc, POINT center, T radius, int count);
 void DrawCircle(HDC hdc, POINT pt, BOOL bFlag);
+
+
+void InserData(HWND hDlg);
+void MakeColumn(HWND hWnd);
+
 // 전역 변수:
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
@@ -84,6 +95,47 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     return (int)msg.wParam;
 }
 
+void MakeColumn(HWND hDlg)
+{
+    LPCTSTR name[2] = { _T("이름"), _T("전화번호"), };
+    LVCOLUMN lvCol = { 0,};
+    HWND hList;
+    int i;
+    hList = GetDlgItem(hDlg, IDC_LIST_MEMBER);
+    lvCol.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
+    lvCol.fmt = LVCFMT_LEFT;
+
+
+    for (int i = 0; i < 2; i++)
+    {
+        lvCol.cx = 90;
+        lvCol.iSubItem = i;
+        lvCol.pszText = (LPWSTR)name[i];
+        SendMessage(hList, LVM_INSERTCOLUMN, (WPARAM)i, (LPARAM)&lvCol);
+    }
+}
+
+
+void InserData(HWND hDlg)
+{
+    LVITEM item;
+    HWND hList;
+    LPCTSTR name[20] = { _T("김철수"), _T("김영희") };
+    LPCTSTR phone[20] = { _T("010-1111-3333"), _T("010-2222-4444") };
+    hList = GetDlgItem(hDlg, IDC_LIST_MEMBER);
+    
+    for (int i = 0; i < 2; i++)
+    {
+        item.mask = LVIF_TEXT;
+        item.iItem = i;
+        item.iSubItem = 0;
+        item.pszText = (LPWSTR)name[i];
+        ListView_InsertItem(hList, &item);
+        ListView_SetItemText(hList, i, 1, (LPWSTR)phone[i]);
+    }
+}
+
+
 BOOL CALLBACK Dialog_Test1_Proc(HWND hDlg, UINT iMsg, WPARAM wParam, LPARAM lParam)
 {
 
@@ -96,7 +148,6 @@ BOOL CALLBACK Dialog_Test1_Proc(HWND hDlg, UINT iMsg, WPARAM wParam, LPARAM lPar
     static int selectionList;
 
 
-
     switch (iMsg)
     {
     case WM_INITDIALOG:
@@ -106,6 +157,8 @@ BOOL CALLBACK Dialog_Test1_Proc(HWND hDlg, UINT iMsg, WPARAM wParam, LPARAM lPar
 
         hCombo = GetDlgItem(hDlg, IDC_COMBO_LIST);
         hList = GetDlgItem(hDlg, IDC_LIST_NAME);
+        MakeColumn(hDlg);
+        InserData(hDlg);
     }
     return 1;
 
@@ -181,8 +234,16 @@ BOOL CALLBACK Dialog_Test1_Proc(HWND hDlg, UINT iMsg, WPARAM wParam, LPARAM lPar
 
 
         case IDOK:
-            EndDialog(hDlg, 0);
+            DestroyWindow(hDlg);
+            hDlg = NULL;
             break;
+        case ID_EXIT:
+            DestroyWindow(hDlg);
+            hDlg = NULL;
+            break;
+      /*  case IDOK:
+            EndDialog(hDlg, 0);
+            break;*/
         case IDCANCEL:
             EndDialog(hDlg, 0);
             break;
@@ -304,7 +365,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     static int pCount = 0;
     static vector<CObject> vCopu;
 
-
+    
 
     //CreateBitmap();
 
@@ -417,12 +478,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
             selectedMenu = RECTANGLE;
 
-            DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG1), hWnd, Dialog_Test1_Proc);
+ 
+ 
+            //DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG1), hWnd, Dialog_Test1_Proc);
         break;
 
+
         case ID_DIALOG:
-            DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG1), hWnd, Dialog_Test1_Proc);
+            hModalessDlg = CreateDialog(hInst, MAKEINTRESOURCE(IDD_DIALOG1),
+                hWnd, Dialog_Test1_Proc);
+            ShowWindow(hModalessDlg, SW_SHOW);
+            //DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG1), hWnd, Dialog_Test1_Proc);
         break;
+
+
         case ID_EDITCOPY:
         {
 
@@ -442,9 +511,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         case IDM_ABOUT:
             DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
             break;
+
+
         case IDM_EXIT:
             DestroyWindow(hWnd);
             break;
+
         default:
             return DefWindowProc(hWnd, message, wParam, lParam);
         }

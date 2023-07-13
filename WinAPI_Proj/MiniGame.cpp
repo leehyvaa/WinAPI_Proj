@@ -5,13 +5,12 @@
 #include "framework.h"
 #include "WinAPI_Proj.h"
 #include "CCore.h"
-#include "GObject.h"
 #include "Player.h"
 
 using namespace std;
 #define MAX_LOADSTRING 100
 
-static vector<GObject*>vObject;
+
 const HWND* mainHwnd;
 const HDC* mainHdc;
 
@@ -20,7 +19,6 @@ HINSTANCE hInst;                                // 현재 인스턴스입니다.
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
 WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
 HWND hWnd;
-GObject g_object;
 
 #ifdef UNICODE
 #pragma comment(linker,"/entry:wWinMainCRTStartup /subsystem:console")
@@ -56,7 +54,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return FALSE;
     }
 
-    if (FAILED(CCore::GetInst()->init(hWnd,POINT{780,1020})))
+    if (FAILED(CCore::GetInst()->init(hWnd,POINT{750,1000})))
     {
         MessageBox(nullptr, L"Core 객체 초기화 실패", L"ERROR", MB_OK);
         return FALSE;

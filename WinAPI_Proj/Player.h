@@ -1,7 +1,6 @@
 #pragma once
 #include "GObject.h"
 #include "CBullet.h"
-
 class CSpawner;
 
 class Player : public GObject
@@ -23,7 +22,7 @@ public:
 
 
 	virtual void Update() override;
-	virtual void Draw()  override;
+	virtual void Render(HDC _dc)  override;
 	virtual bool Collision(GObject& vObj) override;
 	virtual void InstBullet();
 	

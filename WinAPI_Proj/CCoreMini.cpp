@@ -58,8 +58,6 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 
 
 
-	//g_obj.SetPos(Vec2(m_ptResolution.x / 2.f, m_ptResolution.y / 2.f));
-	//g_obj.SetScale(Vec2(20.f, 20.f));
 	g_player.SetPos(Vec2(m_ptResolution.x / 2.f, m_ptResolution.y - m_ptResolution.y / 8.f));
 	g_player.SetScale(Vec2(20.f, 20.f));
 	g_spawner.SetPos(Vec2(m_ptResolution.x / 2.f, m_ptResolution.y - m_ptResolution.y / 1.1f));
@@ -99,13 +97,7 @@ void CCore::Progress()
 void CCore::Update()
 {
 
-	/*Vec2 vPos = g_obj.GetPos();
 
-	if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
-		vPos.x += 100.f * fDT;
-
-	vPos.y -= 10.f * fDT;
-	g_obj.SetPos(vPos);*/
 	CKeyMgr::GetInst()->Update();
 
 
@@ -115,7 +107,7 @@ void CCore::Update()
 	g_spawner.Update();
 	for (int i = 0; i < g_vWall.size(); i++)
 	{
-		g_vWall[i]->Draw();
+		g_vWall[i]->Render(CCore::GetInst()->GetmemDC());
 	}
 	g_Center->Update();
 }
@@ -126,22 +118,14 @@ void CCore::Render()
 	Rectangle(m_memDC, -1, -1, m_ptResolution.x + 1, m_ptResolution.y + 1);
 
 
-	g_player.Draw();
-	g_spawner.Draw();
+	g_player.Render(CCore::GetInst()->GetmemDC());
+	g_spawner.Render(CCore::GetInst()->GetmemDC());
 	for (int i = 0; i < g_vWall.size(); i++)
 	{
-		g_vWall[i]->Draw();
+		g_vWall[i]->Render(CCore::GetInst()->GetmemDC());
 	}
-	g_Center->Draw();
+	g_Center->Render(CCore::GetInst()->GetmemDC());
 
-
-	/*Vec2 vPos = g_obj.GetPos();
-	Vec2 vScale = g_obj.GetScale();
-
-	Rectangle(m_memDC,  int(vPos.x - vScale.x / 2.f)
-					, int(vPos.y - vScale.y / 2.f)
-					, int(vPos.x + vScale.x / 2.f)
-					, int(vPos.y + vScale.y / 2.f));*/
 
 
 

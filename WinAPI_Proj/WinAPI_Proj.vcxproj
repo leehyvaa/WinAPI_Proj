@@ -136,6 +136,11 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="CKeyMgr.h" />
+    <ClInclude Include="CMonster.h" />
+    <ClInclude Include="CScene.h" />
+    <ClInclude Include="CSceneMgr.h" />
+    <ClInclude Include="CScene_Start.h" />
+    <ClInclude Include="GameObject.h" />
     <ClInclude Include="GMap.h" />
     <ClInclude Include="CObject.h" />
     <ClInclude Include="Collider.h" />
@@ -147,13 +152,15 @@
     <ClInclude Include="CTool.h" />
     <ClInclude Include="CWall.h" />
     <ClInclude Include="GPlayer.h" />
-    <ClInclude Include="PObject.h" />
+    <ClInclude Include="SecondGameScene1.h" />
     <ClInclude Include="struct.h" />
     <ClInclude Include="Vec2.h" />
     <ClInclude Include="cVector3.h" />
     <ClInclude Include="define.h" />
     <ClInclude Include="framework.h" />
-    <ClInclude Include="GObject.h" />
+    <ClInclude Include="GObject.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="pch.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Resource.h" />
@@ -193,6 +200,11 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="CKeyMgr.cpp" />
+    <ClCompile Include="CMonster.cpp" />
+    <ClCompile Include="CScene.cpp" />
+    <ClCompile Include="CSceneMgr.cpp" />
+    <ClCompile Include="CScene_Start.cpp" />
+    <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GMap.cpp" />
     <ClCompile Include="CObject.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
@@ -210,10 +222,12 @@
     <ClCompile Include="CTool.cpp" />
     <ClCompile Include="CWall.cpp" />
     <ClCompile Include="GPlayer.cpp" />
-    <ClCompile Include="PObject.cpp" />
+    <ClCompile Include="SecondGameScene1.cpp" />
     <ClCompile Include="Vec2.cpp" />
     <ClCompile Include="cVector3.cpp" />
-    <ClCompile Include="GObject.cpp" />
+    <ClCompile Include="GObject.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="MiniGame.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>

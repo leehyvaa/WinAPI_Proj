@@ -19,14 +19,19 @@
 #define IDC_TEXT                        1003
 #define ID_START                        1004
 #define ID_PAUSE                        1005
+#define ID_EXIT                         1006
+
 #define IDC_BUTTON1                     1007
 #define IDC_BUTTON_DELETE               1007
 #define IDC_COMBO_LIST                  1008
 #define IDC_BUTTON_iNSERT               1009
 #define IDC_EDIT_NAME                   1010
 #define IDC_LIST1                       1011
+#define IDC_LIST_MEMBER                 1011
 #define IDC_LIST_NAME                   1012
 #define IDC_BUTTON3                     1013
+#define IDC_BUTTON_INSERT_MAMBER        1013
+#define IDC_BUTTON_INSERT_MEMBER        1013
 #define IDC_BUTTON_DELETE2              1014
 #define ID_MENUTEST_32771               32771
 #define ID_MENUTEST_32772               32772
