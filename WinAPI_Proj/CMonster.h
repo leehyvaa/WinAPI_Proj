@@ -4,13 +4,21 @@ class CMonster :
     public GameObject
 {
 private:
+    Vec2 m_vCenterPos;
     float m_fSpeed;
+    float m_fMaxDistance;
+    int m_iDir;
 public:
+    float GetSpeed() { return m_fSpeed; }
+    void SetSpeed(float _f) { m_fSpeed = _f; }
+
+    void SetCenterPos(Vec2 _vPos) { m_vCenterPos = _vPos; }
+
+
+    virtual void Update();
+    //virtual void Render(HDC _dc);
+
     CMonster();
     ~CMonster();
-    virtual void Update();
-    virtual void Render(HDC _dc);
-
-
 };
 

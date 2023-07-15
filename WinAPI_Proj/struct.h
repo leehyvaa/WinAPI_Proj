@@ -6,3 +6,4 @@ enum MapType
 	Rail,
 	Wall,
 };
+

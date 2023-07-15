@@ -1,17 +1,17 @@
 #pragma once
 #include "Vec2.h"
 
-enum collisionType
-{
-	NONE,
-	PLAYER,
-	ENEMY,
-	SPAWNER,
-	P_BULLET,
-	E_BULLET,
-	WALL,
-	COMMAND,
-};
+//enum collisionType
+//{
+//	NONE,
+//	PLAYER,
+//	ENEMY,
+//	SPAWNER,
+//	P_BULLET,
+//	E_BULLET,
+//	WALL,
+//	COMMAND,
+//};
 
 class GObject
 {

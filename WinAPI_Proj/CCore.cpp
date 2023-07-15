@@ -75,8 +75,6 @@ void CCore::Progress()
 	Rectangle(m_memDC, -1, -1, m_ptResolution.x + 1, m_ptResolution.y + 1);
 
 
-
-	
 	POINT pos{ 375,500 };
 	GMap::GetInst()->DrawGrid(CCore::GetInst()->GetmemDC(), pos, 730, 980, 1, 1);
 

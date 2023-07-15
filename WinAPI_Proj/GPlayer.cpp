@@ -93,7 +93,7 @@ void GPlayer::Update()
 	
 
 
-	if (CKeyMgr::GetInst()->GetKeyState(KEY::SPACE) == KEY_STATE::HOLD)
+	if (KEY_HOLD(KEY::SPACE))
 	{
 		m_OnDrawRail = true;
 

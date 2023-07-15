@@ -3,6 +3,7 @@
 
 #include "framework.h"
 #include "WinAPI_Proj.h"
+#include "pch.h"
 #include <vector>
 #include <math.h>
 #include <commdlg.h>
@@ -41,6 +42,10 @@ void SunFlower(HDC hdc, POINT center, T radius, int count);
 void DrawCircle(HDC hdc, POINT pt, BOOL bFlag);
 
 
+//스플릿 윈도우
+HWND ChildWnd[2];
+LRESULT CALLBACK ChildWndProc1(HWND, UINT, WPARAM, LPARAM);
+LRESULT CALLBACK ChildWndProc2(HWND, UINT, WPARAM, LPARAM);
 
 
 // 전역 변수:
@@ -144,8 +149,25 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.lpszMenuName = MAKEINTRESOURCEW(IDC_WINAPIPROJ);
     wcex.lpszClassName = szWindowClass;
     wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+    RegisterClassExW(&wcex);
 
-    return RegisterClassExW(&wcex);
+    wcex.lpfnWndProc = ChildWndProc1;
+    wcex.lpszMenuName = NULL;
+    wcex.lpszClassName = _T("Child Window Class 1");
+    RegisterClassExW(&wcex);
+
+
+
+    wcex.lpfnWndProc = ChildWndProc2;
+    wcex.lpszMenuName = NULL;
+    wcex.lpszClassName = _T("Child Window Class 2");
+    RegisterClassExW(&wcex);
+
+
+
+    return NULL;
+
+    //return RegisterClassExW(&wcex);
 }
 
 //
@@ -292,16 +314,31 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
         CreateBitmap();
-        SetTimer(hWnd, TIMER_2, 30, AniProc);
+        //SetTimer(hWnd, TIMER_2, 30, AniProc);
+
+
+        //윈도우 분할
+        {
+            ChildWnd[0] = CreateWindowEx(WS_EX_CLIENTEDGE, _T("Child Window Class 1"),
+                NULL, WS_CHILD | WS_VISIBLE,
+                0, 0, rectView.right, rectView.bottom / 2 - 1,
+                hWnd, NULL, hInst, NULL);
+        
+
+            ChildWnd[1] = CreateWindowEx(WS_EX_CLIENTEDGE, _T("Child Window Class 2"),
+                NULL, WS_CHILD | WS_VISIBLE,
+                0, rectView.bottom/ 2+1, rectView.right, rectView.bottom / 2 - 1,
+                hWnd, NULL, hInst, NULL);
+        }
 
         break;
 
-    case WM_TIMER:
+    /*case WM_TIMER:
         if (wParam == TIMER_1)
         {
             UpdateFrame(hWnd);
             InvalidateRect(hWnd, NULL, TRUE);
-        }
+        }*/
     case WM_CHAR:
     {
 
@@ -450,40 +487,36 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
     }
     break;
-    case WM_PAINT:
-    {
-        hdc = BeginPaint(hWnd, &ps);
-        //TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
-        //DrawBitmap(hWnd, hdc);
-        //백그라운드는 한번만 실행 해야함
-        DrawBitmapDoubleBuffering(hWnd, hdc);
-        //더블 버퍼링
-        DrawRectText(hdc);
-        //텍스트 문제 해결
+    //case WM_PAINT:
+    //{
+    //    hdc = BeginPaint(hWnd, &ps);
+    //    //TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
+    //    //DrawBitmap(hWnd, hdc);
+    //    //백그라운드는 한번만 실행 해야함
+    //    DrawBitmapDoubleBuffering(hWnd, hdc);
+    //    //더블 버퍼링
+    //    DrawRectText(hdc);
+    //    //텍스트 문제 해결
 
 
 
-        //DrawCircle(hdc, ptCurPos, bFlag);
+    //    //DrawCircle(hdc, ptCurPos, bFlag);
 
 
-        //for (int  i = 0; i < pCount; i++)
-        //{
-        //    //벡터 출력
-        //}
+    //    //for (int  i = 0; i < pCount; i++)
+    //    //{
+    //    //    //벡터 출력
+    //    //}
 
-        //if (dFlag)
-        //{
-        //    DrawCircle(hdc, ptMousePos, bFlag);
-        //    dFlag = false;
-        //    //벡터에다 넣음
-        //}
+    //    //if (dFlag)
+    //    //{
+    //    //    DrawCircle(hdc, ptMousePos, bFlag);
+    //    //    dFlag = false;
+    //    //    //벡터에다 넣음
+    //    //}
 
-        
-
-
-
-        EndPaint(hWnd, &ps);
-    }
+    //    EndPaint(hWnd, &ps);
+    //}
     break;
     case WM_DESTROY:
 
@@ -897,4 +930,108 @@ void DrawBitmapDoubleBuffering(HWND hWnd, HDC hdc)
     SelectObject(hMemDC, hOldBitmap);
     DeleteDC(hMemDC);
 
+}
+#define IDC_CHILD1_BTN 2000
+
+LRESULT CALLBACK ChildWndProc1(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    HWND hBtn;
+    static bool bToggle = false;
+
+    switch (message)
+    {
+    case WM_CREATE:
+        SetTimer(hWnd, TIMER_2, 30, AniProc);
+        hBtn = CreateWindow(_T("button"), _T("OK"),
+            WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+            200, 10, 100, 30, hWnd, (HMENU)IDC_CHILD1_BTN,
+            hInst, NULL);
+
+        break;
+
+
+    case WM_COMMAND:
+        switch (LOWORD(wParam))
+        {
+        case IDC_CHILD1_BTN:
+            bToggle = !bToggle;
+            break;
+        }
+        break;
+    case WM_PAINT:
+    {
+        PAINTSTRUCT ps;
+
+
+        HDC hdc = BeginPaint(hWnd, &ps);
+
+        DrawBitmapDoubleBuffering(hWnd, hdc);
+
+        if (bToggle)
+        {
+            TextOut(hdc, 200, 80, _T("Button Clicked"), 14);
+        }
+
+
+        //더블 버퍼링
+        DrawRectText(hdc);
+        //텍스트 문제 해결
+
+
+
+
+        EndPaint(hWnd, &ps);
+    }
+    break;
+    case WM_DESTROY:
+        break;
+    }
+
+    return DefWindowProc(hWnd,message,wParam,lParam);
+}
+
+LRESULT CALLBACK ChildWndProc2(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    static POINT ptMouse;
+    switch (message)
+    {
+    case WM_CREATE:
+        break;
+    case WM_COMMAND:
+        break;
+    case WM_MOUSEMOVE:
+        GetCursorPos(&ptMouse);
+        InvalidateRect(hWnd, NULL, false);
+        break;
+    case WM_PAINT:
+    {
+
+        PAINTSTRUCT ps;
+
+
+        HDC hdc = BeginPaint(hWnd, &ps);
+
+        TCHAR str[128];
+        wsprintf(str, TEXT("WORLD POSITION: (%04d, %04d)"), ptMouse.x, ptMouse.y);
+        TextOut(hdc, 10, 30, str, lstrlen(str));
+
+
+        ScreenToClient(hWnd, &ptMouse);
+        wsprintf(str, TEXT("LOCAL POSITION: (%04d, %04d)"), ptMouse.x, ptMouse.y);
+        TextOut(hdc, 10, 50, str, lstrlen(str));
+
+
+
+
+
+
+
+        EndPaint(hWnd, &ps);
+    }
+        break;
+    case WM_DESTROY:
+        break;
+    }
+
+    return DefWindowProc(hWnd, message, wParam, lParam);
 }

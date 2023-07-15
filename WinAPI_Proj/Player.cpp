@@ -7,22 +7,25 @@
 Player::Player()
 	:m_spawner(0)
 {
+
 	m_fSpeed = 300;
-	type = PLAYER;
+	//type = PLAYER;
 	m_fStartTimer = 0;
 }
 
 Player::Player(Vec2 _vPos, Vec2 _vScale)
 	:m_spawner(0)
 {
+	Vec2 m_vPos(GetPos().x, GetPos().y);
 	m_vPos.x = _vPos.x;
 	m_vPos.y = _vPos.y;
 
-    this->m_vScale = _vScale;
-    m_fSpeed = 300;
-	type = PLAYER;
+    this->SetScale(_vScale);
+    
+	//type = PLAYER;
 	m_fStartTimer = 0;
 	
+	SetPos(m_vPos);
 
 }
 
@@ -37,6 +40,7 @@ Player::~Player()
 
 void Player::Update()
 {
+	Vec2 m_vPos(GetPos().x, GetPos().y);
 	if (CKeyMgr::GetInst()->GetKeyState(KEY::A) == KEY_STATE::HOLD)
 	{
 
@@ -76,11 +80,14 @@ void Player::Update()
 		
 		m_vBullet[i]->Update();
 	}
-
+	SetPos(m_vPos);
 }
 
 void Player::Render(HDC _dc)
 {
+	Vec2 m_vPos(GetPos().x, GetPos().y);
+	Vec2 m_vScale(GetScale().x, GetScale().y);
+
 	Rectangle(CCore::GetInst()->GetmemDC(), m_vPos.x - m_vScale.x, m_vPos.y - m_vScale.y, m_vPos.x + m_vScale.x, m_vPos.y + m_vScale.y);
 	for (int i = 0; i < m_vBullet.size(); i++)
 	{
@@ -89,15 +96,11 @@ void Player::Render(HDC _dc)
 
 }
 
-bool Player::Collision(GObject& vObj)
-{
-	Damaged();
-    return false;
-}
+
 
 void Player::InstBullet()
 {
-	POINT ptMouse;
+	/*POINT ptMouse;
 	GetCursorPos(&ptMouse);
 	ScreenToClient(CCore::GetInst()->GetMainHwnd(), &ptMouse);
 
@@ -105,7 +108,7 @@ void Player::InstBullet()
 	Vec2 _Dir = vDestPos.normalize();
 
 	m_vBullet.push_back(new CBullet(_Dir,m_vPos,2000.f,*this,P_BULLET));
-	
+	*/
 }
 
 void Player::Damaged()
