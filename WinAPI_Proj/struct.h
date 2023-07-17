@@ -5,5 +5,8 @@ enum MapType
 	MyGround,
 	Rail,
 	Wall,
+	TempRail,
+	TempA,
+	TempB,
 };
 

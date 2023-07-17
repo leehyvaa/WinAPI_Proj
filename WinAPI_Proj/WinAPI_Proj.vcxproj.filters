@@ -269,6 +269,9 @@
     <ClCompile Include="0712.cpp">
       <Filter>소스 파일\수업</Filter>
     </ClCompile>
+    <ClCompile Include="0717.cpp">
+      <Filter>소스 파일\수업</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="WinAPI_Proj.rc">

@@ -11,6 +11,7 @@
 #define IDI_WINAPIPROJ                  107
 #define IDI_SMALL                       108
 #define IDC_WINAPIPROJ                  109
+#define IDC_WINAPIPROJ1                 110
 #define IDR_MAINFRAME                   128
 #define IDD_DIALOG1                     130
 #define ID_BUTTON_PRINT                 1000
@@ -20,7 +21,6 @@
 #define ID_START                        1004
 #define ID_PAUSE                        1005
 #define ID_EXIT                         1006
-
 #define IDC_BUTTON1                     1007
 #define IDC_BUTTON_DELETE               1007
 #define IDC_COMBO_LIST                  1008
@@ -47,7 +47,13 @@
 #define ID_EDITCOPY                     32791
 #define ID_EDITPASTE                    32793
 #define ID_32794                        32794
+#define ID_32796                        32796
+#define ID_32797                        32797
 #define ID_DIALOG                       32798
+#define ID_32801                        32801
+#define ID_32802                        32802
+#define ID_BUTTON_FILEOPEN              32805
+#define ID_BUTTON_SAVE                  32807
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -56,7 +62,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        131
-#define _APS_NEXT_COMMAND_VALUE         32796
+#define _APS_NEXT_COMMAND_VALUE         32803
 #define _APS_NEXT_CONTROL_VALUE         1014
 #define _APS_NEXT_SYMED_VALUE           110
 #endif

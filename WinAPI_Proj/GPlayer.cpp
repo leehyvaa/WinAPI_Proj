@@ -5,11 +5,16 @@
 #include "CKeyMgr.h"
 #include "GMap.h"
 
+
+
 GPlayer::GPlayer()
 {
 	//m_fSpeed = 300;
 
 	m_OnDrawRail = false;
+	clockWise = true;
+	enterDir = DEFAULT;
+
 }
 
 GPlayer::GPlayer(Vec2 _vPos, Vec2 _vScale)
@@ -18,7 +23,8 @@ GPlayer::GPlayer(Vec2 _vPos, Vec2 _vScale)
 	SetScale(_vScale);
 	//m_fSpeed = 300;
 	m_OnDrawRail = false;
-
+	clockWise = true;
+	enterDir = DEFAULT;
 
 
 }
@@ -34,24 +40,115 @@ GPlayer::~GPlayer()
 void GPlayer::ResetRail()
 {
 		m_OnDrawRail = false;
+		m_arrMovePoint.clear();
 
-		m_arrTempRail_X.clear();
-		m_arrTempRail_Y.clear();
-
-		/*for (int i = 0; i < m_arrTempRail_X.size(); i++)
-			m_arrTempRail_X.pop_back();
-		for (int i = 0; i < m_arrTempRail_Y.size(); i++)
-			m_arrTempRail_Y.pop_back();*/
 
 }
+
+void GPlayer::CalculateDir(PlayerDir enterDir, PlayerDir endDir)
+{
+	if (abs(enterDir - endDir) == 1 || abs(enterDir - endDir) == 3)
+	{
+		if (enterDir - endDir == 3 || enterDir - endDir == -1)
+			clockWise = true;
+		else
+			clockWise = false;
+
+	}
+	else if (abs(enterDir - endDir) == 2)
+	{
+		if (enterDir == UP || enterDir == DOWN)
+			if (m_arrMovePoint[0].x - m_arrMovePoint[m_arrMovePoint.size() - 1].x > 0)
+				clockWise = true;
+			else
+				clockWise = false;
+		else
+		{
+			if (m_arrMovePoint[0].y - m_arrMovePoint[m_arrMovePoint.size() - 1].y > 0)
+				clockWise = false;
+			else
+				clockWise = true;
+		}
+	}
+	else if (abs(enterDir - endDir) == 0)
+	{
+
+	}
+}
+
+
 
 void GPlayer::DrawRail()
 {
-	for (int i = 0; i < m_arrTempRail_X.size(); i++)
+	m_OnDrawRail = false;
+	for (int i = 0; i < m_arrMovePoint.size(); i++)
 	{
-		GMap::GetInst()->m_arrMap[m_arrTempRail_Y[i]][m_arrTempRail_X[i]] = Rail;
+		GMap::GetInst()->m_arrMap[m_arrMovePoint[i].y][m_arrMovePoint[i].x] = Rail;
+		
+
+		
+
+	}
+	for (int i = 0; i < m_arrMovePoint.size(); i++)
+	{
+		
+
+		if (clockWise)
+		{
+			if (m_arrMovePoint[i].dir == UP || m_arrMovePoint[i].dir == RIGHT || m_arrMovePoint[i].dir == DOWN)
+				DrawEnemyZone((PlayerDir)(m_arrMovePoint[i].dir + 1), i);
+			else
+				DrawEnemyZone(UP, i);
+
+		}
+		else
+		{
+			if (m_arrMovePoint[i].dir == LEFT || m_arrMovePoint[i].dir == RIGHT || m_arrMovePoint[i].dir == DOWN)
+				DrawEnemyZone((PlayerDir)(m_arrMovePoint[i].dir - 1), i);
+			else
+				DrawEnemyZone(LEFT, i);
+		}
+
+
+
 	}
 }
+void GPlayer::DrawEnemyZone(PlayerDir dir,int i)
+{
+	int j = 1;
+	while (1)
+	{
+		if (dir == UP)
+		{
+			if (GMap::GetInst()->m_arrMap[m_arrMovePoint[i].y - j][m_arrMovePoint[i].x] == Rail)
+				break;
+			GMap::GetInst()->m_arrMap[m_arrMovePoint[i].y-j][m_arrMovePoint[i].x] = MyGround;
+		}
+		else if (dir == RIGHT)
+		{
+			if (GMap::GetInst()->m_arrMap[m_arrMovePoint[i].y][m_arrMovePoint[i].x+j] == Rail)
+				break;
+			GMap::GetInst()->m_arrMap[m_arrMovePoint[i].y][m_arrMovePoint[i].x + j] = MyGround;
+
+		}
+		else if (dir == DOWN)
+		{
+			if (GMap::GetInst()->m_arrMap[m_arrMovePoint[i].y +j][m_arrMovePoint[i].x] == Rail)
+				break;
+			GMap::GetInst()->m_arrMap[m_arrMovePoint[i].y+j][m_arrMovePoint[i].x] = MyGround;
+		}
+		else if (dir == LEFT)
+		{
+			if (GMap::GetInst()->m_arrMap[m_arrMovePoint[i].y][m_arrMovePoint[i].x -j] == Rail)
+				break;
+			GMap::GetInst()->m_arrMap[m_arrMovePoint[i].y][m_arrMovePoint[i].x-j] = MyGround;
+		}
+
+		j++;
+	}
+}
+
+
 
 void GPlayer::Update()
 {
@@ -66,13 +163,16 @@ void GPlayer::Update()
 	int myPosX = m_vPos.x;
 	int myPosY = m_vPos.y;
 
-	if(CKeyMgr::GetInst()->GetKeyState(KEY::Q) == KEY_STATE::TAP)
+	MovePoint mPoint;
+
+
+	if(KEY_TAP(KEY::Q))
 		cout << myPosX << " " << myPosY << " "<<pos << endl;
-	if (CKeyMgr::GetInst()->GetKeyState(KEY::W) == KEY_STATE::TAP)
+	if (KEY_TAP(KEY::W))
 		GMap::GetInst()->DrawMap();
-	if (CKeyMgr::GetInst()->GetKeyState(KEY::E) == KEY_STATE::TAP)
+	if (KEY_TAP(KEY::E))
 		system("cls");
-	if (CKeyMgr::GetInst()->GetKeyState(KEY::V) == KEY_STATE::TAP)
+	if (KEY_TAP(KEY::V))
 	{
 		for (int i = 0; i < m_arrTempRail_X.size(); i++)
 			cout << m_arrTempRail_X[i] << endl;
@@ -85,88 +185,117 @@ void GPlayer::Update()
 	static int yCount = 0;
 	static int xCount = 0;
 	
+	static PlayerDir endDir = DEFAULT;
 	
+
 	if (CKeyMgr::GetInst()->GetKeyState(KEY::SPACE) == KEY_STATE::AWAY)
 	{
 		ResetRail();
 	}
 	
-
+	
 
 	if (KEY_HOLD(KEY::SPACE))
 	{
-		m_OnDrawRail = true;
+		
 
-
-		if (CKeyMgr::GetInst()->GetKeyState(KEY::LEFT) == KEY_STATE::HOLD)
+		if (KEY_HOLD(KEY::LEFT))
 		{
 			if (left == MyGround || left == Wall)
 				return;
+			if (!m_OnDrawRail)
+			{
+				m_OnDrawRail = true;
+				enterDir = LEFT;
+			}
 
 	
 			m_vPos.x += -1;
 			if (left == EnemyGround)
 			{
-				m_arrTempRail_X.push_back(m_vPos.x);
-				m_arrTempRail_Y.push_back(m_vPos.y);
+				mPoint = { (int)m_vPos.x,(int)m_vPos.y,LEFT };
+				m_arrMovePoint.push_back(mPoint);
 
 			}
 			if (left == Rail)
 			{
+				endDir = LEFT;
+				CalculateDir(enterDir, endDir);
 
 				DrawRail();
 				ResetRail();
 			}
 		}
-		if (CKeyMgr::GetInst()->GetKeyState(KEY::RIGHT) == KEY_STATE::HOLD)
+		if (KEY_HOLD(KEY::RIGHT))
 		{
 			if (right == MyGround || right == Wall)
 				return;
+			if (!m_OnDrawRail)
+			{
+				m_OnDrawRail = true;
+				enterDir = RIGHT;
+			}
+
 			m_vPos.x += 1;
 			if (right == EnemyGround)
 			{
-				m_arrTempRail_X.push_back(m_vPos.x);
-				m_arrTempRail_Y.push_back(m_vPos.y);
+				mPoint = { (int)m_vPos.x,(int)m_vPos.y,RIGHT };
+				m_arrMovePoint.push_back(mPoint);
 
 			}
 			if (right == Rail)
 			{
+				CalculateDir(enterDir, endDir);
 
 				DrawRail();
 				ResetRail();
 			}
 		}
-		if (CKeyMgr::GetInst()->GetKeyState(KEY::UP) == KEY_STATE::HOLD)
+		if (KEY_HOLD(KEY::UP))
 		{
 			if ( up == MyGround || up == Wall)
 				return;
+			if (!m_OnDrawRail)
+			{
+				m_OnDrawRail = true;
+				enterDir = UP;
+			}
+
 			m_vPos.y += -1;
 			if (up == EnemyGround)
 			{
-				m_arrTempRail_X.push_back(m_vPos.x);
-				m_arrTempRail_Y.push_back(m_vPos.y);
+				mPoint = { (int)m_vPos.x,(int)m_vPos.y,UP };
+				m_arrMovePoint.push_back(mPoint);
 
 			}
 			if (up == Rail)
 			{
+				CalculateDir(enterDir, endDir);
 
 				DrawRail();
 				ResetRail();
 			}
 		}
-		if (CKeyMgr::GetInst()->GetKeyState(KEY::DOWN) == KEY_STATE::HOLD)
+		if (KEY_HOLD(KEY::DOWN))
 		{
 			if ( down == MyGround || down == Wall)
 				return;
+			if (!m_OnDrawRail)
+			{
+				m_OnDrawRail = true;
+				enterDir = DOWN;
+			}
+
 			m_vPos.y += 1;
 			if (down == EnemyGround)
 			{
-				m_arrTempRail_X.push_back(m_vPos.x);
-				m_arrTempRail_Y.push_back(m_vPos.y);
+				mPoint = { (int)m_vPos.x,(int)m_vPos.y,DOWN };
+				m_arrMovePoint.push_back(mPoint);
 
 			}
 			if (down == Rail)
 			{
+				CalculateDir(enterDir, endDir);
 
 				DrawRail();
 				ResetRail();
@@ -175,25 +304,25 @@ void GPlayer::Update()
 	}
 	else
 	{
-		if (CKeyMgr::GetInst()->GetKeyState(KEY::LEFT) == KEY_STATE::HOLD)
+		if (KEY_HOLD(KEY::LEFT))
 		{
 			if (left == EnemyGround || left == MyGround || left == Wall)
 				return;
 			m_vPos.x += -1;
 		}
-		if (CKeyMgr::GetInst()->GetKeyState(KEY::RIGHT) == KEY_STATE::HOLD)
+		if (KEY_HOLD(KEY::RIGHT))
 		{
 			if (right == EnemyGround || right == MyGround || right == Wall)
 				return;
 			m_vPos.x += 1;
 		}
-		if (CKeyMgr::GetInst()->GetKeyState(KEY::UP) == KEY_STATE::HOLD)
+		if (KEY_HOLD(KEY::UP))
 		{
 			if (up == EnemyGround || up == MyGround || up == Wall)
 				return;
 			m_vPos.y += -1;
 		}
-		if (CKeyMgr::GetInst()->GetKeyState(KEY::DOWN) == KEY_STATE::HOLD)
+		if (KEY_HOLD(KEY::DOWN))
 		{
 			if (down == EnemyGround || down == MyGround || down == Wall)
 				return;
