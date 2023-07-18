@@ -143,6 +143,7 @@
     <ClInclude Include="CSceneMgr.h" />
     <ClInclude Include="CScene_Start.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="GBoss.h" />
     <ClInclude Include="GMap.h" />
     <ClInclude Include="CObject.h" />
     <ClInclude Include="Collider.h" />
@@ -220,6 +221,7 @@
     <ClCompile Include="CSceneMgr.cpp" />
     <ClCompile Include="CScene_Start.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="GBoss.cpp" />
     <ClCompile Include="GMap.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>

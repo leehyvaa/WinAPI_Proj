@@ -9,4 +9,9 @@ enum MapType
 	TempA,
 	TempB,
 };
-
+enum ObjectType
+{
+	Player,
+	Enemy,
+	Boss,
+};

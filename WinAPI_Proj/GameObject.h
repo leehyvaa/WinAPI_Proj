@@ -21,6 +21,9 @@ private:
 	Vec2 m_vScale;
 	Vec2 m_vDir;
 
+public:
+	vector<GameObject*> m_target;
+	ObjectType objectType;
 
 public:
 	GameObject();
@@ -32,6 +35,7 @@ public:
 	Vec2 GetPos() { return m_vPos; }
 	Vec2 GetScale() { return m_vScale; }
 
+	void SetTarget(GameObject* _target);
 
 
 	virtual void Update() = 0;

@@ -23,8 +23,10 @@ private:
 	vector<MovePoint> m_arrMovePoint;
 	vector<int> m_arrTempRail_X;
 	vector<int> m_arrTempRail_Y;
+
 	bool m_OnDrawRail;
 	bool clockWise;
+	bool inBoss;
 	PlayerDir enterDir;
 public:
 	GPlayer();
@@ -39,7 +41,7 @@ public:
 
 	void Damaged();
 	void DrawRail();
-	void DrawEnemyZone(PlayerDir dir, int i);
+	void DrawEnemyZone(PlayerDir dir, int i, MapType type, MapType typeTwo);
 	void ResetRail();
 	void CalculateDir(PlayerDir enterDir, PlayerDir endDir);
 };

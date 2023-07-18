@@ -14,7 +14,8 @@ GPlayer::GPlayer()
 	m_OnDrawRail = false;
 	clockWise = true;
 	enterDir = DEFAULT;
-
+	objectType = Player;
+	inBoss = false;
 }
 
 GPlayer::GPlayer(Vec2 _vPos, Vec2 _vScale)
@@ -25,6 +26,7 @@ GPlayer::GPlayer(Vec2 _vPos, Vec2 _vScale)
 	m_OnDrawRail = false;
 	clockWise = true;
 	enterDir = DEFAULT;
+	inBoss = false;
 
 
 }
@@ -85,35 +87,63 @@ void GPlayer::DrawRail()
 	{
 		GMap::GetInst()->m_arrMap[m_arrMovePoint[i].y][m_arrMovePoint[i].x] = Rail;
 		
-
-		
-
 	}
+
+
+
+	inBoss = false;
+
 	for (int i = 0; i < m_arrMovePoint.size(); i++)
 	{
 		
 
-		if (clockWise)
+		
+		if (m_arrMovePoint[i].dir == UP || m_arrMovePoint[i].dir == RIGHT || m_arrMovePoint[i].dir == DOWN)
+			DrawEnemyZone((PlayerDir)(m_arrMovePoint[i].dir + 1), i,TempA,TempRail);
+		else
+			DrawEnemyZone(UP, i,TempA,TempRail);
+		
+		//보스 위치 판별
+		for (int i = 0; i < m_target.size(); i++)
 		{
-			if (m_arrMovePoint[i].dir == UP || m_arrMovePoint[i].dir == RIGHT || m_arrMovePoint[i].dir == DOWN)
-				DrawEnemyZone((PlayerDir)(m_arrMovePoint[i].dir + 1), i);
-			else
-				DrawEnemyZone(UP, i);
+			if (m_target[i]->objectType == Boss)
+			{
+				Vec2 _Pos = m_target[i]->GetPos();
+				if (GMap::GetInst()->m_arrMap[(int)_Pos.y][(int)_Pos.x] == TempA)
+				{
+					inBoss = true;
+				}
+			
+			}
 
 		}
-		else
-		{
+		/*
 			if (m_arrMovePoint[i].dir == LEFT || m_arrMovePoint[i].dir == RIGHT || m_arrMovePoint[i].dir == DOWN)
 				DrawEnemyZone((PlayerDir)(m_arrMovePoint[i].dir - 1), i);
 			else
-				DrawEnemyZone(LEFT, i);
-		}
-
-
+				DrawEnemyZone(LEFT, i);*/
 
 	}
+
+
+	if (inBoss)
+	{
+		for (int i = 0; i < m_arrMovePoint.size(); i++)
+		{
+			if (m_arrMovePoint[i].dir == UP || m_arrMovePoint[i].dir == RIGHT || m_arrMovePoint[i].dir == DOWN)
+				DrawEnemyZone((PlayerDir)(m_arrMovePoint[i].dir + 1), i,MyGround,Rail);
+			else
+				DrawEnemyZone(UP, i,MyGround,Rail);
+		}
+	}
+	else
+	{
+		//보스가 색칠한 곳 밖에 있을경우 원래 색칠했던 공간을 다시 에너미땅
+		//으로 돌리고 반대편을 마이그라운드로 바로 색칠함 이때는 tempRail이
+		//아닌 Rail로 
+	}
 }
-void GPlayer::DrawEnemyZone(PlayerDir dir,int i)
+void GPlayer::DrawEnemyZone(PlayerDir dir,int i,MapType _type, MapType _typeTwo)
 {
 	int j = 1;
 	while (1)
@@ -122,26 +152,26 @@ void GPlayer::DrawEnemyZone(PlayerDir dir,int i)
 		{
 			if (GMap::GetInst()->m_arrMap[m_arrMovePoint[i].y - j][m_arrMovePoint[i].x] == Rail)
 				break;
-			GMap::GetInst()->m_arrMap[m_arrMovePoint[i].y-j][m_arrMovePoint[i].x] = MyGround;
+			GMap::GetInst()->m_arrMap[m_arrMovePoint[i].y-j][m_arrMovePoint[i].x] = _type;
 		}
 		else if (dir == RIGHT)
 		{
 			if (GMap::GetInst()->m_arrMap[m_arrMovePoint[i].y][m_arrMovePoint[i].x+j] == Rail)
 				break;
-			GMap::GetInst()->m_arrMap[m_arrMovePoint[i].y][m_arrMovePoint[i].x + j] = MyGround;
+			GMap::GetInst()->m_arrMap[m_arrMovePoint[i].y][m_arrMovePoint[i].x + j] = _type;
 
 		}
 		else if (dir == DOWN)
 		{
 			if (GMap::GetInst()->m_arrMap[m_arrMovePoint[i].y +j][m_arrMovePoint[i].x] == Rail)
 				break;
-			GMap::GetInst()->m_arrMap[m_arrMovePoint[i].y+j][m_arrMovePoint[i].x] = MyGround;
+			GMap::GetInst()->m_arrMap[m_arrMovePoint[i].y+j][m_arrMovePoint[i].x] = _type;
 		}
 		else if (dir == LEFT)
 		{
 			if (GMap::GetInst()->m_arrMap[m_arrMovePoint[i].y][m_arrMovePoint[i].x -j] == Rail)
 				break;
-			GMap::GetInst()->m_arrMap[m_arrMovePoint[i].y][m_arrMovePoint[i].x-j] = MyGround;
+			GMap::GetInst()->m_arrMap[m_arrMovePoint[i].y][m_arrMovePoint[i].x-j] = _type;
 		}
 
 		j++;
