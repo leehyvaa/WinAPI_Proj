@@ -19,14 +19,7 @@ SecondGameScene1::~SecondGameScene1()
 
 void SecondGameScene1::Enter()
 {
-	//Texture 로딩
-	CTexture* pTex = new CTexture;
-
-	wstring strFilePath = CPathMgr::GetInst()->GetContentPath();
-	strFilePath += L"texture\\Sail_Fish.bmp";
-	pTex->Load(strFilePath);
-
-	delete pTex;
+	
 
 
 	//오브젝트 추가

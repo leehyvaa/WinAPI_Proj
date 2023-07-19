@@ -18,6 +18,7 @@ public:
 	void Render();
 
 	HDC GetmemDC() { return m_memDC; }
+	HDC GetMainDC() { return m_hDC; }
 	HWND GetMainHwnd() { return m_hWnd; }
 	POINT GetResolution() { return m_ptResolution; }
 	void GameOver();

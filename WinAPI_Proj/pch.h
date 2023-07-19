@@ -10,5 +10,9 @@
 #include <tchar.h>
 using namespace std;
 
+
+#pragma comment(lib, "Msimg32.lib")
+
+
 #include "define.h"
 #include "struct.h"

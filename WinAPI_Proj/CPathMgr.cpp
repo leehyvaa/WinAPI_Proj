@@ -11,6 +11,7 @@ CPathMgr::~CPathMgr()
 
 }
 
+
 void CPathMgr::init()
 {
 	GetCurrentDirectory(255,m_szContentPath);

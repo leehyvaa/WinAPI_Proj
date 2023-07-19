@@ -4,12 +4,23 @@
 #include "CTimeMgr.h"
 #include "CKeyMgr.h"
 #include "GMap.h"
-
+#include "CPathMgr.h"
+#include "CTexture.h"
 
 
 GPlayer::GPlayer()
+	:m_pTex(nullptr)
 {
 	//m_fSpeed = 300;
+	//Texture ·Îµù
+	m_pTex = new CTexture;
+
+	wstring strFilePath = CPathMgr::GetInst()->GetContentPath();
+	strFilePath += L"texture\\sigong.bmp";
+	m_pTex->Load(strFilePath);
+
+
+
 
 	m_OnDrawRail = false;
 	clockWise = true;
@@ -20,6 +31,13 @@ GPlayer::GPlayer()
 
 GPlayer::GPlayer(Vec2 _vPos, Vec2 _vScale)
 {
+	m_pTex = new CTexture;
+
+	wstring strFilePath = CPathMgr::GetInst()->GetContentPath();
+	strFilePath += L"texture\\sigong.bmp";
+	m_pTex->Load(strFilePath);
+
+
 	SetPos(_vPos);
 	SetScale(_vScale);
 	//m_fSpeed = 300;
@@ -33,7 +51,8 @@ GPlayer::GPlayer(Vec2 _vPos, Vec2 _vScale)
 
 GPlayer::~GPlayer()
 {
-
+	if (nullptr != m_pTex)
+		delete m_pTex;
 }
 
 
@@ -134,15 +153,30 @@ void GPlayer::Update()
 
 void GPlayer::Render(HDC _dc)
 {
-	Vec2 m_vPos(GetPos().x, GetPos().y);
-	Vec2 m_vScale(GetScale().x, GetScale().y);
+	Vec2 vPos(GetPos().x, GetPos().y);
+	Vec2 vScale(GetScale().x, GetScale().y);
 
 
-	Rectangle(CCore::GetInst()->GetmemDC(), m_vPos.x - m_vScale.x, m_vPos.y - m_vScale.y, m_vPos.x + m_vScale.x, m_vPos.y + m_vScale.y);
-
-
+	//Rectangle(CCore::GetInst()->GetmemDC(), m_vPos.x - m_vScale.x, m_vPos.y - m_vScale.y, m_vPos.x + m_vScale.x, m_vPos.y + m_vScale.y);
 	
+	int iWidth = (int)m_pTex->Width();
+	int iHeight = (int) m_pTex->Height();
 
+
+
+	//BitBlt(_dc
+	//	, int(vPos.x - (float)(iWidth / 2))
+	//	, int(vPos.y - (float)(iHeight / 2))
+	//	, iWidth, iHeight
+	//	, m_pTex->GetDC()
+	//	, 0, 0, SRCCOPY);
+	//	
+	TransparentBlt(_dc
+		, int(vPos.x - (float)(iWidth / 2))
+		, int(vPos.y - (float)(iHeight / 2))
+		, iWidth, iHeight
+		, m_pTex->GetDC()
+		, 0, 0, iWidth,iHeight,RGB(255,0,255));
 
 }
 

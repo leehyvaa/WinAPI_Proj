@@ -1,12 +1,15 @@
 #pragma once
 #include "GameObject.h"
 
+class CTexture;
 
 class GPlayer : public GameObject
 {
 
 private:
+	CTexture* m_pTex;
 	vector<MovePoint> m_arrMovePoint;
+
 
 	bool m_OnDrawRail;
 	bool clockWise;
