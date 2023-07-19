@@ -1,6 +1,10 @@
 #include "pch.h"
 #include "SecondGameScene1.h"
 #include "GameObject.h"
+#include "CPathMgr.h"
+#include "CTexture.h"
+
+
 #include "GPlayer.h"
 #include "GBoss.h"
 
@@ -15,6 +19,16 @@ SecondGameScene1::~SecondGameScene1()
 
 void SecondGameScene1::Enter()
 {
+	//Texture 로딩
+	CTexture* pTex = new CTexture;
+
+	wstring strFilePath = CPathMgr::GetInst()->GetContentPath();
+	strFilePath += L"texture\\Sail_Fish.bmp";
+	pTex->Load(strFilePath);
+
+	delete pTex;
+
+
 	//오브젝트 추가
 	/*GObject* pObj = new GObject;
 
@@ -22,7 +36,7 @@ void SecondGameScene1::Enter()
 	pObj->SetScale(Vec2(100.f, 100.f));
 	AddObject(pObj, GROUP_TYPE::DEFAULT);*/
 	
-	GameObject* player = new GPlayer(Vec2(9, 9), Vec2(5, 5));
+	GameObject* player = new GPlayer(Vec2(20, 20), Vec2(5, 5));
 	GameObject* boss = new GBoss(Vec2(300, 300), Vec2(5, 5));
 	
 	player->SetTarget(boss);

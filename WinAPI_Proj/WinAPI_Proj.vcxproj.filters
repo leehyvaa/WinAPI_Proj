@@ -67,6 +67,18 @@
     <Filter Include="Engine\Scene\CScene_Start">
       <UniqueIdentifier>{6753f610-0bb7-4583-9aaa-20d5ae1508cd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Resource">
+      <UniqueIdentifier>{647523bd-3c32-48e9-be21-d0a2f6b535cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Resource\Texture">
+      <UniqueIdentifier>{415b4952-3a85-4be4-9862-6aeac577f2ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Resource\Sound">
+      <UniqueIdentifier>{a36bb033-ea05-4ef6-8818-5ee76c029338}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Manager\CPathMgr">
+      <UniqueIdentifier>{eb2dbf4c-f439-4a79-8aac-5fd4d225f2d2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WinAPI_Proj.h">
@@ -164,6 +176,18 @@
     </ClInclude>
     <ClInclude Include="GBoss.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="CRes.h">
+      <Filter>Engine\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="CTexture.h">
+      <Filter>Engine\Resource\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="CSound.h">
+      <Filter>Engine\Resource\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="CPathMgr.h">
+      <Filter>Engine\Manager\CPathMgr</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -277,6 +301,18 @@
     </ClCompile>
     <ClCompile Include="GBoss.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CRes.cpp">
+      <Filter>Engine\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="CTexture.cpp">
+      <Filter>Engine\Resource\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="CSound.cpp">
+      <Filter>Engine\Resource\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="CPathMgr.cpp">
+      <Filter>Engine\Manager\CPathMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

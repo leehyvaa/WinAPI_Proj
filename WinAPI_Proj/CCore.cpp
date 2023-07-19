@@ -6,7 +6,7 @@
 #include "GMap.h"
 #include "GPlayer.h"
 #include "CSceneMgr.h"
-
+#include "CPathMgr.h"
 
 CCore::CCore()
 	:m_hWnd(0)
@@ -50,9 +50,9 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 	//Manager 초기화
 	CTimeMgr::GetInst()->init();
 	CKeyMgr::GetInst()->init();
+	CPathMgr::GetInst()->init();
 	CSceneMgr::GetInst()->init();
 	GMap::GetInst()->init();
-
 	
 
 
@@ -68,21 +68,23 @@ void CCore::Progress()
 	CSceneMgr::GetInst()->Update();
 
 
-
 	//렌더링
 	//화면 클리어
 	//memDC에다 먼저 그린다
 	Rectangle(m_memDC, -1, -1, m_ptResolution.x + 1, m_ptResolution.y + 1);
 
+	
 
-	POINT pos{ 375,500 };
-	GMap::GetInst()->DrawGrid(CCore::GetInst()->GetmemDC(), pos, 730, 980, 1, 1);
+	GMap::GetInst()->DrawMap(CCore::GetInst()->GetmemDC());
 
 
 	CSceneMgr::GetInst()->Render(m_memDC);
 
 	BitBlt(m_hDC, 0, 0, m_ptResolution.x, m_ptResolution.y
 		, m_memDC, 0, 0, SRCCOPY); //소스 비트맵에서 목적비트맵으로 복사
+
+	//CTimeMgr::GetInst()->Render();
+
 }
 
 

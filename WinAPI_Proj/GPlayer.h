@@ -1,28 +1,12 @@
 #pragma once
 #include "GameObject.h"
-enum PlayerDir
-{
-	UP,
-	RIGHT,
-	DOWN,
-	LEFT,
-	DEFAULT,
-};
-struct MovePoint
-{
-	int x;
-	int y;
-	PlayerDir dir;
-	
-};
+
 
 class GPlayer : public GameObject
 {
 
 private:
 	vector<MovePoint> m_arrMovePoint;
-	vector<int> m_arrTempRail_X;
-	vector<int> m_arrTempRail_Y;
 
 	bool m_OnDrawRail;
 	bool clockWise;
@@ -41,8 +25,11 @@ public:
 
 	void Damaged();
 	void DrawRail();
-	void DrawEnemyZone(PlayerDir dir, int i, MapType type, MapType typeTwo);
+	bool CheckBoss(PlayerDir dir, int i);
 	void ResetRail();
 	void CalculateDir(PlayerDir enterDir, PlayerDir endDir);
+	bool InLine(list<MovePoint>& _line, POINT _point);
+	bool InBox(const POINT* _box, int _count, POINT _point);
+
 };
 

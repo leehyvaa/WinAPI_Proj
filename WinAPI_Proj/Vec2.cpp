@@ -24,7 +24,14 @@ float Vec2::Length()
 	return sqrt(x * x + y * y);
 }
 
-Vec2 Vec2::normalize()
+Vec2& Vec2::normalize()
 {
-	return Vec2(x / Length(), y / Length());
+	float fLen = Length();
+
+	assert(fLen != 0.f);
+
+	x /= fLen;
+	y /= fLen;
+
+	return *this;
 }

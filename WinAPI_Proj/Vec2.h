@@ -38,7 +38,7 @@ public :
 
 
 	float Length();
-	Vec2 normalize();
+	Vec2& normalize();
 
 };
 

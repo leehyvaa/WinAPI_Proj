@@ -38,6 +38,12 @@ void CTimeMgr::Update()
 	//이전 카운트 값을 현재값으로 갱신(다음 계산을 위해서)
 	m_PrevCount = m_CurCount;
 
+	
+	
+}
+
+void CTimeMgr::Render()
+{
 	++m_iCallCount;
 	m_dAcc += m_dDT; //DT 누적
 
@@ -50,7 +56,6 @@ void CTimeMgr::Update()
 		wchar_t szBuffer[255] = {};
 
 		swprintf_s(szBuffer, L"FPS : %d,   DT : %lf", m_iFPS, m_dDT);
-		SetWindowText(CCore::GetInst() ->GetMainHwnd(),szBuffer);
+		SetWindowText(CCore::GetInst()->GetMainHwnd(), szBuffer);
 	}
-	
 }

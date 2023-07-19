@@ -2,8 +2,11 @@
 #include "GMap.h"
 
 GMap::GMap()
-	:m_arrMap{ 0 }
 {
+    m_arrMap[0] = { 20,20 };
+    m_arrMap[1] = { 730,20 };
+    m_arrMap[2] = { 730,980 };
+    m_arrMap[3] = { 20,980 };
 
 }
 
@@ -13,25 +16,9 @@ GMap::~GMap()
 
 void GMap::init()
 {
-	for (int i = 0; i < 1000; i++)
-	{
-		for (int j = 0; j < 750; j++)
-		{
-            //m_arrMap[i][j] = Rail;
-         
-			if(i==9 || i == 990)
-				m_arrMap[i][j] = Rail;
-			else if (j == 9 || j == 740)
-				m_arrMap[i][j] = Rail;
+  
 
-            if (i < 9 || i > 990)
-                m_arrMap[i][j] = Wall;
-            else if (j < 9 || j > 740)
-                m_arrMap[i][j] = Wall;
-
-            
-		}
-	}
+   
 }
 
 
@@ -58,27 +45,17 @@ void GMap::DrawGrid(HDC hdc, POINT center, float width, float height, int xCount
 
 }
 
-void GMap::DrawMap()
+void GMap::DrawMap(HDC hdc)
 {
-    for (int i = 0; i < 1000; i++)
-    {
-        for (int j = 0; j < 750; j++)
-        {
-            cout << m_arrMap[i][j];
-        }
-        cout << endl;
-    }
+  
+    Polygon(hdc, m_arrMap, 4);
+
+ 
 
 }
 
 void GMap::UpdateMap()
 {
-    for (int i = 0; i < 1000; i++)
-    {
-        for (int i = 0; i < 750; i++)
-        {
-
-        }
-    }
+   
 
 }

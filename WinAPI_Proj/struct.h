@@ -1,17 +1,26 @@
 #pragma once
-enum MapType
-{
-	EnemyGround,
-	MyGround,
-	Rail,
-	Wall,
-	TempRail,
-	TempA,
-	TempB,
-};
+
 enum ObjectType
 {
 	Player,
 	Enemy,
 	Boss,
 };
+
+enum PlayerDir
+{
+	UP,
+	RIGHT,
+	DOWN,
+	LEFT,
+	DEFAULT,
+};
+
+struct MovePoint
+{
+	int x;
+	int y;
+	PlayerDir dir;
+
+};
+

@@ -27,11 +27,7 @@ void GBoss::Update()
 	Vec2 m_vPos(GetPos().x, GetPos().y);
 
 	
-	int left = GMap::GetInst()->m_arrMap[(int)m_vPos.y][(int)m_vPos.x - 1];
-	int right = GMap::GetInst()->m_arrMap[(int)m_vPos.y][(int)m_vPos.x + 1];
-	int up = GMap::GetInst()->m_arrMap[(int)m_vPos.y - 1][(int)m_vPos.x];
-	int down = GMap::GetInst()->m_arrMap[(int)m_vPos.y + 1][(int)m_vPos.x];
-
+	
 
 	if (m_fCountTimer- m_fStartTimer   > 2.f)
 	{
@@ -41,23 +37,18 @@ void GBoss::Update()
 			
 		if (a == 0)
 		{
-			if(right == EnemyGround)
-				m_vPos.x++;
+			
 		}
 		else if (a == 1)
 		{
-			if (left == EnemyGround)
-				m_vPos.x--;
+			
 		}
 		else if (a == 2)
 		{
-			if (down == EnemyGround)
-				m_vPos.y++;
 		}
 		else if (a == 3)
 		{
-			if (up == EnemyGround)
-				m_vPos.y--;
+			
 		}
 
 			
