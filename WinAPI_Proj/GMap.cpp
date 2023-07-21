@@ -2,12 +2,20 @@
 #include "GMap.h"
 
 GMap::GMap()
+    :pMap(nullptr)
 {
-    m_arrMap[0] = { 20,20 };
-    m_arrMap[1] = { 730,20 };
-    m_arrMap[2] = { 730,980 };
-    m_arrMap[3] = { 20,980 };
+    m_enemyZone.push_back(MovePoint{ 20,20 });
+    m_enemyZone.push_back(MovePoint{ 730,20 });
+    m_enemyZone.push_back(MovePoint{ 730,980 });
+    m_enemyZone.push_back(MovePoint{ 20,980 });
 
+
+    m_playerRail.push_back(MovePoint{ 20,20 });
+    m_playerRail.push_back(MovePoint{ 730,20 });
+    m_playerRail.push_back(MovePoint{ 730,980 });
+    m_playerRail.push_back(MovePoint{ 20,980 });
+
+    UpdateMap();
 }
 
 GMap::~GMap()
@@ -48,7 +56,8 @@ void GMap::DrawGrid(HDC hdc, POINT center, float width, float height, int xCount
 void GMap::DrawMap(HDC hdc)
 {
   
-    Polygon(hdc, m_arrMap, 4);
+    Polygon(hdc, pMap, m_enemyZone.size());
+    
 
  
 
@@ -56,6 +65,16 @@ void GMap::DrawMap(HDC hdc)
 
 void GMap::UpdateMap()
 {
-   
+    //이쪽 작업중이었나?
+    pMap = new POINT[m_enemyZone.size()];
+    
+    list<MovePoint>::iterator iter = m_enemyZone.begin();
+
+    int i = 0;
+    for (iter = m_enemyZone.begin(); iter!=m_enemyZone.end(); iter++)
+    {
+        pMap[i] = POINT{iter->x,iter->y };
+        i++;
+    }
 
 }

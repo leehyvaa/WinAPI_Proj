@@ -100,26 +100,26 @@ void GPlayer::Update()
 	{
 		
 
-		if (KEY_HOLD(KEY::LEFT))
-		{
-			if (InBox(GMap::GetInst()->m_arrMap, 4, pos))
-				m_vPos.x--;
-		}
-		if (KEY_HOLD(KEY::RIGHT))
-		{
-			if (InBox(GMap::GetInst()->m_arrMap, 4, pos))
-				m_vPos.x++;
-		}
-		if (KEY_HOLD(KEY::UP))
-		{
-			if (InBox(GMap::GetInst()->m_arrMap, 4, pos))
-				m_vPos.y--;
-		}
-		if (KEY_HOLD(KEY::DOWN))
-		{
-			if (InBox(GMap::GetInst()->m_arrMap, 4, pos))
-				m_vPos.y++;
-		}
+		//if (KEY_HOLD(KEY::LEFT))
+		//{
+		//	if (InBox(GMap::GetInst()->m_arrMap, 4, pos))
+		//		m_vPos.x--;
+		//}
+		//if (KEY_HOLD(KEY::RIGHT))
+		//{
+		//	if (InBox(GMap::GetInst()->m_arrMap, 4, pos))
+		//		m_vPos.x++;
+		//}
+		//if (KEY_HOLD(KEY::UP))
+		//{
+		//	if (InBox(GMap::GetInst()->m_arrMap, 4, pos))
+		//		m_vPos.y--;
+		//}
+		//if (KEY_HOLD(KEY::DOWN))
+		//{
+		//	if (InBox(GMap::GetInst()->m_arrMap, 4, pos))
+		//		m_vPos.y++;
+		//}
 	}
 	else
 	{
@@ -235,15 +235,70 @@ void GPlayer::Damaged()
 
 bool GPlayer::InLine(list<MovePoint>& _line, POINT _point)
 {
-	for (int i = 0; i < _line.size(); i++)
+	list<MovePoint>::iterator iter = _line.begin();
+	
+	for (iter=_line.begin(); iter!=_line.end(); iter++)
 	{
+		
+		list<MovePoint>::iterator nextIt = next(iter);
+
+		if (iter == prev(_line.end()))
+			nextIt = _line.begin();
+			
+			
+		
+		Vec2 v = { iter->x,iter->y };
+		Vec2 v2 = { nextIt->x,nextIt->y };
+		float ans = v.Cross(v2 , _point);
+		
+		if (ans == 0)
+		{
+			if (v.x == v2.x)
+			{
+				if (v.y > v2.y)
+				{
+					if (v.y >= _point.y && v2.y <= _point.y)
+						return true;
+
+				}
+				else
+				{
+					if (v.y <= _point.y && v2.y >= _point.y)
+						return true;
+
+				}
+			}
+			else
+			{
+				if (v.x > v2.x)
+				{
+					if (v.x >= _point.x && v2.x <= _point.x)
+						return true;
+				}
+				else
+				{
+					if (v.x <= _point.x && v2.x >= _point.x)
+						return true;
+
+				}
+			
+			}
+
+				
+		}
+
 
 	}
-	return true;
+	return false;
 }
 
-bool GPlayer::InBox(const POINT* _box, int _count, POINT _point)
+bool GPlayer::InBox(const POINT* _box, int _count, POINT _p)
 {
-	return true;
+	/*POINT a;
+	
+	double A = 
 
+
+
+	return true;*/
 }
