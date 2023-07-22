@@ -82,6 +82,9 @@
     <Filter Include="Engine\Manager\ResMgr">
       <UniqueIdentifier>{f3c469f7-2331-4ea2-85c4-0b4534c0c070}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Compenent">
+      <UniqueIdentifier>{f6e6b2d6-79f6-447e-92fa-d8b791774321}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WinAPI_Proj.h">
@@ -133,9 +136,6 @@
       <Filter>헤더 파일\미니게임</Filter>
     </ClInclude>
     <ClInclude Include="CObject.h">
-      <Filter>헤더 파일\작업중</Filter>
-    </ClInclude>
-    <ClInclude Include="Collider.h">
       <Filter>헤더 파일\작업중</Filter>
     </ClInclude>
     <ClInclude Include="cVector3.h">
@@ -194,6 +194,9 @@
     </ClInclude>
     <ClInclude Include="CResMgr.h">
       <Filter>Engine\Manager\ResMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="CCollider.h">
+      <Filter>Engine\Compenent</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -255,9 +258,6 @@
       <Filter>소스 파일\작업중</Filter>
     </ClCompile>
     <ClCompile Include="CObjectTest.cpp">
-      <Filter>소스 파일\작업중</Filter>
-    </ClCompile>
-    <ClCompile Include="Collider.cpp">
       <Filter>소스 파일\작업중</Filter>
     </ClCompile>
     <ClCompile Include="cVector3.cpp">
@@ -322,6 +322,9 @@
     </ClCompile>
     <ClCompile Include="CResMgr.cpp">
       <Filter>Engine\Manager\ResMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CCollider.cpp">
+      <Filter>Engine\Compenent</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
