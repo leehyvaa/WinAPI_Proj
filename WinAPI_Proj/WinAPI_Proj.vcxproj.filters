@@ -79,6 +79,9 @@
     <Filter Include="Engine\Manager\CPathMgr">
       <UniqueIdentifier>{eb2dbf4c-f439-4a79-8aac-5fd4d225f2d2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Manager\ResMgr">
+      <UniqueIdentifier>{f3c469f7-2331-4ea2-85c4-0b4534c0c070}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WinAPI_Proj.h">
@@ -188,6 +191,9 @@
     </ClInclude>
     <ClInclude Include="CPathMgr.h">
       <Filter>Engine\Manager\CPathMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="CResMgr.h">
+      <Filter>Engine\Manager\ResMgr</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -313,6 +319,9 @@
     </ClCompile>
     <ClCompile Include="CPathMgr.cpp">
       <Filter>Engine\Manager\CPathMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CResMgr.cpp">
+      <Filter>Engine\Manager\ResMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

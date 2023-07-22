@@ -66,7 +66,9 @@ void GMap::DrawMap(HDC hdc)
 void GMap::UpdateMap()
 {
     //이쪽 작업중이었나?
-    pMap = new POINT[m_enemyZone.size()];
+
+
+   /* pMap = new POINT[m_enemyZone.size()];
     
     list<MovePoint>::iterator iter = m_enemyZone.begin();
 
@@ -75,6 +77,6 @@ void GMap::UpdateMap()
     {
         pMap[i] = POINT{iter->x,iter->y };
         i++;
-    }
+    }*/
 
 }

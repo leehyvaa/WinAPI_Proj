@@ -8,6 +8,7 @@
 #include <cMath>
 #include <assert.h>
 #include <tchar.h>
+#include <map>
 using namespace std;
 
 

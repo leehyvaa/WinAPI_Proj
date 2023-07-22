@@ -4,7 +4,8 @@
 #include "CTimeMgr.h"
 #include "CKeyMgr.h"
 #include "GMap.h"
-#include "CPathMgr.h"
+
+#include "CResMgr.h"
 #include "CTexture.h"
 
 
@@ -13,11 +14,9 @@ GPlayer::GPlayer()
 {
 	//m_fSpeed = 300;
 	//Texture ·Îµù
-	m_pTex = new CTexture;
+	m_pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex",L"texture\\sigong.bmp");
 
-	wstring strFilePath = CPathMgr::GetInst()->GetContentPath();
-	strFilePath += L"texture\\sigong.bmp";
-	m_pTex->Load(strFilePath);
+
 
 
 
@@ -31,11 +30,8 @@ GPlayer::GPlayer()
 
 GPlayer::GPlayer(Vec2 _vPos, Vec2 _vScale)
 {
-	m_pTex = new CTexture;
+	m_pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\sigong.bmp");
 
-	wstring strFilePath = CPathMgr::GetInst()->GetContentPath();
-	strFilePath += L"texture\\sigong.bmp";
-	m_pTex->Load(strFilePath);
 
 
 	SetPos(_vPos);
@@ -51,8 +47,6 @@ GPlayer::GPlayer(Vec2 _vPos, Vec2 _vScale)
 
 GPlayer::~GPlayer()
 {
-	if (nullptr != m_pTex)
-		delete m_pTex;
 }
 
 
@@ -298,7 +292,7 @@ bool GPlayer::InBox(const POINT* _box, int _count, POINT _p)
 	
 	double A = 
 
+	*/
 
-
-	return true;*/
+	return true;
 }
