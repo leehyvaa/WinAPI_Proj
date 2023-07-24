@@ -251,9 +251,6 @@
     <ClCompile Include="Player.cpp">
       <Filter>소스 파일\미니게임</Filter>
     </ClCompile>
-    <ClCompile Include="0710.cpp">
-      <Filter>소스 파일\작업중</Filter>
-    </ClCompile>
     <ClCompile Include="CObject.cpp">
       <Filter>소스 파일\작업중</Filter>
     </ClCompile>
@@ -325,6 +322,15 @@
     </ClCompile>
     <ClCompile Include="CCollider.cpp">
       <Filter>Engine\Compenent</Filter>
+    </ClCompile>
+    <ClCompile Include="0724.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="0710.cpp">
+      <Filter>소스 파일\작업중</Filter>
+    </ClCompile>
+    <ClCompile Include="AStar.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
