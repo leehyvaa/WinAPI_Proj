@@ -157,23 +157,18 @@ BOOL InCircle(POINT pt1, POINT pt2)
     return FALSE;
 }
 
-unsigned __stdcall ThFunc(LPVOID lpParam);
-vector<POINT> arrMousePos;
-int idCount = 0;
+unsigned __stdcall ThFunc();
 POINT ptMousePos;
 CRITICAL_SECTION cs;
 vector<HANDLE> hThreads;
-vector<DWORD> dwThIDs;
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     PAINTSTRUCT ps;
     HDC hdc= GetDC(hWnd);
     
     static POINT ptCurPos;
-
-
     static RECT rectView;
-    static bool bFlag = false;
 
 
     
@@ -210,8 +205,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     case WM_KEYUP:
     {
-
-        bFlag = FALSE;
         InvalidateRect(hWnd, NULL, TRUE);
     }break;
 
@@ -238,36 +231,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         ptMousePos.x = LOWORD(lParam);
         ptMousePos.y = HIWORD(lParam);
 
-        dwThIDs.push_back(DWORD(idCount));
         HANDLE hThread = (HANDLE)_beginthreadex(NULL, 0, (unsigned(__stdcall*)(void*))ThFunc
-            , NULL, 0, (unsigned*)&dwThIDs[idCount]);
-
+            , NULL, 0, 0);
 
         hThreads.push_back(hThread);
-        arrMousePos.push_back(ptMousePos);
 
-
-        //WaitForMultipleObjects(idCount, &hThreads[0], TRUE, INFINITE);
-
-        idCount++;
-        InvalidateRect(hWnd, NULL, TRUE);
     }
    
         break;
 
     case WM_LBUTTONUP:
-        InvalidateRect(hWnd, NULL, TRUE);
-
 
         break;
 
     case WM_MOUSEMOVE:
-        if (bFlag)
-        {
-            ptCurPos.x = LOWORD(lParam);
-            ptCurPos.y = HIWORD(lParam);
-            InvalidateRect(hWnd, NULL, TRUE);
-        }
+
         break;
     case WM_PAINT:
     {
@@ -283,7 +261,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     break;
     case WM_DESTROY:
     {
-        for (int i = 0; i < idCount; i++)
+        for (int i = 0; i < hThreads.size(); i++)
         {
             CloseHandle(hThreads[i]);
         }
@@ -321,23 +299,27 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     return (INT_PTR)FALSE;
 }
 
-unsigned __stdcall ThFunc(LPVOID lpParam)
+unsigned __stdcall ThFunc()
 {
-    GetDC(g_hWnd);
+    EnterCriticalSection(&cs);
+    srand(time(NULL));
+    HWND hWnd = g_hWnd;
     POINT _mousePos = ptMousePos;
-
-    SelectObject(g_hdc, GetStockObject(LTGRAY_BRUSH));
-
+    int radius = 30;
+    HDC hdc;
+    LeaveCriticalSection(&cs);
     while (1)
     {
-        EnterCriticalSection(&cs);
-        _mousePos.x++;
-        Ellipse(g_hdc, _mousePos.x - circleRadius, ptMousePos.y - circleRadius,
-            _mousePos.x + circleRadius, ptMousePos.y + circleRadius);
 
-        LeaveCriticalSection(&cs);
-        Sleep(1);
+        hdc = GetDC(hWnd);
+        SelectObject(hdc, CreateSolidBrush(RGB(rand() % 256, rand() % 256, rand() % 256)));
+        Ellipse(hdc, _mousePos.x - radius, _mousePos.y - radius,
+            _mousePos.x + radius, _mousePos.y + radius);
+
+        Sleep(1000);
+
     }
-    ReleaseDC(g_hWnd, g_hdc);
+
+    ReleaseDC(hWnd, hdc);
     return 0;
 }
