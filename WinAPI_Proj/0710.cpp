@@ -348,6 +348,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             UpdateFrame(hWnd);
             InvalidateRect(hWnd, NULL, TRUE);
         }
+    }
         break;
 
     case WM_KEYDOWN://키보드 누르면
