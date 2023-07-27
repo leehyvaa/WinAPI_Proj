@@ -65,8 +65,6 @@ void GMap::DrawMap(HDC hdc)
 
 void GMap::UpdateMap()
 {
-    //이쪽 작업중이었나?
-
 
     pMap = new POINT[m_enemyZone.size()];
     

@@ -4,8 +4,12 @@ class GMap
 {
 	SINGLE(GMap)
 public:
-	list<MovePoint> m_enemyZone;
 	POINT* pMap;
+	list<MovePoint> m_enemyZone;
+
+	list<MovePoint> m_firstRail;
+	list<MovePoint> m_secondRail;
+
 	list<MovePoint> m_playerRail;
 	list<MovePoint> m_tempRail;
 
