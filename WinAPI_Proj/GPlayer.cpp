@@ -23,7 +23,7 @@ GPlayer::GPlayer()
 
 	m_OnDrawRail = false;
 	clockWise = true;
-	enterDir = DEFAULT;
+	updateDir = DEFAULT;
 	objectType = Player;
 	inBoss = false;
 }
@@ -39,7 +39,7 @@ GPlayer::GPlayer(Vec2 _vPos, Vec2 _vScale)
 	//m_fSpeed = 300;
 	m_OnDrawRail = false;
 	clockWise = true;
-	enterDir = DEFAULT;
+	updateDir = DEFAULT;
 	inBoss = false;
 
 
@@ -59,7 +59,43 @@ void GPlayer::ResetRail()
 
 }
 
+void GPlayer::DrawCheck(POINT _nextP,POINT _crntP,PlayerDir _dir)
+{
+	bool inLine = InLine(GMap::GetInst()->m_playerRail, _nextP);
 
+	if (m_OnDrawRail && inLine)
+	{
+		//도착점 추가해야함
+		DrawRail();
+	}
+
+	DrawTempRail(_nextP, _dir);
+
+	if (!m_OnDrawRail && !inLine)
+	{
+		m_OnDrawRail = true;
+		//시작점 추가해야함
+	}
+}
+
+void GPlayer::DrawTempRail(POINT _p, PlayerDir _dir)
+{
+	if (updateDir != _dir)
+	{
+		updateDir = _dir;
+		//점 추가
+	}
+	
+
+}
+
+
+void GPlayer::DrawRail()
+{
+
+
+	ResetRail();
+}
 
 void GPlayer::Update()
 {
@@ -88,32 +124,74 @@ void GPlayer::Update()
 		ResetRail();
 	}
 	
-	
+	if (m_OnDrawRail)
+	{
+
+	}
+
+
 
 	if (KEY_HOLD(KEY::SPACE))
 	{
-		
+		if (KEY_HOLD(KEY::LEFT))
+		{
+			if (InBox(GMap::GetInst()->m_playerRail, left))
+			{
+				m_vPos.x--;
 
-		//if (KEY_HOLD(KEY::LEFT))
-		//{
-		//	if (InBox(GMap::GetInst()->m_arrMap, 4, pos))
-		//		m_vPos.x--;
-		//}
-		//if (KEY_HOLD(KEY::RIGHT))
-		//{
-		//	if (InBox(GMap::GetInst()->m_arrMap, 4, pos))
-		//		m_vPos.x++;
-		//}
-		//if (KEY_HOLD(KEY::UP))
-		//{
-		//	if (InBox(GMap::GetInst()->m_arrMap, 4, pos))
-		//		m_vPos.y--;
-		//}
-		//if (KEY_HOLD(KEY::DOWN))
-		//{
-		//	if (InBox(GMap::GetInst()->m_arrMap, 4, pos))
-		//		m_vPos.y++;
-		//}
+				if (updateDir == DEFAULT && m_OnDrawRail)
+					updateDir = LEFT;
+
+				DrawCheck(left,pos,LEFT);
+
+
+
+
+					
+			}
+		}
+		else if (KEY_HOLD(KEY::RIGHT))
+		{
+			if (InBox(GMap::GetInst()->m_playerRail, right))
+			{
+				m_vPos.x++;
+
+				if (updateDir == DEFAULT && m_OnDrawRail)
+					updateDir = RIGHT;
+
+				DrawCheck(right,pos,RIGHT);
+
+
+				
+			}
+		}
+		else if (KEY_HOLD(KEY::UP))
+		{
+			if (InBox(GMap::GetInst()->m_playerRail, up))
+			{
+				m_vPos.y--;
+
+				if (updateDir == DEFAULT && m_OnDrawRail)
+					updateDir = UP;
+
+				DrawCheck(up,pos,UP);
+
+			}
+		}
+		else if (KEY_HOLD(KEY::DOWN))
+		{
+			if (InBox(GMap::GetInst()->m_playerRail, down))
+			{
+				m_vPos.y++;
+
+				if (updateDir == DEFAULT && m_OnDrawRail)
+					updateDir = DOWN;
+
+				DrawCheck(down,pos,DOWN);
+
+
+			}
+		}
 	}
 	else
 	{
@@ -286,13 +364,117 @@ bool GPlayer::InLine(list<MovePoint>& _line, POINT _point)
 	return false;
 }
 
-bool GPlayer::InBox(const POINT* _box, int _count, POINT _p)
+bool GPlayer::InBox(list<MovePoint>& _line, POINT _p)
 {
-	/*POINT a;
+	int topCount = 0;
+	int leftCount = 0;
+	int rightCount = 0;
+	int botCount = 0;
+
+	POINT top = { _p.x, _p.y - 1200 };
+	POINT left = { _p.x-1200, _p.y};
+	POINT right = { _p.x+1200, _p.y};
+	POINT bot = { _p.x, _p.y + 1200 };
+
 	
-	double A = 
+	list<MovePoint>::iterator iter = _line.begin();
 
-	*/
+	for (iter = _line.begin(); iter != _line.end(); iter++)
+	{
 
-	return true;
+		list<MovePoint>::iterator nextIt = next(iter);
+
+		if (iter == prev(_line.end()))
+			nextIt = _line.begin();
+
+
+
+		Vec2 v = { iter->x,iter->y };
+		Vec2 v2 = { nextIt->x,nextIt->y };
+		
+		topCount += CollisionCount(v, v2, _p, top);
+		leftCount += CollisionCount(v, v2, _p, left);
+		rightCount += CollisionCount(v, v2, _p, right);
+		botCount += CollisionCount(v, v2, _p, bot);
+
+
+
+	}
+
+
+	if (topCount % 2 == 1 || botCount %2 == 1)
+		return true;
+	else
+		return false;
+}
+
+int GPlayer::CollisionCount(Vec2 v,Vec2 v2,POINT _p, POINT _rayP)
+{
+	float a, b, c;
+	float a1, b1, c1;
+
+
+	a = v2.y - v.y;
+	b = v.x - v2.x;
+	c = v.x * (v2.y - v.y) - v.y * (v2.x - v.x);
+
+
+	a1 = _rayP.y - _p.y;
+	b1 = _p.x - _rayP.x;
+	c1 = _p.x * (_rayP.y - _p.y) - _p.y * (_rayP.x - _p.x);
+
+	double del = a * b1 - a1 * b;
+
+
+	double delX = c * b1 - c1 * b;
+	double delY = a * c1 - c * a1;
+
+	double x = delX / del;
+	double y = delY / del;
+	
+
+	if (abs(del) != 0)
+	{
+		if (_p.y < _rayP.y)
+		{
+			if (y <= _rayP.y && y >= _p.y)
+			{
+				if (v.x <= v2.x)
+				{
+					if (x >= v.x && x <= v2.x)
+						return 1;
+				}
+				else
+				{
+					if (x <= v.x && x >= v2.x)
+						return 1;
+				}
+			}
+				
+		}
+		else
+		{
+			if (y >= _rayP.y && y <= _p.y)
+			{
+				if (v.x <= v2.x)
+				{
+					if (x >= v.x && x <= v2.x)
+						return 1;
+				}
+				else
+				{
+					if (x <= v.x && x >= v2.x)
+						return 1;
+				}
+			}
+		}
+		
+	
+
+	}
+
+
+	return 0;
+
+
 }

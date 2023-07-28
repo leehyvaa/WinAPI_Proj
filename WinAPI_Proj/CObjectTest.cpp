@@ -152,7 +152,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
     static vector<CObject*> vObj;
-  
+
+
+
+   
+    vObj.push_back(new CCircle(hWnd, ptMousePos));
+ 
+    
+    static vector<CObject> vObj2;
+
+
+    CCircle k;
+    vObj2.push_back(k);
+
+
+
 
     switch (message)
     {
