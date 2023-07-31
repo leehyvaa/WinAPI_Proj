@@ -11,10 +11,17 @@ CCollider::CCollider()
 	:m_pOwner(nullptr)
 	,m_iID(g_iNextID++)
 {
+	
 }
 
+//오브젝트를 복사생성자로 만들었을때의 딥카피
 CCollider::CCollider(const CCollider& _origin)
+	:m_pOwner(nullptr)
+	,m_vOffsetPos(_origin.m_vOffsetPos)
+	,m_vScale(_origin.m_vScale)
+	,m_iID(g_iNextID++)
 {
+
 }
 
 CCollider::~CCollider()

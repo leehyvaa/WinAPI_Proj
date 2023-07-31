@@ -1,9 +1,14 @@
 #pragma once
+class CCollider;
+
 class CCollisionMgr
 {
 	SINGLE(CCollisionMgr)
 private:
-	UINT m_arrCheck[(UINT)GROUP_TYPE::END];
+	//충돌체 간의 이전 프레임 충돌 정보
+
+
+	UINT m_arrCheck[(UINT)GROUP_TYPE::END]; //그룹간의 충돌 체크 매트릭스
 public:
 	void Update();
 

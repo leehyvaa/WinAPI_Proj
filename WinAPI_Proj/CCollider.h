@@ -25,7 +25,7 @@ public:
 	void FinalUpdate();
 	void Render(HDC _dc);
 
-	//대입연산자 함수를 못쓰게 대입하자마자 복사한 콜라이더를 delete 해버림
+	//대입연산자 함수를 못쓰게 delete 해버림
 	CCollider& operator = (CCollider& _origin) = delete;
 
 public:
