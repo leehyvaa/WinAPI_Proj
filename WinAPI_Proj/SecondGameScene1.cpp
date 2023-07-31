@@ -1,12 +1,14 @@
 #include "pch.h"
 #include "SecondGameScene1.h"
+
 #include "GameObject.h"
 #include "CPathMgr.h"
 #include "CTexture.h"
 
+#include "CMonster.h"
+#include "SPlayer.h"
 
-#include "GPlayer.h"
-#include "GBoss.h"
+#include "CCollisionMgr.h"
 
 SecondGameScene1::SecondGameScene1()
 {
@@ -29,17 +31,24 @@ void SecondGameScene1::Enter()
 	pObj->SetScale(Vec2(100.f, 100.f));
 	AddObject(pObj, GROUP_TYPE::DEFAULT);*/
 	
-	GameObject* player = new GPlayer(Vec2(20, 20), Vec2(5, 5));
-	GameObject* boss = new GBoss(Vec2(300, 300), Vec2(5, 5));
+	GameObject* player = new SPlayer(Vec2(20, 20), Vec2(5, 5));
+	GameObject* monster = new CMonster();
+	monster->SetPos(Vec2(400.f, 100.f));
+	monster->SetScale(Vec2(100.f, 100.f));
+
 	
-	player->SetTarget(boss);
 
 	AddObject(player, GROUP_TYPE::PLAYER);
-	AddObject(boss, GROUP_TYPE::MONSTER);
+	AddObject(monster, GROUP_TYPE::MONSTER);
+
+
+	//그룹간 충돌 체크
+	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::MONSTER);
 	
 }
 
 void SecondGameScene1::Exit()
 {
+	CCollisionMgr::GetInst()->Reset();
 }
 

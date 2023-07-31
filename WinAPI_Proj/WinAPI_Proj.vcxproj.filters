@@ -28,9 +28,6 @@
     <Filter Include="Engine\Manager\KeyMgr">
       <UniqueIdentifier>{01218b4a-e319-4918-816a-d4198e194bb9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\수업">
-      <UniqueIdentifier>{400ff658-7928-4659-8900-6db49c465019}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Object">
       <UniqueIdentifier>{da7736a7-cd61-4031-96a2-b28b468592b0}</UniqueIdentifier>
     </Filter>
@@ -39,18 +36,6 @@
     </Filter>
     <Filter Include="Engine\Tool">
       <UniqueIdentifier>{b314971d-7d79-441e-9953-14ae7221afe1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\미니게임">
-      <UniqueIdentifier>{d35d18ba-71b4-4d3b-ad28-00111570da3d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\작업중">
-      <UniqueIdentifier>{71c7673e-d330-4842-b648-c1a679c9423e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\작업중">
-      <UniqueIdentifier>{1644d1f5-1c24-417a-ba24-b1b616c29892}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\미니게임">
-      <UniqueIdentifier>{9bb38146-1dd3-4b88-bdd9-d8269bd9c4fd}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\Manager\TimeMgr">
       <UniqueIdentifier>{8a803213-4a6f-4981-9a28-131e3ea90bae}</UniqueIdentifier>
@@ -85,6 +70,12 @@
     <Filter Include="Engine\Compenent">
       <UniqueIdentifier>{f6e6b2d6-79f6-447e-92fa-d8b791774321}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Module">
+      <UniqueIdentifier>{e166b98a-5d25-4d15-948d-4aeefff08a46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Manager\CollisionMgr">
+      <UniqueIdentifier>{f6b2c51f-c402-4ecc-a7a9-b12b8135bf39}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WinAPI_Proj.h">
@@ -102,9 +93,6 @@
     <ClInclude Include="CKeyMgr.h">
       <Filter>Engine\Manager\KeyMgr</Filter>
     </ClInclude>
-    <ClInclude Include="GObject.h">
-      <Filter>Engine\Object</Filter>
-    </ClInclude>
     <ClInclude Include="Resource.h">
       <Filter>헤더 파일\디폴트</Filter>
     </ClInclude>
@@ -117,41 +105,11 @@
     <ClInclude Include="CTool.h">
       <Filter>Engine\Tool</Filter>
     </ClInclude>
-    <ClInclude Include="CBullet.h">
-      <Filter>헤더 파일\미니게임</Filter>
-    </ClInclude>
-    <ClInclude Include="CEnemy.h">
-      <Filter>헤더 파일\미니게임</Filter>
-    </ClInclude>
-    <ClInclude Include="CWall.h">
-      <Filter>헤더 파일\미니게임</Filter>
-    </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>헤더 파일\미니게임</Filter>
-    </ClInclude>
-    <ClInclude Include="CSpawner.h">
-      <Filter>헤더 파일\미니게임</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandCenter.h">
-      <Filter>헤더 파일\미니게임</Filter>
-    </ClInclude>
-    <ClInclude Include="CObject.h">
-      <Filter>헤더 파일\작업중</Filter>
-    </ClInclude>
-    <ClInclude Include="cVector3.h">
-      <Filter>헤더 파일\작업중</Filter>
-    </ClInclude>
-    <ClInclude Include="Vec2.h">
-      <Filter>헤더 파일\작업중</Filter>
-    </ClInclude>
     <ClInclude Include="struct.h">
       <Filter>Engine\Header</Filter>
     </ClInclude>
     <ClInclude Include="CTimeMgr.h">
       <Filter>Engine\Manager\TimeMgr</Filter>
-    </ClInclude>
-    <ClInclude Include="GMap.h">
-      <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="GPlayer.h">
       <Filter>헤더 파일</Filter>
@@ -165,9 +123,6 @@
     <ClInclude Include="CScene_Start.h">
       <Filter>Engine\Scene\CScene_Start</Filter>
     </ClInclude>
-    <ClInclude Include="CCoreMini.h">
-      <Filter>헤더 파일\미니게임</Filter>
-    </ClInclude>
     <ClInclude Include="SecondGameScene1.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -176,9 +131,6 @@
     </ClInclude>
     <ClInclude Include="CMonster.h">
       <Filter>Engine\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="GBoss.h">
-      <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="CRes.h">
       <Filter>Engine\Resource</Filter>
@@ -198,91 +150,34 @@
     <ClInclude Include="CCollider.h">
       <Filter>Engine\Compenent</Filter>
     </ClInclude>
-    <ClInclude Include="PriorityQueue.h">
+    <ClInclude Include="SPlayer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="DoubleLinkedList.h">
+    <ClInclude Include="Vec2.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="SelectGDI.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="CCollisionMgr.h">
+      <Filter>Engine\Manager\CollisionMgr</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
       <Filter>Engine\Core</Filter>
     </ClCompile>
-    <ClCompile Include="0703.cpp">
-      <Filter>소스 파일\수업</Filter>
-    </ClCompile>
-    <ClCompile Include="0705.cpp">
-      <Filter>소스 파일\수업</Filter>
-    </ClCompile>
-    <ClCompile Include="0706.cpp">
-      <Filter>소스 파일\수업</Filter>
-    </ClCompile>
-    <ClCompile Include="0707.cpp">
-      <Filter>소스 파일\수업</Filter>
-    </ClCompile>
-    <ClCompile Include="WinAPI_Proj.cpp">
-      <Filter>소스 파일\수업</Filter>
-    </ClCompile>
-    <ClCompile Include="WindowsProject1.cpp">
-      <Filter>소스 파일\수업</Filter>
-    </ClCompile>
     <ClCompile Include="CKeyMgr.cpp">
       <Filter>Engine\Manager\KeyMgr</Filter>
-    </ClCompile>
-    <ClCompile Include="sample.cpp">
-      <Filter>소스 파일\수업</Filter>
-    </ClCompile>
-    <ClCompile Include="GObject.cpp">
-      <Filter>Engine\Object</Filter>
     </ClCompile>
     <ClCompile Include="CTool.cpp">
       <Filter>Engine\Tool</Filter>
     </ClCompile>
-    <ClCompile Include="CBullet.cpp">
-      <Filter>소스 파일\미니게임</Filter>
-    </ClCompile>
-    <ClCompile Include="CEnemy.cpp">
-      <Filter>소스 파일\미니게임</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandCenter.cpp">
-      <Filter>소스 파일\미니게임</Filter>
-    </ClCompile>
-    <ClCompile Include="CSpawner.cpp">
-      <Filter>소스 파일\미니게임</Filter>
-    </ClCompile>
-    <ClCompile Include="CWall.cpp">
-      <Filter>소스 파일\미니게임</Filter>
-    </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>소스 파일\미니게임</Filter>
-    </ClCompile>
-    <ClCompile Include="CObject.cpp">
-      <Filter>소스 파일\작업중</Filter>
-    </ClCompile>
-    <ClCompile Include="CObjectTest.cpp">
-      <Filter>소스 파일\작업중</Filter>
-    </ClCompile>
-    <ClCompile Include="cVector3.cpp">
-      <Filter>소스 파일\작업중</Filter>
-    </ClCompile>
-    <ClCompile Include="Vec2.cpp">
-      <Filter>소스 파일\작업중</Filter>
-    </ClCompile>
     <ClCompile Include="CTimeMgr.cpp">
       <Filter>Engine\Manager\TimeMgr</Filter>
     </ClCompile>
-    <ClCompile Include="GMap.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="GPlayer.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="MiniGame.cpp">
       <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="CCoreMini.cpp">
-      <Filter>소스 파일\미니게임</Filter>
     </ClCompile>
     <ClCompile Include="CScene.cpp">
       <Filter>Engine\Scene</Filter>
@@ -302,15 +197,6 @@
     <ClCompile Include="CMonster.cpp">
       <Filter>Engine\Object</Filter>
     </ClCompile>
-    <ClCompile Include="0712.cpp">
-      <Filter>소스 파일\수업</Filter>
-    </ClCompile>
-    <ClCompile Include="0717.cpp">
-      <Filter>소스 파일\수업</Filter>
-    </ClCompile>
-    <ClCompile Include="GBoss.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="CRes.cpp">
       <Filter>Engine\Resource</Filter>
     </ClCompile>
@@ -329,17 +215,20 @@
     <ClCompile Include="CCollider.cpp">
       <Filter>Engine\Compenent</Filter>
     </ClCompile>
-    <ClCompile Include="0724.cpp">
+    <ClCompile Include="SPlayer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="0710.cpp">
-      <Filter>소스 파일\작업중</Filter>
+    <ClCompile Include="GPlayer.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="AStar.cpp">
-      <Filter>소스 파일\수업</Filter>
+    <ClCompile Include="Vec2.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="PriorityQueue.cpp">
-      <Filter>소스 파일\수업</Filter>
+    <ClCompile Include="SelectGDI.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CCollisionMgr.cpp">
+      <Filter>Engine\Manager\CollisionMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

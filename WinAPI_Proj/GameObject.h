@@ -1,6 +1,8 @@
 #pragma once
 #include "Vec2.h"
 
+class CCollider;
+
 enum collisionType
 {
 	NONE,
@@ -21,8 +23,10 @@ private:
 	Vec2 m_vScale;
 	Vec2 m_vDir;
 
+	CCollider* m_pCollider;
+
 public:
-	vector<GameObject*> m_target;
+
 	ObjectType objectType;
 
 public:
@@ -35,14 +39,15 @@ public:
 	Vec2 GetPos() { return m_vPos; }
 	Vec2 GetScale() { return m_vScale; }
 
-	void SetTarget(GameObject* _target);
+	void CreateCollider();
+	CCollider* GetCollider() {return m_pCollider; }
+
 
 
 	virtual void Update() = 0;
+	virtual void FinalUpdate() final;
 	virtual void Render(HDC _dc);
-
-
-	//virtual bool Collision(GameObject& _vObj);
+	void Component_Render(HDC _dc);
 
 };
 

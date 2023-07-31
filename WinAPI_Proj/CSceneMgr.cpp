@@ -41,6 +41,7 @@ void CSceneMgr::init()
 void CSceneMgr::Update()
 {
 	m_pCurScene->Update();
+	m_pCurScene->FinalUpdate();
 }
 
 void CSceneMgr::Render(HDC _dc)

@@ -11,16 +11,24 @@ private:
 	HBITMAP m_hBit;
 	HDC		m_memDC;
 
+
+	//GDI Object
+	HBRUSH m_arrBrush[(UINT)BRUSH_TYPE::END];
+	HPEN m_arrPen[(UINT)PEN_TYPE::END];
+
 public:
 	int init(HWND _hWnd, POINT _ptResolution);
 	void Progress();
-	void Update();
-	void Render();
+
+	void CreateBrushPen();
 
 	HDC GetmemDC() { return m_memDC; }
 	HDC GetMainDC() { return m_hDC; }
 	HWND GetMainHwnd() { return m_hWnd; }
 	POINT GetResolution() { return m_ptResolution; }
+	HBRUSH GetBrush(BRUSH_TYPE _eType) { return m_arrBrush[(UINT)_eType]; }
+	HPEN GetPen(PEN_TYPE _eType) { return m_arrPen[(UINT)_eType]; }
+
 	void GameOver();
 private:
 

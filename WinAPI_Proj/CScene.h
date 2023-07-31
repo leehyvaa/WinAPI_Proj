@@ -15,16 +15,20 @@ public:
 
 
 	void Update();
+	void FinalUpdate();
 	void Render(HDC _dc);
 
 	virtual void Enter()=0;
 	virtual void Exit() = 0;
 
-protected:
+public:
 	void AddObject(GameObject* _pObj, GROUP_TYPE _eType)
 	{
 		m_arrObj[(UINT)_eType].push_back(_pObj);
 	}
+
+	//벡터 레퍼런스를 반환하면서 const로 원본수정 불가능하게
+	const vector<GameObject*>& GetGroupObject(GROUP_TYPE _eType){return m_arrObj[(UINT)_eType];}
 public:
 	CScene();
 	virtual ~CScene();

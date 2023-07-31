@@ -30,6 +30,12 @@ public :
 	Vec2 operator-(const Vec2& v) const;
 	Vec2 operator*(float n) const;
 	Vec2 operator/(float n) const;
+	Vec2 operator/(const Vec2& v) const;
+	Vec2 operator*(const Vec2& v) const;
+
+	Vec2 operator+(const Vec2& v) const;
+
+
 	Vec2& operator = (POINT _pt)
 	{
 		x = _pt.x;
