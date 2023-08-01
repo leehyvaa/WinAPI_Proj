@@ -17,7 +17,7 @@ public:
 
 private:
     CTexture();
-    ~CTexture();
+    virtual ~CTexture();
 
     //텍스처 클래스의 생성자를 private으로 해 아무데서나 생성할 수 없게 하고
     //friend 처리된 CResMgr에서만 생성할 수 있게 함

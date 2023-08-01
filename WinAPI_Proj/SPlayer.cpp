@@ -8,15 +8,21 @@
 #include "CResMgr.h"
 #include "CCollider.h"
 #include "CWire.h"
+#include "CAnimator.h"
 
 SPlayer::SPlayer()
 	:m_pTex(nullptr)
 	, m_fSpeed(1000)
 {
-	m_pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\sigong.bmp");
+	//m_pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\sigong.bmp");
+	
 	CreateCollider();
 	GetCollider()->SetOffsetPos(Vec2());
 	GetCollider()->SetScale(Vec2(50.f, 50.f));
+
+	m_pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\zero_run.bmp");
+	CreateAnimator();
+	GetAnimator()->CreateAnimation(L"WALK_RIGHT", m_pTex, Vec2(0.f, 0.f), Vec2(57.f, 52.f), Vec2(57.f, 0.f),1.f, 16);
 }
 
 

@@ -17,3 +17,17 @@ void Safe_Delete_Vec(vector<T>& _vec)
 
 	_vec.clear();
 }
+
+template<typename T1,typename T2>
+void Safe_Delete_Map(map<T1, T2>& _map)
+{
+	//템플릿 안에서 iterator 같은 이너클래스 쓰려면 typename을 적어줘야함
+	typename map<T1, T2>::iterator iter = _map.begin();
+
+	for (; iter != _map.end(); iter++)
+	{
+		if (nullptr != iter->second)
+			delete iter->second;
+	}
+	_map.clear();
+}

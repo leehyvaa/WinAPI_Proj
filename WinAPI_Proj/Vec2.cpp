@@ -44,13 +44,13 @@ float Vec2::Length()
 
 float Vec2::Cross(Vec2& _vec, POINT p)
 {
-	POINT v1;
-	v1.x = _vec.x - x;
-	v1.y = _vec.y - y;
+	Vec2 v1;
+	v1.x = (float)_vec.x - x;
+	v1.y = (float)_vec.y - y;
 
-	POINT v2;
-	v2.x = p.x - x;
-	v2.y = p.y - y;
+	Vec2 v2;
+	v2.x = (float)p.x - x;
+	v2.y = (float)p.y - y;
 
 	float ans = v1.x * v2.y - v1.y * v2.x;
 	return ans;

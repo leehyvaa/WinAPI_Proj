@@ -50,10 +50,10 @@ void CCollider::Render(HDC _dc)
 
 
 	Rectangle(_dc
-		,(int)m_vFinalPos.x - m_vScale.x / 2.f
-		,(int)m_vFinalPos.y - m_vScale.y / 2.f
-		,(int)m_vFinalPos.x + m_vScale.x / 2.f
-		,(int)m_vFinalPos.y + m_vScale.y / 2.f);
+		,(int)(m_vFinalPos.x - m_vScale.x / 2.f)
+		,(int)(m_vFinalPos.y - m_vScale.y / 2.f)
+		,(int)(m_vFinalPos.x + m_vScale.x / 2.f)
+		,(int)(m_vFinalPos.y + m_vScale.y / 2.f));
 
 
 	

@@ -1,7 +1,8 @@
 #pragma once
-
+//오브젝트를 설계할 땐 항상 복사생성자를 커스텀해서 만들어야 하는지를 생각할 것
 
 class CCollider;
+class CAnimator;
 
 enum collisionType
 {
@@ -23,22 +24,22 @@ private:
 
 	Vec2 m_vPos;
 	Vec2 m_vScale;
-	//Vec2 m_vDir;
 
 	CCollider* m_pCollider;
+	CAnimator* m_pAnimator;
+
 
 	bool m_bAlive;
 public:
 
-	ObjectType objectType;
 
 public:
 	GameObject();
+	GameObject(const GameObject& _origin);
 	virtual ~GameObject();
 
 	void SetPos(Vec2 _vPos) { m_vPos = _vPos; }
 	void SetScale(Vec2 _vScale) { m_vScale = _vScale; }
-
 	Vec2 GetPos() { return m_vPos; }
 	Vec2 GetScale() { return m_vScale; }
 
@@ -48,9 +49,11 @@ public:
 
 	bool IsDead() { return !m_bAlive; }
 
+
 	void CreateCollider();
 	CCollider* GetCollider() {return m_pCollider; }
-
+	void CreateAnimator();
+	CAnimator* GetAnimator() { return m_pAnimator; }
 
 	virtual void OnCollision(CCollider* _pOther) {};
 	virtual void OnCollisionEnter(CCollider* _pOther) {};
@@ -61,6 +64,7 @@ public:
 	virtual void Render(HDC _dc);
 	void Component_Render(HDC _dc);
 
+	virtual GameObject* Clone() = 0;
 
 private:
 	void SetDead() { m_bAlive = false; }

@@ -9,11 +9,13 @@ CResMgr::CResMgr()
 }
 CResMgr::~CResMgr()
 {
-    map<wstring, CTexture*>::iterator iter = m_mapTex.begin();
+    /*map<wstring, CTexture*>::iterator iter = m_mapTex.begin();
     for (; iter != m_mapTex.end() ; iter++)
     {
         delete iter->second;
-    }
+    } 아래 템플릿함수로 대체 */
+
+    Safe_Delete_Map(m_mapTex);
 }
 CTexture* CResMgr::LoadTexture(const wstring& _strKey, const wstring& _strRelativePath)
 {
@@ -39,10 +41,10 @@ CTexture* CResMgr::FIndTexture(const wstring& _strKey)
 
 
     //map 의 find 리턴형은 iterator로 나옴
-    map<wstring,CTexture*>::iterator iter = m_mapTex.find(_strKey);
+    map<wstring,CRes*>::iterator iter = m_mapTex.find(_strKey);
 
     if (iter == m_mapTex.end())
         return nullptr;
 
-    return iter->second;
+    return (CTexture*)iter->second;
 }

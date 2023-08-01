@@ -14,6 +14,6 @@ public:
 
 public:
 	CRes();
-	~CRes();
+	virtual ~CRes();
 };
 

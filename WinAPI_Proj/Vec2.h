@@ -38,8 +38,8 @@ public :
 
 	Vec2& operator = (POINT _pt)
 	{
-		x = _pt.x;
-		y = _pt.y;
+		x = (float)_pt.x;
+		y = (float)_pt.y;
 	}
 
 

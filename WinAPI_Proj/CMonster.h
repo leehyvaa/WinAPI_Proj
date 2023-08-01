@@ -19,7 +19,8 @@ public:
     virtual void OnCollisionEnter(CCollider* _pOther);
 
     virtual void Update();
-    //virtual void Render(HDC _dc);
+
+    CLONE(CMonster);
 
     CMonster();
     ~CMonster();

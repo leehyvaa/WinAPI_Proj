@@ -18,6 +18,6 @@ public:
 
 
     virtual void OnCollisionEnter(CCollider* _pOther);
-    
+    CLONE(CWire);
 };
 
