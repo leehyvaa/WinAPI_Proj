@@ -8,13 +8,14 @@ class SPlayer : public GameObject
 
 private:
 	CTexture* m_pTex;
-
+	Vec2 m_vDir;
+	float m_fSpeed;
 public:
 	SPlayer();
-	SPlayer(Vec2 _vPos, Vec2 _vScale);
 	virtual ~SPlayer();
 
-	 
+	void CreateWire();
+	void SetDir(Vec2 _dir) { m_vDir = _dir; }
 
 	virtual void Update() override;
 	virtual void Render(HDC _dc)  override;

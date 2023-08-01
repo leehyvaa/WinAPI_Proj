@@ -147,6 +147,7 @@
   <ItemGroup>
     <ClInclude Include="CCollider.h" />
     <ClInclude Include="CCollisionMgr.h" />
+    <ClInclude Include="CEventMgr.h" />
     <ClInclude Include="CKeyMgr.h" />
     <ClInclude Include="CMonster.h" />
     <ClInclude Include="CPathMgr.h" />
@@ -155,8 +156,11 @@
     <ClInclude Include="CScene.h" />
     <ClInclude Include="CSceneMgr.h" />
     <ClInclude Include="CScene_Start.h" />
+    <ClInclude Include="CScene_Tool.h" />
     <ClInclude Include="CSound.h" />
     <ClInclude Include="CTexture.h" />
+    <ClInclude Include="CWire.h" />
+    <ClInclude Include="func.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="CCore.h" />
     <ClInclude Include="CTimeMgr.h" />
@@ -182,6 +186,7 @@
   <ItemGroup>
     <ClCompile Include="CCollider.cpp" />
     <ClCompile Include="CCollisionMgr.cpp" />
+    <ClCompile Include="CEventMgr.cpp" />
     <ClCompile Include="CKeyMgr.cpp" />
     <ClCompile Include="CMonster.cpp" />
     <ClCompile Include="CPathMgr.cpp" />
@@ -190,8 +195,11 @@
     <ClCompile Include="CScene.cpp" />
     <ClCompile Include="CSceneMgr.cpp" />
     <ClCompile Include="CScene_Start.cpp" />
+    <ClCompile Include="CScene_Tool.cpp" />
     <ClCompile Include="CSound.cpp" />
     <ClCompile Include="CTexture.cpp" />
+    <ClCompile Include="CWire.cpp" />
+    <ClCompile Include="func.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="CCore.cpp" />
     <ClCompile Include="CTimeMgr.cpp" />

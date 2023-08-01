@@ -10,6 +10,8 @@
 
 #include "CCollisionMgr.h"
 
+#include "CKeyMgr.h"
+#include "CSceneMgr.h"
 SecondGameScene1::SecondGameScene1()
 {
 }
@@ -18,6 +20,18 @@ SecondGameScene1::~SecondGameScene1()
 {
 }
 
+
+void SecondGameScene1::Update()
+{
+	//부모클래스의 update가 virtual이 아니기 때문에
+	CScene::Update();
+
+
+	if (KEY_TAP(KEY::ENTER))
+	{
+		ChangeScene(SCENE_TYPE::TOOL);
+	}
+}
 
 void SecondGameScene1::Enter()
 {
@@ -31,9 +45,14 @@ void SecondGameScene1::Enter()
 	pObj->SetScale(Vec2(100.f, 100.f));
 	AddObject(pObj, GROUP_TYPE::DEFAULT);*/
 	
-	GameObject* player = new SPlayer(Vec2(20, 20), Vec2(5, 5));
+	GameObject* player = new SPlayer();
+	player->SetPos(Vec2(100, 100));
+	player->SetScale(Vec2(100.f, 100.f));
+
+
 	GameObject* monster = new CMonster();
-	monster->SetPos(Vec2(400.f, 100.f));
+	monster->SetName(L"Monster");
+	monster->SetPos(Vec2(500.f, 200.f));
 	monster->SetScale(Vec2(100.f, 100.f));
 
 	
@@ -44,11 +63,14 @@ void SecondGameScene1::Enter()
 
 	//그룹간 충돌 체크
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::MONSTER);
-	
+	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::MONSTER, GROUP_TYPE::PROJ_PLAYER);
+
 }
 
 void SecondGameScene1::Exit()
 {
+	DeleteAll();
+
 	CCollisionMgr::GetInst()->Reset();
 }
 

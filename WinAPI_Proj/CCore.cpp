@@ -8,6 +8,7 @@
 #include "CPathMgr.h"
 #include "SelectGDI.h"
 #include "CCollisionMgr.h"
+#include "CEventMgr.h"
 CCore::CCore()
 	:m_hWnd(0)
 	, m_ptResolution{}
@@ -71,8 +72,11 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 
 void CCore::Progress()
 {
+	//Manager 업데이트
 	CTimeMgr::GetInst()->Update();
 	CKeyMgr::GetInst()->Update();
+
+	//씬 업데이트, 충돌처리
 	CSceneMgr::GetInst()->Update();
 	CCollisionMgr::GetInst()->Update();
 
@@ -89,8 +93,10 @@ void CCore::Progress()
 	BitBlt(m_hDC, 0, 0, m_ptResolution.x, m_ptResolution.y
 		, m_memDC, 0, 0, SRCCOPY); //소스 비트맵에서 목적비트맵으로 복사
 
-	//CTimeMgr::GetInst()->Render();
+	CTimeMgr::GetInst()->Render();
 
+	//이벤트 지연처리
+	CEventMgr::GetInst()->Update();
 }
 
 void CCore::CreateBrushPen()

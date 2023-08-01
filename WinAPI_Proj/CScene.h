@@ -14,9 +14,9 @@ public:
 	const wstring& GetName() { return m_strName; }
 
 
-	void Update();
-	void FinalUpdate();
-	void Render(HDC _dc);
+	virtual void Update();
+	virtual void FinalUpdate();
+	virtual void Render(HDC _dc);
 
 	virtual void Enter()=0;
 	virtual void Exit() = 0;
@@ -29,6 +29,9 @@ public:
 
 	//벡터 레퍼런스를 반환하면서 const로 원본수정 불가능하게
 	const vector<GameObject*>& GetGroupObject(GROUP_TYPE _eType){return m_arrObj[(UINT)_eType];}
+	void DeleteGroup(GROUP_TYPE _eTarget);
+	void DeleteAll();
+
 public:
 	CScene();
 	virtual ~CScene();

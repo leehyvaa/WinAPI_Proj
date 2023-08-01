@@ -3,6 +3,7 @@
 class SecondGameScene1 :public CScene
 {
 public:
+	virtual void Update();
 	virtual void Enter() override;
 	virtual void Exit() override;
 

@@ -7,28 +7,24 @@
 #include "CTexture.h"
 #include "CResMgr.h"
 #include "CCollider.h"
+#include "CWire.h"
 
 SPlayer::SPlayer()
 	:m_pTex(nullptr)
-{
-	m_pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\sigong.bmp");
-	CreateCollider();
-	GetCollider()->SetScale(Vec2(100.f, 100.f));
-}
-
-SPlayer::SPlayer(Vec2 _vPos, Vec2 _vScale)
-	:m_pTex(nullptr)
+	, m_fSpeed(1000)
 {
 	m_pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\sigong.bmp");
 	CreateCollider();
 	GetCollider()->SetOffsetPos(Vec2());
-	GetCollider()->SetScale(Vec2(50.f, 100.f));
-
+	GetCollider()->SetScale(Vec2(50.f, 50.f));
 }
+
 
 SPlayer::~SPlayer()
 {
 }
+
+
 
 void SPlayer::Update()
 {
@@ -44,12 +40,28 @@ void SPlayer::Update()
 		//GMap::GetInst()->DrawMap();
 		if (KEY_TAP(KEY::E))
 			system("cls");
-	if (KEY_TAP(KEY::V))
 
 
+	if (KEY_TAP(KEY::SPACE))
+		CreateWire();
 
 
-
+	if (KEY_HOLD(KEY::LEFT))
+	{
+		vPos.x= vPos.x - m_fSpeed * fDT;
+	}
+	if (KEY_HOLD(KEY::RIGHT))
+	{
+		vPos.x = vPos.x + m_fSpeed * fDT;
+	}
+	if (KEY_HOLD(KEY::UP))
+	{
+		vPos.y = vPos.y - m_fSpeed * fDT;
+	}
+	if (KEY_HOLD(KEY::DOWN))
+	{	
+		vPos.y = vPos.y + m_fSpeed * fDT;
+	}
 
 
 
@@ -75,4 +87,19 @@ void SPlayer::Render(HDC _dc)
 		, 0, 0, iWidth, iHeight, RGB(255, 0, 255));
 
 	Component_Render(_dc);
+}
+
+void SPlayer::CreateWire()
+{
+	Vec2 vWirePos = GetPos();
+	vWirePos.y -= GetScale().y / 2.f;
+
+	CWire* pWire = new CWire;
+	pWire->SetName(L"Wire");
+	pWire->SetPos(vWirePos);
+	pWire->SetScale(Vec2(11.f, 11.f));
+	pWire->SetDir(Vec2(0.f, -1.f));
+
+	CreateObject(pWire, GROUP_TYPE::PROJ_PLAYER);
+	//CreateObject 함수에 포지션, 방향, 스케일을 설정해주는 인자를 넣어야함
 }

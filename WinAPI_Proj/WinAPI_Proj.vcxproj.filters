@@ -76,13 +76,13 @@
     <Filter Include="Engine\Manager\CollisionMgr">
       <UniqueIdentifier>{f6b2c51f-c402-4ecc-a7a9-b12b8135bf39}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Manager\EventMgr">
+      <UniqueIdentifier>{6f189ab7-5544-4013-be2c-f46a5869bfcb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WinAPI_Proj.h">
       <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="CCore.h">
-      <Filter>Engine\Core</Filter>
     </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>Engine\Header</Filter>
@@ -153,14 +153,29 @@
     <ClInclude Include="SPlayer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Vec2.h">
+    <ClInclude Include="CCollisionMgr.h">
+      <Filter>Engine\Manager\CollisionMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="CCore.h">
+      <Filter>Engine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="CEventMgr.h">
+      <Filter>Engine\Manager\EventMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="func.h">
+      <Filter>Engine\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="CWire.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="SelectGDI.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>Engine\Tool</Filter>
     </ClInclude>
-    <ClInclude Include="CCollisionMgr.h">
-      <Filter>Engine\Manager\CollisionMgr</Filter>
+    <ClInclude Include="Vec2.h">
+      <Filter>Engine\Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="CScene_Tool.h">
+      <Filter>Engine\Scene\CScene_Tool</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -221,14 +236,26 @@
     <ClCompile Include="GPlayer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Vec2.cpp">
+    <ClCompile Include="CCollisionMgr.cpp">
+      <Filter>Engine\Manager\CollisionMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CEventMgr.cpp">
+      <Filter>Engine\Manager\EventMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="func.cpp">
+      <Filter>Engine\Header</Filter>
+    </ClCompile>
+    <ClCompile Include="CWire.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="SelectGDI.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>Engine\Tool</Filter>
     </ClCompile>
-    <ClCompile Include="CCollisionMgr.cpp">
-      <Filter>Engine\Manager\CollisionMgr</Filter>
+    <ClCompile Include="Vec2.cpp">
+      <Filter>Engine\Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="CScene_Tool.cpp">
+      <Filter>Engine\Scene\CScene_Tool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
