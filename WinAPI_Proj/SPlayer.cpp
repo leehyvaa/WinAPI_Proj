@@ -9,10 +9,11 @@
 #include "CCollider.h"
 #include "CWire.h"
 #include "CAnimator.h"
+#include "CAnimation.h"
+
 
 SPlayer::SPlayer()
-	:m_pTex(nullptr)
-	, m_fSpeed(1000)
+	: m_fSpeed(1000)
 {
 	//m_pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\sigong.bmp");
 	
@@ -20,9 +21,19 @@ SPlayer::SPlayer()
 	GetCollider()->SetOffsetPos(Vec2());
 	GetCollider()->SetScale(Vec2(50.f, 50.f));
 
-	m_pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\zero_run.bmp");
+	CTexture* pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\zero_run.bmp");
 	CreateAnimator();
-	GetAnimator()->CreateAnimation(L"WALK_RIGHT", m_pTex, Vec2(0.f, 0.f), Vec2(57.f, 52.f), Vec2(57.f, 0.f),1.f, 16);
+	GetAnimator()->CreateAnimation(L"WALK_RIGHT", pTex,
+		Vec2(0.f, 0.f), Vec2(57.f, 52.f), Vec2(57.f, 0.f),0.1f, 16);
+	GetAnimator()->Play(L"WALK_RIGHT",true);
+
+
+	//애니메이션 오프셋 넣기
+	//CAnimation* pAnim = GetAnimator()->FindAnimation(L"WALK_RIGHT");
+	//for (int i = 0; i < pAnim->GetMaxFrame(); i++)
+	//{
+	//	pAnim->GetFrame(i).vOffset = Vec2(0.f, -20.f);
+	//}
 }
 
 
@@ -72,6 +83,8 @@ void SPlayer::Update()
 
 
 	SetPos(vPos);
+
+	GetAnimator()->Update();
 }
 
 void SPlayer::Render(HDC _dc)
@@ -80,17 +93,17 @@ void SPlayer::Render(HDC _dc)
 	Vec2 vScale(GetScale().x, GetScale().y);
 
 
-	
+	/*
 	int iWidth = (int)m_pTex->Width();
-	int iHeight = (int)m_pTex->Height();
+	int iHeight = (int)m_pTex->Height();*/
 
 
-	TransparentBlt(_dc
+	/*TransparentBlt(_dc
 		, int(vPos.x - (float)(iWidth / 2))
 		, int(vPos.y - (float)(iHeight / 2))
 		, iWidth, iHeight
 		, m_pTex->GetDC()
-		, 0, 0, iWidth, iHeight, RGB(255, 0, 255));
+		, 0, 0, iWidth, iHeight, RGB(255, 0, 255));*/
 
 	Component_Render(_dc);
 }

@@ -4,6 +4,7 @@
 CAnimator::CAnimator()
 	:m_pOwner(nullptr)
 	,m_pCurAnim(nullptr)
+	,m_bRepeat(false)
 {
 }
 
@@ -19,7 +20,16 @@ CAnimator::~CAnimator()
 void CAnimator::Update()
 {
 	if (nullptr != m_pCurAnim)
+	{
 		m_pCurAnim->Update();
+		
+		//c는 앞의 조건이 거짓이면 뒤의 조건은 보지도 않고 패스한다
+		//이를 이용한 프로그래밍 방식을 고민할것
+		if (m_bRepeat && m_pCurAnim->IsFinish())
+		{
+			m_pCurAnim->SetFrame(0);
+		}
+	}
 }
 
 void CAnimator::Render(HDC _dc)
@@ -54,7 +64,11 @@ CAnimation* CAnimator::FindAnimation(const wstring& _strName)
 	return iter->second;
 }
 
-
-void CAnimator::Play()
+void CAnimator::Play(const wstring& _strName, bool _bRepeat)
 {
+	m_pCurAnim = FindAnimation(_strName);
+	m_bRepeat = _bRepeat;
+
 }
+
+

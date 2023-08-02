@@ -7,7 +7,6 @@ class SPlayer : public GameObject
 {
 
 private:
-	CTexture* m_pTex;
 	Vec2 m_vDir;
 	float m_fSpeed;
 public:
@@ -19,7 +18,6 @@ public:
 	//고유한 id값을 가지고 있을때 얕은복사를 하면 문제가 됨
 	SPlayer(const SPlayer& _origin) 
 		:GameObject(_origin)
-		,m_pTex(_origin.m_pTex)
 		,m_vDir(_origin.m_vDir)
 		,m_fSpeed(_origin.m_fSpeed)
 	{}

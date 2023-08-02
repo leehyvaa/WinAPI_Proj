@@ -1,8 +1,10 @@
 #pragma once
 //오브젝트를 설계할 땐 항상 복사생성자를 커스텀해서 만들어야 하는지를 생각할 것
 
+#include "CCamera.h"
 class CCollider;
 class CAnimator;
+
 
 enum collisionType
 {

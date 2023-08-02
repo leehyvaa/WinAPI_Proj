@@ -2,11 +2,15 @@
 #include "CAnimation.h"
 #include "CAnimator.h"
 #include "CTexture.h"
-
+#include "GameObject.h"
+#include "CTimeMgr.h"
 
 CAnimation::CAnimation()
 	:m_pAnimator(nullptr)
 	,m_pTex(nullptr)
+	,m_iCurFrm(0)
+	,m_fAccTime(0.f)
+	,m_bFinish(false)
 {
 }
 
@@ -15,10 +19,54 @@ CAnimation::~CAnimation()
 }
 void CAnimation::Update()
 {
+	if (m_bFinish)
+		return;
+
+	m_fAccTime += fDT;
+
+	if (m_vecFrm[m_iCurFrm].fDuration < m_fAccTime)
+	{
+		++m_iCurFrm;
+
+		if (m_vecFrm.size() <= m_iCurFrm)
+		{
+			m_iCurFrm = -1;
+			m_bFinish = true;
+			m_fAccTime = 0.f;
+			return;
+		}
+
+		m_fAccTime = m_fAccTime - m_vecFrm[m_iCurFrm].fDuration;
+		
+	}
 }
 
 void CAnimation::Render(HDC _dc)
 {
+	if (m_bFinish)
+		return;
+
+	GameObject* pObj = m_pAnimator->GetObj();
+	Vec2 vPos = pObj->GetPos();
+
+	
+	vPos += m_vecFrm[m_iCurFrm].vOffset; //object 위치에 offset 만큼 추가 이동위치
+	
+
+
+
+	TransparentBlt(_dc
+		, (int)(vPos.x - m_vecFrm[m_iCurFrm].vSlice.x / 2.f)
+		, (int)(vPos.y - m_vecFrm[m_iCurFrm].vSlice.y / 2.f)
+		, (int)(m_vecFrm[m_iCurFrm].vSlice.x)
+		, (int)(m_vecFrm[m_iCurFrm].vSlice.y)
+		, m_pTex->GetDC()
+		, (int)(m_vecFrm[m_iCurFrm].vLT.x)
+		, (int)(m_vecFrm[m_iCurFrm].vLT.y)
+		, (int)(m_vecFrm[m_iCurFrm].vSlice.x)
+		, (int)(m_vecFrm[m_iCurFrm].vSlice.y)
+		, (int)(RGB(255, 0, 255))
+	);
 }
 
 void CAnimation::Create(CTexture* _pTex, Vec2 _vLT, Vec2 _vSliceSize,

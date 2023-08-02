@@ -32,6 +32,11 @@ public :
 	Vec2 operator/(float n) const;
 	Vec2 operator/(const Vec2& v) const;
 	Vec2 operator*(const Vec2& v) const;
+	void operator +=(Vec2 v)
+	{
+		x += v.x;
+		y += v.y;
+	}
 
 	Vec2 operator+(const Vec2& v) const;
 
