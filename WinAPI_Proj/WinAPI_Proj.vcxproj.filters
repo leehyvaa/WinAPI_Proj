@@ -91,6 +91,9 @@
     <Filter Include="Engine\Manager\Camera">
       <UniqueIdentifier>{c865285e-8f94-485a-a604-9fd7ca643ebb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Object\Tile">
+      <UniqueIdentifier>{74b5728a-93c0-43ae-ba29-ed9df238e197}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WinAPI_Proj.h">
@@ -177,9 +180,6 @@
     <ClInclude Include="CWire.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="SelectGDI.h">
-      <Filter>Engine\Tool</Filter>
-    </ClInclude>
     <ClInclude Include="Vec2.h">
       <Filter>Engine\Tool</Filter>
     </ClInclude>
@@ -197,6 +197,15 @@
     </ClInclude>
     <ClInclude Include="CCamera.h">
       <Filter>Engine\Manager\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="SelectGDI.h">
+      <Filter>Engine\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="CTile.h">
+      <Filter>Engine\Object\Tile</Filter>
+    </ClInclude>
+    <ClInclude Include="global.h">
+      <Filter>Engine\Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -266,9 +275,6 @@
     <ClCompile Include="CWire.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="SelectGDI.cpp">
-      <Filter>Engine\Tool</Filter>
-    </ClCompile>
     <ClCompile Include="Vec2.cpp">
       <Filter>Engine\Tool</Filter>
     </ClCompile>
@@ -286,6 +292,12 @@
     </ClCompile>
     <ClCompile Include="CCamera.cpp">
       <Filter>Engine\Manager\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="SelectGDI.cpp">
+      <Filter>Engine\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="CTile.cpp">
+      <Filter>Engine\Object\Tile</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

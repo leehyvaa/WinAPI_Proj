@@ -60,7 +60,7 @@ Vec2& Vec2::normalize()
 {
 	float fLen = Length();
 
-	assert(fLen != 0.f);
+	//assert(fLen != 0.f);
 
 	x /= fLen;
 	y /= fLen;
