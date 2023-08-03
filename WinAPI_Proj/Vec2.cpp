@@ -17,13 +17,13 @@ Vec2 Vec2::operator*(float n) const
 
 Vec2 Vec2::operator/(float n) const
 {
-	assert(!0.f == n);
+	//assert(!0.f == n);
 	return Vec2(x/n,y/n);
 }
 
 Vec2 Vec2::operator/(const Vec2& v) const
 {
-	assert(!(0.f == v.x || 0.f == v.y));
+	//assert(!(0.f == v.x || 0.f == v.y));
 	return Vec2(x/v.x, y/v.y);
 }
 

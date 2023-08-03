@@ -30,7 +30,7 @@ SPlayer::SPlayer()
 
 	//애니메이션 오프셋 넣기
 	//CAnimation* pAnim = GetAnimator()->FindAnimation(L"WALK_RIGHT");
-	//for (int i = 0; i < pAnim->GetMaxFrame(); i++)
+	//for (UINT i = 0; i < pAnim->GetMaxFrame(); i++)
 	//{
 	//	pAnim->GetFrame(i).vOffset = Vec2(0.f, -20.f);
 	//}
@@ -63,19 +63,19 @@ void SPlayer::Update()
 		CreateWire();
 
 
-	if (KEY_HOLD(KEY::LEFT))
+	if (KEY_HOLD(KEY::A))
 	{
 		vPos.x= vPos.x - m_fSpeed * fDT;
 	}
-	if (KEY_HOLD(KEY::RIGHT))
+	if (KEY_HOLD(KEY::D))
 	{
 		vPos.x = vPos.x + m_fSpeed * fDT;
 	}
-	if (KEY_HOLD(KEY::UP))
+	if (KEY_HOLD(KEY::W))
 	{
 		vPos.y = vPos.y - m_fSpeed * fDT;
 	}
-	if (KEY_HOLD(KEY::DOWN))
+	if (KEY_HOLD(KEY::S))
 	{	
 		vPos.y = vPos.y + m_fSpeed * fDT;
 	}

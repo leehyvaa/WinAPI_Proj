@@ -35,7 +35,11 @@ void CWire::Render(HDC _dc)
 	Vec2 vPos = GetPos();
 	Vec2 vScale = GetScale();
 
-	Rectangle(_dc, vPos.x - vScale.x, vPos.y - vScale.y, vPos.x + vScale.x, vPos.y + vScale.y);
+	Rectangle(_dc
+		,(int)(vPos.x - vScale.x)
+		,(int)(vPos.y - vScale.y)
+		,(int)(vPos.x + vScale.x)
+		,(int)(vPos.y + vScale.y));
 
 	Component_Render(_dc);
 }
@@ -47,6 +51,5 @@ void CWire::OnCollisionEnter(CCollider* _pOther)
 	if (pOtherObj->GetName() == L"Monster")
 	{
 		DeleteObject(this);
-		printf("%d", _pOther);
 	}
 }

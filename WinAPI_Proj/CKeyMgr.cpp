@@ -108,6 +108,13 @@ void CKeyMgr::Update()
 				m_vecKey[i].bPrevPush = false;
 			}
 		}
+
+		//마우스 위치 계산
+		POINT ptPos = {};
+		GetCursorPos(&ptPos);
+		ScreenToClient(CCore::GetInst()->GetMainHwnd(), &ptPos);
+
+		m_vCurMousePos = Vec2((float)ptPos.x, (float)ptPos.y);
 	}
 	else
 	{

@@ -9,6 +9,7 @@
 #include "SelectGDI.h"
 #include "CCollisionMgr.h"
 #include "CEventMgr.h"
+#include "CCamera.h"
 CCore::CCore()
 	:m_hWnd(0)
 	, m_ptResolution{}
@@ -75,6 +76,8 @@ void CCore::Progress()
 	//Manager 업데이트
 	CTimeMgr::GetInst()->Update();
 	CKeyMgr::GetInst()->Update();
+	CCamera::GetInst()->Update();
+
 
 	//씬 업데이트, 충돌처리
 	CSceneMgr::GetInst()->Update();

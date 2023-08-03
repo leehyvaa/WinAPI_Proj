@@ -53,7 +53,7 @@ void GameObject::CreateAnimator()
 
 void GameObject::Update()
 {
-	if (CKeyMgr::GetInst()->GetKeyState(KEY::W) == KEY_STATE::HOLD);
+	
 }
 
 void GameObject::FinalUpdate()

@@ -34,6 +34,12 @@ void SecondGameScene1::Update()
 	{
 		ChangeScene(SCENE_TYPE::TOOL);
 	}
+
+	if (KEY_TAP(KEY::LBUTTON))
+	{
+		Vec2 vLookAt = CCamera::GetInst()->GetRealPos(MOUSE_POS);
+		CCamera::GetInst()->SetLookAt(vLookAt);
+	}
 }
 
 void SecondGameScene1::Enter()
@@ -57,6 +63,8 @@ void SecondGameScene1::Enter()
 	/*GameObject* pOtherPlayer = new SPlayer(*(SPlayer*)player);
 	pOtherPlayer->SetPos(Vec2(200.f, 200.f));
 	AddObject(pOtherPlayer, GROUP_TYPE::PLAYER);*/
+
+	//CCamera::GetInst()->SetTarget(player);
 
 
 	GameObject* monster = new CMonster();

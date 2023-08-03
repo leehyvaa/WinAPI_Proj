@@ -4,6 +4,7 @@
 #include "CTexture.h"
 #include "GameObject.h"
 #include "CTimeMgr.h"
+#include "CCamera.h"
 
 CAnimation::CAnimation()
 	:m_pAnimator(nullptr)
@@ -53,6 +54,8 @@ void CAnimation::Render(HDC _dc)
 	vPos += m_vecFrm[m_iCurFrm].vOffset; //object 위치에 offset 만큼 추가 이동위치
 	
 
+	//렌더링 좌표로 변환
+	vPos = CCamera::GetInst()->GetRenderPos(vPos);
 
 
 	TransparentBlt(_dc
