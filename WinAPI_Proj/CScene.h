@@ -9,9 +9,15 @@ private:
 	wstring			 m_strName;//씬 이름
 
 
+	UINT m_iTileX; //타일 가로 개수
+	UINT m_iTileY;
+
 public:
 	void SetName(const wstring& _strName) { m_strName = _strName;}
 	const wstring& GetName() { return m_strName; }
+
+	UINT GetTileX() { return m_iTileX; }
+	UINT GetTileY() { return m_iTileY; }
 
 
 	virtual void Update();
@@ -31,6 +37,8 @@ public:
 	const vector<GameObject*>& GetGroupObject(GROUP_TYPE _eType){return m_arrObj[(UINT)_eType];}
 	void DeleteGroup(GROUP_TYPE _eTarget);
 	void DeleteAll();
+
+	void CreateTile(UINT _iXCount, UINT _iYCount);
 
 public:
 	CScene();

@@ -19,10 +19,15 @@ CAnimator::~CAnimator()
 
 void CAnimator::Update()
 {
+	
+}
+
+void CAnimator::FinalUpdate()
+{
 	if (nullptr != m_pCurAnim)
 	{
 		m_pCurAnim->Update();
-		
+
 		//c는 앞의 조건이 거짓이면 뒤의 조건은 보지도 않고 패스한다
 		//이를 이용한 프로그래밍 방식을 고민할것
 		if (m_bRepeat && m_pCurAnim->IsFinish())

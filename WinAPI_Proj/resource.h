@@ -13,7 +13,7 @@
 #define IDC_WINAPIPROJ                  109
 #define IDC_WINAPIPROJ1                 110
 #define IDR_MAINFRAME                   128
-#define IDD_DIALOG1                     130
+#define IDD_TILE_COUNT                  130
 #define ID_BUTTON_PRINT                 1000
 #define IDC_BUTTON2                     1002
 #define ID_BUTTON_END                   1002
@@ -33,6 +33,8 @@
 #define IDC_BUTTON_INSERT_MAMBER        1013
 #define IDC_BUTTON_INSERT_MEMBER        1013
 #define IDC_BUTTON_DELETE2              1014
+#define IDC_EDIT1                       1014
+#define IDC_EDIT2                       1015
 #define ID_MENUTEST_32771               32771
 #define ID_MENUTEST_32772               32772
 #define ID_MENUTEST_Button1             32773
@@ -52,6 +54,8 @@
 #define ID_DIALOG                       32798
 #define ID_32801                        32801
 #define ID_32802                        32802
+#define ID_32803                        32803
+#define ID_MENU_TILE                    32804
 #define ID_BUTTON_FILEOPEN              32805
 #define ID_BUTTON_SAVE                  32807
 #define IDC_STATIC                      -1
@@ -62,8 +66,8 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        131
-#define _APS_NEXT_COMMAND_VALUE         32803
-#define _APS_NEXT_CONTROL_VALUE         1014
+#define _APS_NEXT_COMMAND_VALUE         32805
+#define _APS_NEXT_CONTROL_VALUE         1016
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif

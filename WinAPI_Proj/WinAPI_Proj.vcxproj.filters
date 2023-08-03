@@ -61,9 +61,6 @@
     <Filter Include="Engine\Resource\Sound">
       <UniqueIdentifier>{a36bb033-ea05-4ef6-8818-5ee76c029338}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Manager\CPathMgr">
-      <UniqueIdentifier>{eb2dbf4c-f439-4a79-8aac-5fd4d225f2d2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Manager\ResMgr">
       <UniqueIdentifier>{f3c469f7-2331-4ea2-85c4-0b4534c0c070}</UniqueIdentifier>
     </Filter>
@@ -93,6 +90,15 @@
     </Filter>
     <Filter Include="Engine\Object\Tile">
       <UniqueIdentifier>{74b5728a-93c0-43ae-ba29-ed9df238e197}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Object\UI">
+      <UniqueIdentifier>{d0868423-cd70-4b58-872c-f302eba093db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Manager\UIMgr">
+      <UniqueIdentifier>{c5442e37-b90c-41e6-b3b6-b6c2b2f88026}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Manager\PathMgr">
+      <UniqueIdentifier>{eb2dbf4c-f439-4a79-8aac-5fd4d225f2d2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -157,7 +163,7 @@
       <Filter>Engine\Resource\Sound</Filter>
     </ClInclude>
     <ClInclude Include="CPathMgr.h">
-      <Filter>Engine\Manager\CPathMgr</Filter>
+      <Filter>Engine\Manager\PathMgr</Filter>
     </ClInclude>
     <ClInclude Include="CResMgr.h">
       <Filter>Engine\Manager\ResMgr</Filter>
@@ -207,6 +213,12 @@
     <ClInclude Include="global.h">
       <Filter>Engine\Header</Filter>
     </ClInclude>
+    <ClInclude Include="CUI.h">
+      <Filter>Engine\Object\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="CUIMgr.h">
+      <Filter>Engine\Manager\UIMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -252,7 +264,7 @@
       <Filter>Engine\Resource\Sound</Filter>
     </ClCompile>
     <ClCompile Include="CPathMgr.cpp">
-      <Filter>Engine\Manager\CPathMgr</Filter>
+      <Filter>Engine\Manager\PathMgr</Filter>
     </ClCompile>
     <ClCompile Include="CResMgr.cpp">
       <Filter>Engine\Manager\ResMgr</Filter>
@@ -298,6 +310,12 @@
     </ClCompile>
     <ClCompile Include="CTile.cpp">
       <Filter>Engine\Object\Tile</Filter>
+    </ClCompile>
+    <ClCompile Include="CUI.cpp">
+      <Filter>Engine\Object\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="CUIMgr.cpp">
+      <Filter>Engine\Manager\UIMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "GameObject.h"
 #include "CKeyMgr.h"
 #include "CCollider.h"
@@ -60,6 +59,10 @@ void GameObject::FinalUpdate()
 {
 	if (m_pCollider)
 		m_pCollider->FinalUpdate();
+
+	if (m_pAnimator)
+		m_pAnimator->FinalUpdate();
+
 }
 
 void GameObject::Render(HDC _dc)

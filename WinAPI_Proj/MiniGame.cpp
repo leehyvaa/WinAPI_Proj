@@ -191,6 +191,11 @@ BOOL InCircle(POINT pt1, POINT pt2)
 
     return FALSE;
 }
+
+INT_PTR CALLBACK TileCountProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+
+
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     PAINTSTRUCT ps;
@@ -246,13 +251,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         case IDM_ABOUT:
             DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
             break;
+        case ID_MENU_TILE:
+            DialogBox(hInst, MAKEINTRESOURCE(IDD_TILE_COUNT), hWnd, TileCountProc);
+
+  
+
+            break;
+
+
         case IDM_EXIT:
             DestroyWindow(hWnd);
             break;
         default:
             return DefWindowProc(hWnd, message, wParam, lParam);
         }
-    }
+    } 
     break;
     case WM_LBUTTONDOWN:
         ptMousePos.x = LOWORD(lParam);

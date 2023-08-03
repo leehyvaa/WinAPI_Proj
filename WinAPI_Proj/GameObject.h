@@ -1,6 +1,7 @@
 #pragma once
 //오브젝트를 설계할 땐 항상 복사생성자를 커스텀해서 만들어야 하는지를 생각할 것
 #include "CCamera.h"
+#include "global.h"
 class CCollider;
 class CAnimator;
 
@@ -61,7 +62,7 @@ public:
 	virtual void OnCollisionExit(CCollider* _pOther) {};
 
 	virtual void Update() = 0;
-	virtual void FinalUpdate() final;
+	virtual void FinalUpdate();
 	virtual void Render(HDC _dc);
 	void Component_Render(HDC _dc);
 
