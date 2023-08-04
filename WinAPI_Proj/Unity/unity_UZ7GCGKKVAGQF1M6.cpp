@@ -22,6 +22,3 @@
 
 #include "D:\KNJ Work\C\WinAPI_Proj\WinAPI_Proj\Vec2.cpp"
 
-
-#include "D:\KNJ Work\C\WinAPI_Proj\WinAPI_Proj\MiniGame.cpp"
-

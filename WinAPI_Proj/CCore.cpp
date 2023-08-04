@@ -10,6 +10,7 @@
 #include "CCollisionMgr.h"
 #include "CEventMgr.h"
 #include "CCamera.h"
+#include "CUIMgr.h"
 CCore::CCore()
 	:m_hWnd(0)
 	, m_ptResolution{}
@@ -82,6 +83,12 @@ void CCore::Progress()
 	//씬 업데이트, 충돌처리
 	CSceneMgr::GetInst()->Update();
 	CCollisionMgr::GetInst()->Update();
+
+
+	//UI 이벤트 체크
+	CUIMgr::GetInst()->Update();
+
+
 
 	//렌더링
 	//화면 클리어

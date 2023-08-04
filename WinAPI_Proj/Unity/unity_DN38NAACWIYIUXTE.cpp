@@ -1,16 +1,4 @@
 
-#include "D:\KNJ Work\C\WinAPI_Proj\WinAPI_Proj\CResMgr.cpp"
-
-
-#include "D:\KNJ Work\C\WinAPI_Proj\WinAPI_Proj\CScene.cpp"
-
-
-#include "D:\KNJ Work\C\WinAPI_Proj\WinAPI_Proj\CSceneMgr.cpp"
-
-
-#include "D:\KNJ Work\C\WinAPI_Proj\WinAPI_Proj\CScene_Start.cpp"
-
-
 #include "D:\KNJ Work\C\WinAPI_Proj\WinAPI_Proj\CScene_Tool.cpp"
 
 
@@ -21,6 +9,12 @@
 
 
 #include "D:\KNJ Work\C\WinAPI_Proj\WinAPI_Proj\CTile.cpp"
+
+
+#include "D:\KNJ Work\C\WinAPI_Proj\WinAPI_Proj\CUI.cpp"
+
+
+#include "D:\KNJ Work\C\WinAPI_Proj\WinAPI_Proj\CUIMgr.cpp"
 
 
 #include "D:\KNJ Work\C\WinAPI_Proj\WinAPI_Proj\CWire.cpp"

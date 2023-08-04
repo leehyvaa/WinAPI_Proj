@@ -100,6 +100,12 @@
     <Filter Include="Engine\Manager\PathMgr">
       <UniqueIdentifier>{eb2dbf4c-f439-4a79-8aac-5fd4d225f2d2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Object\UI\PanelUI">
+      <UniqueIdentifier>{1f144aa0-3e58-49e3-96fc-bcc11e5a80ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Object\UI\BtnUI">
+      <UniqueIdentifier>{44324a91-eaff-44e6-80dd-f84abfafe622}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WinAPI_Proj.h">
@@ -219,6 +225,12 @@
     <ClInclude Include="CUIMgr.h">
       <Filter>Engine\Manager\UIMgr</Filter>
     </ClInclude>
+    <ClInclude Include="CPanelUI.h">
+      <Filter>Engine\Object\UI\PanelUI</Filter>
+    </ClInclude>
+    <ClInclude Include="CBtnUI.h">
+      <Filter>Engine\Object\UI\BtnUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -316,6 +328,12 @@
     </ClCompile>
     <ClCompile Include="CUIMgr.cpp">
       <Filter>Engine\Manager\UIMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CPanelUI.cpp">
+      <Filter>Engine\Object\UI\PanelUI</Filter>
+    </ClCompile>
+    <ClCompile Include="CBtnUI.cpp">
+      <Filter>Engine\Object\UI\BtnUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
