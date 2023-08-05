@@ -1,4 +1,7 @@
 #pragma once
+
+class CTexture;
+
 //객체를 데이터영역에 넣어두는 방식
 class CCore
 {
@@ -8,8 +11,8 @@ private:
 	HWND	m_hWnd;
 	POINT	m_ptResolution;
 	HDC		m_hDC;
-	HBITMAP m_hBit;
-	HDC		m_memDC;
+
+	CTexture* m_pMemTex; //백버퍼 텍스쳐
 
 
 	//GDI Object
@@ -22,7 +25,7 @@ public:
 
 	void CreateBrushPen();
 
-	HDC GetmemDC() { return m_memDC; }
+	//HDC GetmemDC() { return m_pMemTex->GetDC(); }
 	HDC GetMainDC() { return m_hDC; }
 	HWND GetMainHwnd() { return m_hWnd; }
 	POINT GetResolution() { return m_ptResolution; }

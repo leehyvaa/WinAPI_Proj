@@ -5,6 +5,9 @@
 #include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CAnimator.cpp"
 
 
+#include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CBtnUI.cpp"
+
+
 #include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CCamera.cpp"
 
 
@@ -18,13 +21,4 @@
 
 
 #include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CKeyMgr.cpp"
-
-
-#include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CMonster.cpp"
-
-
-#include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CPathMgr.cpp"
-
-
-#include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CRes.cpp"
 

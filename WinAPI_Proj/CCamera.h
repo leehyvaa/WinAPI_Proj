@@ -1,6 +1,22 @@
 #pragma once
 
 class GameObject;
+class CTexture;
+
+enum class CAM_EFFECT
+{
+	FADE_IN,
+	FADE_OUT,
+	NONE,
+};
+
+struct tCamEffect
+{
+	CAM_EFFECT eEffect;//카메라 효과
+	float fDuration;//효과 진행 시간
+	float fCurTime;//효과가 진행된 시간
+};
+
 
 class CCamera
 {
@@ -18,6 +34,9 @@ private:
 	float m_fSpeed; //타겟을 따라가는 속도
 	float m_fAccTime; //누적 시간
 
+	CTexture* m_pVeilTex; //카메라 가림막 텍스쳐
+	list<tCamEffect> m_listCamEffect;
+
 public:
 	void SetLookAt(Vec2 _vLook) 
 	{ 
@@ -31,9 +50,14 @@ public:
 	Vec2 GetRenderPos(Vec2 _vObjPos) { return _vObjPos - m_vDiff; }
 	Vec2 GetRealPos(Vec2 _vRenderPos) { return _vRenderPos + m_vDiff; }
 
-public:
-	void Update();
+	void FadeIn(float _fDuration);
+	void FadeOut(float _fDuration);
 
+
+public:
+	void init();
+	void Update();
+	void Render(HDC _dc);
 private:
 	void CalDiff();
 

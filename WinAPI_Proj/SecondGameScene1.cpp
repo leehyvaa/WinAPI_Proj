@@ -93,6 +93,9 @@ void SecondGameScene1::Enter()
 	Vec2 vResolution = CCore::GetInst()->GetResolution();
 	CCamera::GetInst()->SetLookAt(vResolution/2.f);
 
+	CCamera::GetInst()->FadeOut(1.f);
+	CCamera::GetInst()->FadeIn(1.f);
+
 }
 
 void SecondGameScene1::Exit()

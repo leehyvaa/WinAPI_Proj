@@ -17,6 +17,30 @@ CResMgr::~CResMgr()
 
     Safe_Delete_Map(m_mapTex);
 }
+
+
+
+CTexture* CResMgr::CreateTexture(const wstring& _strKey, UINT _iWidth, UINT _iHeight)
+{
+    CTexture* pTex = FIndTexture(_strKey);
+    if (nullptr != pTex) //텍스처가 이미 존재할 경우 만들지 않고 찾아서 줌
+        return pTex;
+
+  
+
+    pTex = new CTexture;
+    pTex->Create(_iWidth, _iHeight);
+    pTex->SetKey(_strKey);
+
+    m_mapTex.insert(make_pair(_strKey, pTex));
+
+
+    return pTex;
+}
+
+
+
+
 CTexture* CResMgr::LoadTexture(const wstring& _strKey, const wstring& _strRelativePath)
 {
     CTexture* pTex = FIndTexture(_strKey);

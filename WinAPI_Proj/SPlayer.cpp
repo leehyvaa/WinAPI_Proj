@@ -124,12 +124,12 @@ void SPlayer::Render(HDC _dc)
 	bf.SourceConstantAlpha = 127; //전역적으로 적용되는 알파
 
 	AlphaBlend(_dc
-		, vPos.x - width / 2.f
-		, vPos.y - height / 2.f
-		, width, height
+		, int(vPos.x - width / 2.f)
+		, int(vPos.y - height / 2.f)
+		, int(width), int(height)
 		, pTex->GetDC()
-		, 0, 0, width, height
-		,bf);
+		, 0, 0, int(width), int(height)
+		, bf);
 
 	//Component_Render(_dc);
 }
