@@ -51,5 +51,7 @@ public :
 	float Length();
 	Vec2& normalize();
 	float Cross(Vec2& _vec,POINT p);
+
+	bool IsZero();
 };
 

@@ -56,6 +56,13 @@ float Vec2::Cross(Vec2& _vec, POINT p)
 	return ans;
 }
 
+bool Vec2::IsZero()
+{
+	if (x == 0.f && y == 0.f)
+		return true;
+	return false;
+}
+
 Vec2& Vec2::normalize()
 {
 	float fLen = Length();

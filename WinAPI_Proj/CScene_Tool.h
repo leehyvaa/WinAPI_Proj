@@ -1,12 +1,15 @@
 #pragma once
 #include "CScene.h"
+
+class CUI;
+
 class CScene_Tool : public CScene
 {
 private:
+	CUI* m_pUI;
 
 public:
-	CScene_Tool();
-	virtual ~CScene_Tool();
+	
 
 	virtual void Update();
 	virtual void Enter();
@@ -15,5 +18,13 @@ public:
 public:
 	void SetTileIdx();
 
+	void SaveTile(const wstring& _strFilePath);
+	void SaveTileData();
+
+	void LoadTileData();
+
+
+	CScene_Tool();
+	virtual ~CScene_Tool();
 };
 

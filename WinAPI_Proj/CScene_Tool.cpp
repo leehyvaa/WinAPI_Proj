@@ -1,15 +1,21 @@
 #include "pch.h"
 #include "CScene_Tool.h"
+
 #include "CKeyMgr.h"
 #include "CTile.h"
+
 #include "CCore.h"
 #include "CResMgr.h"
 #include "CSceneMgr.h"
+#include "CPathMgr.h"
+
 #include "CPanelUI.h"
 #include "CBtnUI.h"
-
+#include "CUIMgr.h"
 
 #include "resource.h"
+
+void ChangeScene(DWORD_PTR, DWORD_PTR);
 
 CScene_Tool::CScene_Tool()
 {
@@ -31,15 +37,16 @@ void CScene_Tool::Enter()
 
 	CUI* pPanelUI = new CPanelUI;
 	pPanelUI->SetName(L"parentUI");
-	pPanelUI->SetScale(Vec2(500.f,300.f));
+	pPanelUI->SetScale(Vec2(300.f,150.f));
 	pPanelUI->SetPos(Vec2(vResolution.x - pPanelUI->GetScale().x,0.f));
 	
 
-	CUI* pBtnUI = new CBtnUI;
+	CBtnUI* pBtnUI = new CBtnUI;
 	pBtnUI->SetName(L"ChildUI");
 	pBtnUI->SetScale(Vec2(100.f, 40.f));
 	pBtnUI->SetPos(Vec2(0.f,0.f));
-
+	//pBtnUI->SetClickedCallBack(&ChangeScene,0,0);
+	((CBtnUI*)pBtnUI)->SetClickedCallBack(this,(SCENE_MEMFUNC) & CScene_Tool::SaveTileData);
 	pPanelUI->AddChild(pBtnUI);
 
 	AddObject(pPanelUI, GROUP_TYPE::UI);
@@ -47,9 +54,14 @@ void CScene_Tool::Enter()
 
 
 	//UI 클론 하나 추가
-	CUI* pClonepPanel = pPanelUI->Clone();
+	/*CUI* pClonepPanel = pPanelUI->Clone();
 	pClonepPanel->SetPos(pClonepPanel->GetPos() + Vec2(-100.f, 0.f));
+	((CBtnUI*)pClonepPanel->GetChildUI()[0])->SetClickedCallBack(&ChangeScene, 0, 0);
+
 	AddObject(pClonepPanel, GROUP_TYPE::UI);
+
+
+	m_pUI = pClonepPanel;*/
 
 
 
@@ -59,6 +71,7 @@ void CScene_Tool::Enter()
 
 void CScene_Tool::Exit()
 {
+	DeleteAll();
 }
 
 void CScene_Tool::Update()
@@ -69,6 +82,20 @@ void CScene_Tool::Update()
 		ChangeScene(SCENE_TYPE::START);
 
 	SetTileIdx();
+
+
+
+	//if (KEY_TAP(KEY::LSHIFT))
+	//{
+	//	//저장해 놓은 m_pUI를 포커싱
+	//	//CUIMgr::GetInst()->SetFocusedUI(m_pUI);
+	//	SaveTileData();
+	//}
+
+	if (KEY_TAP(KEY::CTRL))
+	{
+		LoadTileData();
+	}
 }
 
 void CScene_Tool::SetTileIdx()
@@ -99,6 +126,97 @@ void CScene_Tool::SetTileIdx()
 
 }
 
+void CScene_Tool::SaveTile(const wstring& _strFilePath)
+{
+
+	FILE* pFile = nullptr;
+	_wfopen_s(&pFile,_strFilePath.c_str(),L"wb");
+	assert(pFile);
+
+	//타일 가로세로 개수 저장
+	UINT xCount = GetTileX();
+	UINT yCount = GetTileY();
+
+	fwrite(&xCount, sizeof(UINT), 1, pFile);
+	fwrite(&yCount, sizeof(UINT), 1, pFile);
+
+
+	//모든 타일들을 개별적으로 저장할 데이터를 저장하게 함
+	const vector<GameObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
+
+	for (size_t i = 0; i < vecTile.size(); i++)
+	{
+		((CTile*)vecTile[i])->Save(pFile);
+	}
+
+	fclose(pFile);
+}
+
+void CScene_Tool::SaveTileData()
+{
+	wchar_t szName[256] = {};
+
+	OPENFILENAME ofn = {};
+
+
+	ofn.lStructSize = sizeof(OPENFILENAME);
+	ofn.hwndOwner = CCore::GetInst()->GetMainHwnd();
+	ofn.lpstrFile = szName;
+	ofn.nMaxFile = sizeof(szName);
+	ofn.lpstrFilter = L"ALL\0*.*\0Tile\0*.tile\0";
+	ofn.nFilterIndex = 0;
+	ofn.lpstrFileTitle = nullptr;
+	ofn.nMaxFileTitle = 0;
+
+	wstring strTileFolder = CPathMgr::GetInst()->GetContentPath();
+	strTileFolder += L"tile";
+
+	ofn.lpstrInitialDir = strTileFolder.c_str();
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+
+	//Modal 방식
+	if (GetSaveFileName(&ofn))
+	{
+		SaveTile(szName);
+	}
+
+}
+
+void CScene_Tool::LoadTileData()
+{
+	wchar_t szName[256] = {};
+
+	OPENFILENAME ofn = {};
+
+
+	ofn.lStructSize = sizeof(OPENFILENAME);
+	ofn.hwndOwner = CCore::GetInst()->GetMainHwnd();
+	ofn.lpstrFile = szName;
+	ofn.nMaxFile = sizeof(szName);
+	ofn.lpstrFilter = L"ALL\0*.*\0Tile\0*.tile\0";
+	ofn.nFilterIndex = 0;
+	ofn.lpstrFileTitle = nullptr;
+	ofn.nMaxFileTitle = 0;
+
+	wstring strTileFolder = CPathMgr::GetInst()->GetContentPath();
+	strTileFolder += L"tile";
+
+	ofn.lpstrInitialDir = strTileFolder.c_str();
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+
+	//Modal 방식
+	if (GetOpenFileName(&ofn))
+	{
+		wstring strRelativePath = CPathMgr::GetInst()->GetRelativePath(szName);
+		LoadTile(strRelativePath);
+	}
+}
+
+
+void ChangeScene(DWORD_PTR, DWORD_PTR)
+{
+	ChangeScene(SCENE_TYPE::START);
+}
 
 
 //Tile Count Window Proc

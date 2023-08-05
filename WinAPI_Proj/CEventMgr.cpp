@@ -3,6 +3,7 @@
 #include "GameObject.h"
 #include "CSceneMgr.h"
 #include "CScene.h"
+#include "CUIMgr.h"
 CEventMgr::CEventMgr()
 {
 
@@ -27,7 +28,6 @@ void CEventMgr::Update()
 	{
 		Excute(m_vecEvent[i]);
 	}
-
 	m_vecEvent.clear();
 }
 
@@ -58,6 +58,9 @@ void CEventMgr::Excute(const tEvent& _eve)
 	{
 		// lParam : Next Cene Type
 		CSceneMgr::GetInst()->ChangeScene((SCENE_TYPE)_eve.lParam);
+
+		//포커스 UI 해제(이전 Scene의 UI를 가리키고 있기 때문
+		CUIMgr::GetInst()->SetFocusedUI(nullptr);
 	}
 		break;
 	}

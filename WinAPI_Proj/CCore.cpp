@@ -35,6 +35,9 @@ CCore::~CCore()
 }
 
 
+
+
+
 int CCore::init(HWND _hWnd, POINT _ptResolution)
 {
 	

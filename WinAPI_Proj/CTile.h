@@ -17,6 +17,10 @@ public:
     void AddImgIdx() { ++m_iImgIdx; }
 
 
+    virtual void Save(FILE* _pFile);
+    virtual void Load(FILE* _pFile);
+
+
     CLONE(CTile);
 public:
     CTile();

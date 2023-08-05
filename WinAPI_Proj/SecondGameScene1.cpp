@@ -79,6 +79,11 @@ void SecondGameScene1::Enter()
 	pOtherMonster->SetPos(Vec2(500.f, 400.f));
 	AddObject(pOtherMonster, GROUP_TYPE::MONSTER);
 
+
+
+	//타일 로딩
+	//LoadTile(L"Tile\\start.tile");
+
 	//그룹간 충돌 체크
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::MONSTER);
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::MONSTER, GROUP_TYPE::PROJ_PLAYER);

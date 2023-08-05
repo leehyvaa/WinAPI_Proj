@@ -8,6 +8,7 @@
 #include "CKeyMgr.h"
 
 CUIMgr::CUIMgr()
+	:m_pFocusedUI(nullptr)
 {
 }
 
@@ -16,45 +17,127 @@ CUIMgr::~CUIMgr()
 }
 void CUIMgr::Update()
 {
-	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+	//1.FocusedUI를 확인
+	m_pFocusedUI = GetFocusedUI();
 
-	const vector<GameObject*>& vecUI = pCurScene->GetGroupObject(GROUP_TYPE::UI);
+	if (!m_pFocusedUI)
+		return;
 
-	bool bLbtnTap = KEY_TAP(KEY::LBUTTON);
+	//2. FocusedUI 내에서 ,부모 UI 포함, 자식 UI들 중 타겟된 UI를 서치
+	CUI* pTargetUI = GetTargetedUI(m_pFocusedUI);
+
 	bool bLbtnAway = KEY_AWAY(KEY::LBUTTON);
-		
-	for (size_t i = 0; i < vecUI.size(); i++)
+	bool bLbtnTap = KEY_TAP(KEY::LBUTTON);
+
+
+	if (nullptr != pTargetUI)
 	{
-		CUI* pUI = (CUI*)vecUI[i];
-		
+		pTargetUI->MouseOn();
 
-		//부모 UI 포함, 자식 UI들 중 타겟된 UI를 서치
-		pUI = GetTargetedUI(pUI);
-
-		if (nullptr != pUI)
+		if (bLbtnTap)
 		{
-			pUI->MouseOn();
+			pTargetUI->MouseLbtnDown();
+			pTargetUI->m_bLbtnDown = true;
+		}
+		else if (bLbtnAway)
+		{
+			pTargetUI->MouseLbtnUp();
 
-			if (bLbtnTap)
+			if (pTargetUI->m_bLbtnDown)
 			{
-				pUI->MouseLbtnDown();
-				pUI->m_bLbtnDown = true;
+				pTargetUI->MouseLbtnClicked();
 			}
-			else if (bLbtnAway)
-			{
-				pUI->MouseLbtnUp();
-
-				if (pUI->m_bLbtnDown)
-				{
-					pUI->MouseLbtnClicked();
-				}
 
 
-				pUI->m_bLbtnDown = false;
+			pTargetUI->m_bLbtnDown = false;
 
-			}
 		}
 	}
+
+
+
+		
+
+}
+
+void CUIMgr::SetFocusedUI(CUI* _pUI)
+{
+	//이미 포커싱 중인 경우 or 포커싱 해제 요청인 경우
+	if (m_pFocusedUI == _pUI || nullptr == _pUI)
+	{
+		m_pFocusedUI = _pUI;
+		return;
+	}
+
+	m_pFocusedUI = _pUI;
+
+
+
+	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+	vector<GameObject*>& vecUI = pCurScene->GetUIGroup();
+
+	vector<GameObject*>::iterator iter = vecUI.begin();
+
+
+	for (; iter != vecUI.end(); iter++)
+	{
+		if (m_pFocusedUI == *iter)
+		{
+			break;
+		}
+
+	}
+
+	//벡터 내에서 맨 뒤로 순번 교체
+	vecUI.erase(iter);
+	vecUI.push_back(m_pFocusedUI);
+
+}
+
+CUI* CUIMgr::GetFocusedUI()
+{
+
+	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+	vector<GameObject*>& vecUI = pCurScene->GetUIGroup();
+
+	bool bLbtnTap = KEY_TAP(KEY::LBUTTON);
+	
+	//기존 포커싱 UI를 받아두고 변경되었을 경우 체인지
+	CUI* pFocusedUI = m_pFocusedUI;
+
+	if (!bLbtnTap)
+	{
+		return pFocusedUI;
+	}
+
+
+	//왼쪽버튼 Tap 이 발생했다는 전제 하
+	vector<GameObject*>::iterator targetiter = vecUI.end();
+	vector<GameObject*>::iterator iter =vecUI.begin() ;
+
+
+	for (; iter != vecUI.end(); iter++)
+	{
+		if (((CUI*)*iter)->IsMouseOn())
+		{
+			targetiter = iter;
+		}
+		
+	}
+
+	//이번에 Focus된 UI가 없다
+	if (vecUI.end() == targetiter)
+	{
+		return nullptr;
+	}
+
+	pFocusedUI = (CUI*)*targetiter;
+
+	//벡터 내에서 맨 뒤로 순번 교체
+	vecUI.erase(targetiter);
+	vecUI.push_back(pFocusedUI);
+
+	return pFocusedUI;
 }
 
 CUI* CUIMgr::GetTargetedUI(CUI* _pParentUI)
