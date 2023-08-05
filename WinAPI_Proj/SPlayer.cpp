@@ -89,7 +89,7 @@ void SPlayer::Update()
 
 void SPlayer::Render(HDC _dc)
 {
-	Vec2 vPos(GetPos().x, GetPos().y);
+	//Vec2 vPos(GetPos().x, GetPos().y);
 	Vec2 vScale(GetScale().x, GetScale().y);
 
 
@@ -105,7 +105,33 @@ void SPlayer::Render(HDC _dc)
 		, m_pTex->GetDC()
 		, 0, 0, iWidth, iHeight, RGB(255, 0, 255));*/
 
-	Component_Render(_dc);
+	//CTexture* pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\sigong.bmp");
+	CTexture* pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex1", L"texture\\Sail_Fish.bmp");
+
+
+	//알파블렌드를 사용한 랜더링
+
+	Vec2 vPos = GetPos();
+	vPos = CCamera::GetInst()->GetRenderPos(vPos);
+	float width = (float)pTex->Width();
+	float height = (float)pTex->Height();
+
+
+	BLENDFUNCTION bf = {};
+	bf.BlendOp = AC_SRC_OVER;
+	bf.BlendFlags = 0;
+	bf.AlphaFormat = AC_SRC_ALPHA;
+	bf.SourceConstantAlpha = 127; //전역적으로 적용되는 알파
+
+	AlphaBlend(_dc
+		, vPos.x - width / 2.f
+		, vPos.y - height / 2.f
+		, width, height
+		, pTex->GetDC()
+		, 0, 0, width, height
+		,bf);
+
+	//Component_Render(_dc);
 }
 
 void SPlayer::CreateWire()
