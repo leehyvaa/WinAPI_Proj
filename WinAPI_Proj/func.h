@@ -1,10 +1,11 @@
 #pragma once
 class GameObject;
+class AI;
 
 void CreateObject(GameObject* _pObj, GROUP_TYPE _eGroup);
 void DeleteObject(GameObject* _pObj);
 void ChangeScene(SCENE_TYPE _eNext);
-
+void ChangeAIState(AI* _pAI, MON_STATE _eNextState);
 
 template<typename T>
 void Safe_Delete_Vec(vector<T>& _vec)

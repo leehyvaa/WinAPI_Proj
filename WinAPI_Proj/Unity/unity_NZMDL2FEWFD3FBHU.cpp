@@ -1,4 +1,7 @@
 
+#include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CMonPrefab.cpp"
+
+
 #include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CMonster.cpp"
 
 
@@ -12,6 +15,9 @@
 
 
 #include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CResMgr.cpp"
+
+
+#include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CRigidBody.cpp"
 
 
 #include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CScene.cpp"

@@ -1,4 +1,7 @@
 
+#include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\AI.cpp"
+
+
 #include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CAnimation.cpp"
 
 
@@ -18,6 +21,9 @@
 
 
 #include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CEventMgr.cpp"
+
+
+#include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CIdleState.cpp"
 
 
 #include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CKeyMgr.cpp"

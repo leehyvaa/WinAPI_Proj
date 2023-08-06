@@ -37,9 +37,29 @@ public :
 		x += v.x;
 		y += v.y;
 	}
+	void operator -=(Vec2 v)
+	{
+		x -= v.x;
+		y -= v.y;
+	}
+	void operator -=(float _f)
+	{
+		x -= _f;
+		y -= _f;
+	}
+	void operator *=(float _f)
+	{
+		x *= _f;
+		y *= _f;
+	}
+
+
 
 	Vec2 operator+(const Vec2& v) const;
-
+	Vec2 operator-()
+	{
+		return Vec2(-x, -y);
+	}
 
 	Vec2& operator = (POINT _pt)
 	{
@@ -49,7 +69,7 @@ public :
 
 
 	float Length();
-	Vec2& normalize();
+	Vec2& Normalize();
 	float Cross(Vec2& _vec,POINT p);
 
 	bool IsZero();

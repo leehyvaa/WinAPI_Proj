@@ -7,7 +7,7 @@ CWire::CWire()
 	:m_fSpeed(200)
 	,m_vDir(Vec2(1.f,1.f))
 {
-	m_vDir.normalize();
+	m_vDir.Normalize();
 
 	CreateCollider();
 	GetCollider()->SetOffsetPos(Vec2());

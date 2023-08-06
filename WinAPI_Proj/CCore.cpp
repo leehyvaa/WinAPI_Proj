@@ -13,6 +13,10 @@
 #include "CUIMgr.h"
 #include "CResMgr.h"
 #include "CTexture.h"
+#include "SelectGDI.h"
+#include "resource.h"
+
+
 CCore::CCore()
 	:m_hWnd(0)
 	, m_ptResolution{}
@@ -31,6 +35,9 @@ CCore::~CCore()
 	{
 		DeleteObject(m_arrPen[i]);
 	}
+
+
+	DestroyMenu(m_hMenu);
 }
 
 
@@ -46,9 +53,10 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 	m_ptResolution = _ptResolution;
 
 	//해상도에 맞게 윈도우 크기 조절
-	RECT rect = { 0,0, m_ptResolution.x, m_ptResolution.y };
-	AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, true);
-	SetWindowPos(m_hWnd, nullptr, 300, 10, rect.right - rect.left, rect.bottom - rect.top, 0);
+	ChangeWindowSize(m_ptResolution, false);
+	
+	//메뉴바 생성
+	m_hMenu = LoadMenu(nullptr, MAKEINTRESOURCEW(IDC_WINAPIPROJ));
 
 	m_hDC = GetDC(m_hWnd);
 
@@ -92,9 +100,7 @@ void CCore::Progress()
 	//렌더링
 	//화면 클리어
 	//memDC에다 먼저 그린다
-	
-	Rectangle(m_pMemTex->GetDC(), -1, -1, m_ptResolution.x + 1, m_ptResolution.y + 1);
-
+	Clear();
 	
 
 
@@ -114,10 +120,42 @@ void CCore::Progress()
 void CCore::CreateBrushPen()
 {
 	m_arrBrush[(UINT)BRUSH_TYPE::HOLLOW] = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
+	m_arrBrush[(UINT)BRUSH_TYPE::BLACK] = (HBRUSH)GetStockObject(BLACK_BRUSH);
+
+
 
 	m_arrPen[(UINT)PEN_TYPE::RED] = CreatePen(PS_SOLID, 1, RGB(255, 0, 0));
 	m_arrPen[(UINT)PEN_TYPE::GREEN] = CreatePen(PS_SOLID, 1, RGB(0, 255, 0));
 	m_arrPen[(UINT)PEN_TYPE::BLUE] = CreatePen(PS_SOLID, 1, RGB(0, 0, 255));
+
+
+}
+
+void CCore::Clear()
+{
+	SelectGDI gdi(m_pMemTex->GetDC(), BRUSH_TYPE::BLACK);
+	Rectangle(m_pMemTex->GetDC(), -1, -1, m_ptResolution.x + 1, m_ptResolution.y + 1);
+}
+
+void CCore::DockMenu()
+{
+	//메뉴바 장착
+	SetMenu(m_hWnd, m_hMenu);
+	ChangeWindowSize(GetResolution(), true);
+
+}
+
+void CCore::DivideMenu()
+{
+	SetMenu(m_hWnd, nullptr);
+	ChangeWindowSize(GetResolution(), false);
+}
+
+void CCore::ChangeWindowSize(Vec2 _vResolution, bool _bMenu)
+{
+	RECT rect = { 0,0, (long)_vResolution.x, (long)_vResolution.y};
+	AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, false);
+	SetWindowPos(m_hWnd, nullptr, 300, 10, rect.right - rect.left, rect.bottom - rect.top, 0);
 
 
 }

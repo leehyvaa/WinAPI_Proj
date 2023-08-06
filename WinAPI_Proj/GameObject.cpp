@@ -2,11 +2,14 @@
 #include "CKeyMgr.h"
 #include "CCollider.h"
 #include "CAnimator.h"
+#include "CRigidBody.h"
+
 GameObject::GameObject()
 	: m_vPos{}
 	, m_vScale{}
 	,m_pCollider(nullptr)
 	,m_pAnimator(nullptr)
+	,m_pRigidBody(nullptr)
 	,m_bAlive(true)
 {
 }
@@ -16,6 +19,8 @@ GameObject::GameObject(const GameObject& _origin)
 	,m_vScale(_origin.m_vScale)
 	,m_pCollider(nullptr)
 	,m_pAnimator(nullptr)
+	,m_pRigidBody(nullptr)
+
 	,m_bAlive(true)
 {
 	if (_origin.m_pCollider)
@@ -28,6 +33,12 @@ GameObject::GameObject(const GameObject& _origin)
 		m_pAnimator = new CAnimator(*_origin.m_pAnimator);
 		m_pAnimator->m_pOwner = this;
 	}
+	if (_origin.m_pRigidBody)
+	{
+		m_pRigidBody = new CRigidBody(*_origin.m_pRigidBody);
+		m_pRigidBody->m_pOwner = this;
+	}
+
 }
 GameObject::~GameObject()
 {
@@ -35,6 +46,8 @@ GameObject::~GameObject()
 		delete m_pCollider;
 	if (nullptr != m_pAnimator)
 		delete m_pAnimator;
+	if (nullptr != m_pRigidBody)
+		delete m_pRigidBody;
 }
 
 
@@ -50,6 +63,12 @@ void GameObject::CreateAnimator()
 	m_pAnimator->m_pOwner = this;
 }
 
+void GameObject::CreateRigidBody()
+{
+	m_pRigidBody = new CRigidBody;
+	m_pRigidBody->m_pOwner = this;
+}
+
 void GameObject::Update()
 {
 	
@@ -63,6 +82,8 @@ void GameObject::FinalUpdate()
 	if (m_pAnimator)
 		m_pAnimator->FinalUpdate();
 
+	if (m_pRigidBody)
+		m_pRigidBody->FinalUpdate();
 }
 
 void GameObject::Render(HDC _dc)

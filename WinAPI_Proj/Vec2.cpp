@@ -63,11 +63,13 @@ bool Vec2::IsZero()
 	return false;
 }
 
-Vec2& Vec2::normalize()
+Vec2& Vec2::Normalize()
 {
 	float fLen = Length();
 
+
 	assert(fLen != 0.f);
+
 
 	x /= fLen;
 	y /= fLen;

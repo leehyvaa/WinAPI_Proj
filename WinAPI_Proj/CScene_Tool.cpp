@@ -28,7 +28,10 @@ CScene_Tool::~CScene_Tool()
 
 void CScene_Tool::Enter()
 {
-	
+	//메뉴 장착
+	CCore::GetInst()->DockMenu();
+
+
 	//타일 생성
 	CreateTile(5, 5);
 
@@ -71,6 +74,8 @@ void CScene_Tool::Enter()
 
 void CScene_Tool::Exit()
 {
+	CCore::GetInst()->DivideMenu();
+
 	DeleteAll();
 }
 

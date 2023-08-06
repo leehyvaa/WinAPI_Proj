@@ -10,7 +10,7 @@
 #include "CWire.h"
 #include "CAnimator.h"
 #include "CAnimation.h"
-
+#include "CRigidBody.h"
 
 SPlayer::SPlayer()
 	: m_fSpeed(1000)
@@ -27,6 +27,8 @@ SPlayer::SPlayer()
 		Vec2(0.f, 0.f), Vec2(57.f, 52.f), Vec2(57.f, 0.f),0.1f, 16);
 	GetAnimator()->Play(L"WALK_RIGHT",true);
 
+
+	CreateRigidBody();
 
 	//애니메이션 오프셋 넣기
 	//CAnimation* pAnim = GetAnimator()->FindAnimation(L"WALK_RIGHT");
@@ -45,7 +47,7 @@ SPlayer::~SPlayer()
 
 void SPlayer::Update()
 {
-	Vec2 vPos = GetPos();
+	CRigidBody* pRigid = GetRigidBody();
 
 
 
@@ -65,24 +67,41 @@ void SPlayer::Update()
 
 	if (KEY_HOLD(KEY::A))
 	{
-		vPos.x= vPos.x - m_fSpeed * fDT;
+		pRigid->AddForce(Vec2(-200.f, 0.f));
 	}
 	if (KEY_HOLD(KEY::D))
 	{
-		vPos.x = vPos.x + m_fSpeed * fDT;
+		pRigid->AddForce(Vec2(200.f, 0.f));
 	}
 	if (KEY_HOLD(KEY::W))
 	{
-		vPos.y = vPos.y - m_fSpeed * fDT;
+		pRigid->AddForce(Vec2(0.f, -200.f));
 	}
 	if (KEY_HOLD(KEY::S))
 	{	
-		vPos.y = vPos.y + m_fSpeed * fDT;
+		pRigid->AddForce(Vec2(0.f, +200.f));
+	}
+
+
+	if (KEY_TAP(KEY::A))
+	{
+		pRigid->AddVelocity(Vec2(-100.f, 0.f));
+	}
+	if (KEY_TAP(KEY::D))
+	{
+		pRigid->AddVelocity(Vec2(100.f, 0.f));
+	}
+	if (KEY_TAP(KEY::W))
+	{
+		pRigid->AddVelocity(Vec2(0.f, -100.f));
+	}
+	if (KEY_TAP(KEY::S))
+	{
+		pRigid->AddVelocity(Vec2(0.f, 100.f));
 	}
 
 
 
-	SetPos(vPos);
 
 	GetAnimator()->Update();
 }
@@ -106,32 +125,42 @@ void SPlayer::Render(HDC _dc)
 		, 0, 0, iWidth, iHeight, RGB(255, 0, 255));*/
 
 	//CTexture* pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\sigong.bmp");
-	CTexture* pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex1", L"texture\\Sail_Fish.bmp");
+
+
+
+
+
+
+
 
 
 	//알파블렌드를 사용한 랜더링
+	//CTexture* pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex1", L"texture\\Sail_Fish.bmp");
 
-	Vec2 vPos = GetPos();
-	vPos = CCamera::GetInst()->GetRenderPos(vPos);
-	float width = (float)pTex->Width();
-	float height = (float)pTex->Height();
+	//Vec2 vPos = GetPos();
+	//vPos = CCamera::GetInst()->GetRenderPos(vPos);
+	//float width = (float)pTex->Width();
+	//float height = (float)pTex->Height();
 
 
-	BLENDFUNCTION bf = {};
-	bf.BlendOp = AC_SRC_OVER;
-	bf.BlendFlags = 0;
-	bf.AlphaFormat = AC_SRC_ALPHA;
-	bf.SourceConstantAlpha = 127; //전역적으로 적용되는 알파
+	//BLENDFUNCTION bf = {};
+	//bf.BlendOp = AC_SRC_OVER;
+	//bf.BlendFlags = 0;
+	//bf.AlphaFormat = AC_SRC_ALPHA;
+	//bf.SourceConstantAlpha = 127; //전역적으로 적용되는 알파
 
-	AlphaBlend(_dc
-		, int(vPos.x - width / 2.f)
-		, int(vPos.y - height / 2.f)
-		, int(width), int(height)
-		, pTex->GetDC()
-		, 0, 0, int(width), int(height)
-		, bf);
+	//AlphaBlend(_dc
+	//	, int(vPos.x - width / 2.f)
+	//	, int(vPos.y - height / 2.f)
+	//	, int(width), int(height)
+	//	, pTex->GetDC()
+	//	, 0, 0, int(width), int(height)
+	//	, bf);
 
-	//Component_Render(_dc);
+
+
+
+	Component_Render(_dc);
 }
 
 void SPlayer::CreateWire()

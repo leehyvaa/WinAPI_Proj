@@ -5,10 +5,16 @@
 #include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CSound.cpp"
 
 
+#include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CState.cpp"
+
+
 #include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CTexture.cpp"
 
 
 #include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CTile.cpp"
+
+
+#include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CTraceState.cpp"
 
 
 #include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CUI.cpp"

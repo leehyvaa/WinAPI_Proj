@@ -1,19 +1,36 @@
 #pragma once
 #include "GameObject.h"
+class AI;
+
+struct tMonInfo
+{
+    float fSpeed;
+    float fHP;
+    float fDetectRange;
+    float fAttRange;
+    float fAtt;
+    int iDir;
+};
+
+
 class CMonster :
     public GameObject
 {
 private:
-    Vec2 m_vCenterPos;
-    float m_fSpeed;
-    float m_fMaxDistance;
-    int m_iHP;
-    int m_iDir;
-public:
-    float GetSpeed() { return m_fSpeed; }
-    void SetSpeed(float _f) { m_fSpeed = _f; }
+    tMonInfo m_tInfo;
+    
 
-    void SetCenterPos(Vec2 _vPos) { m_vCenterPos = _vPos; }
+    AI* m_pAI;
+
+
+public:
+    float GetSpeed() { return m_tInfo.fSpeed; }
+    const tMonInfo& GetInfo() { return m_tInfo; }
+    void SetSpeed(float _f) { m_tInfo.fSpeed = _f; }
+    void SetAI(AI* _AI);
+
+private:
+    void SetMonInfo(const tMonInfo& _info){m_tInfo = _info;}
 
 public:
     virtual void OnCollisionEnter(CCollider* _pOther);
@@ -24,5 +41,7 @@ public:
 
     CMonster();
     ~CMonster();
+
+    friend class CMonPrefab;
 };
 

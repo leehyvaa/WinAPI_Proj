@@ -106,6 +106,30 @@
     <Filter Include="Engine\Object\UI\BtnUI">
       <UniqueIdentifier>{44324a91-eaff-44e6-80dd-f84abfafe622}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Module\AI">
+      <UniqueIdentifier>{2a07e431-dba5-42e4-8339-1c55e1cc5e9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Module\AI\State">
+      <UniqueIdentifier>{07e042e5-e8ea-4cbd-a26f-9599c49c6ca2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Module\AI\State\Idle">
+      <UniqueIdentifier>{843a04d0-1ab4-4b46-a8e7-544b3191b4e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Module\AI\State\Trace">
+      <UniqueIdentifier>{e01447bf-421c-467c-8bab-28ebe254aa8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Module\AI\State\Attack">
+      <UniqueIdentifier>{10577b04-271d-4e00-b2ae-52fc46f8ef2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Module\AI\State\Dead">
+      <UniqueIdentifier>{5c6296d0-bc51-47b2-b160-9a5d603d358a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Prefab">
+      <UniqueIdentifier>{f33a34d7-7c8c-4ab7-893f-f6a319ce1a14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Compenent\RigidBody">
+      <UniqueIdentifier>{c3c9d7e4-95ac-4dcf-924e-7ba80f9cf32c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WinAPI_Proj.h">
@@ -137,9 +161,6 @@
     </ClInclude>
     <ClInclude Include="CTimeMgr.h">
       <Filter>Engine\Manager\TimeMgr</Filter>
-    </ClInclude>
-    <ClInclude Include="GPlayer.h">
-      <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="CScene.h">
       <Filter>Engine\Scene</Filter>
@@ -231,6 +252,24 @@
     <ClInclude Include="CBtnUI.h">
       <Filter>Engine\Object\UI\BtnUI</Filter>
     </ClInclude>
+    <ClInclude Include="AI.h">
+      <Filter>Engine\Module\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="CState.h">
+      <Filter>Engine\Module\AI\State</Filter>
+    </ClInclude>
+    <ClInclude Include="CIdleState.h">
+      <Filter>Engine\Module\AI\State\Idle</Filter>
+    </ClInclude>
+    <ClInclude Include="CTraceState.h">
+      <Filter>Engine\Module\AI\State\Trace</Filter>
+    </ClInclude>
+    <ClInclude Include="CMonPrefab.h">
+      <Filter>Engine\Prefab</Filter>
+    </ClInclude>
+    <ClInclude Include="CRigidBody.h">
+      <Filter>Engine\Compenent\RigidBody</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -284,9 +323,6 @@
     <ClCompile Include="SPlayer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="GPlayer.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="CCollisionMgr.cpp">
       <Filter>Engine\Manager\CollisionMgr</Filter>
     </ClCompile>
@@ -334,6 +370,24 @@
     </ClCompile>
     <ClCompile Include="CBtnUI.cpp">
       <Filter>Engine\Object\UI\BtnUI</Filter>
+    </ClCompile>
+    <ClCompile Include="AI.cpp">
+      <Filter>Engine\Module\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="CState.cpp">
+      <Filter>Engine\Module\AI\State</Filter>
+    </ClCompile>
+    <ClCompile Include="CIdleState.cpp">
+      <Filter>Engine\Module\AI\State\Idle</Filter>
+    </ClCompile>
+    <ClCompile Include="CTraceState.cpp">
+      <Filter>Engine\Module\AI\State\Trace</Filter>
+    </ClCompile>
+    <ClCompile Include="CMonPrefab.cpp">
+      <Filter>Engine\Prefab</Filter>
+    </ClCompile>
+    <ClCompile Include="CRigidBody.cpp">
+      <Filter>Engine\Compenent\RigidBody</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
