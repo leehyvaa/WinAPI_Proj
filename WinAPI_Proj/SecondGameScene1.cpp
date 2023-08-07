@@ -20,6 +20,8 @@
 #include "CRigidBody.h"
 #include "SelectGDI.h"
 #include "CTimeMgr.h"
+#include "CGround.h"
+
 
 SecondGameScene1::SecondGameScene1()
 	:m_bUseForce(false)
@@ -112,10 +114,11 @@ void SecondGameScene1::Render(HDC _dc)
 
 	Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(m_vForcePos);
 
-	Ellipse(_dc, vRenderPos.x - m_fCurRadius
-		, vRenderPos.y - m_fCurRadius
-		, vRenderPos.x + m_fCurRadius
-		, vRenderPos.y + m_fCurRadius);
+	Ellipse(_dc
+		,(int)(vRenderPos.x - m_fCurRadius)
+		,(int)(vRenderPos.y - m_fCurRadius)
+		,(int)(vRenderPos.x + m_fCurRadius)
+		,(int)(vRenderPos.y + m_fCurRadius));
 
 
 }
@@ -136,12 +139,13 @@ void SecondGameScene1::Enter()
 	AddObject(pObj, GROUP_TYPE::DEFAULT);*/
 	
 	GameObject* player = new SPlayer();
+	player->SetName(L"Player");
 	player->SetPos(Vec2(400.f,800.f));
 	player->SetScale(Vec2(100.f, 100.f));
 	AddObject(player, GROUP_TYPE::PLAYER);
 	RegisterPlayer(player);
 
-	//클로함수 없이 만든 오브젝트 복사 만약 플레이어를 복사한다면 아래와 같이 사용
+	//클론함수 없이 만든 오브젝트 복사 만약 플레이어를 복사한다면 아래와 같이 사용
 	/*GameObject* pOtherPlayer = new SPlayer(*(SPlayer*)player);
 	pOtherPlayer->SetPos(Vec2(200.f, 200.f));
 	AddObject(pOtherPlayer, GROUP_TYPE::PLAYER);*/
@@ -184,6 +188,15 @@ void SecondGameScene1::Enter()
 	//AddObject(pMon, GROUP_TYPE::MONSTER);
 
 
+
+	//땅 물체 배치
+	GameObject* pGround = new CGround;
+	pGround->SetName(L"Ground");
+	pGround->SetPos(Vec2(400.f, 900.f));
+	pGround->SetScale(Vec2(200.f, 60.f));
+	AddObject(pGround, GROUP_TYPE::GROUND);
+
+
 	//타일 로딩
 	//LoadTile(L"Tile\\start.tile");
 
@@ -191,6 +204,7 @@ void SecondGameScene1::Enter()
 	//그룹간 충돌 체크
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::MONSTER);
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::MONSTER, GROUP_TYPE::PROJ_PLAYER);
+	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::GROUND);
 
 
 	//카메라 위치 지정
@@ -199,6 +213,10 @@ void SecondGameScene1::Enter()
 	CCamera::GetInst()->FadeOut(1.f);
 	CCamera::GetInst()->FadeIn(1.f);
 
+
+
+	//스타트 함수 호출
+	Start();
 }
 
 void SecondGameScene1::Exit()

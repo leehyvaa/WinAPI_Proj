@@ -1,4 +1,7 @@
 
+#include "D:\KNJ Work\C\WinAPI_Proj\WinAPI_Proj\AI.cpp"
+
+
 #include "D:\KNJ Work\C\WinAPI_Proj\WinAPI_Proj\CAnimation.cpp"
 
 
@@ -18,7 +21,4 @@
 
 
 #include "D:\KNJ Work\C\WinAPI_Proj\WinAPI_Proj\CEventMgr.cpp"
-
-
-#include "D:\KNJ Work\C\WinAPI_Proj\WinAPI_Proj\CKeyMgr.cpp"
 

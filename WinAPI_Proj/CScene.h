@@ -25,6 +25,8 @@ public:
 
 	GameObject* GetPlayer() { return m_pPlayer; }
 
+
+	virtual void Start();
 	virtual void Update();
 	virtual void FinalUpdate();
 	virtual void Render(HDC _dc);

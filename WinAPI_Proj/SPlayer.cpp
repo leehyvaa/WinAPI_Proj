@@ -11,24 +11,42 @@
 #include "CAnimator.h"
 #include "CAnimation.h"
 #include "CRigidBody.h"
-
+#include "CGravity.h"
 SPlayer::SPlayer()
 	: m_fSpeed(1000)
+	, m_iDir(1)
+	, m_iPrevDir(1)
+	, m_eCurState(PLAYER_STATE::IDLE)
+	, m_ePrevState(PLAYER_STATE::WALK)
+	
 {
 	//m_pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\sigong.bmp");
 	
-	CreateCollider();
-	GetCollider()->SetOffsetPos(Vec2());
-	GetCollider()->SetScale(Vec2(50.f, 50.f));
 
+	//67 -13분 캐릭터 상태변환후 애니메이션 전환
+	CreateCollider();
+	GetCollider()->SetOffsetPos(Vec2(0.f, 20.f));
+	GetCollider()->SetScale(Vec2(20.f, 20.f));
+
+	CreateRigidBody();
+
+
+	//텍스쳐 로딩
 	CTexture* pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\zero_run.bmp");
+	//CTexture* pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\zero_run.bmp");
+
+	
 	CreateAnimator();
+
 	GetAnimator()->CreateAnimation(L"WALK_RIGHT", pTex,
 		Vec2(0.f, 0.f), Vec2(57.f, 52.f), Vec2(57.f, 0.f),0.1f, 16);
+	/*GetAnimator()->CreateAnimation(L"WALK_RIGHT", pTex,
+		Vec2(0.f, 0.f), Vec2(57.f, 52.f), Vec2(57.f, 0.f), 0.1f, 16);*/
+	
+	
 	GetAnimator()->Play(L"WALK_RIGHT",true);
 
 
-	CreateRigidBody();
 
 	//애니메이션 오프셋 넣기
 	//CAnimation* pAnim = GetAnimator()->FindAnimation(L"WALK_RIGHT");
@@ -36,74 +54,44 @@ SPlayer::SPlayer()
 	//{
 	//	pAnim->GetFrame(i).vOffset = Vec2(0.f, -20.f);
 	//}
+
+
+	CreateGravity();
+
 }
 
 
 SPlayer::~SPlayer()
-{
+{ 
 }
 
 
 
 void SPlayer::Update()
 {
-	CRigidBody* pRigid = GetRigidBody();
 
-
-
-
+	Update_State();
+	Update_Move();
+	//Update_Animation();
 
 	if (KEY_TAP(KEY::Q))
 		cout << endl;
 	if (KEY_TAP(KEY::W))
 		//GMap::GetInst()->DrawMap();
-		if (KEY_TAP(KEY::E))
-			system("cls");
+	if (KEY_TAP(KEY::E))
+		system("cls");
 
 
-	if (KEY_TAP(KEY::SPACE))
-		CreateWire();
 
-
-	if (KEY_HOLD(KEY::A))
-	{
-		pRigid->AddForce(Vec2(-200.f, 0.f));
-	}
-	if (KEY_HOLD(KEY::D))
-	{
-		pRigid->AddForce(Vec2(200.f, 0.f));
-	}
-	if (KEY_HOLD(KEY::W))
-	{
-		pRigid->AddForce(Vec2(0.f, -200.f));
-	}
-	if (KEY_HOLD(KEY::S))
-	{	
-		pRigid->AddForce(Vec2(0.f, +200.f));
-	}
-
-
-	if (KEY_TAP(KEY::A))
-	{
-		pRigid->AddVelocity(Vec2(-100.f, 0.f));
-	}
-	if (KEY_TAP(KEY::D))
-	{
-		pRigid->AddVelocity(Vec2(100.f, 0.f));
-	}
-	if (KEY_TAP(KEY::W))
-	{
-		pRigid->AddVelocity(Vec2(0.f, -100.f));
-	}
-	if (KEY_TAP(KEY::S))
-	{
-		pRigid->AddVelocity(Vec2(0.f, 100.f));
-	}
-
+	//if (KEY_TAP(KEY::SPACE))
+	//	CreateWire();
 
 
 
 	GetAnimator()->Update();
+
+	m_ePrevState = m_eCurState;
+	m_iPrevDir = m_iDir;
 }
 
 void SPlayer::Render(HDC _dc)
@@ -177,3 +165,144 @@ void SPlayer::CreateWire()
 	CreateObject(pWire, GROUP_TYPE::PROJ_PLAYER);
 	//CreateObject 함수에 포지션, 방향, 스케일을 설정해주는 인자를 넣어야함
 }
+
+void SPlayer::Update_State()
+{
+	if (KEY_HOLD(KEY::A))
+	{
+		m_iDir = -1;
+
+		if(PLAYER_STATE::JUMP != m_eCurState)
+			m_eCurState = PLAYER_STATE::WALK;
+	}
+	if (KEY_HOLD(KEY::D))
+	{
+		m_iDir = 1;
+		if (PLAYER_STATE::JUMP != m_eCurState)
+			m_eCurState = PLAYER_STATE::WALK;
+	}
+
+	if (0.f == GetRigidBody()->GetSpeed() && PLAYER_STATE::JUMP != m_eCurState)
+	{
+		m_eCurState = PLAYER_STATE::IDLE;
+	}
+
+
+	if (KEY_TAP(KEY::SPACE))
+	{
+		m_eCurState = PLAYER_STATE::JUMP;
+		
+		if (GetRigidBody())
+		{
+			GetRigidBody()->SetVelocity(Vec2(GetRigidBody()->GetVelocity().x, -300.f));
+		}
+
+	}
+
+
+
+}
+
+void SPlayer::Update_Move()
+{
+	CRigidBody* pRigid = GetRigidBody();
+
+	if (KEY_HOLD(KEY::A))
+	{
+		pRigid->AddForce(Vec2(-200.f, 0.f));
+	}
+	if (KEY_HOLD(KEY::D))
+	{
+		pRigid->AddForce(Vec2(200.f, 0.f));
+	}
+	/*if (KEY_HOLD(KEY::W))
+	{
+		pRigid->AddForce(Vec2(0.f, -200.f));
+	}
+	if (KEY_HOLD(KEY::S))
+	{
+		pRigid->AddForce(Vec2(0.f, +200.f));
+	}*/
+
+
+	if (KEY_TAP(KEY::A))
+	{
+		pRigid->SetVelocity(Vec2(-100.f, pRigid->GetVelocity().y));
+	}
+	if (KEY_TAP(KEY::D))
+	{
+		pRigid->SetVelocity(Vec2(100.f, pRigid->GetVelocity().y));
+	}
+	/*if (KEY_TAP(KEY::W))
+	{
+		pRigid->AddVelocity(Vec2(0.f, -100.f));
+	}
+	if (KEY_TAP(KEY::S))
+	{
+		pRigid->AddVelocity(Vec2(0.f, 100.f));
+	}*/
+
+}
+
+void SPlayer::Update_Animation()
+{
+	if (m_ePrevState == m_eCurState && m_iPrevDir == m_iDir)
+		return;
+
+
+	switch (m_eCurState)
+	{
+	case PLAYER_STATE::IDLE:
+		if(m_iDir == -1)
+			GetAnimator()->Play(L"IDLE_LEFT", true);
+		else
+			GetAnimator()->Play(L"IDLE_RIGHT", true);
+		break;
+	case PLAYER_STATE::WALK:
+		if (m_iDir == -1)
+			GetAnimator()->Play(L"WALK_LEFT", true);
+		else
+			GetAnimator()->Play(L"WALK_RIGHT", true);
+		break;
+	case PLAYER_STATE::ATTACK:
+
+		break;
+
+	case PLAYER_STATE::JUMP:
+		if (m_iDir == -1)
+			GetAnimator()->Play(L"IDLE_LEFT", true);
+		else
+			GetAnimator()->Play(L"IDLE_RIGHT", true);
+		break;
+
+	case PLAYER_STATE::DAMAGED:
+
+		break;
+	case PLAYER_STATE::DEAD:
+
+		break;
+	default:
+		break;
+	}
+}
+
+void SPlayer::Update_Gravity()
+{
+	GetRigidBody()->AddForce(Vec2(0.f, 500.f));
+}
+
+void SPlayer::OnCollisionEnter(CCollider* _pOther)
+{
+	GameObject* pOtherObj = _pOther->GetObj();
+
+	if (_pOther->GetObj()->GetName() == L"Ground")
+	{
+		Vec2 vPos = GetPos();
+		if (vPos.y < pOtherObj->GetPos().y)
+		{
+			m_eCurState = PLAYER_STATE::IDLE;
+		}
+	}
+}
+
+

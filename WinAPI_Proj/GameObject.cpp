@@ -3,6 +3,7 @@
 #include "CCollider.h"
 #include "CAnimator.h"
 #include "CRigidBody.h"
+#include "CGravity.h"
 
 GameObject::GameObject()
 	: m_vPos{}
@@ -10,6 +11,7 @@ GameObject::GameObject()
 	,m_pCollider(nullptr)
 	,m_pAnimator(nullptr)
 	,m_pRigidBody(nullptr)
+	, m_pGravity(nullptr)
 	,m_bAlive(true)
 {
 }
@@ -20,7 +22,7 @@ GameObject::GameObject(const GameObject& _origin)
 	,m_pCollider(nullptr)
 	,m_pAnimator(nullptr)
 	,m_pRigidBody(nullptr)
-
+	,m_pGravity(nullptr)
 	,m_bAlive(true)
 {
 	if (_origin.m_pCollider)
@@ -38,7 +40,11 @@ GameObject::GameObject(const GameObject& _origin)
 		m_pRigidBody = new CRigidBody(*_origin.m_pRigidBody);
 		m_pRigidBody->m_pOwner = this;
 	}
-
+	if (_origin.m_pGravity)
+	{
+		m_pGravity = new CGravity(*_origin.m_pGravity);
+		m_pGravity->m_pOwner = this;
+	}
 }
 GameObject::~GameObject()
 {
@@ -48,6 +54,8 @@ GameObject::~GameObject()
 		delete m_pAnimator;
 	if (nullptr != m_pRigidBody)
 		delete m_pRigidBody;
+	if (nullptr != m_pGravity)
+		delete m_pGravity;
 }
 
 
@@ -69,6 +77,12 @@ void GameObject::CreateRigidBody()
 	m_pRigidBody->m_pOwner = this;
 }
 
+void GameObject::CreateGravity()
+{
+	m_pGravity = new CGravity;
+	m_pGravity->m_pOwner = this;
+}
+
 void GameObject::Update()
 {
 	
@@ -76,14 +90,17 @@ void GameObject::Update()
 
 void GameObject::FinalUpdate()
 {
-	if (m_pCollider)
-		m_pCollider->FinalUpdate();
-
 	if (m_pAnimator)
 		m_pAnimator->FinalUpdate();
 
+	if (m_pGravity)
+		m_pGravity->FinalUpdate();
+
 	if (m_pRigidBody)
 		m_pRigidBody->FinalUpdate();
+
+	if (m_pCollider)
+		m_pCollider->FinalUpdate();
 }
 
 void GameObject::Render(HDC _dc)
@@ -102,14 +119,15 @@ void GameObject::Render(HDC _dc)
 
 void GameObject::Component_Render(HDC _dc)
 {
-	if (nullptr != m_pCollider)
-	{
-		m_pCollider->Render(_dc);
-	}
 	if (nullptr != m_pAnimator)
 	{
 		m_pAnimator->Render(_dc);
 	}
+	if (nullptr != m_pCollider)
+	{
+		m_pCollider->Render(_dc);
+	}
+
 }
 
 

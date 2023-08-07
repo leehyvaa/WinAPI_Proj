@@ -130,6 +130,12 @@
     <Filter Include="Engine\Compenent\RigidBody">
       <UniqueIdentifier>{c3c9d7e4-95ac-4dcf-924e-7ba80f9cf32c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Compenent\Graviyy">
+      <UniqueIdentifier>{491feba3-b326-4b5e-90c1-d9b62f6ea1fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Object\Ground">
+      <UniqueIdentifier>{2d8d4e82-e32f-46fc-ab5f-7ca7af0d87b3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WinAPI_Proj.h">
@@ -270,6 +276,12 @@
     <ClInclude Include="CRigidBody.h">
       <Filter>Engine\Compenent\RigidBody</Filter>
     </ClInclude>
+    <ClInclude Include="CGravity.h">
+      <Filter>Engine\Compenent\Graviyy</Filter>
+    </ClInclude>
+    <ClInclude Include="CGround.h">
+      <Filter>Engine\Object\Ground</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -388,6 +400,12 @@
     </ClCompile>
     <ClCompile Include="CRigidBody.cpp">
       <Filter>Engine\Compenent\RigidBody</Filter>
+    </ClCompile>
+    <ClCompile Include="CGravity.cpp">
+      <Filter>Engine\Compenent\Graviyy</Filter>
+    </ClCompile>
+    <ClCompile Include="CGround.cpp">
+      <Filter>Engine\Object\Ground</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

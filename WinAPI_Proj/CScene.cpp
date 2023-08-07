@@ -26,6 +26,17 @@ CScene::~CScene()
 	}
 }
 
+void CScene::Start()
+{
+	for (UINT i = 0; i < (UINT)GROUP_TYPE::END; i++)
+	{
+		for (size_t j = 0; j < m_arrObj[i].size(); j++)
+		{
+			m_arrObj[i][j]->Start();
+		}
+	}
+}
+
 void CScene::Update()
 {
 	for (UINT i = 0; i < (UINT)GROUP_TYPE::END; i++)

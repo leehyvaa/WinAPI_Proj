@@ -7,6 +7,7 @@
 class CCollider;
 class CAnimator;
 class CRigidBody;
+class CGravity;
 
 enum collisionType
 {
@@ -32,6 +33,7 @@ private:
 	CCollider* m_pCollider;
 	CAnimator* m_pAnimator;
 	CRigidBody* m_pRigidBody;
+	CGravity* m_pGravity;
 
 	bool m_bAlive;
 public:
@@ -60,16 +62,20 @@ public:
 	CAnimator* GetAnimator() { return m_pAnimator; }
 	void CreateRigidBody();
 	CRigidBody* GetRigidBody() { return m_pRigidBody; }
-
+	void CreateGravity();
+	CGravity* GetGravity() { return m_pGravity; }
 
 
 	virtual void OnCollision(CCollider* _pOther) {};
 	virtual void OnCollisionEnter(CCollider* _pOther) {};
 	virtual void OnCollisionExit(CCollider* _pOther) {};
 
+
+	virtual void Start() {}; //씬 시작되기 직전에 호출되는함수
 	virtual void Update() = 0;
 	virtual void FinalUpdate();
 	virtual void Render(HDC _dc);
+
 	void Component_Render(HDC _dc);
 
 	virtual GameObject* Clone() = 0;
