@@ -27,13 +27,17 @@ type();\
 
 
 
-#define TILE_SIZE 64
+#define TILE_SIZE 32
 
 enum class GROUP_TYPE
 {
 	DEFAULT,
 	TILE,
 	GROUND,
+	NONEGROUND,
+	DAMAGED,
+	DEADZONE,
+
 	MONSTER,
 	PLAYER,
 	PROJ_PLAYER,

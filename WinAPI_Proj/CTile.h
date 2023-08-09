@@ -21,7 +21,7 @@ public:
     virtual void Load(FILE* _pFile);
 
 
-    CLONE(CTile);
+    CLONE(CTile)
 public:
     CTile();
     ~CTile();
