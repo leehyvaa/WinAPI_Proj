@@ -87,6 +87,15 @@ void CScene::Render(HDC _dc)
 			}
 		}
 	}
+
+	for (size_t i = 0; i < m_iTileY; i++)
+	{
+		for (size_t j = 0; j < m_iTileX; j++)
+		{
+
+		}
+	}
+
 }
 
 void CScene::Render_Tile(HDC _dc)
