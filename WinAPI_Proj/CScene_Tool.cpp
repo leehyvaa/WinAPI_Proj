@@ -15,6 +15,7 @@
 
 #include "resource.h"
 
+
 void ChangeScene(DWORD_PTR, DWORD_PTR);
 
 CScene_Tool::CScene_Tool()
@@ -40,20 +41,43 @@ void CScene_Tool::Enter()
 
 	CUI* pPanelUI = new CPanelUI;
 	pPanelUI->SetName(L"parentUI");
-	pPanelUI->SetScale(Vec2(300.f,150.f));
+	pPanelUI->SetScale(Vec2(320.f,350.f));
 	pPanelUI->SetPos(Vec2(vResolution.x - pPanelUI->GetScale().x,0.f));
-	
-
-	CBtnUI* pBtnUI = new CBtnUI;
-	pBtnUI->SetName(L"ChildUI");
-	pBtnUI->SetScale(Vec2(100.f, 40.f));
-	pBtnUI->SetPos(Vec2(0.f,0.f));
-	//pBtnUI->SetClickedCallBack(&ChangeScene,0,0);
-	((CBtnUI*)pBtnUI)->SetClickedCallBack(this,(SCENE_MEMFUNC) & CScene_Tool::SaveTileData);
-	pPanelUI->AddChild(pBtnUI);
-
 	AddObject(pPanelUI, GROUP_TYPE::UI);
 
+
+	CBtnUI* pBtnTileTex = new CBtnUI;
+	pBtnTileTex->SetName(L"ChildUI");
+	pBtnTileTex->SetScale(Vec2(320.f, 320.f));
+	pBtnTileTex->SetPos(Vec2(0.f, 30.f));
+	//((CBtnUI*)pBtnTileTex)->SetClickedCallBack(this, (SCENE_MEMFUNC)&CScene_Tool::SaveTileData);
+	CTexture* pTileTexture = CResMgr::GetInst()->LoadTexture(L"UI_TILE", L"texture\\tile\\Prologue_Tileset32.bmp");
+	pBtnTileTex->SetTexture(pTileTexture);
+	LoadTileTexture(pTileTexture, 0);
+	
+	pPanelUI->AddChild(pBtnTileTex);
+
+
+
+
+	CBtnUI* pBtnPrev = new CBtnUI;
+	pBtnPrev->SetName(L"ChildUI");
+	pBtnPrev->SetScale(Vec2(32.f, 32.f));
+	pBtnPrev->SetPos(Vec2(1.f,288.f));
+	//pBtnUI->SetClickedCallBack(&ChangeScene,0,0);
+	((CBtnUI*)pBtnPrev)->SetClickedCallBack(this,(SCENE_MEMFUNC) & CScene_Tool::SaveTileData);
+	CTexture* pBtnTexPrev = CResMgr::GetInst()->LoadTexture(L"UI_LEFT", L"Tool\\Button\\UI_LEFT.bmp");
+	pBtnPrev->SetTexture(pBtnTexPrev);
+	pBtnTileTex->AddChild(pBtnPrev);
+	
+
+
+	CBtnUI* pBtnNext = pBtnPrev->Clone();
+	pBtnNext->SetPos(Vec2(283.f, 288.f));
+	((CBtnUI*)pBtnNext)->SetClickedCallBack(this, (SCENE_MEMFUNC)&CScene_Tool::SaveTileData);
+	CTexture* pBtnTexNext = CResMgr::GetInst()->LoadTexture(L"UI_RIGHT", L"Tool\\Button\\UI_RIGHT.bmp");
+	pBtnNext->SetTexture(pBtnTexNext);
+	pBtnTileTex->AddChild(pBtnNext);
 
 
 	//UI 클론 하나 추가
@@ -65,6 +89,8 @@ void CScene_Tool::Enter()
 
 
 	m_pUI = pClonepPanel;*/
+
+
 
 
 
@@ -215,6 +241,51 @@ void CScene_Tool::LoadTileData()
 		wstring strRelativePath = CPathMgr::GetInst()->GetRelativePath(szName);
 		LoadTile(strRelativePath);
 	}
+}
+
+void CScene_Tool::LoadTileTexture(CTexture* _texture, int _index)
+{
+
+	WIN32_FIND_DATAA  data;
+	std::vector<std::string> file_list;
+
+	wstring path = CPathMgr::GetInst()->GetContentPath();
+	path += L"texture\\tile\\*";
+	
+
+
+	string path2 = string().assign(path.begin(), path.end());
+
+	try {
+		HANDLE hFind = FindFirstFileA(path2.c_str(), &data); //첫번째 파일 찾아 핸들 리턴
+		if (hFind == INVALID_HANDLE_VALUE)
+			throw std::runtime_error("FindFirstFile 실패"); //예외처리 
+
+		while (FindNextFileA(hFind, &data))
+		{
+
+			if ((data.dwFileAttributes & FILE_ATTRIBUTE_ARCHIVE) &&  //파일이라면
+				!(data.dwFileAttributes & FILE_ATTRIBUTE_SYSTEM)) //시스템파일은 제외
+			{
+				file_list.push_back(std::string(data.cFileName));
+			}
+		}
+		FindClose(hFind); //핸들 닫아주기 
+	}
+	catch (std::runtime_error e)
+	{
+		std::cerr << e.what() << std::endl;
+		cout << "툴 에러";
+	}
+
+	//출력으로 확인하기 
+	std::cout << "파일리스트" << std::endl;
+	for (std::string str : file_list)
+	{
+		std::cout << str << std::endl;
+	}
+
+
 }
 
 

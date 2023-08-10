@@ -15,7 +15,7 @@ typedef void(*BTN_FUNC)(DWORD_PTR, DWORD_PTR);
 typedef void(CScene::* SCENE_MEMFUNC)(void);
 typedef void(GameObject::* OBJECT_MEMFUNC)(void);
 
-
+class CTexture;
 
 class CBtnUI :
     public CUI
@@ -28,13 +28,22 @@ private:
     SCENE_MEMFUNC m_pSceneFunc;
     CScene* m_pSceneInst;
 
-
+    CTexture* m_pBtnTex;
+    int m_iTexIndex;
 
 public:
     virtual void MouseOn();
     virtual void MouseLbtnDown();
     virtual void MouseLbtnUp();
     virtual void MouseLbtnClicked();
+
+
+    virtual void Render(HDC _dc);
+    virtual void Update();
+
+
+    void SetTexture(CTexture* _pTex) { m_pBtnTex = _pTex; }
+    void SetIndex(int _index) { m_iTexIndex = _index; }
 
     void SetClickedCallBack(BTN_FUNC _pFunc, DWORD_PTR _param1, DWORD_PTR _param2)
     {
@@ -49,6 +58,7 @@ public:
 
 
     CLONE(CBtnUI)
+    CBtnUI(const CBtnUI& _origin);
     CBtnUI();
     ~CBtnUI();
 

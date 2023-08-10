@@ -2,6 +2,8 @@
 #include "CScene.h"
 
 class CUI;
+class CTexture;
+
 
 class CScene_Tool : public CScene
 {
@@ -23,6 +25,7 @@ public:
 
 	void LoadTileData();
 
+	void LoadTileTexture(CTexture* _texture, int _index);
 
 	CScene_Tool();
 	virtual ~CScene_Tool();

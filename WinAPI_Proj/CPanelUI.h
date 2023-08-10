@@ -6,6 +6,7 @@ class CPanelUI :
 private:
     Vec2 m_vDragStart;
 
+
 public:
     virtual void Update();
     virtual void Render(HDC _dc);
