@@ -7,7 +7,9 @@ class CBtnUI;
 enum ToolMode
 {
 	TEXTURE_MODE,
-	
+	GROUND_MODE,
+	PREFAB_MODE,
+	TRIGGER_MODE,
 };
 
 

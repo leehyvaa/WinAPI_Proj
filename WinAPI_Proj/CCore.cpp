@@ -36,6 +36,11 @@ CCore::~CCore()
 		DeleteObject(m_arrPen[i]);
 	}
 
+	for (int i = 0; i < (UINT)BRUSH_TYPE::END; i++)
+	{
+		DeleteObject(m_arrBrush[i]);
+	}
+
 
 	DestroyMenu(m_hMenu);
 }
@@ -121,6 +126,7 @@ void CCore::CreateBrushPen()
 {
 	m_arrBrush[(UINT)BRUSH_TYPE::HOLLOW] = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
 	m_arrBrush[(UINT)BRUSH_TYPE::BLACK] = (HBRUSH)GetStockObject(BLACK_BRUSH);
+	m_arrBrush[(UINT)BRUSH_TYPE::RED] = CreateSolidBrush(RGB(255, 0, 0));
 
 
 

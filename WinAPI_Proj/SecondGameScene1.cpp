@@ -193,7 +193,7 @@ void SecondGameScene1::Enter()
 	GameObject* pGround = new CGround;
 	pGround->SetName(L"Ground");
 	pGround->SetPos(Vec2(400.f, 900.f));
-	pGround->SetScale(Vec2(200.f, 60.f));
+	pGround->SetScale(Vec2(32.f, 32.f));
 	AddObject(pGround, GROUP_TYPE::GROUND);
 
 
