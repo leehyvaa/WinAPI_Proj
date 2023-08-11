@@ -43,6 +43,12 @@ int g_arrVK[(int)KEY::LAST] =
 	VK_ESCAPE,//ESC,
 	VK_LBUTTON,//LBUTTON,
 	VK_RBUTTON,//RBUTTON,
+	VK_F1,
+	VK_F2,
+	VK_F3,
+	VK_F4,
+
+
 	//
 	//LAST,
 };

@@ -42,6 +42,7 @@ public:
     virtual void Update();
 
 
+    CTexture* GetTexture() { return m_pBtnTex; }
     void SetTexture(CTexture* _pTex) { m_pBtnTex = _pTex; }
     void SetIndex(int _index) { m_iTexIndex = _index; }
 

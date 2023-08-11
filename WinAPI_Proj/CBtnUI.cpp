@@ -65,13 +65,14 @@ void CBtnUI::Render(HDC _dc)
 		UINT iWidth = m_pBtnTex->Width();
 		UINT iHeight = m_pBtnTex->Height();
 
+		Vec2 vPos = GetFinalPos();
 
-		Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(GetFinalPos());
+		Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(vPos);
 		Vec2 vScale = GetScale();
 
 		BitBlt(_dc
-			, (int)(vRenderPos.x )
-			, (int)(vRenderPos.y )
+			, (int)(vPos.x )
+			, (int)(vPos.y )
 			, (int)vScale.x
 			, (int)vScale.y
 			, m_pBtnTex->GetDC()

@@ -9,17 +9,7 @@ class CAnimator;
 class CRigidBody;
 class CGravity;
 
-enum collisionType
-{
-	NONE,
-	PLAYER,
-	ENEMY,
-	SPAWNER,
-	P_BULLET,
-	E_BULLET,
-	WALL,
-	COMMAND,
-};
+
 
 
 class GameObject

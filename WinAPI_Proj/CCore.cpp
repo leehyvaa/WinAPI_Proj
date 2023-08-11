@@ -133,7 +133,7 @@ void CCore::CreateBrushPen()
 
 void CCore::Clear()
 {
-	SelectGDI gdi(m_pMemTex->GetDC(), BRUSH_TYPE::BLACK);
+	//SelectGDI gdi(m_pMemTex->GetDC(), BRUSH_TYPE::BLACK);
 	Rectangle(m_pMemTex->GetDC(), -1, -1, m_ptResolution.x + 1, m_ptResolution.y + 1);
 }
 
@@ -164,7 +164,7 @@ void CCore::ChangeWindowSize(Vec2 _vResolution, bool _bMenu)
 
 void CCore::GameOver()
 {
-	TCHAR buf[10];
+	//TCHAR buf[10];
 	//wsprintf(buf, TEXT("%d Á¡"), g_spawner.m_iScore);
 
 	//TextOut(CCore::GetInst()->GetmemDC(), 0, 0, buf, _tcslen(buf));

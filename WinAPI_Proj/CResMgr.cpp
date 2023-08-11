@@ -22,7 +22,7 @@ CResMgr::~CResMgr()
 
 CTexture* CResMgr::CreateTexture(const wstring& _strKey, UINT _iWidth, UINT _iHeight)
 {
-    CTexture* pTex = FIndTexture(_strKey);
+    CTexture* pTex = FindTexture(_strKey);
     if (nullptr != pTex) //텍스처가 이미 존재할 경우 만들지 않고 찾아서 줌
         return pTex;
 
@@ -43,7 +43,7 @@ CTexture* CResMgr::CreateTexture(const wstring& _strKey, UINT _iWidth, UINT _iHe
 
 CTexture* CResMgr::LoadTexture(const wstring& _strKey, const wstring& _strRelativePath)
 {
-    CTexture* pTex = FIndTexture(_strKey);
+    CTexture* pTex = FindTexture(_strKey);
     if (nullptr != pTex) //텍스처가 이미 존재할 경우 만들지 않고 찾아서 줌
         return pTex;
 
@@ -60,7 +60,7 @@ CTexture* CResMgr::LoadTexture(const wstring& _strKey, const wstring& _strRelati
     return pTex;
 }
 
-CTexture* CResMgr::FIndTexture(const wstring& _strKey)
+CTexture* CResMgr::FindTexture(const wstring& _strKey)
 {
 
 

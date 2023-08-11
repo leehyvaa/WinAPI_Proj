@@ -68,6 +68,13 @@ public :
 	}
 
 
+	bool operator == (const Vec2& v)
+	{
+		if (x == v.x && y == v.y)
+			return true;
+		return false;
+	}
+
 	float Length();
 	Vec2& Normalize();
 	float Cross(Vec2& _vec,POINT p);

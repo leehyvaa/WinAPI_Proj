@@ -6,11 +6,14 @@
 #include "CPathMgr.h"
 #include "CCamera.h"
 #include "CCore.h"
+#include "SelectGDI.h"
+#include "CKeyMgr.h"
 
 CScene::CScene()
 	:m_iTileX(0)
 	,m_iTileY(0)
 	,m_pPlayer(nullptr)
+	,bDrawGrid(false)
 {
 }
 
@@ -46,6 +49,11 @@ void CScene::Update()
 			if(!m_arrObj[i][j]->IsDead())
 				m_arrObj[i][j]->Update();
 		}
+	}
+
+	if (KEY_TAP(KEY::F4))
+	{
+		bDrawGrid= !bDrawGrid;
 	}
 
 }
@@ -88,13 +96,6 @@ void CScene::Render(HDC _dc)
 		}
 	}
 
-	for (size_t i = 0; i < m_iTileY; i++)
-	{
-		for (size_t j = 0; j < m_iTileX; j++)
-		{
-
-		}
-	}
 
 }
 
@@ -125,14 +126,31 @@ void CScene::Render_Tile(HDC _dc)
 	{
 		for (int iCurCol = iLTCol; iCurCol < (iLTCol + iClientWidth); iCurCol++)
 		{
-			if (iCurCol < 0 || m_iTileX <= iCurCol ||
-				iCurRow < 0 || m_iTileY <= iCurRow)
+			if (iCurCol < 0 || m_iTileX <= (UINT)iCurCol ||
+				iCurRow < 0 || m_iTileY <= (UINT)iCurRow)
 			{
 				continue;
 			}
 
 			int iIdx = (m_iTileX * iCurRow) + iCurCol;
+
+			if(bDrawGrid)
+			{
+				Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(vecTile[iIdx]->GetPos());
+				Vec2 vScale = vecTile[iIdx]->GetScale();
+
+				SelectGDI brush(CCore::GetInst()->GetMainDC(), BRUSH_TYPE::HOLLOW);
+
+				Rectangle(_dc, (int)(vRenderPos.x)
+					, (int)(vRenderPos.y)
+					, (int)(vRenderPos.x + vScale.x)
+					, (int)(vRenderPos.y + vScale.y));
+			}
+
+
 			vecTile[iIdx]->Render(_dc);
+
+			
 		}
 	}
 
@@ -162,7 +180,7 @@ void CScene::CreateTile(UINT _iXCount, UINT _iYCount)
 	m_iTileY = _iYCount;
 
 
-	CTexture* pTileTex = CResMgr::GetInst()->LoadTexture(L"Tile", L"texture\\tile\\Prologue_Tileset32.bmp");
+	//CTexture* pTileTex = CResMgr::GetInst()->LoadTexture(L"Tile", L"texture\\tile\\Prologue_Tileset32.bmp");
 
 
 	for (UINT i = 0; i < _iYCount; i++)
@@ -172,7 +190,7 @@ void CScene::CreateTile(UINT _iXCount, UINT _iYCount)
 			CTile* pTile = new CTile();
 
 			pTile->SetPos(Vec2((float)(j * TILE_SIZE), (float)(i * TILE_SIZE)));
-			pTile->SetTexture(pTileTex);
+			//pTile->SetTexture(pTileTex);
 
 			AddObject(pTile, GROUP_TYPE::TILE);
 		}

@@ -12,6 +12,7 @@
 #include "CPanelUI.h"
 #include "CBtnUI.h"
 #include "CUIMgr.h"
+#include "CTexture.h"
 
 #include "resource.h"
 
@@ -19,6 +20,13 @@
 void ChangeScene(DWORD_PTR, DWORD_PTR);
 
 CScene_Tool::CScene_Tool()
+	:m_pUI(nullptr)
+	,m_iImgIndex(0)
+	, m_vTilePos(Vec2(0,0))
+	,m_iImgTileX(-1)
+	,m_iImgTileY(-1)
+	,m_iImgTileIdx(-1)
+	, m_vImgTilePos(Vec2(0,0))
 {
 }
 
@@ -50,22 +58,19 @@ void CScene_Tool::Enter()
 	pBtnTileTex->SetName(L"ChildUI");
 	pBtnTileTex->SetScale(Vec2(320.f, 320.f));
 	pBtnTileTex->SetPos(Vec2(0.f, 30.f));
-	//((CBtnUI*)pBtnTileTex)->SetClickedCallBack(this, (SCENE_MEMFUNC)&CScene_Tool::SaveTileData);
-	CTexture* pTileTexture = CResMgr::GetInst()->LoadTexture(L"UI_TILE", L"texture\\tile\\Prologue_Tileset32.bmp");
-	pBtnTileTex->SetTexture(pTileTexture);
-	LoadTileTexture(pTileTexture, 0);
+	((CBtnUI*)pBtnTileTex)->SetClickedCallBack(this, (SCENE_MEMFUNC)&CScene_Tool::SetTileUIIdx);
 	
 	pPanelUI->AddChild(pBtnTileTex);
 
-
-
+	m_pUI = pBtnTileTex;
+	LoadTileTexUI();
 
 	CBtnUI* pBtnPrev = new CBtnUI;
 	pBtnPrev->SetName(L"ChildUI");
-	pBtnPrev->SetScale(Vec2(32.f, 32.f));
+	pBtnPrev->SetScale(Vec2(32.f, 31.f));
 	pBtnPrev->SetPos(Vec2(1.f,288.f));
 	//pBtnUI->SetClickedCallBack(&ChangeScene,0,0);
-	((CBtnUI*)pBtnPrev)->SetClickedCallBack(this,(SCENE_MEMFUNC) & CScene_Tool::SaveTileData);
+	((CBtnUI*)pBtnPrev)->SetClickedCallBack(this,(SCENE_MEMFUNC) & CScene_Tool::PrevTileUI);
 	CTexture* pBtnTexPrev = CResMgr::GetInst()->LoadTexture(L"UI_LEFT", L"Tool\\Button\\UI_LEFT.bmp");
 	pBtnPrev->SetTexture(pBtnTexPrev);
 	pBtnTileTex->AddChild(pBtnPrev);
@@ -74,10 +79,12 @@ void CScene_Tool::Enter()
 
 	CBtnUI* pBtnNext = pBtnPrev->Clone();
 	pBtnNext->SetPos(Vec2(283.f, 288.f));
-	((CBtnUI*)pBtnNext)->SetClickedCallBack(this, (SCENE_MEMFUNC)&CScene_Tool::SaveTileData);
+	((CBtnUI*)pBtnNext)->SetClickedCallBack(this, (SCENE_MEMFUNC)&CScene_Tool::NextTileUI);
 	CTexture* pBtnTexNext = CResMgr::GetInst()->LoadTexture(L"UI_RIGHT", L"Tool\\Button\\UI_RIGHT.bmp");
 	pBtnNext->SetTexture(pBtnTexNext);
 	pBtnTileTex->AddChild(pBtnNext);
+
+
 
 
 	//UI 클론 하나 추가
@@ -112,8 +119,8 @@ void CScene_Tool::Update()
 	if (KEY_TAP(KEY::T))
 		ChangeScene(SCENE_TYPE::START);
 
+	SetTileUIIdx();
 	SetTileIdx();
-
 
 
 	//if (KEY_TAP(KEY::LSHIFT))
@@ -127,15 +134,35 @@ void CScene_Tool::Update()
 	{
 		LoadTileData();
 	}
+
+
+
+	
 }
 
 void CScene_Tool::SetTileIdx()
 {
+
 	if (KEY_TAP(KEY::LBUTTON))
+	{
+		DrawSelectTile();
+	}
+
+	if (KEY_HOLD(KEY::LBUTTON))
+	{
+		DrawSelectTile();
+	}
+
+	if (KEY_TAP(KEY::RBUTTON))
+	{
+		//DrawSelectTile();
+	}
+
+	if (KEY_HOLD(KEY::RBUTTON))
 	{
 		Vec2 vMousePos = MOUSE_POS;
 		vMousePos = CCamera::GetInst()->GetRealPos(vMousePos);
-	
+
 		int iTileX = (int)GetTileX();
 		int iTileY = (int)GetTileY();
 
@@ -146,15 +173,96 @@ void CScene_Tool::SetTileIdx()
 			|| vMousePos.y < 0.f || iTileX <= iRow)
 			return;
 
+		if (m_iImgTileIdx < 0)
+			return;
 
 		UINT iIdx = iRow * iTileX + iCol;
 
-		const vector<GameObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
-		((CTile*)vecTile[iIdx])->AddImgIdx();
+
+		Vec2 tilePos = Vec2((float)iCol, (float)iRow);
+
+		if (tilePos == m_vTilePos)
+			return;
+		else
+		{
+			Vec2 diff = tilePos - m_vTilePos;
+			diff += m_vImgTilePos;
+
+
+			CTexture* tex = m_pUI->GetTexture();
+			m_iImgTileX = (int)tex->Width() / TILE_SIZE;
+			m_iImgTileY = (int)tex->Height() / TILE_SIZE;
+
+
+			if (diff.x < 0.f || diff.y < 0.f ||
+				diff.x >= m_iImgTileX || diff.y >= m_iImgTileY)
+				return;
+
+			int newTileIdx = (int)diff.y * m_iImgTileX + (int)diff.x;
+			
+
+			const vector<GameObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
+			((CTile*)vecTile[iIdx])->SetTexture(m_pUI->GetTexture());
+			((CTile*)vecTile[iIdx])->SetImgIdx(newTileIdx);
+		}
 
 	}
+}
+
+void CScene_Tool::DrawSelectTile()
+{
+	Vec2 vMousePos = MOUSE_POS;
+	vMousePos = CCamera::GetInst()->GetRealPos(vMousePos);
+
+	int iTileX = (int)GetTileX();
+	int iTileY = (int)GetTileY();
+
+	int iCol = (int)vMousePos.x / TILE_SIZE;
+	int iRow = (int)vMousePos.y / TILE_SIZE;
+
+	if (vMousePos.x < 0.f || iTileX <= iCol
+		|| vMousePos.y < 0.f || iTileX <= iRow)
+		return;
+
+	if (m_iImgTileIdx < 0)
+		return;
+
+	UINT iIdx = iRow * iTileX + iCol;
+
+	const vector<GameObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
+	((CTile*)vecTile[iIdx])->SetTexture(m_pUI->GetTexture());
+	((CTile*)vecTile[iIdx])->SetImgIdx(m_iImgTileIdx);
+
+	m_vTilePos = Vec2((float)iCol, (float)iRow);
+}
 
 
+
+void CScene_Tool::SetTileUIIdx()
+{
+	if (m_pUI->GetTexture() && m_pUI->IsLbtnDown())
+	{
+		CTexture* tex = m_pUI->GetTexture();
+		Vec2 vMousePos = MOUSE_POS;
+		vMousePos = CCamera::GetInst()->GetRealPos(vMousePos);
+		vMousePos =vMousePos- m_pUI->GetFinalPos();
+		vMousePos = CCamera::GetInst()->GetRenderPos(vMousePos);
+
+		m_iImgTileX = (int)tex->Width()/ TILE_SIZE;
+		m_iImgTileY = (int)tex->Height()/ TILE_SIZE;
+
+		int iCol = (int)vMousePos.x / TILE_SIZE;
+		int iRow = (int)vMousePos.y / TILE_SIZE;
+
+		if (vMousePos.x < 0.f || m_iImgTileX <= iCol
+			|| vMousePos.y < 0.f || m_iImgTileX <= iRow)
+			return;
+
+
+		m_iImgTileIdx = iRow * m_iImgTileX + iCol;
+
+		m_vImgTilePos = Vec2(iCol, iRow);
+	}
 }
 
 void CScene_Tool::SaveTile(const wstring& _strFilePath)
@@ -243,15 +351,14 @@ void CScene_Tool::LoadTileData()
 	}
 }
 
-void CScene_Tool::LoadTileTexture(CTexture* _texture, int _index)
+void CScene_Tool::LoadTileTexUI()
 {
-
 	WIN32_FIND_DATAA  data;
-	std::vector<std::string> file_list;
+
 
 	wstring path = CPathMgr::GetInst()->GetContentPath();
 	path += L"texture\\tile\\*";
-	
+
 
 
 	string path2 = string().assign(path.begin(), path.end());
@@ -267,7 +374,7 @@ void CScene_Tool::LoadTileTexture(CTexture* _texture, int _index)
 			if ((data.dwFileAttributes & FILE_ATTRIBUTE_ARCHIVE) &&  //파일이라면
 				!(data.dwFileAttributes & FILE_ATTRIBUTE_SYSTEM)) //시스템파일은 제외
 			{
-				file_list.push_back(std::string(data.cFileName));
+				m_vecTile_list.push_back(std::string(data.cFileName));
 			}
 		}
 		FindClose(hFind); //핸들 닫아주기 
@@ -280,11 +387,62 @@ void CScene_Tool::LoadTileTexture(CTexture* _texture, int _index)
 
 	//출력으로 확인하기 
 	std::cout << "파일리스트" << std::endl;
-	for (std::string str : file_list)
+	for (std::string str : m_vecTile_list)
 	{
 		std::cout << str << std::endl;
 	}
 
+
+	path = CPathMgr::GetInst()->GetRelativePath(path.c_str());
+	path.pop_back();
+	path2 = m_vecTile_list[m_iImgIndex];
+	path += wstring().assign(path2.begin(), path2.end());
+
+	//불러올 타일이 없으면 중지
+	if (m_vecTile_list.size() == 0)
+		assert(nullptr);
+
+	CTexture* pTileTexture = CResMgr::GetInst()->LoadTexture(L"UI_TILE0", path.c_str());
+	m_pUI->SetTexture(pTileTexture);
+
+
+}
+
+void CScene_Tool::ChangeTileTexUI()
+{
+	wstring path = CPathMgr::GetInst()->GetContentPath();
+	path += L"texture\\tile\\*";
+
+
+	path = CPathMgr::GetInst()->GetRelativePath(path.c_str());
+	path.pop_back();
+	string path2 = m_vecTile_list[m_iImgIndex];
+	path += wstring().assign(path2.begin(), path2.end());
+
+	wstring fileName = L"UI_TILE";
+	fileName += to_wstring(m_iImgIndex);
+
+	CTexture* pTileTexture = CResMgr::GetInst()->LoadTexture(fileName.c_str(), path.c_str());
+	m_pUI->SetTexture(pTileTexture);
+}
+
+void CScene_Tool::PrevTileUI()
+{
+	m_iImgIndex--;
+	if (0 > m_iImgIndex)
+		m_iImgIndex = (UINT)m_vecTile_list.size() - 1;
+	ChangeTileTexUI();
+}
+
+
+
+
+void CScene_Tool::NextTileUI()
+{
+	m_iImgIndex++;
+	if (m_vecTile_list.size() <= m_iImgIndex)
+		m_iImgIndex = 0;
+	ChangeTileTexUI();
 
 }
 

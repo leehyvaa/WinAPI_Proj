@@ -1,14 +1,30 @@
 #pragma once
 #include "CScene.h"
 
-class CUI;
-class CTexture;
+
+class CBtnUI;
+
+enum ToolMode
+{
+	TEXTURE_MODE,
+	
+};
 
 
 class CScene_Tool : public CScene
 {
 private:
-	CUI* m_pUI;
+	CBtnUI* m_pUI;
+	vector<std::string> m_vecTile_list;
+
+	Vec2 m_vTilePos;
+
+	UINT m_iImgIndex;
+
+	int m_iImgTileX;
+	int m_iImgTileY;
+	UINT m_iImgTileIdx;
+	Vec2 m_vImgTilePos;
 
 public:
 	
@@ -19,13 +35,20 @@ public:
 
 public:
 	void SetTileIdx();
+	void SetTileUIIdx();
+	void DrawSelectTile();
+
+
 
 	void SaveTile(const wstring& _strFilePath);
 	void SaveTileData();
-
 	void LoadTileData();
 
-	void LoadTileTexture(CTexture* _texture, int _index);
+	void LoadTileTexUI();
+	void ChangeTileTexUI();
+	void NextTileUI();
+	void PrevTileUI();
+
 
 	CScene_Tool();
 	virtual ~CScene_Tool();

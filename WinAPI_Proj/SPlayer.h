@@ -41,6 +41,9 @@ public:
 		:GameObject(_origin)
 		,m_iDir(_origin.m_iDir)
 		,m_fSpeed(_origin.m_fSpeed)
+		,m_eCurState(_origin.m_eCurState)
+		,m_ePrevState(_origin.m_ePrevState)
+		,m_iPrevDir(_origin.m_iPrevDir)
 	{}
 	virtual ~SPlayer();
 

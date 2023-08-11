@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "CTile.h"
 #include "CTexture.h"
+#include "SelectGDI.h"
+#include "CCore.h"
 
 CTile::CTile()
 	:m_pTileTex(nullptr)
@@ -19,8 +21,14 @@ void CTile::Update()
 
 void CTile::Render(HDC _dc)
 {
+
+
 	if (nullptr == m_pTileTex || -1 == m_iImgIdx)
 		return;
+
+	Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(GetPos());
+	Vec2 vScale = GetScale();
+
 
 	UINT iWidth = m_pTileTex->Width();
 	UINT iHeight = m_pTileTex->Height();
@@ -35,8 +43,7 @@ void CTile::Render(HDC _dc)
 	if (iMaxRow <= iCurRow)
 		assert(nullptr);
 
-	Vec2 vRenderPos =  CCamera::GetInst()->GetRenderPos(GetPos());
-	Vec2 vScale = GetScale();
+
 
 	BitBlt(_dc
 		, (int)(vRenderPos.x)
@@ -47,6 +54,10 @@ void CTile::Render(HDC _dc)
 		, iCurCol*TILE_SIZE
 		, iCurRow * TILE_SIZE
 		,SRCCOPY);
+
+
+
+
 }
 
 void CTile::Save(FILE* _pFile)

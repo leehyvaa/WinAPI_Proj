@@ -14,6 +14,8 @@ private:
 	UINT m_iTileX; //타일 가로 개수
 	UINT m_iTileY;
 
+	bool bDrawGrid;
+
 	GameObject* m_pPlayer;
 
 public:
