@@ -85,6 +85,12 @@ void CScene_Tool::Enter()
 	pBtnTileTex->AddChild(pBtnNext);
 
 
+	CBtnUI* pBtnSave = pBtnPrev->Clone();
+	pBtnSave->SetPos(Vec2(140.f, 288.f));
+	((CBtnUI*)pBtnSave)->SetClickedCallBack(this, (SCENE_MEMFUNC)&CScene_Tool::SaveTileData);
+	//CTexture* pBtnTexNext = CResMgr::GetInst()->LoadTexture(L"UI_RIGHT", L"Tool\\Button\\UI_RIGHT.bmp");
+	//pBtnNext->SetTexture(pBtnTexNext);
+	pBtnTileTex->AddChild(pBtnSave);
 
 
 	//UI 클론 하나 추가
@@ -276,9 +282,11 @@ void CScene_Tool::SaveTile(const wstring& _strFilePath)
 	UINT xCount = GetTileX();
 	UINT yCount = GetTileY();
 
-	fwrite(&xCount, sizeof(UINT), 1, pFile);
-	fwrite(&yCount, sizeof(UINT), 1, pFile);
+	fprintf(pFile, "[TileCount]\n");
+	fprintf(pFile, "%d\n", (int)xCount);
+	fprintf(pFile, "%d\n", (int)yCount);
 
+	fprintf(pFile,"\n");
 
 	//모든 타일들을 개별적으로 저장할 데이터를 저장하게 함
 	const vector<GameObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
@@ -402,7 +410,7 @@ void CScene_Tool::LoadTileTexUI()
 	if (m_vecTile_list.size() == 0)
 		assert(nullptr);
 
-	CTexture* pTileTexture = CResMgr::GetInst()->LoadTexture(L"UI_TILE0", path.c_str());
+	CTexture* pTileTexture = CResMgr::GetInst()->LoadTexture(L"TILE0", path.c_str());
 	m_pUI->SetTexture(pTileTexture);
 
 
@@ -419,7 +427,7 @@ void CScene_Tool::ChangeTileTexUI()
 	string path2 = m_vecTile_list[m_iImgIndex];
 	path += wstring().assign(path2.begin(), path2.end());
 
-	wstring fileName = L"UI_TILE";
+	wstring fileName = L"TILE";
 	fileName += to_wstring(m_iImgIndex);
 
 	CTexture* pTileTexture = CResMgr::GetInst()->LoadTexture(fileName.c_str(), path.c_str());

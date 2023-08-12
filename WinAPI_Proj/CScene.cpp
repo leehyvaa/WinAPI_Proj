@@ -214,8 +214,16 @@ void CScene::LoadTile(const wstring& _strRelativePath)
 	UINT xCount =0;
 	UINT yCount =0;
 
-	fread(&xCount, sizeof(UINT), 1, pFile);
-	fread(&yCount, sizeof(UINT), 1, pFile);
+	//fread(&xCount, sizeof(UINT), 1, pFile);
+	//fread(&yCount, sizeof(UINT), 1, pFile);
+	char szBuff[256] = {};
+
+	FScanf(szBuff, pFile);
+	fscanf_s(pFile, "%d", &xCount);
+	fscanf_s(pFile, "%d", &yCount);
+	FScanf(szBuff, pFile);
+	FScanf(szBuff, pFile);
+
 
 	//불러온 개수에 맞게 EmptyTile 들 만들어두기
 	CreateTile(xCount, yCount);

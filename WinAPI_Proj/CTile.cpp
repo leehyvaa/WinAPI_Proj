@@ -3,6 +3,7 @@
 #include "CTexture.h"
 #include "SelectGDI.h"
 #include "CCore.h"
+#include "CResMgr.h"
 
 CTile::CTile()
 	:m_pTileTex(nullptr)
@@ -41,7 +42,10 @@ void CTile::Render(HDC _dc)
 
 	// 이미지 범위를 벗어난 인덱스 체크
 	if (iMaxRow <= iCurRow)
+	{
+		return;
 		assert(nullptr);
+	}
 
 
 
@@ -62,11 +66,63 @@ void CTile::Render(HDC _dc)
 
 void CTile::Save(FILE* _pFile)
 {
-	fwrite(&m_iImgIdx, sizeof(int), 1, _pFile);
+	//fwrite(&m_iImgIdx, sizeof(int), 1, _pFile);
+
+	fprintf(_pFile, "[Tile]\n");
+	fprintf(_pFile, "%d\n", m_iImgIdx);
+
+	if (m_pTileTex)
+	{
+		fprintf(_pFile, "[Texture_Name]\n");
+		string strName = string(m_pTileTex->GetKey().begin(), m_pTileTex->GetKey().end());
+		fprintf(_pFile, strName.c_str());
+		fprintf(_pFile, "\n");
+
+		fprintf(_pFile, "[Texture_Path]\n");
+		strName = string(m_pTileTex->GetRelativePath().begin(), m_pTileTex->GetRelativePath().end());
+		fprintf(_pFile, strName.c_str());
+		fprintf(_pFile, "\n");
+	}
+	else
+	{
+		fprintf(_pFile, "[Texture_Name]\n");
+		fprintf(_pFile, "-1\n");
+		fprintf(_pFile, "[Texture_Path]\n");
+		fprintf(_pFile, "-1\n");
+	}
+	fprintf(_pFile, "\n");
 }
 
 void CTile::Load(FILE* _pFile)
 {
-	fread(&m_iImgIdx, sizeof(int), 1, _pFile);
+	char szBuff[256] = {};
+	string str;
 
+	FScanf(szBuff, _pFile);//[Tile]
+	fscanf_s(_pFile, "%d", &m_iImgIdx);
+	FScanf(szBuff, _pFile);
+
+
+	FScanf(szBuff, _pFile);//[Texture_Name]
+	FScanf(szBuff, _pFile);
+
+	if (strcmp(szBuff, "-1"))
+	{
+		str = szBuff;
+		wstring strTexKey = wstring(str.begin(), str.end());
+
+		FScanf(szBuff, _pFile);//[Texture_Path]
+		FScanf(szBuff, _pFile);
+
+		str = szBuff;
+		wstring strTexPath = wstring(str.begin(), str.end());
+
+		m_pTileTex = CResMgr::GetInst()->LoadTexture(strTexKey, strTexPath);
+	}
+	else
+	{
+		FScanf(szBuff, _pFile);
+		FScanf(szBuff, _pFile);
+	}
+	FScanf(szBuff, _pFile);
 }

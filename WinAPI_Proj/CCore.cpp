@@ -79,6 +79,17 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 	CSceneMgr::GetInst()->init();
 
 
+	//Sound 로드 테스트
+	//CResMgr::GetInst->LoadSound(L"BGM_01", L"sound\\DM.wav");
+	//CSound* pNewSound = CResMgr::GetInst()->FindSound(L"BGM_01");
+
+	//pNewSound->Play();
+
+	//pNewSound->SetPosition(50.f); //백분율, 소리 위치 설정
+	//pNewSound -> PlayToBGM(true);
+	//pNewSound->SetVolume(60.f);
+
+
 	return S_OK;
 }
 
