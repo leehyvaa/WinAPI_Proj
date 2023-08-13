@@ -22,9 +22,3 @@
 
 #include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CEventMgr.cpp"
 
-
-#include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CIdleState.cpp"
-
-
-#include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CKeyMgr.cpp"
-

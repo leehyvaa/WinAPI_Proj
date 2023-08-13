@@ -1,10 +1,4 @@
 
-#include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CScene_Tool.cpp"
-
-
-#include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CSound.cpp"
-
-
 #include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CState.cpp"
 
 

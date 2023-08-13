@@ -1,16 +1,4 @@
 
-#include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CMonPrefab.cpp"
-
-
-#include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CMonster.cpp"
-
-
-#include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CPanelUI.cpp"
-
-
-#include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CPathMgr.cpp"
-
-
 #include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CRes.cpp"
 
 
@@ -27,4 +15,10 @@
 
 
 #include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CScene_Start.cpp"
+
+
+#include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CScene_Tool.cpp"
+
+
+#include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CSound.cpp"
 
