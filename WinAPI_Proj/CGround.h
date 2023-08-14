@@ -17,6 +17,9 @@ public:
 	virtual void Render(HDC _dc);
 	
 
+	virtual void Save(FILE* _file);
+	virtual void Load(FILE* _file);
+
 public:
 	CGround();
 	virtual ~CGround();

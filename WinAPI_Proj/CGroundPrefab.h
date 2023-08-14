@@ -1,13 +1,7 @@
 #pragma once
 class CGround;
 
-enum class GROUND_TYPE
-{
-	GROUND,
-	NONGROUND,
-	DAMAGEZONE,
-	DEADZONE,
-};
+
 
 
 class CGroundPrefab

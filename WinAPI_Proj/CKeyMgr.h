@@ -49,6 +49,7 @@ enum class KEY
 	ESC,
 	LBUTTON,
 	RBUTTON,
+	BACK,
 
 	F1,
 	F2,
@@ -59,6 +60,18 @@ enum class KEY
 	F6,
 	F7,
 	F8,
+
+	KEY_1,
+	KEY_2,
+	KEY_3,
+	KEY_4,
+	KEY_5,
+	KEY_6,
+	KEY_7,
+	KEY_8,
+
+
+	
 
 	LAST,
 };

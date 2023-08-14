@@ -34,7 +34,7 @@ public:
 	void ChangeWindowSize(Vec2 _vResolution, bool _bMenu);
 
 
-	//HDC GetmemDC() { return m_pMemTex->GetDC(); }
+	HDC GetmemDC();
 	HDC GetMainDC() { return m_hDC; }
 	HWND GetMainHwnd() { return m_hWnd; }
 	POINT GetResolution() { return m_ptResolution; }

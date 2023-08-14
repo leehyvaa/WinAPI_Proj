@@ -65,6 +65,65 @@ void CGround::Render(HDC _dc)
 	GameObject::Component_Render(_dc);
 }
 
+void CGround::Save(FILE* _file)
+{
+	wstring wstr = GetName();
+	string str;
+
+	fprintf(_file, "[Ground]\n");
+	
+	fprintf(_file, "[GroundType]\n");
+	str = string(wstr.begin(), wstr.end());
+	fprintf(_file, str.c_str());
+	fprintf(_file, "\n");
+
+
+
+	fprintf(_file, "[GroundPos]\n");
+	fprintf(_file, "%f %f\n", GetPos().x,GetPos().y);
+	fprintf(_file, "[GroundScale]\n");
+	fprintf(_file, "%f %f\n", GetScale().x, GetScale().y);
+	fprintf(_file, "\n");
+
+
+
+	
+}
+
+void CGround::Load(FILE* _file)
+{
+	char szBuff[256] = {};
+	string str;
+
+	FScanf(szBuff, _file);//[Ground]
+
+	FScanf(szBuff, _file);//[GroundType]
+	FScanf(szBuff, _file); //TypeName
+	str = szBuff;
+	wstring strGroundType = wstring(str.begin(), str.end());
+	fprintf(_file, "\n");
+	SetName(strGroundType);
+
+
+	FScanf(szBuff, _file);//[GroundPos]
+
+	float x;
+	float y;
+	fscanf_s(_file, "%f %f", &x,&y);
+	SetPos(Vec2(x, y));
+	FScanf(szBuff, _file);
+	
+	FScanf(szBuff, _file); // [GroundScale]
+
+	fscanf_s(_file, "%f %f", &x, &y);
+	SetScale(Vec2(x, y));
+	FScanf(szBuff, _file);
+
+	FScanf(szBuff, _file);
+
+
+}
+
 void CGround::OnCollisionEnter(CCollider* _pOther)
 {
 	GameObject* pOtherObj = _pOther->GetObj();

@@ -4,13 +4,14 @@
 
 class CBtnUI;
 
-enum ToolMode
+enum TOOL_MODE
 {
 	TEXTURE_MODE,
 	GROUND_MODE,
 	PREFAB_MODE,
 	TRIGGER_MODE,
 };
+
 
 
 class CScene_Tool : public CScene
@@ -28,8 +29,8 @@ private:
 	UINT m_iImgTileIdx;
 	Vec2 m_vImgTilePos;
 
-	ToolMode toolMode;
-
+	TOOL_MODE toolMode;
+	GROUND_TYPE groundType;
 public:
 	
 
@@ -55,7 +56,7 @@ public:
 
 
 	void CreateGround();
-
+	void SaveBmp();
 
 	CScene_Tool();
 	virtual ~CScene_Tool();

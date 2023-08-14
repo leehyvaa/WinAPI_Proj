@@ -12,12 +12,16 @@ private:
 	wstring			 m_strName;//씬 이름
 
 
+
+
 	UINT m_iTileX; //타일 가로 개수
 	UINT m_iTileY;
+	UINT m_iGroundCount;
 
 	bool bDrawGrid;
 	bool bDrawCollider;
 	bool bDrawGroundType;
+	bool bDrawOutWindow;
 
 	GameObject* m_pPlayer;
 
@@ -27,6 +31,8 @@ public:
 
 	UINT GetTileX() { return m_iTileX; }
 	UINT GetTileY() { return m_iTileY; }
+	UINT GetGroundCount() { return m_iGroundCount; }
+	void SetGroundCount(UINT _count) { m_iGroundCount = _count; }
 
 	GameObject* GetPlayer() { return m_pPlayer; }
 	bool GetDrawGroundType() { return bDrawGroundType; }
@@ -53,7 +59,7 @@ public:
 
 	void CreateTile(UINT _iXCount, UINT _iYCount);
 	void LoadTile(const wstring& _strRelativePath);
-
+	void CreateEmptyGround(UINT _count);
 
 	vector<GameObject*>& GetUIGroup() { return m_arrObj[(UINT)GROUP_TYPE::UI]; }
 

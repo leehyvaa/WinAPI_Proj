@@ -177,6 +177,11 @@ void CCore::ChangeWindowSize(Vec2 _vResolution, bool _bMenu)
 
 }
 
+HDC CCore::GetmemDC()
+{
+	return m_pMemTex->GetDC();
+}
+
 
 
 void CCore::GameOver()

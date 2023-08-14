@@ -8,14 +8,16 @@
 #include "CCore.h"
 #include "SelectGDI.h"
 #include "CKeyMgr.h"
-
+#include "CGround.h"
 CScene::CScene()
 	:m_iTileX(0)
 	,m_iTileY(0)
+	,m_iGroundCount(0)
 	,m_pPlayer(nullptr)
 	,bDrawGrid(false)
 	,bDrawCollider(false)
 	,bDrawGroundType(false)
+	, bDrawOutWindow(false)
 {
 }
 
@@ -65,6 +67,10 @@ void CScene::Update()
 	{
 		bDrawGroundType = !bDrawGroundType;
 	}
+	if (KEY_TAP(KEY::F8))
+	{
+		bDrawOutWindow = !bDrawOutWindow;
+	}
 
 }
 
@@ -83,7 +89,7 @@ void CScene::Render(HDC _dc)
 {
 	for (UINT i = 0; i < (UINT)GROUP_TYPE::END; i++)
 	{
-		if ((UINT)GROUP_TYPE::TILE == i)
+		if ((UINT)GROUP_TYPE::TILE == i && !bDrawOutWindow)
 		{
 			Render_Tile(_dc);
 			continue;
@@ -209,6 +215,8 @@ void CScene::CreateTile(UINT _iXCount, UINT _iYCount)
 
 }
 
+
+
 void CScene::LoadTile(const wstring& _strRelativePath)
 {
 	wstring strFilePath = CPathMgr::GetInst()->GetContentPath();
@@ -238,6 +246,7 @@ void CScene::LoadTile(const wstring& _strRelativePath)
 	//불러온 개수에 맞게 EmptyTile 들 만들어두기
 	CreateTile(xCount, yCount);
 
+
 	//만들어진 타일 개별로필요한 정보를 불러옴
 	const vector<GameObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
 
@@ -247,8 +256,43 @@ void CScene::LoadTile(const wstring& _strRelativePath)
 	}
 
 
+
+
+	const vector<GameObject*>& vecGround = GetGroupObject(GROUP_TYPE::GROUND);
+	FScanf(szBuff, pFile); //[GroundCount]
+	fscanf_s(pFile, "%d", &m_iGroundCount);
+	FScanf(szBuff, pFile); //[GroundCount]
+
+	//불러온 개수에 맞게 Ground생성
+	CreateEmptyGround(m_iGroundCount);
+
+	for (size_t i = 0; i < vecGround.size(); i++)
+	{
+		((CGround*)vecGround[i])->Load(pFile);
+	}
+
+
 	fclose(pFile);
 
+}
+
+void CScene::CreateEmptyGround(UINT _count)
+{
+
+	DeleteGroup(GROUP_TYPE::GROUND);
+
+
+
+	for (UINT j = 0; j < _count; j++)
+	{
+		CGround* ground = new CGround();
+
+		ground->SetPos(Vec2(0,0));
+	
+
+		AddObject(ground, GROUP_TYPE::GROUND);
+	}
+	
 }
 
 

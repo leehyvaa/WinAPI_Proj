@@ -13,6 +13,7 @@
 #include "CBtnUI.h"
 #include "CUIMgr.h"
 #include "CTexture.h"
+#include "CGround.h"
 
 #include "resource.h"
 
@@ -27,7 +28,8 @@ CScene_Tool::CScene_Tool()
 	, m_iImgTileY(-1)
 	, m_iImgTileIdx(-1)
 	, m_vImgTilePos(Vec2(0,0))
-	, toolMode(ToolMode::TEXTURE_MODE)
+	, toolMode(TOOL_MODE::TEXTURE_MODE)
+	, groundType(GROUND_TYPE::GROUND)
 {
 }
 
@@ -133,11 +135,36 @@ void CScene_Tool::Update()
 	{
 		SetTileUIIdx();
 		SetTileIdx();
+		if (KEY_TAP(KEY::KEY_1))
+		{
+			SaveBmp();
+		}
 	}
 	break;
 	case GROUND_MODE:
 		CreateGround();
+		if (KEY_TAP(KEY::BACK))
+		{
+			if (GetGroundCount() > 0)
+			{
+				DeleteObject(CSceneMgr::GetInst()->GetCurScene()->GetGroupObject(GROUP_TYPE::GROUND).back());
+				SetGroundCount(GetGroundCount() - 1);
+			}
+		}
 
+		if (KEY_TAP(KEY::P))
+		{
+			cout <<"ground Count: " << GetGroundCount() << endl;
+			cout << "ground Type:" << (int)groundType<<endl;
+
+		}
+		if (KEY_TAP(KEY::KEY_2))
+		{
+			int a = (int)groundType;
+			groundType= (GROUND_TYPE)++a;
+			if (groundType == GROUND_TYPE::END)
+				groundType = GROUND_TYPE::GROUND;
+		}
 
 		break;
 	case PREFAB_MODE:
@@ -167,19 +194,19 @@ void CScene_Tool::Update()
 
 	if (KEY_TAP(KEY::F1))
 	{
-		toolMode = ToolMode::TEXTURE_MODE;
+		toolMode = TOOL_MODE::TEXTURE_MODE;
 	}
 	if (KEY_TAP(KEY::F2))
 	{
-		toolMode = ToolMode::GROUND_MODE;
+		toolMode = TOOL_MODE::GROUND_MODE;
 	}
 	if (KEY_TAP(KEY::F3))
 	{
-		toolMode = ToolMode::TRIGGER_MODE;
+		toolMode = TOOL_MODE::TRIGGER_MODE;
 	}
 	if (KEY_TAP(KEY::F4))
 	{
-		toolMode = ToolMode::PREFAB_MODE;
+		toolMode = TOOL_MODE::PREFAB_MODE;
 	}
 
 	
@@ -328,11 +355,21 @@ void CScene_Tool::SaveTile(const wstring& _strFilePath)
 
 	//모든 타일들을 개별적으로 저장할 데이터를 저장하게 함
 	const vector<GameObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
+	const vector<GameObject*>& vecGround = GetGroupObject(GROUP_TYPE::GROUND);
 
 	for (size_t i = 0; i < vecTile.size(); i++)
 	{
 		((CTile*)vecTile[i])->Save(pFile);
 	}
+
+	fprintf(pFile, "[GroundCount]\n");
+	fprintf(pFile, "%d\n", (int)GetGroundCount());
+	for (size_t i = 0; i < vecGround.size(); i++)
+	{
+		((CGround*)vecGround[i])->Save(pFile);
+	}
+
+
 
 	fclose(pFile);
 }
@@ -499,12 +536,24 @@ void CScene_Tool::CreateGround()
 		cout << mousePos2.x <<endl;
 
 
+		if (groundType == GROUND_TYPE::GROUND)
+		{
+			CGround* pGround2 = CGroundPrefab::CreateGround(GROUND_TYPE::GROUND,
+				mousePos1, mousePos2);
+			//AddObject((GameObject*)pGround2, GROUP_TYPE::GROUND);
+			CreateObject((GameObject*)pGround2, GROUP_TYPE::GROUND);
+		}
+		else if (groundType == GROUND_TYPE::NONGROUND)
+		{
+			CGround* pGround2 = CGroundPrefab::CreateGround(GROUND_TYPE::NONGROUND,
+				mousePos1, mousePos2);
+			//AddObject((GameObject*)pGround2, GROUP_TYPE::GROUND);
+			CreateObject((GameObject*)pGround2, GROUP_TYPE::GROUND);
+		}
 
-		CGround* pGround2 = CGroundPrefab::CreateGround(GROUND_TYPE::GROUND,
-			mousePos1, mousePos2);
-		//AddObject((GameObject*)pGround2, GROUP_TYPE::GROUND);
-		CreateObject((GameObject*)pGround2, GROUP_TYPE::GROUND);
 
+
+		SetGroundCount(GetGroundCount() + 1);
 	}
 
 }
@@ -522,10 +571,67 @@ void CScene_Tool::NextTileUI()
 }
 
 
+
+void CScene_Tool::SaveBmp()
+{
+	HDC hdcScreen = CCore::GetInst()->GetMainDC();
+
+
+	int screenX =TILE_SIZE*GetTileX();
+	int screenY = TILE_SIZE * GetTileY();
+
+
+	HDC hdcMem = CreateCompatibleDC(hdcScreen);
+	HBITMAP hBitmap = CreateCompatibleBitmap(hdcScreen, screenX, screenY);
+	SelectObject(hdcMem, hBitmap);
+
+	//화면 캡처
+	BitBlt(hdcMem, 0, 0, screenX, screenY, hdcScreen, 0, 0, SRCCOPY);
+
+	//비트맵 저장
+	BITMAPINFOHEADER bi;
+	bi.biSize = sizeof(BITMAPINFOHEADER);
+	bi.biWidth = screenX;
+	bi.biHeight = screenY;
+	bi.biPlanes = 1;
+	bi.biBitCount = 24;
+	bi.biCompression = BI_RGB;
+	bi.biSizeImage = 0;
+	bi.biXPelsPerMeter = 0;
+	bi.biYPelsPerMeter = 0;
+	bi.biClrUsed = 0;
+	bi.biClrImportant = 0;
+
+	HANDLE hFile = CreateFile(L"content\\texture\\map\\screenshot.bmp", GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	DWORD dwWritten = 0;
+	DWORD dwSizeofDIB = screenX * screenY * 3 + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
+	BITMAPFILEHEADER bmfHeader;
+	bmfHeader.bfOffBits = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
+	bmfHeader.bfSize = dwSizeofDIB + sizeof(BITMAPFILEHEADER);
+	bmfHeader.bfType = 0x4D42;
+	WriteFile(hFile, (LPSTR)&bmfHeader, sizeof(BITMAPFILEHEADER), &dwWritten, NULL);
+	WriteFile(hFile, (LPSTR)&bi, sizeof(BITMAPINFOHEADER), &dwWritten, NULL);
+	LPSTR lpBits = new char[dwSizeofDIB];
+	GetDIBits(hdcScreen, hBitmap, 0, (UINT)screenY, lpBits, (BITMAPINFO*)&bi, DIB_RGB_COLORS);
+	WriteFile(hFile, lpBits, dwSizeofDIB, &dwWritten, NULL);
+
+
+	delete[] lpBits;
+	CloseHandle(hFile);
+	DeleteObject(hBitmap);
+	DeleteDC(hdcMem);
+	ReleaseDC(NULL, hdcScreen);
+ }
+
+
+
+
 void ChangeScene(DWORD_PTR, DWORD_PTR)
 {
 	ChangeScene(SCENE_TYPE::START);
 }
+
+
 
 
 //Tile Count Window Proc
@@ -538,9 +644,9 @@ INT_PTR CALLBACK TileCountProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		return (INT_PTR)TRUE;
 
 	case WM_COMMAND:
-		if (LOWORD(wParam) == IDOK )
+		if (LOWORD(wParam) == IDOK)
 		{
-		 	UINT iXCount = GetDlgItemInt(hDlg, IDC_EDIT1, nullptr, false);
+			UINT iXCount = GetDlgItemInt(hDlg, IDC_EDIT1, nullptr, false);
 			UINT iYCount = GetDlgItemInt(hDlg, IDC_EDIT2, nullptr, false);
 
 			CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();

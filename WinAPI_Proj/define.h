@@ -32,11 +32,9 @@ type();\
 enum class GROUP_TYPE
 {
 	DEFAULT,
+	BackGround,
 	TILE,
 	GROUND,
-	NONEGROUND,
-	DAMAGED,
-	DEADZONE,
 
 	MONSTER,
 	PLAYER,
@@ -94,5 +92,14 @@ enum class MON_STATE
 	ATTACK,
 	RUN,
 	DEAD,
+	END,
+};
+
+enum class GROUND_TYPE
+{
+	GROUND,
+	NONGROUND,
+	DAMAGEZONE,
+	DEADZONE,
 	END,
 };
