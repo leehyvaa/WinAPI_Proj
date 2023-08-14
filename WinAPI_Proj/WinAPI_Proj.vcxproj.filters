@@ -282,6 +282,12 @@
     <ClInclude Include="CGround.h">
       <Filter>Engine\Object\Ground</Filter>
     </ClInclude>
+    <ClInclude Include="CGroundPrefab.h">
+      <Filter>Engine\Prefab</Filter>
+    </ClInclude>
+    <ClInclude Include="CNormalGround.h">
+      <Filter>Engine\Object\Ground</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -405,6 +411,12 @@
       <Filter>Engine\Compenent\Graviyy</Filter>
     </ClCompile>
     <ClCompile Include="CGround.cpp">
+      <Filter>Engine\Object\Ground</Filter>
+    </ClCompile>
+    <ClCompile Include="CGroundPrefab.cpp">
+      <Filter>Engine\Prefab</Filter>
+    </ClCompile>
+    <ClCompile Include="CNormalGround.cpp">
       <Filter>Engine\Object\Ground</Filter>
     </ClCompile>
   </ItemGroup>

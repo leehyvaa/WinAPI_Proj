@@ -28,6 +28,8 @@ private:
 	UINT m_iImgTileIdx;
 	Vec2 m_vImgTilePos;
 
+	ToolMode toolMode;
+
 public:
 	
 
@@ -50,6 +52,9 @@ public:
 	void ChangeTileTexUI();
 	void NextTileUI();
 	void PrevTileUI();
+
+
+	void CreateGround();
 
 
 	CScene_Tool();

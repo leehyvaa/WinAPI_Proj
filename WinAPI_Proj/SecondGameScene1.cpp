@@ -23,6 +23,7 @@
 #include "CGround.h"
 
 
+
 SecondGameScene1::SecondGameScene1()
 	:m_bUseForce(false)
 	,m_fForceRadius(500)
@@ -38,7 +39,8 @@ SecondGameScene1::~SecondGameScene1()
 
 void SecondGameScene1::Update()
 {
-	if (KEY_HOLD(KEY::LBUTTON))
+	//마우스로 밀어내기
+	/*if (KEY_HOLD(KEY::LBUTTON))
 	{
 		m_bUseForce = true;
 		CreateForce();
@@ -73,11 +75,11 @@ void SecondGameScene1::Update()
 				vecObj[j]->Update();
 			}
 		}
-	}
+	}*/
 
 
 	//부모클래스의 update가 virtual이 아니기 때문에
-	//CScene::Update();
+	CScene::Update();
 
 
 
@@ -190,12 +192,15 @@ void SecondGameScene1::Enter()
 
 
 	//땅 물체 배치
-	GameObject* pGround = new CGround;
+	/*GameObject* pGround = new CGround;
 	pGround->SetName(L"Ground");
 	pGround->SetPos(Vec2(400.f, 900.f));
 	pGround->SetScale(Vec2(32.f, 32.f));
-	AddObject(pGround, GROUP_TYPE::GROUND);
+	AddObject(pGround, GROUP_TYPE::GROUND);*/
 
+
+	CGround* pGround2 = CGroundPrefab::CreateGround(GROUND_TYPE::GROUND, Vec2(400.f, 900.f), Vec2(600.f, 1000.f));
+	AddObject((GameObject*)pGround2, GROUP_TYPE::GROUND);
 
 	//타일 로딩
 	//LoadTile(L"Tile\\start.tile");

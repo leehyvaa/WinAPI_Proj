@@ -20,13 +20,14 @@
 void ChangeScene(DWORD_PTR, DWORD_PTR);
 
 CScene_Tool::CScene_Tool()
-	:m_pUI(nullptr)
-	,m_iImgIndex(0)
+	: m_pUI(nullptr)
+	, m_iImgIndex(0)
 	, m_vTilePos(Vec2(0,0))
-	,m_iImgTileX(-1)
-	,m_iImgTileY(-1)
-	,m_iImgTileIdx(-1)
+	, m_iImgTileX(-1)
+	, m_iImgTileY(-1)
+	, m_iImgTileIdx(-1)
 	, m_vImgTilePos(Vec2(0,0))
+	, toolMode(ToolMode::TEXTURE_MODE)
 {
 }
 
@@ -125,8 +126,30 @@ void CScene_Tool::Update()
 	if (KEY_TAP(KEY::T))
 		ChangeScene(SCENE_TYPE::START);
 
-	SetTileUIIdx();
-	SetTileIdx();
+
+	switch (toolMode)
+	{
+	case TEXTURE_MODE:
+	{
+		SetTileUIIdx();
+		SetTileIdx();
+	}
+	break;
+	case GROUND_MODE:
+		CreateGround();
+
+
+		break;
+	case PREFAB_MODE:
+		break;
+	case TRIGGER_MODE:
+		break;
+	default:
+		break;
+	}
+
+
+
 
 
 	//if (KEY_TAP(KEY::LSHIFT))
@@ -142,28 +165,30 @@ void CScene_Tool::Update()
 	}
 
 
+	if (KEY_TAP(KEY::F1))
+	{
+		toolMode = ToolMode::TEXTURE_MODE;
+	}
+	if (KEY_TAP(KEY::F2))
+	{
+		toolMode = ToolMode::GROUND_MODE;
+	}
+	if (KEY_TAP(KEY::F3))
+	{
+		toolMode = ToolMode::TRIGGER_MODE;
+	}
+	if (KEY_TAP(KEY::F4))
+	{
+		toolMode = ToolMode::PREFAB_MODE;
+	}
+
+	
 
 	
 }
 
 void CScene_Tool::SetTileIdx()
 {
-
-	if (KEY_TAP(KEY::LBUTTON))
-	{
-		DrawSelectTile();
-	}
-
-	if (KEY_HOLD(KEY::LBUTTON))
-	{
-		DrawSelectTile();
-	}
-
-	if (KEY_TAP(KEY::RBUTTON))
-	{
-		//DrawSelectTile();
-	}
-
 	if (KEY_HOLD(KEY::RBUTTON))
 	{
 		Vec2 vMousePos = MOUSE_POS;
@@ -205,13 +230,27 @@ void CScene_Tool::SetTileIdx()
 				return;
 
 			int newTileIdx = (int)diff.y * m_iImgTileX + (int)diff.x;
-			
+
 
 			const vector<GameObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
 			((CTile*)vecTile[iIdx])->SetTexture(m_pUI->GetTexture());
 			((CTile*)vecTile[iIdx])->SetImgIdx(newTileIdx);
 		}
 
+	}
+	if (KEY_TAP(KEY::LBUTTON))
+	{
+		DrawSelectTile();
+	}
+
+	if (KEY_HOLD(KEY::LBUTTON))
+	{
+		DrawSelectTile();
+	}
+
+	if (KEY_TAP(KEY::RBUTTON))
+	{
+		//DrawSelectTile();
 	}
 }
 
@@ -241,7 +280,6 @@ void CScene_Tool::DrawSelectTile()
 
 	m_vTilePos = Vec2((float)iCol, (float)iRow);
 }
-
 
 
 void CScene_Tool::SetTileUIIdx()
@@ -440,6 +478,35 @@ void CScene_Tool::PrevTileUI()
 	if (0 > m_iImgIndex)
 		m_iImgIndex = (UINT)m_vecTile_list.size() - 1;
 	ChangeTileTexUI();
+}
+
+void CScene_Tool::CreateGround()
+{
+	static Vec2 mousePos1(0, 0);
+	static Vec2 mousePos2(0, 0);
+
+
+	if (KEY_TAP(KEY::LBUTTON))
+	{
+		mousePos1 = MOUSE_POS;
+		mousePos1 = CCamera::GetInst()->GetRealPos(mousePos1);
+		cout << mousePos1.x <<endl;
+	}
+	if (KEY_AWAY(KEY::LBUTTON))
+	{
+		mousePos2 = MOUSE_POS;
+		mousePos2 =CCamera::GetInst()->GetRealPos(mousePos2);
+		cout << mousePos2.x <<endl;
+
+
+
+		CGround* pGround2 = CGroundPrefab::CreateGround(GROUND_TYPE::GROUND,
+			mousePos1, mousePos2);
+		//AddObject((GameObject*)pGround2, GROUP_TYPE::GROUND);
+		CreateObject((GameObject*)pGround2, GROUP_TYPE::GROUND);
+
+	}
+
 }
 
 

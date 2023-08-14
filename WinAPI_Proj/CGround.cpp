@@ -5,7 +5,7 @@
 #include "CCore.h"
 #include "SelectGDI.h"
 #include "CSceneMgr.h"
-
+#include "CScene.h"
 CGround::CGround()
 {
 	CreateCollider();
@@ -31,27 +31,36 @@ void CGround::Update()
 
 void CGround::Render(HDC _dc)
 {
-	//if(CSceneMgr::GetCurScene()==SCENE_TYPE::TOOL)
-
-	//if (GetName() == L"GROUND")
-	//{
-	//}
+	if (CSceneMgr::GetInst()->GetCurScene()->GetDrawGroundType())
+	{
+		PEN_TYPE ePen = PEN_TYPE::BLUE;
 
 
-	PEN_TYPE ePen = PEN_TYPE::BLUE;
-	SelectGDI p(_dc, ePen);
-	SelectGDI b(_dc, BRUSH_TYPE::HOLLOW);
+		if (GetName() == L"Ground")
+		{
+			ePen = PEN_TYPE::BLUE;
+		}
+		else if (GetName() == L"NonGround")
+		{
+			ePen = PEN_TYPE::RED;
+		}
+		SelectGDI b(_dc, BRUSH_TYPE::HOLLOW);
+		SelectGDI p(_dc, ePen);
 
-	Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(Vec2(GetPos().x +2,GetPos().y +2));
-	Vec2 vScale = Vec2(GetScale().x - 4.f, GetScale().y - 4.f);
+		Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(Vec2(GetPos().x + 2, GetPos().y + 2));
+		Vec2 vScale = Vec2(GetScale().x - 4.f, GetScale().y - 4.f);
+
+
+
+		Rectangle(_dc, (int)(vRenderPos.x)
+			, (int)(vRenderPos.y)
+			, (int)(vRenderPos.x + vScale.x)
+			, (int)(vRenderPos.y + vScale.y));
+	}
+
 	
 
-	
 
-	Rectangle(_dc, (int)(vRenderPos.x)
-		, (int)(vRenderPos.y)
-		, (int)(vRenderPos.x + vScale.x)
-		, (int)(vRenderPos.y + vScale.y));
 
 	GameObject::Component_Render(_dc);
 }
@@ -73,11 +82,10 @@ void CGround::OnCollisionEnter(CCollider* _pOther)
 		float fValue = (vObjScale.y / 2.f + vScale.y / 2.f) - fLen;
 
 		vObjPos = pOtherObj->GetPos();
-		vObjPos.y-= (fValue);
-	
+		vObjPos.y -= (fValue);
+
 		pOtherObj->SetPos(vObjPos);
 	}
-	
 }
 
 void CGround::OnCollision(CCollider* _pOther)

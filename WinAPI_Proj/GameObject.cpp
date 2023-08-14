@@ -4,7 +4,8 @@
 #include "CAnimator.h"
 #include "CRigidBody.h"
 #include "CGravity.h"
-
+#include "CScene.h"
+#include "CSceneMgr.h"
 GameObject::GameObject()
 	: m_vPos{}
 	, m_vScale{}
@@ -123,7 +124,7 @@ void GameObject::Component_Render(HDC _dc)
 	{
 		m_pAnimator->Render(_dc);
 	}
-	if (nullptr != m_pCollider)
+	if (nullptr != m_pCollider && CSceneMgr::GetInst()->GetCurScene()->GetDrawCollider())
 	{
 		m_pCollider->Render(_dc);
 	}

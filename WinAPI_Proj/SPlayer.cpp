@@ -25,7 +25,7 @@ SPlayer::SPlayer()
 
 	//67 -13분 캐릭터 상태변환후 애니메이션 전환
 	CreateCollider();
-	GetCollider()->SetOffsetPos(Vec2(0.f, 20.f));
+	GetCollider()->SetOffsetPos(Vec2(0.f, 16.f));
 	GetCollider()->SetScale(Vec2(32.f, 32.f));
 
 	CreateRigidBody();

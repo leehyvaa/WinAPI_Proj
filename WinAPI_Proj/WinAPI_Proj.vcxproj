@@ -172,10 +172,12 @@
     <ClInclude Include="CEventMgr.h" />
     <ClInclude Include="CGravity.h" />
     <ClInclude Include="CGround.h" />
+    <ClInclude Include="CGroundPrefab.h" />
     <ClInclude Include="CIdleState.h" />
     <ClInclude Include="CKeyMgr.h" />
     <ClInclude Include="CMonPrefab.h" />
     <ClInclude Include="CMonster.h" />
+    <ClInclude Include="CNormalGround.h" />
     <ClInclude Include="CPanelUI.h" />
     <ClInclude Include="CPathMgr.h" />
     <ClInclude Include="CRes.h" />
@@ -222,10 +224,12 @@
     <ClCompile Include="CEventMgr.cpp" />
     <ClCompile Include="CGravity.cpp" />
     <ClCompile Include="CGround.cpp" />
+    <ClCompile Include="CGroundPrefab.cpp" />
     <ClCompile Include="CIdleState.cpp" />
     <ClCompile Include="CKeyMgr.cpp" />
     <ClCompile Include="CMonPrefab.cpp" />
     <ClCompile Include="CMonster.cpp" />
+    <ClCompile Include="CNormalGround.cpp" />
     <ClCompile Include="CPanelUI.cpp" />
     <ClCompile Include="CPathMgr.cpp" />
     <ClCompile Include="CRes.cpp" />

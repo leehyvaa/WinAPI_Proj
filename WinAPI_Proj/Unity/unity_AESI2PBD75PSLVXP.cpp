@@ -1,7 +1,4 @@
 
-#include "D:\KNJ Work\C\WinAPI_Proj\WinAPI_Proj\CState.cpp"
-
-
 #include "D:\KNJ Work\C\WinAPI_Proj\WinAPI_Proj\CTexture.cpp"
 
 
@@ -21,4 +18,10 @@
 
 
 #include "D:\KNJ Work\C\WinAPI_Proj\WinAPI_Proj\func.cpp"
+
+
+#include "D:\KNJ Work\C\WinAPI_Proj\WinAPI_Proj\GameObject.cpp"
+
+
+#include "D:\KNJ Work\C\WinAPI_Proj\WinAPI_Proj\CCore.cpp"
 

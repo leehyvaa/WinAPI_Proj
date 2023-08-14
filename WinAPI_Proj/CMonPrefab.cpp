@@ -22,7 +22,7 @@ CMonster* CMonPrefab::CreateMonster(MON_TYPE _eType, Vec2 _vPos)
 		info.fDetectRange = 300.f;
 		info.fHP = 100.f;
 		info.fSpeed = 150.f;
-		info.iDir = 0.f;
+		info.iDir = 0;
 
 		pMon->SetMonInfo(info);
 

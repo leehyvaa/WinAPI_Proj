@@ -1,10 +1,4 @@
 
-#include "D:\KNJ Work\C\WinAPI_Proj\WinAPI_Proj\GameObject.cpp"
-
-
-#include "D:\KNJ Work\C\WinAPI_Proj\WinAPI_Proj\CCore.cpp"
-
-
 #include "D:\KNJ Work\C\WinAPI_Proj\WinAPI_Proj\CTimeMgr.cpp"
 
 
@@ -21,4 +15,7 @@
 
 
 #include "D:\KNJ Work\C\WinAPI_Proj\WinAPI_Proj\Vec2.cpp"
+
+
+#include "D:\KNJ Work\C\WinAPI_Proj\WinAPI_Proj\MiniGame.cpp"
 

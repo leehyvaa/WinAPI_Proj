@@ -4,7 +4,7 @@ class CScene;
 
 class CSceneMgr
 {
-	SINGLE(CSceneMgr);
+	SINGLE(CSceneMgr)
 
 private:
 	CScene* m_arrScene[(UINT)SCENE_TYPE::END]; //¸ðµç ¾À ¸ñ·Ï
@@ -15,6 +15,7 @@ public:
 	void Update();
 	void Render(HDC _dc);
 	CScene* GetCurScene() { return m_pCurScene; }
+	CScene* GetArrScene() { return *m_arrScene; }
 
 private:
 	void ChangeScene(SCENE_TYPE _eNext);

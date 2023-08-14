@@ -1,5 +1,6 @@
 #pragma once
 #include "CMonPrefab.h"
+#include "CGroundPrefab.h"
 
 class GameObject;
 
@@ -15,6 +16,8 @@ private:
 	UINT m_iTileY;
 
 	bool bDrawGrid;
+	bool bDrawCollider;
+	bool bDrawGroundType;
 
 	GameObject* m_pPlayer;
 
@@ -26,7 +29,8 @@ public:
 	UINT GetTileY() { return m_iTileY; }
 
 	GameObject* GetPlayer() { return m_pPlayer; }
-
+	bool GetDrawGroundType() { return bDrawGroundType; }
+	bool GetDrawCollider() { return bDrawCollider; }
 
 	virtual void Start();
 	virtual void Update();

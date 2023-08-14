@@ -14,6 +14,8 @@ CScene::CScene()
 	,m_iTileY(0)
 	,m_pPlayer(nullptr)
 	,bDrawGrid(false)
+	,bDrawCollider(false)
+	,bDrawGroundType(false)
 {
 }
 
@@ -51,9 +53,17 @@ void CScene::Update()
 		}
 	}
 
-	if (KEY_TAP(KEY::F4))
+	if (KEY_TAP(KEY::F5))
 	{
 		bDrawGrid= !bDrawGrid;
+	}
+	if (KEY_TAP(KEY::F6))
+	{
+		bDrawCollider = !bDrawCollider;
+	}
+	if (KEY_TAP(KEY::F7))
+	{
+		bDrawGroundType = !bDrawGroundType;
 	}
 
 }
@@ -240,3 +250,5 @@ void CScene::LoadTile(const wstring& _strRelativePath)
 	fclose(pFile);
 
 }
+
+
