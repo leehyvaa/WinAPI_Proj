@@ -288,6 +288,9 @@
     <ClInclude Include="CNormalGround.h">
       <Filter>Engine\Object\Ground</Filter>
     </ClInclude>
+    <ClInclude Include="CBackGround.h">
+      <Filter>Engine\Object\Tile</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -418,6 +421,9 @@
     </ClCompile>
     <ClCompile Include="CNormalGround.cpp">
       <Filter>Engine\Object\Ground</Filter>
+    </ClCompile>
+    <ClCompile Include="CBackGround.cpp">
+      <Filter>Engine\Object\Tile</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

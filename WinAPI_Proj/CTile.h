@@ -13,7 +13,8 @@ public:
     virtual void Update();
     virtual void Render(HDC _dc);
 
-    void SetTexture(CTexture* _pTex) { m_pTileTex = _pTex; }
+    virtual void SetTexture(CTexture* _pTex) { m_pTileTex = _pTex; }
+    virtual CTexture* GetTexture() { return m_pTileTex; }
     void AddImgIdx() { ++m_iImgIdx; }
     void SetImgIdx(int _idx) { m_iImgIdx = _idx; }
 
@@ -24,6 +25,6 @@ public:
     CLONE(CTile)
 public:
     CTile();
-    ~CTile();
+    virtual ~CTile();
 };
 

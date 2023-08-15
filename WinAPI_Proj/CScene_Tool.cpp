@@ -14,6 +14,7 @@
 #include "CUIMgr.h"
 #include "CTexture.h"
 #include "CGround.h"
+#include "CBackGround.h"
 
 #include "resource.h"
 
@@ -108,7 +109,20 @@ void CScene_Tool::Enter()
 
 
 
+	CBackGround* backGround = new CBackGround;
+	backGround->SetPos(Vec2(0, 0));
+	CTexture* back = CResMgr::GetInst()->LoadTexture(L"TutorialBack", L"texture\\background\\Forest_Mountain.bmp");
+	backGround->SetTexture(back);
+	backGround->SetScale(Vec2(500,500));
+	AddObject((GameObject*)backGround, GROUP_TYPE::BACKGROUND);
 
+
+	/*CTile* backGround2 = new CTile;
+	backGround2->SetPos(Vec2(0, 0));
+	CTexture* back = CResMgr::GetInst()->LoadTexture(L"TutorialBack", L"texture\\background\\Forest_Sky.bmp");
+	backGround2->SetTexture(back);
+	backGround2->SetScale(Vec2((float)TILE_SIZE * GetTileX(), (float)TILE_SIZE * GetTileY()));
+	AddObject((GameObject*)backGround2, GROUP_TYPE::BACKGROUND);*/
 
 	//카메라 Look 지정
 	CCamera::GetInst()->SetLookAt(vResolution/2.f);

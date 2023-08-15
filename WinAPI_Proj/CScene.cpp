@@ -155,7 +155,8 @@ void CScene::Render_Tile(HDC _dc)
 				Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(vecTile[iIdx]->GetPos());
 				Vec2 vScale = vecTile[iIdx]->GetScale();
 
-				SelectGDI brush(CCore::GetInst()->GetMainDC(), BRUSH_TYPE::HOLLOW);
+				SelectGDI brush(_dc, BRUSH_TYPE::HOLLOW);
+
 
 				Rectangle(_dc, (int)(vRenderPos.x)
 					, (int)(vRenderPos.y)

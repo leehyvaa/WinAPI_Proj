@@ -8,6 +8,9 @@
 #include "D:\KNJ Work\C\WinAPI_Proj\WinAPI_Proj\CAnimator.cpp"
 
 
+#include "D:\KNJ Work\C\WinAPI_Proj\WinAPI_Proj\CBackGround.cpp"
+
+
 #include "D:\KNJ Work\C\WinAPI_Proj\WinAPI_Proj\CBtnUI.cpp"
 
 
@@ -21,7 +24,4 @@
 
 
 #include "D:\KNJ Work\C\WinAPI_Proj\WinAPI_Proj\CEventMgr.cpp"
-
-
-#include "D:\KNJ Work\C\WinAPI_Proj\WinAPI_Proj\CGravity.cpp"
 

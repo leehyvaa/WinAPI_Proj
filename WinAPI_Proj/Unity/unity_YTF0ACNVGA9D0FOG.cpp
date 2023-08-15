@@ -1,4 +1,7 @@
 
+#include "D:\KNJ Work\C\WinAPI_Proj\WinAPI_Proj\CGravity.cpp"
+
+
 #include "D:\KNJ Work\C\WinAPI_Proj\WinAPI_Proj\CGround.cpp"
 
 
@@ -21,7 +24,4 @@
 
 
 #include "D:\KNJ Work\C\WinAPI_Proj\WinAPI_Proj\CPanelUI.cpp"
-
-
-#include "D:\KNJ Work\C\WinAPI_Proj\WinAPI_Proj\CPathMgr.cpp"
 

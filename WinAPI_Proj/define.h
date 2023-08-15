@@ -32,7 +32,7 @@ type();\
 enum class GROUP_TYPE
 {
 	DEFAULT,
-	BackGround,
+	BACKGROUND,
 	TILE,
 	GROUND,
 

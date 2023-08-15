@@ -1,4 +1,7 @@
 
+#include "D:\KNJ Work\C\WinAPI_Proj\WinAPI_Proj\CCore.cpp"
+
+
 #include "D:\KNJ Work\C\WinAPI_Proj\WinAPI_Proj\CTimeMgr.cpp"
 
 

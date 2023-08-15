@@ -11,7 +11,7 @@ private:
 	vector<GameObject*> m_arrObj[(UINT)GROUP_TYPE::END];
 	wstring			 m_strName;//씬 이름
 
-
+	
 
 
 	UINT m_iTileX; //타일 가로 개수
@@ -24,6 +24,7 @@ private:
 	bool bDrawOutWindow;
 
 	GameObject* m_pPlayer;
+
 
 public:
 	void SetName(const wstring& _strName) { m_strName = _strName;}

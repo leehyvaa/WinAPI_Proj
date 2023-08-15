@@ -49,17 +49,24 @@ void CTile::Render(HDC _dc)
 
 
 
-	BitBlt(_dc
-		, (int)(vRenderPos.x)
-		, (int)(vRenderPos.y)
-		, (int)vScale.x
-		, (int)vScale.y
+	//BitBlt(_dc
+	//	, (int)(vRenderPos.x)
+	//	, (int)(vRenderPos.y)
+	//	, (int)vScale.x
+	//	, (int)vScale.y
+	//	, m_pTileTex->GetDC()
+	//	, iCurCol*TILE_SIZE
+	//	, iCurRow * TILE_SIZE
+	//	,SRCCOPY);
+
+
+	TransparentBlt(_dc
+		, int(vRenderPos.x )
+		, int(vRenderPos.y)
+		, vScale.x, vScale.y
 		, m_pTileTex->GetDC()
-		, iCurCol*TILE_SIZE
-		, iCurRow * TILE_SIZE
-		,SRCCOPY);
-
-
+		, iCurCol * TILE_SIZE, iCurRow * TILE_SIZE,
+		TILE_SIZE, TILE_SIZE, RGB(0, 0, 0));
 
 
 }
