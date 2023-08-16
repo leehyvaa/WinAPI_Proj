@@ -61,7 +61,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return FALSE;
     }
 
-    if (FAILED(CCore::GetInst()->init(hWnd,POINT{750,1000})))
+    if (FAILED(CCore::GetInst()->init(hWnd,POINT{1280,720})))
     {
         MessageBox(nullptr, L"Core 객체 초기화 실패", L"ERROR", MB_OK);
         return FALSE;
@@ -150,8 +150,16 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
     hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
 
-    hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
+   hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
         CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+
+
+    //int width = GetSystemMetrics(SM_CXSCREEN);
+    //int height = GetSystemMetrics(SM_CYSCREEN);
+
+
+    //hWnd = CreateWindowW(szWindowClass, szTitle, WS_EX_TOPMOST | WS_POPUP,
+    //    0, 0, width, height, nullptr, nullptr, hInstance, nullptr);
 
     if (!hWnd)
     {

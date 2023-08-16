@@ -142,7 +142,7 @@ void SecondGameScene1::Enter()
 	
 	GameObject* player = new SPlayer();
 	player->SetName(L"Player");
-	player->SetPos(Vec2(400.f,800.f));
+	player->SetPos(Vec2(400.f,400.f));
 	player->SetScale(Vec2(100.f, 100.f));
 	AddObject(player, GROUP_TYPE::PLAYER);
 	RegisterPlayer(player);
@@ -199,7 +199,7 @@ void SecondGameScene1::Enter()
 	AddObject(pGround, GROUP_TYPE::GROUND);*/
 
 
-	CGround* pGround2 = CGroundPrefab::CreateGround(GROUND_TYPE::GROUND, Vec2(400.f, 900.f), Vec2(600.f, 1000.f));
+	CGround* pGround2 = CGroundPrefab::CreateGround(GROUND_TYPE::GROUND, Vec2(400.f, 500.f), Vec2(600.f, 600.f));
 	AddObject((GameObject*)pGround2, GROUP_TYPE::GROUND);
 
 	//타일 로딩

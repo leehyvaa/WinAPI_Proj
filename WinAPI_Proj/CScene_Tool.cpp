@@ -109,20 +109,24 @@ void CScene_Tool::Enter()
 
 
 
+	
+
+
+
+	CBackGround* backGround2 = new CBackGround;
+	backGround2->SetPos(Vec2(0, 0));
+	CTexture* back2 = CResMgr::GetInst()->LoadTexture(L"TutorialBackSky", L"texture\\background\\Forest_Sky.bmp");
+	backGround2->SetTexture(back2);
+	backGround2->SetScale(CCore::GetInst()->GetResolution());
+	AddObject((GameObject*)backGround2, GROUP_TYPE::BACKGROUND);
+	
+
 	CBackGround* backGround = new CBackGround;
 	backGround->SetPos(Vec2(0, 0));
 	CTexture* back = CResMgr::GetInst()->LoadTexture(L"TutorialBack", L"texture\\background\\Forest_Mountain.bmp");
 	backGround->SetTexture(back);
-	backGround->SetScale(Vec2(500,500));
+	backGround->SetScale(CCore::GetInst()->GetResolution());
 	AddObject((GameObject*)backGround, GROUP_TYPE::BACKGROUND);
-
-
-	/*CTile* backGround2 = new CTile;
-	backGround2->SetPos(Vec2(0, 0));
-	CTexture* back = CResMgr::GetInst()->LoadTexture(L"TutorialBack", L"texture\\background\\Forest_Sky.bmp");
-	backGround2->SetTexture(back);
-	backGround2->SetScale(Vec2((float)TILE_SIZE * GetTileX(), (float)TILE_SIZE * GetTileY()));
-	AddObject((GameObject*)backGround2, GROUP_TYPE::BACKGROUND);*/
 
 	//카메라 Look 지정
 	CCamera::GetInst()->SetLookAt(vResolution/2.f);
@@ -151,7 +155,9 @@ void CScene_Tool::Update()
 		SetTileIdx();
 		if (KEY_TAP(KEY::KEY_1))
 		{
-			SaveBmp();
+			//SaveBmp();
+			//m_pUI
+
 		}
 	}
 	break;

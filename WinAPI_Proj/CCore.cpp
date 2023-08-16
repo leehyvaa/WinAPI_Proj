@@ -172,7 +172,7 @@ void CCore::ChangeWindowSize(Vec2 _vResolution, bool _bMenu)
 {
 	RECT rect = { 0,0, (long)_vResolution.x, (long)_vResolution.y};
 	AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, false);
-	SetWindowPos(m_hWnd, nullptr, 300, 10, rect.right - rect.left, rect.bottom - rect.top, 0);
+	SetWindowPos(m_hWnd, nullptr, 0, 0, rect.right - rect.left, rect.bottom - rect.top, 0);
 
 
 }
