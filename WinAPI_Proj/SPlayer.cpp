@@ -32,23 +32,23 @@ SPlayer::SPlayer()
 
 
 	//텍스쳐 로딩
-	//CTexture* pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\zero_run.bmp");
-	//CTexture* pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\zero_run.bmp");
+	CTexture* pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\player\\zero_run.bmp");
+	///CTexture* pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\player\\zero_run.bmp");
 
 	CreateAnimator();
 
 
-	GetAnimator()->LoadAnimation(L"animation\\player_idle_right.anim");
+	//GetAnimator()->LoadAnimation(L"animation\\player_idle_right.anim");
 	
 
-	//GetAnimator()->CreateAnimation(L"WALK_RIGHT", pTex,
-	//	Vec2(0.f, 0.f), Vec2(57.f, 52.f), Vec2(57.f, 0.f),0.1f, 16);
+	GetAnimator()->CreateAnimation(L"WALK_RIGHT", pTex,
+		Vec2(0.f, 0.f), Vec2(57.f, 52.f), Vec2(57.f, 0.f),0.1f, 16);
 	/*GetAnimator()->CreateAnimation(L"WALK_RIGHT", pTex,
 		Vec2(0.f, 0.f), Vec2(57.f, 52.f), Vec2(57.f, 0.f), 0.1f, 16);*/
 	
 	
 	//애니메이션 저장
-	//GetAnimator()->FindAnimation(L"WALK_RIGHT")->Save(L"animation\\player_idle_right.anim");
+	GetAnimator()->FindAnimation(L"WALK_RIGHT")->Save(L"animation\\player_idle_right.anim");
 
 
 
