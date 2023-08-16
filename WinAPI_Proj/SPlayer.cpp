@@ -32,8 +32,8 @@ SPlayer::SPlayer()
 
 
 	//텍스쳐 로딩
-	CTexture* pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\player\\zero_run.bmp");
-	///CTexture* pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\player\\zero_run.bmp");
+	CTexture* pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\player\\player_idle_right.bmp");
+	//CTexture* pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\player\\zero_run.bmp");
 
 	CreateAnimator();
 
