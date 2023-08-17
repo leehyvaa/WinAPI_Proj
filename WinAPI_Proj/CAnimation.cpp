@@ -14,6 +14,7 @@ CAnimation::CAnimation()
 	,m_iCurFrm(0)
 	,m_fAccTime(0.f)
 	,m_bFinish(false)
+	,m_fSizeMulti(1)
 {
 }
 
@@ -61,10 +62,10 @@ void CAnimation::Render(HDC _dc)
 
 
 	TransparentBlt(_dc
-		, (int)(vPos.x - m_vecFrm[m_iCurFrm].vSlice.x / 2.f)
-		, (int)(vPos.y - m_vecFrm[m_iCurFrm].vSlice.y / 2.f)
-		, (int)(m_vecFrm[m_iCurFrm].vSlice.x)
-		, (int)(m_vecFrm[m_iCurFrm].vSlice.y)
+		, (int)(vPos.x - m_vecFrm[m_iCurFrm].vSlice.x *m_fSizeMulti / 2.f)
+		, (int)(vPos.y - m_vecFrm[m_iCurFrm].vSlice.y *m_fSizeMulti / 2.f)
+		, (int)(m_vecFrm[m_iCurFrm].vSlice.x * m_fSizeMulti)
+		, (int)(m_vecFrm[m_iCurFrm].vSlice.y * m_fSizeMulti)
 		, m_pTex->GetDC()
 		, (int)(m_vecFrm[m_iCurFrm].vLT.x)
 		, (int)(m_vecFrm[m_iCurFrm].vLT.y)
@@ -75,7 +76,7 @@ void CAnimation::Render(HDC _dc)
 }
 
 void CAnimation::Create(CTexture* _pTex, Vec2 _vLT, Vec2 _vSliceSize,
-					Vec2 _vStep, float _fDuration, UINT _iFrameCount)
+					Vec2 _vStep, float _fDuration, UINT _iFrameCount, float _fSizeMulti, Vec2 _vOffset)
 {
 	m_pTex = _pTex;
 	tAnimFrm frm = {};
@@ -85,9 +86,12 @@ void CAnimation::Create(CTexture* _pTex, Vec2 _vLT, Vec2 _vSliceSize,
 		frm.fDuration = _fDuration;
 		frm.vSlice = _vSliceSize;
 		frm.vLT = _vLT + _vStep * (float)i;
+		frm.vOffset = _vOffset;
 
 		m_vecFrm.push_back(frm);
 	}
+
+	m_fSizeMulti = _fSizeMulti;
 }
 
 void CAnimation::Save(const wstring& _strRelativePath)
@@ -128,6 +132,8 @@ void CAnimation::Save(const wstring& _strRelativePath)
 	fprintf(pFile, "%d\n", (int)m_vecFrm.size());
 
 
+	fprintf(pFile, "[Animation_Size_Multiply]\n");
+	fprintf(pFile, "%f\n", m_fSizeMulti);
 
 
 	//모든 프레임 정보
@@ -229,6 +235,13 @@ void CAnimation::Load(const wstring& _strRelativePath)
 	FScanf(szBuff, pFile);
 	int iFrameCount = 0;
 	fscanf_s(pFile, "%d", &iFrameCount); //문자를 정수로 바꿔서 읽음
+	FScanf(szBuff, pFile);
+
+
+	//사이즈 배율
+	FScanf(szBuff, pFile);
+	fscanf_s(pFile, "%f", &m_fSizeMulti);
+	FScanf(szBuff, pFile);
 
 
 

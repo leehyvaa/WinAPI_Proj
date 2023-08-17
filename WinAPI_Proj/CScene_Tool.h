@@ -3,10 +3,12 @@
 
 
 class CBtnUI;
+class CPanelUI;
 
 enum TOOL_MODE
 {
 	TEXTURE_MODE,
+
 	GROUND_MODE,
 	PREFAB_MODE,
 	TRIGGER_MODE,
@@ -17,7 +19,9 @@ enum TOOL_MODE
 class CScene_Tool : public CScene
 {
 private:
-	CBtnUI* m_pUI;
+	CBtnUI* m_pTexUI;
+	CPanelUI* m_pPanelUI;
+
 	vector<std::string> m_vecTile_list;
 
 	Vec2 m_vTilePos;
@@ -28,7 +32,8 @@ private:
 	int m_iImgTileY;
 	UINT m_iImgTileIdx;
 	Vec2 m_vImgTilePos;
-
+	bool m_bErase;
+	bool m_bSecondTex;
 	TOOL_MODE toolMode;
 	GROUND_TYPE groundType;
 public:

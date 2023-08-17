@@ -62,6 +62,7 @@ public:
 	void LoadTile(const wstring& _strRelativePath);
 	void CreateEmptyGround(UINT _count);
 
+	
 	vector<GameObject*>& GetUIGroup() { return m_arrObj[(UINT)GROUP_TYPE::UI]; }
 
 public:

@@ -203,7 +203,7 @@ void SecondGameScene1::Enter()
 	AddObject((GameObject*)pGround2, GROUP_TYPE::GROUND);
 
 	//타일 로딩
-	//LoadTile(L"Tile\\start.tile");
+	LoadTile(L"Tile\\test6.tile");
 
 
 	//그룹간 충돌 체크

@@ -22,6 +22,7 @@ private:
 	int	m_iCurFrm; //현재프레임
 	float m_fAccTime; //시간 누적
 	bool m_bFinish; //재생 끝에 도달 여부
+	float m_fSizeMulti;
 
 public:
 	const wstring& GetName() { return m_strName; }
@@ -45,7 +46,8 @@ public:
 	void Update();
 	void Render(HDC _dc);
 
-	void Create(CTexture* _pTex, Vec2 _vLT, Vec2 _vSliceSize, Vec2 _vStep, float _fDuration,UINT _iFrameCount);
+	void Create(CTexture* _pTex, Vec2 _vLT, Vec2 _vSliceSize, Vec2 _vStep,
+		float _fDuration,UINT _iFrameCount, float _fSizeMulti, Vec2 _vOffset);
 
 	void Save(const wstring& _strRelativePath);
 	void Load(const wstring& _strRelativePath);

@@ -17,7 +17,7 @@ SPlayer::SPlayer()
 	, m_iDir(1)
 	, m_iPrevDir(1)
 	, m_eCurState(PLAYER_STATE::IDLE)
-	, m_ePrevState(PLAYER_STATE::WALK)
+	, m_ePrevState(PLAYER_STATE::RUN)
 	
 {
 	//m_pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\sigong.bmp");
@@ -29,35 +29,73 @@ SPlayer::SPlayer()
 	GetCollider()->SetScale(Vec2(32.f, 32.f));
 
 	CreateRigidBody();
-
-
-	//텍스쳐 로딩
-	CTexture* pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\player\\player_idle_right.bmp");
-	//CTexture* pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\player\\zero_run.bmp");
-
 	CreateAnimator();
 
 
-	//GetAnimator()->LoadAnimation(L"animation\\player_idle_right.anim");
+#pragma region 애니메이션
+	//텍스쳐 로딩
+	CTexture* pTexRight = CResMgr::GetInst()->LoadTexture(L"PlayerTex_Right", L"texture\\player\\Player_Right.bmp");
+	CTexture* pTexLeft = CResMgr::GetInst()->LoadTexture(L"PlayerTex_Left", L"texture\\player\\Player_Left.bmp");
+
 	
 
-	GetAnimator()->CreateAnimation(L"WALK_RIGHT", pTex,
-		Vec2(0.f, 0.f), Vec2(57.f, 52.f), Vec2(57.f, 0.f),0.1f, 16);
-	/*GetAnimator()->CreateAnimation(L"WALK_RIGHT", pTex,
-		Vec2(0.f, 0.f), Vec2(57.f, 52.f), Vec2(57.f, 0.f), 0.1f, 16);*/
+	//애니메이션 로딩
+	//GetAnimator()->LoadAnimation(L"animation\\player_right_idle.anim");
+
+
+
+	//RIGHT 애니메이션 생성
+	GetAnimator()->CreateAnimation(L"SNB_RIGHT_IDLE", pTexRight,
+		Vec2(0.f, 900.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f),0.25f, 8, 3.f,Vec2(0.f,-25.f));
+	GetAnimator()->CreateAnimation(L"SNB_RIGHT_RUN", pTexRight,
+		Vec2(0.f, 1400.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.07f, 20, 3.f,Vec2(0.f,-25.f));
+	GetAnimator()->CreateAnimation(L"SNB_RIGHT_JUMP", pTexRight,
+		Vec2(0.f, 1000.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 6, 3.f, Vec2(0.f, -25.f));
+	GetAnimator()->CreateAnimation(L"SNB_RIGHT_FALLING", pTexRight,
+		Vec2(0.f, 600.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 3, 3.f, Vec2(0.f, -25.f));
+	GetAnimator()->CreateAnimation(L"SNB_RIGHT_LAND", pTexRight,
+		Vec2(0.f, 1100.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 3, 3.f, Vec2(0.f, -25.f));
+
+
+	//LEFT 애니메이션 생성
+	GetAnimator()->CreateAnimation(L"SNB_LEFT_IDLE", pTexLeft,
+		Vec2(0.f, 900.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 8, 3.f, Vec2(0.f, -25.f));
+	GetAnimator()->CreateAnimation(L"SNB_LEFT_RUN", pTexLeft,
+		Vec2(0.f, 1400.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.07f, 20, 3.f, Vec2(0.f, -25.f));
+	GetAnimator()->CreateAnimation(L"SNB_LEFT_JUMP", pTexLeft,
+		Vec2(0.f, 1000.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 6, 3.f, Vec2(0.f, -25.f));
+	GetAnimator()->CreateAnimation(L"SNB_LEFT_FALLING", pTexLeft,
+		Vec2(0.f, 600.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 3, 3.f, Vec2(0.f, -25.f));
+	GetAnimator()->CreateAnimation(L"SNB_LEFT_LAND", pTexLeft,
+		Vec2(0.f, 1100.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 3, 3.f, Vec2(0.f, -25.f));
+
+
 	
+	//RIGHT 애니메이션 저장
+	GetAnimator()->FindAnimation(L"SNB_RIGHT_IDLE")->Save(L"animation\\player_right_idle.anim");
+	GetAnimator()->FindAnimation(L"SNB_RIGHT_RUN")->Save(L"animation\\player_right_run.anim");
+	GetAnimator()->FindAnimation(L"SNB_RIGHT_JUMP")->Save(L"animation\\player_right_jump.anim");
+	GetAnimator()->FindAnimation(L"SNB_RIGHT_FALLING")->Save(L"animation\\player_right_falling.anim");
+	GetAnimator()->FindAnimation(L"SNB_RIGHT_LAND")->Save(L"animation\\player_right_land.anim");
+
+	//LEFT 애니메이션 저장
+	GetAnimator()->FindAnimation(L"SNB_LEFT_IDLE")->Save(L"animation\\player_left_idle.anim");
+	GetAnimator()->FindAnimation(L"SNB_LEFT_RUN")->Save(L"animation\\player_left_run.anim");
+	GetAnimator()->FindAnimation(L"SNB_LEFT_JUMP")->Save(L"animation\\player_left_jump.anim");
+	GetAnimator()->FindAnimation(L"SNB_LEFT_FALLING")->Save(L"animation\\player_left_falling.anim");
+	GetAnimator()->FindAnimation(L"SNB_LEFT_LAND")->Save(L"animation\\player_left_land.anim");
+
+
+
+
+	GetAnimator()->Play(L"SNB_RIGHT_IDLE", true);
+#pragma endregion
+
 	
-	//애니메이션 저장
-	GetAnimator()->FindAnimation(L"WALK_RIGHT")->Save(L"animation\\player_idle_right.anim");
 
 
 
-
-	GetAnimator()->Play(L"WALK_RIGHT",true);
-
-
-
-	//애니메이션 오프셋 넣기
+	//애니메이션 오프셋 개별로 넣기
 	//CAnimation* pAnim = GetAnimator()->FindAnimation(L"WALK_RIGHT");
 	//for (UINT i = 0; i < pAnim->GetMaxFrame(); i++)
 	//{
@@ -81,7 +119,7 @@ void SPlayer::Update()
 
 	Update_State();
 	Update_Move();
-	//Update_Animation();
+	Update_Animation();
 
 	if (KEY_TAP(KEY::Q))
 		cout << endl;
@@ -182,13 +220,13 @@ void SPlayer::Update_State()
 		m_iDir = -1;
 
 		if(PLAYER_STATE::JUMP != m_eCurState)
-			m_eCurState = PLAYER_STATE::WALK;
+			m_eCurState = PLAYER_STATE::RUN;
 	}
 	if (KEY_HOLD(KEY::D))
 	{
 		m_iDir = 1;
 		if (PLAYER_STATE::JUMP != m_eCurState)
-			m_eCurState = PLAYER_STATE::WALK;
+			m_eCurState = PLAYER_STATE::RUN;
 	}
 
 	if (0.f == GetRigidBody()->GetSpeed() && PLAYER_STATE::JUMP != m_eCurState)
@@ -203,7 +241,7 @@ void SPlayer::Update_State()
 		
 		if (GetRigidBody())
 		{
-			GetRigidBody()->SetVelocity(Vec2(GetRigidBody()->GetVelocity().x, -300.f));
+			GetRigidBody()->SetVelocity(Vec2(GetRigidBody()->GetVelocity().x, -500.f));
 		}
 
 	}
@@ -263,25 +301,22 @@ void SPlayer::Update_Animation()
 	{
 	case PLAYER_STATE::IDLE:
 		if(m_iDir == -1)
-			GetAnimator()->Play(L"IDLE_LEFT", true);
+			GetAnimator()->Play(L"SNB_LEFT_IDLE", true);
 		else
-			GetAnimator()->Play(L"IDLE_RIGHT", true);
+			GetAnimator()->Play(L"SNB_RIGHT_IDLE", true);
 		break;
-	case PLAYER_STATE::WALK:
+	case PLAYER_STATE::RUN:
 		if (m_iDir == -1)
-			GetAnimator()->Play(L"WALK_LEFT", true);
+			GetAnimator()->Play(L"SNB_LEFT_RUN", true);
 		else
-			GetAnimator()->Play(L"WALK_RIGHT", true);
+			GetAnimator()->Play(L"SNB_RIGHT_RUN", true);
 		break;
 	case PLAYER_STATE::ATTACK:
 
 		break;
 
 	case PLAYER_STATE::JUMP:
-		if (m_iDir == -1)
-			GetAnimator()->Play(L"IDLE_LEFT", true);
-		else
-			GetAnimator()->Play(L"IDLE_RIGHT", true);
+		Jump();
 		break;
 
 	case PLAYER_STATE::DAMAGED:
@@ -294,6 +329,8 @@ void SPlayer::Update_Animation()
 		break;
 	}
 }
+
+
 
 void SPlayer::Update_Gravity()
 {
@@ -312,6 +349,14 @@ void SPlayer::OnCollisionEnter(CCollider* _pOther)
 			m_eCurState = PLAYER_STATE::IDLE;
 		}
 	}
+}
+
+void SPlayer::Jump()
+{
+	if (m_iDir == -1)
+		GetAnimator()->Play(L"SNB_LEFT_JUMP", true);
+	else
+		GetAnimator()->Play(L"SNB_RIGHT_JUMP", true);
 }
 
 

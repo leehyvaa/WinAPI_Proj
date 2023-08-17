@@ -6,7 +6,7 @@ class CTexture;
 enum class PLAYER_STATE
 {
 	IDLE,
-	WALK,
+	RUN,
 	ATTACK,
 	JUMP,
 	DAMAGED,
@@ -62,6 +62,10 @@ private:
 	void Update_Gravity();
 
 	virtual void OnCollisionEnter(CCollider* _pOther);
+
+
+	void Jump();
+
 
 	//자신의 데이터를 복사해서 하나 새로 생성한 후 이를 반환하는 클론함수
 	//virtual GameObject* Clone() { return new SPlayer(*this); }

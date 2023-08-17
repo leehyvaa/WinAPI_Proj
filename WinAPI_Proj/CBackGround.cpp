@@ -49,7 +49,7 @@ void CBackGround::Render(HDC _dc)
 	TransparentBlt(_dc
 		, int(vRenderPos.x)
 		, int(vRenderPos.y)
-		, vScale.x, vScale.y
+		, (int)vScale.x, (int)vScale.y
 		, pTileTex->GetDC()
 		, 0, 0,
 		iWidth, iHeight, RGB(0, 0, 0));

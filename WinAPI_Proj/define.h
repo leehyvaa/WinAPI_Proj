@@ -27,7 +27,7 @@ type();\
 
 
 
-#define TILE_SIZE 32
+#define TILE_SIZE 48
 
 enum class GROUP_TYPE
 {
