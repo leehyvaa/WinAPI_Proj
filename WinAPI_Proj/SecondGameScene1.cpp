@@ -119,7 +119,7 @@ void SecondGameScene1::Render(HDC _dc)
 	Ellipse(_dc
 		,(int)(vRenderPos.x - m_fCurRadius)
 		,(int)(vRenderPos.y - m_fCurRadius)
-		,(int)(vRenderPos.x + m_fCurRadius)
+		,(int)(vRenderPos.x + m_fCurRadius) 
 		,(int)(vRenderPos.y + m_fCurRadius));
 
 

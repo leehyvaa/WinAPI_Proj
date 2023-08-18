@@ -63,7 +63,7 @@ void CScene_Tool::Enter()
 
 	CBtnUI* pBtnTileTex = new CBtnUI;
 	pBtnTileTex->SetName(L"ChildUI");
-	pBtnTileTex->SetScale(Vec2(320.f, 320.f));
+	pBtnTileTex->SetScale(Vec2(320.f, 288.f));
 	pBtnTileTex->SetPos(Vec2(0.f, 30.f));
 	((CBtnUI*)pBtnTileTex)->SetClickedCallBack(this, (SCENE_MEMFUNC)&CScene_Tool::SetTileUIIdx);
 	

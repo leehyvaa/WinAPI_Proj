@@ -52,7 +52,7 @@ void CBackGround::Render(HDC _dc)
 		, (int)vScale.x, (int)vScale.y
 		, pTileTex->GetDC()
 		, 0, 0,
-		iWidth, iHeight, RGB(0, 0, 0));
+		iWidth, iHeight, RGB(255, 0, 255));
 
 
 

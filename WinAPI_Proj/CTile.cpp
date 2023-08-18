@@ -66,7 +66,7 @@ void CTile::Render(HDC _dc)
 			, (int)vScale.x, (int)vScale.y
 			, m_pTileTex->GetDC()
 			, iCurCol * TILE_SIZE, iCurRow * TILE_SIZE,
-			TILE_SIZE, TILE_SIZE, RGB(0, 0, 0));
+			TILE_SIZE, TILE_SIZE, RGB(255, 0, 255));
 
 	}
 	
