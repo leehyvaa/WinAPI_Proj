@@ -46,12 +46,6 @@
     <Filter Include="Engine\Manager\SceneMgr">
       <UniqueIdentifier>{199aff8d-2444-4a9d-bef0-136557d3f614}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Scene\CScene_Tool">
-      <UniqueIdentifier>{8e40e6f7-83b8-4411-bc26-a4ec6ecd5499}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Scene\CScene_Start">
-      <UniqueIdentifier>{6753f610-0bb7-4583-9aaa-20d5ae1508cd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Resource">
       <UniqueIdentifier>{647523bd-3c32-48e9-be21-d0a2f6b535cd}</UniqueIdentifier>
     </Filter>
@@ -136,6 +130,15 @@
     <Filter Include="Engine\Object\Ground">
       <UniqueIdentifier>{2d8d4e82-e32f-46fc-ab5f-7ca7af0d87b3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Scene\Scene_Title">
+      <UniqueIdentifier>{2cf85cc4-80fb-489a-9c6f-8a5a1c9bdfed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Scene\Scene_Tool">
+      <UniqueIdentifier>{8e40e6f7-83b8-4411-bc26-a4ec6ecd5499}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Scene\Scene_Start">
+      <UniqueIdentifier>{6753f610-0bb7-4583-9aaa-20d5ae1508cd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WinAPI_Proj.h">
@@ -175,7 +178,7 @@
       <Filter>Engine\Manager\SceneMgr</Filter>
     </ClInclude>
     <ClInclude Include="CScene_Start.h">
-      <Filter>Engine\Scene\CScene_Start</Filter>
+      <Filter>Engine\Scene\Scene_Start</Filter>
     </ClInclude>
     <ClInclude Include="SecondGameScene1.h">
       <Filter>헤더 파일</Filter>
@@ -223,7 +226,7 @@
       <Filter>Engine\Tool</Filter>
     </ClInclude>
     <ClInclude Include="CScene_Tool.h">
-      <Filter>Engine\Scene\CScene_Tool</Filter>
+      <Filter>Engine\Scene\Scene_Tool</Filter>
     </ClInclude>
     <ClInclude Include="CAnimator.h">
       <Filter>Engine\Compenent\Animator</Filter>
@@ -291,6 +294,9 @@
     <ClInclude Include="CBackGround.h">
       <Filter>Engine\Object\Tile</Filter>
     </ClInclude>
+    <ClInclude Include="CScene_Title.h">
+      <Filter>Engine\Scene\Scene_Title</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -315,7 +321,7 @@
       <Filter>Engine\Manager\SceneMgr</Filter>
     </ClCompile>
     <ClCompile Include="CScene_Start.cpp">
-      <Filter>Engine\Scene\CScene_Start</Filter>
+      <Filter>Engine\Scene\Scene_Start</Filter>
     </ClCompile>
     <ClCompile Include="SecondGameScene1.cpp">
       <Filter>소스 파일</Filter>
@@ -360,7 +366,7 @@
       <Filter>Engine\Tool</Filter>
     </ClCompile>
     <ClCompile Include="CScene_Tool.cpp">
-      <Filter>Engine\Scene\CScene_Tool</Filter>
+      <Filter>Engine\Scene\Scene_Tool</Filter>
     </ClCompile>
     <ClCompile Include="CAnimator.cpp">
       <Filter>Engine\Compenent\Animator</Filter>
@@ -424,6 +430,9 @@
     </ClCompile>
     <ClCompile Include="CBackGround.cpp">
       <Filter>Engine\Object\Tile</Filter>
+    </ClCompile>
+    <ClCompile Include="CScene_Title.cpp">
+      <Filter>Engine\Scene\Scene_Title</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
