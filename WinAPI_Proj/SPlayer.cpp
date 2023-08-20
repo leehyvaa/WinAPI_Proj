@@ -7,7 +7,6 @@
 #include "CTexture.h"
 #include "CResMgr.h"
 #include "CCollider.h"
-#include "CWire.h"
 #include "CAnimator.h"
 #include "CAnimation.h"
 #include "CRigidBody.h"
@@ -32,7 +31,7 @@ SPlayer::SPlayer()
 	CreateAnimator();
 
 
-#pragma region 애니메이션
+#pragma region 플레이어 애니메이션
 	//텍스쳐 로딩
 	CTexture* pTexRight = CResMgr::GetInst()->LoadTexture(L"PlayerTex_Right", L"texture\\player\\Player_Right.bmp");
 	CTexture* pTexLeft = CResMgr::GetInst()->LoadTexture(L"PlayerTex_Left", L"texture\\player\\Player_Left.bmp");
@@ -88,11 +87,10 @@ SPlayer::SPlayer()
 
 
 
-	GetAnimator()->Play(L"SNB_RIGHT_IDLE", true);
+	GetAnimator()->Play(L"SNB_RIGHT_RUN", true);
 #pragma endregion
 
 	
-
 
 
 	//애니메이션 오프셋 개별로 넣기
@@ -144,7 +142,7 @@ void SPlayer::Update()
 void SPlayer::Render(HDC _dc)
 {
 	//Vec2 vPos(GetPos().x, GetPos().y);
-	Vec2 vScale(GetScale().x, GetScale().y);
+	//Vec2 vScale(GetScale().x, GetScale().y);
 
 
 	/*
@@ -198,20 +196,7 @@ void SPlayer::Render(HDC _dc)
 	Component_Render(_dc);
 }
 
-void SPlayer::CreateWire()
-{
-	Vec2 vWirePos = GetPos();
-	vWirePos.y -= GetScale().y / 2.f;
 
-	CWire* pWire = new CWire;
-	pWire->SetName(L"Wire");
-	pWire->SetPos(vWirePos);
-	pWire->SetScale(Vec2(11.f, 11.f));
-	pWire->SetDir(Vec2(0.f, -1.f));
-
-	CreateObject(pWire, GROUP_TYPE::PROJ_PLAYER);
-	//CreateObject 함수에 포지션, 방향, 스케일을 설정해주는 인자를 넣어야함
-}
 
 void SPlayer::Update_State()
 {
@@ -254,6 +239,11 @@ void SPlayer::Update_Move()
 {
 	CRigidBody* pRigid = GetRigidBody();
 
+
+	
+
+
+
 	if (KEY_HOLD(KEY::A))
 	{
 		pRigid->AddForce(Vec2(-200.f, 0.f));
@@ -262,6 +252,7 @@ void SPlayer::Update_Move()
 	{
 		pRigid->AddForce(Vec2(200.f, 0.f));
 	}
+
 	/*if (KEY_HOLD(KEY::W))
 	{
 		pRigid->AddForce(Vec2(0.f, -200.f));
@@ -280,6 +271,8 @@ void SPlayer::Update_Move()
 	{
 		pRigid->SetVelocity(Vec2(100.f, pRigid->GetVelocity().y));
 	}
+
+
 	/*if (KEY_TAP(KEY::W))
 	{
 		pRigid->AddVelocity(Vec2(0.f, -100.f));
@@ -288,6 +281,18 @@ void SPlayer::Update_Move()
 	{
 		pRigid->AddVelocity(Vec2(0.f, 100.f));
 	}*/
+
+
+
+
+	if (KEY_AWAY(KEY::A))
+	{
+		pRigid->SetVelocity(Vec2(0.f, pRigid->GetVelocity().y));
+	}
+	if (KEY_AWAY(KEY::D))
+	{
+		pRigid->SetVelocity(Vec2(0.f, pRigid->GetVelocity().y));
+	}
 
 }
 

@@ -7,7 +7,7 @@
 
 #include "CMonster.h"
 #include "SPlayer.h"
-
+#include "PlayerArm.h"
 #include "CCollisionMgr.h"
 
 #include "CKeyMgr.h"
@@ -146,6 +146,16 @@ void SecondGameScene1::Enter()
 	player->SetScale(Vec2(100.f, 100.f));
 	AddObject(player, GROUP_TYPE::PLAYER);
 	RegisterPlayer(player);
+
+
+
+	GameObject* playerArm = new PlayerArm();
+	playerArm->SetName(L"PlayerArm");
+	playerArm->SetPos(player->GetPos());
+	((PlayerArm*)playerArm)->SetOwner((SPlayer*)player);
+	
+	AddObject(playerArm, GROUP_TYPE::PLAYERARM);
+
 
 	//클론함수 없이 만든 오브젝트 복사 만약 플레이어를 복사한다면 아래와 같이 사용
 	/*GameObject* pOtherPlayer = new SPlayer(*(SPlayer*)player);

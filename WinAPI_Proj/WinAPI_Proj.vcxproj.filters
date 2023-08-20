@@ -219,7 +219,7 @@
     <ClInclude Include="func.h">
       <Filter>Engine\Header</Filter>
     </ClInclude>
-    <ClInclude Include="CWire.h">
+    <ClInclude Include="CHook.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Vec2.h">
@@ -297,6 +297,9 @@
     <ClInclude Include="CScene_Title.h">
       <Filter>Engine\Scene\Scene_Title</Filter>
     </ClInclude>
+    <ClInclude Include="PlayerArm.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -359,7 +362,7 @@
     <ClCompile Include="func.cpp">
       <Filter>Engine\Header</Filter>
     </ClCompile>
-    <ClCompile Include="CWire.cpp">
+    <ClCompile Include="CHook.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Vec2.cpp">
@@ -433,6 +436,9 @@
     </ClCompile>
     <ClCompile Include="CScene_Title.cpp">
       <Filter>Engine\Scene\Scene_Title</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerArm.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

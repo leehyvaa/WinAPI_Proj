@@ -49,13 +49,17 @@ public:
 
 
 	void SetDir(int _dir) { m_iDir = _dir; }
+	int GetDir() { return m_iDir; }
+	int GetPrevDir() { return m_iPrevDir; }
 
+
+	PLAYER_STATE GetState() { return m_eCurState; }
+	PLAYER_STATE GetPrevState() { return m_ePrevState; }
 
 	virtual void Update() override;
 	virtual void Render(HDC _dc)  override;
 
 private:
-	void CreateWire();
 	void Update_State();
 	void Update_Move();
 	void Update_Animation();
@@ -70,5 +74,7 @@ private:
 	//자신의 데이터를 복사해서 하나 새로 생성한 후 이를 반환하는 클론함수
 	//virtual GameObject* Clone() { return new SPlayer(*this); }
 	CLONE(SPlayer)
+
+
 };
 
