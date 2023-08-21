@@ -88,6 +88,11 @@ void SecondGameScene1::Update()
 		ChangeScene(SCENE_TYPE::TOOL);
 	}
 
+	if (KEY_TAP(KEY::P))
+	{
+		cout << MOUSE_POS.x <<" "<<MOUSE_POS.y <<endl;
+	}
+
 	/*if (KEY_TAP(KEY::LBUTTON))
 	{
 		Vec2 vLookAt = CCamera::GetInst()->GetRealPos(MOUSE_POS);
@@ -143,7 +148,7 @@ void SecondGameScene1::Enter()
 	GameObject* player = new SPlayer();
 	player->SetName(L"Player");
 	player->SetPos(Vec2(400.f,400.f));
-	player->SetScale(Vec2(100.f, 100.f));
+	//player->SetScale(Vec2(100.f, 100.f));
 	AddObject(player, GROUP_TYPE::PLAYER);
 	RegisterPlayer(player);
 
@@ -224,7 +229,7 @@ void SecondGameScene1::Enter()
 
 	//카메라 위치 지정
 	CCamera::GetInst()->SetLookAt(vResolution/2.f);
-
+	CCamera::GetInst()->SetTarget(player);
 	CCamera::GetInst()->FadeOut(1.f);
 	CCamera::GetInst()->FadeIn(1.f);
 

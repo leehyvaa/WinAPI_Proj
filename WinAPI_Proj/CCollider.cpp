@@ -38,6 +38,8 @@ void CCollider::FinalUpdate()
 	Vec2 vObjectPos = m_pOwner->GetPos();
 	m_vFinalPos = vObjectPos + m_vOffsetPos;
 
+
+
 	assert(0 <= m_iCol);
 }
 

@@ -26,5 +26,8 @@ void CGravity::SetGround(bool _b)
 
 void CGravity::FinalUpdate()
 {
-	m_pOwner->GetRigidBody()->SetAccelAlpha(Vec2(0.f,800.f));
+	if (!m_bGround)
+	{
+		m_pOwner->GetRigidBody()->SetAccelAlpha(Vec2(0.f,800.f));
+	}
 }

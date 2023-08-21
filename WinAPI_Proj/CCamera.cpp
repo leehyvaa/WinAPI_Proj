@@ -33,7 +33,7 @@ void CCamera::Update()
 		}
 		else
 		{
-			m_vLookAt = m_pTargetObj->GetPos();
+			m_vLookAt = m_pTargetObj->GetPos() + Vec2(0.f,-200.f);
 		}
 
 	}

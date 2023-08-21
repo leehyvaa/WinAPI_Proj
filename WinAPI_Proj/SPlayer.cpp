@@ -17,6 +17,7 @@ SPlayer::SPlayer()
 	, m_iPrevDir(1)
 	, m_eCurState(PLAYER_STATE::IDLE)
 	, m_ePrevState(PLAYER_STATE::RUN)
+	, m_bOnGround(false)
 	
 {
 	//m_pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\sigong.bmp");
@@ -24,8 +25,10 @@ SPlayer::SPlayer()
 
 	//67 -13분 캐릭터 상태변환후 애니메이션 전환
 	CreateCollider();
-	GetCollider()->SetOffsetPos(Vec2(0.f, 16.f));
-	GetCollider()->SetScale(Vec2(32.f, 32.f));
+	GetCollider()->SetScale(Vec2(32.f, 102.f));
+	GetCollider()->SetOffsetPos(Vec2(0.f, -(GetCollider()->GetScale().y)/2.f));
+	
+
 
 	CreateRigidBody();
 	CreateAnimator();
@@ -45,28 +48,35 @@ SPlayer::SPlayer()
 
 	//RIGHT 애니메이션 생성
 	GetAnimator()->CreateAnimation(L"SNB_RIGHT_IDLE", pTexRight,
-		Vec2(0.f, 900.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f),0.25f, 8, 3.f,Vec2(0.f,-25.f));
+		Vec2(0.f, 900.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f),0.25f, 8, 3.f,Vec2(0.f,-57.f));
 	GetAnimator()->CreateAnimation(L"SNB_RIGHT_RUN", pTexRight,
-		Vec2(0.f, 1400.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.07f, 20, 3.f,Vec2(0.f,-25.f));
+		Vec2(0.f, 1400.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.07f, 20, 3.f,Vec2(0.f,-57.f));
 	GetAnimator()->CreateAnimation(L"SNB_RIGHT_JUMP", pTexRight,
-		Vec2(0.f, 1000.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 6, 3.f, Vec2(0.f, -25.f));
+		Vec2(0.f, 1000.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 6, 3.f, Vec2(0.f, -57.f));
 	GetAnimator()->CreateAnimation(L"SNB_RIGHT_FALLING", pTexRight,
-		Vec2(0.f, 600.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 3, 3.f, Vec2(0.f, -25.f));
+		Vec2(0.f, 600.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 3, 3.f, Vec2(0.f, -57.f));
 	GetAnimator()->CreateAnimation(L"SNB_RIGHT_LAND", pTexRight,
-		Vec2(0.f, 1100.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 3, 3.f, Vec2(0.f, -25.f));
-
+		Vec2(0.f, 1100.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 3, 3.f, Vec2(0.f, -57.f));
+	GetAnimator()->CreateAnimation(L"SNB_RIGHT_CLIMBUP", pTexRight,
+		Vec2(0.f, 2800.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 3, 3.f, Vec2(0.f, -57.f));
+	GetAnimator()->CreateAnimation(L"SNB_RIGHT_SLIDING", pTexRight,
+		Vec2(0.f, 3000.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 3, 3.f, Vec2(0.f, -57.f));
 
 	//LEFT 애니메이션 생성
 	GetAnimator()->CreateAnimation(L"SNB_LEFT_IDLE", pTexLeft,
-		Vec2(0.f, 900.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 8, 3.f, Vec2(0.f, -25.f));
+		Vec2(0.f, 900.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 8, 3.f, Vec2(0.f, -57.f));
 	GetAnimator()->CreateAnimation(L"SNB_LEFT_RUN", pTexLeft,
-		Vec2(0.f, 1400.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.07f, 20, 3.f, Vec2(0.f, -25.f));
+		Vec2(0.f, 1400.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.07f, 20, 3.f, Vec2(0.f, -57.f));
 	GetAnimator()->CreateAnimation(L"SNB_LEFT_JUMP", pTexLeft,
-		Vec2(0.f, 1000.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 6, 3.f, Vec2(0.f, -25.f));
+		Vec2(0.f, 1000.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 6, 3.f, Vec2(0.f, -57.f));
 	GetAnimator()->CreateAnimation(L"SNB_LEFT_FALLING", pTexLeft,
-		Vec2(0.f, 600.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 3, 3.f, Vec2(0.f, -25.f));
+		Vec2(0.f, 600.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 3, 3.f, Vec2(0.f, -57.f));
 	GetAnimator()->CreateAnimation(L"SNB_LEFT_LAND", pTexLeft,
-		Vec2(0.f, 1100.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 3, 3.f, Vec2(0.f, -25.f));
+		Vec2(0.f, 1100.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 3, 3.f, Vec2(0.f, -57.f));
+	GetAnimator()->CreateAnimation(L"SNB_LEFT_CLIMBUP", pTexLeft,
+		Vec2(0.f, 2800.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 3, 3.f, Vec2(0.f, -57.f));
+	GetAnimator()->CreateAnimation(L"SNB_LEFT_SLIDING", pTexLeft,
+		Vec2(0.f, 3000.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 3, 3.f, Vec2(0.f, -57.f));
 
 
 	
@@ -76,6 +86,9 @@ SPlayer::SPlayer()
 	GetAnimator()->FindAnimation(L"SNB_RIGHT_JUMP")->Save(L"animation\\player_right_jump.anim");
 	GetAnimator()->FindAnimation(L"SNB_RIGHT_FALLING")->Save(L"animation\\player_right_falling.anim");
 	GetAnimator()->FindAnimation(L"SNB_RIGHT_LAND")->Save(L"animation\\player_right_land.anim");
+	GetAnimator()->FindAnimation(L"SNB_RIGHT_CLIMBUP")->Save(L"animation\\player_right_climbup.anim");
+	GetAnimator()->FindAnimation(L"SNB_RIGHT_SLIDING")->Save(L"animation\\player_right_sliding.anim");
+
 
 	//LEFT 애니메이션 저장
 	GetAnimator()->FindAnimation(L"SNB_LEFT_IDLE")->Save(L"animation\\player_left_idle.anim");
@@ -83,6 +96,8 @@ SPlayer::SPlayer()
 	GetAnimator()->FindAnimation(L"SNB_LEFT_JUMP")->Save(L"animation\\player_left_jump.anim");
 	GetAnimator()->FindAnimation(L"SNB_LEFT_FALLING")->Save(L"animation\\player_left_falling.anim");
 	GetAnimator()->FindAnimation(L"SNB_LEFT_LAND")->Save(L"animation\\player_left_land.anim");
+	GetAnimator()->FindAnimation(L"SNB_LEFT_CLIMBUP")->Save(L"animation\\player_left_climbup.anim");
+	GetAnimator()->FindAnimation(L"SNB_LEFT_SLIDING")->Save(L"animation\\player_left_sliding.anim");
 
 
 
@@ -114,15 +129,12 @@ SPlayer::~SPlayer()
 
 void SPlayer::Update()
 {
-
+	
 	Update_State();
 	Update_Move();
 	Update_Animation();
 
-	if (KEY_TAP(KEY::Q))
-		cout << endl;
-	if (KEY_TAP(KEY::W))
-		//GMap::GetInst()->DrawMap();
+
 	if (KEY_TAP(KEY::E))
 		system("cls");
 
@@ -130,6 +142,14 @@ void SPlayer::Update()
 
 	//if (KEY_TAP(KEY::SPACE))
 	//	CreateWire();
+
+	if (KEY_TAP(KEY::C))
+	{
+		cout << GetRigidBody()->GetSpeed() << endl;
+		cout << GetRigidBody()->GetVelocity().x << endl;
+		cout << GetRigidBody()->GetVelocity().y << endl;
+
+	}
 
 
 
@@ -200,21 +220,53 @@ void SPlayer::Render(HDC _dc)
 
 void SPlayer::Update_State()
 {
-	if (KEY_HOLD(KEY::A))
+	switch (m_eCurState)
+	{
+	case PLAYER_STATE::IDLE:
+
+		break;
+	case PLAYER_STATE::RUN:
+
+		break;
+	case PLAYER_STATE::ATTACK:
+
+		break;
+
+	case PLAYER_STATE::JUMP:
+		break;
+
+	case PLAYER_STATE::CLIMB:
+		if (m_bOnGround)
+			m_eCurState = PLAYER_STATE::IDLE;
+		break;
+
+	case PLAYER_STATE::DAMAGED:
+
+		break;
+	case PLAYER_STATE::DEAD:
+
+		break;
+	default:
+		break;
+	}
+
+
+
+	if (KEY_HOLD(KEY::A) && m_eCurState != PLAYER_STATE::CLIMB)
 	{
 		m_iDir = -1;
 
-		if(PLAYER_STATE::JUMP != m_eCurState)
+		if(PLAYER_STATE::IDLE == m_eCurState)
 			m_eCurState = PLAYER_STATE::RUN;
 	}
-	if (KEY_HOLD(KEY::D))
+	if (KEY_HOLD(KEY::D) && m_eCurState != PLAYER_STATE::CLIMB)
 	{
 		m_iDir = 1;
-		if (PLAYER_STATE::JUMP != m_eCurState)
+		if (PLAYER_STATE::IDLE == m_eCurState)
 			m_eCurState = PLAYER_STATE::RUN;
 	}
 
-	if (0.f == GetRigidBody()->GetSpeed() && PLAYER_STATE::JUMP != m_eCurState)
+	if (0.f == GetRigidBody()->GetSpeed() && m_bOnGround)
 	{
 		m_eCurState = PLAYER_STATE::IDLE;
 	}
@@ -232,67 +284,54 @@ void SPlayer::Update_State()
 	}
 
 
-
 }
 
 void SPlayer::Update_Move()
 {
 	CRigidBody* pRigid = GetRigidBody();
 
+	switch (m_eCurState)
+	{
+	case PLAYER_STATE::IDLE:
+	{
+		HorizontalMove();
+	}
+		break;
+	case PLAYER_STATE::RUN:
+	{
+		HorizontalMove();
+	}
+		break;
+	case PLAYER_STATE::ATTACK:
 
+		break;
+
+	case PLAYER_STATE::JUMP:
+		HorizontalMove();
+
+		break;
+
+	case PLAYER_STATE::CLIMB:
+	{
+		VirticalMove();
+	}
+		break;
+
+	case PLAYER_STATE::DAMAGED:
+
+		break;
+	case PLAYER_STATE::DEAD:
+
+		break;
+	default:
+		break;
+	}
 	
 
 
 
-	if (KEY_HOLD(KEY::A))
-	{
-		pRigid->AddForce(Vec2(-200.f, 0.f));
-	}
-	if (KEY_HOLD(KEY::D))
-	{
-		pRigid->AddForce(Vec2(200.f, 0.f));
-	}
-
-	/*if (KEY_HOLD(KEY::W))
-	{
-		pRigid->AddForce(Vec2(0.f, -200.f));
-	}
-	if (KEY_HOLD(KEY::S))
-	{
-		pRigid->AddForce(Vec2(0.f, +200.f));
-	}*/
 
 
-	if (KEY_TAP(KEY::A))
-	{
-		pRigid->SetVelocity(Vec2(-100.f, pRigid->GetVelocity().y));
-	}
-	if (KEY_TAP(KEY::D))
-	{
-		pRigid->SetVelocity(Vec2(100.f, pRigid->GetVelocity().y));
-	}
-
-
-	/*if (KEY_TAP(KEY::W))
-	{
-		pRigid->AddVelocity(Vec2(0.f, -100.f));
-	}
-	if (KEY_TAP(KEY::S))
-	{
-		pRigid->AddVelocity(Vec2(0.f, 100.f));
-	}*/
-
-
-
-
-	if (KEY_AWAY(KEY::A))
-	{
-		pRigid->SetVelocity(Vec2(0.f, pRigid->GetVelocity().y));
-	}
-	if (KEY_AWAY(KEY::D))
-	{
-		pRigid->SetVelocity(Vec2(0.f, pRigid->GetVelocity().y));
-	}
 
 }
 
@@ -324,6 +363,10 @@ void SPlayer::Update_Animation()
 		Jump();
 		break;
 
+	case PLAYER_STATE::CLIMB:
+		Climb();
+		break;
+
 	case PLAYER_STATE::DAMAGED:
 
 		break;
@@ -349,10 +392,52 @@ void SPlayer::OnCollisionEnter(CCollider* _pOther)
 	if (_pOther->GetObj()->GetName() == L"Ground")
 	{
 		Vec2 vPos = GetPos();
-		if (vPos.y < pOtherObj->GetPos().y)
+		Vec2 vGroundPos = pOtherObj->GetPos();
+		Vec2 vGroundScale = pOtherObj->GetScale();
+
+
+		if (vPos.y <= vGroundPos.y &&
+			vPos.x >= vGroundPos.x &&
+			vPos.x <= vGroundPos.x + vGroundScale.x)
 		{
 			m_eCurState = PLAYER_STATE::IDLE;
 		}
+
+		if (vPos.y > vGroundPos.y + 70.f &&
+			vPos.x <= vGroundPos.x)
+		{
+			m_eCurState = PLAYER_STATE::CLIMB;
+		}
+
+		if (vPos.y > vGroundPos.y + 70.f &&
+			vPos.x >= vGroundPos.x + vGroundScale.x)
+		{
+			m_eCurState = PLAYER_STATE::CLIMB;
+		}
+		
+
+	}
+
+
+
+
+
+}
+
+void SPlayer::OnCollisionExit(CCollider* _pOther)
+{
+	GameObject* pOtherObj = _pOther->GetObj();
+
+	if (_pOther->GetObj()->GetName() == L"Ground")
+	{
+		if (m_eCurState == PLAYER_STATE::CLIMB)
+		{
+			m_bOnGround = false;
+			m_eCurState = PLAYER_STATE::JUMP;
+		}
+		
+
+
 	}
 }
 
@@ -362,6 +447,73 @@ void SPlayer::Jump()
 		GetAnimator()->Play(L"SNB_LEFT_JUMP", true);
 	else
 		GetAnimator()->Play(L"SNB_RIGHT_JUMP", true);
+}
+
+void SPlayer::Climb()
+{
+	if (m_iDir == -1)
+	{
+		GetAnimator()->Play(L"SNB_LEFT_CLIMBUP", true);
+
+	}
+	else
+	{
+		GetAnimator()->Play(L"SNB_RIGHT_CLIMBUP", true);
+
+	}
+}
+
+void SPlayer::HorizontalMove()
+{
+	CRigidBody* pRigid = GetRigidBody();
+
+
+	if (KEY_HOLD(KEY::A))
+	{
+		pRigid->SetVelocity(Vec2(-500.f, pRigid->GetVelocity().y));
+	}
+	if (KEY_HOLD(KEY::D))
+	{
+		pRigid->SetVelocity(Vec2(500.f, pRigid->GetVelocity().y));
+	}
+
+
+
+	if (KEY_AWAY(KEY::A))
+	{
+		pRigid->SetVelocity(Vec2(0.f, pRigid->GetVelocity().y));
+	}
+	if (KEY_AWAY(KEY::D))
+	{
+		pRigid->SetVelocity(Vec2(0.f, pRigid->GetVelocity().y));
+	}
+
+}
+
+void SPlayer::VirticalMove()
+{
+	CRigidBody* pRigid = GetRigidBody();
+
+
+	if (KEY_HOLD(KEY::W))
+	{
+		pRigid->SetVelocity(Vec2(0.f, -500.f));
+	}
+	if (KEY_HOLD(KEY::S))
+	{
+		pRigid->SetVelocity(Vec2(0.f, 500.f));
+	}
+
+
+
+	if (KEY_AWAY(KEY::W))
+	{
+		pRigid->SetVelocity(Vec2(pRigid->GetVelocity().x, 0.f));
+	}
+	if (KEY_AWAY(KEY::S))
+	{
+		pRigid->SetVelocity(Vec2(pRigid->GetVelocity().x,0.f));
+	}
 }
 
 

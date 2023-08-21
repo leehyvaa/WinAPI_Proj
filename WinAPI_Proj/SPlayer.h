@@ -9,8 +9,10 @@ enum class PLAYER_STATE
 	RUN,
 	ATTACK,
 	JUMP,
+	CLIMB,
 	DAMAGED,
 	DEAD,
+	
 };
 
 enum class PLAYER_ATTACK_STATE
@@ -27,6 +29,7 @@ private:
 	int m_iDir;
 	int m_iPrevDir;
 	float m_fSpeed;
+	bool m_bOnGround;
 	PLAYER_STATE m_eCurState;
 	PLAYER_STATE m_ePrevState;
 
@@ -51,10 +54,12 @@ public:
 	void SetDir(int _dir) { m_iDir = _dir; }
 	int GetDir() { return m_iDir; }
 	int GetPrevDir() { return m_iPrevDir; }
-
+	void SetOnGround(bool _onGround) { m_bOnGround = _onGround; }
 
 	PLAYER_STATE GetState() { return m_eCurState; }
 	PLAYER_STATE GetPrevState() { return m_ePrevState; }
+
+
 
 	virtual void Update() override;
 	virtual void Render(HDC _dc)  override;
@@ -66,9 +71,13 @@ private:
 	void Update_Gravity();
 
 	virtual void OnCollisionEnter(CCollider* _pOther);
+	virtual void OnCollisionExit(CCollider* _pOther);
 
 
 	void Jump();
+	void Climb();
+	void HorizontalMove();
+	void VirticalMove();
 
 
 	//자신의 데이터를 복사해서 하나 새로 생성한 후 이를 반환하는 클론함수

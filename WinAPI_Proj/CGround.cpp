@@ -6,6 +6,7 @@
 #include "SelectGDI.h"
 #include "CSceneMgr.h"
 #include "CScene.h"
+#include "SPlayer.h"
 CGround::CGround()
 {
 	CreateCollider();
@@ -131,19 +132,71 @@ void CGround::OnCollisionEnter(CCollider* _pOther)
 	{
 		pOtherObj->GetGravity()->SetGround(true);
 
-		Vec2 vObjPos = _pOther->GetFinalPos();
-		Vec2 vObjScale = _pOther->GetScale();
+		Vec2 vObjColPos = _pOther->GetFinalPos();
+		Vec2 vObjColScale = _pOther->GetScale();
 
 		Vec2 vPos = GetCollider()->GetFinalPos();
 		Vec2 vScale = GetCollider()->GetScale();
 
-		float fLen = abs(vObjPos.y - vPos.y);
-		float fValue = (vObjScale.y / 2.f + vScale.y / 2.f) - fLen;
+		Vec2 vObjPos = pOtherObj->GetPos();
 
-		vObjPos = pOtherObj->GetPos();
-		vObjPos.y -= (fValue);
+		/*if (pOtherObj->GetPos().y <= GetPos().y)
+		{
+			Vec2 pPos = pOtherObj->GetPos();
+			Vec2 gPos = GetPos();
+
+			float fLen = abs(vObjPos.y - vPos.y);
+			float fValue = (vObjScale.y / 2.f + vScale.y / 2.f) - fLen;
+
+
+			vObjPos.y -= (fValue);
+
+		}*/
+
+
+		if (pOtherObj->GetPos().x >= GetPos().x &&
+			pOtherObj->GetPos().x <= GetPos().x + GetScale().x &&
+			pOtherObj->GetPos().y <= GetPos().y+1.f)
+		{
+			float fLen = abs(vObjColPos.y - vPos.y);
+			float fValue = (vObjColScale.y / 2.f + vScale.y / 2.f) - fLen;
+
+			((SPlayer*)pOtherObj)->SetOnGround(true);
+
+			vObjPos.y -= (fValue);
+		}
+
+
+		//좌우 충돌했을때
+
+		if (pOtherObj->GetPos().y > GetPos().y &&
+			pOtherObj->GetPos().x <= GetPos().x)
+		{
+			float fLen = abs(vObjColPos.x - vPos.x);
+			float fValue = (vObjColScale.x / 2.f + vScale.x / 2.f) - fLen;
+
+			vObjPos.x -= fValue;
+
+		}
+
+		if (pOtherObj->GetPos().y > GetPos().y &&
+			pOtherObj->GetPos().x >= GetPos().x+GetScale().x)
+		{
+			float fLen = abs(vObjColPos.x - vPos.x);
+			float fValue = (vObjColScale.x / 2.f + vScale.x / 2.f) - fLen;
+
+			vObjPos.x += fValue;
+
+		}
+		
+
+
+		//아래에서 충돌했을때
+
+
 
 		pOtherObj->SetPos(vObjPos);
+
 	}
 }
 
@@ -154,18 +207,49 @@ void CGround::OnCollision(CCollider* _pOther)
 	{
 		pOtherObj->GetGravity()->SetGround(true);
 
-		Vec2 vObjPos = _pOther->GetFinalPos();
-		Vec2 vObjScale = _pOther->GetScale();
+		Vec2 vObjColPos = _pOther->GetFinalPos();
+		Vec2 vObjColScale = _pOther->GetScale();
 
 		Vec2 vPos = GetCollider()->GetFinalPos();
 		Vec2 vScale = GetCollider()->GetScale();
+		
+		Vec2 vObjPos = pOtherObj->GetPos();
+		Vec2 gPos = GetPos();
+				
+		if (vObjPos.x >= GetPos().x &&
+			vObjPos.x <= GetPos().x + GetScale().x&&
+			vObjPos.y <= GetPos().y+1.f)
+		{
+			float fLen = abs(vObjColPos.y - vPos.y);
+			float fValue = (vObjColScale.y / 2.f + vScale.y / 2.f) - fLen;
 
-		float fLen = abs(vObjPos.y - vPos.y);
-		float fValue = (vObjScale.y / 2.f + vScale.y / 2.f) - fLen;
+			vObjPos.y -= (fValue);
+		}
 
 
-		vObjPos = pOtherObj->GetPos();
-		vObjPos.y -= (fValue);
+		if(vObjPos.y <= GetPos().y)
+			((SPlayer*)pOtherObj)->SetOnGround(true);
+
+
+		if (pOtherObj->GetPos().y > GetPos().y &&
+			pOtherObj->GetPos().x <= GetPos().x)
+		{
+			float fLen = abs(vObjColPos.x - vPos.x);
+			float fValue = (vObjColScale.x / 2.f + vScale.x / 2.f) - fLen;
+
+			vObjPos.x -= fValue;
+
+		}
+
+		if (pOtherObj->GetPos().y > GetPos().y &&
+			pOtherObj->GetPos().x >= GetPos().x + GetScale().x)
+		{
+			float fLen = abs(vObjColPos.x - vPos.x);
+			float fValue = (vObjColScale.x / 2.f + vScale.x / 2.f) - fLen;
+
+			vObjPos.x += fValue;
+
+		}
 
 		pOtherObj->SetPos(vObjPos);
 
@@ -179,6 +263,7 @@ void CGround::OnCollisionExit(CCollider* _pOther)
 	{
 		pOtherObj->GetGravity()->SetGround(false);
 
-		
+		((SPlayer*)pOtherObj)->SetOnGround(false);
+
 	}
 }
