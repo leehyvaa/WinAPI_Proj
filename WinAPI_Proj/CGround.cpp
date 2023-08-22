@@ -153,10 +153,10 @@ void CGround::OnCollisionEnter(CCollider* _pOther)
 
 		}*/
 
-
-		if (pOtherObj->GetPos().x >= GetPos().x &&
-			pOtherObj->GetPos().x <= GetPos().x + GetScale().x &&
-			pOtherObj->GetPos().y <= GetPos().y+1.f)
+		//위에서 충돌
+		if (vObjPos.x >= GetPos().x &&
+			vObjPos.x <= GetPos().x + GetScale().x &&
+			vObjPos.y <= GetPos().y+2.f)
 		{
 			float fLen = abs(vObjColPos.y - vPos.y);
 			float fValue = (vObjColScale.y / 2.f + vScale.y / 2.f) - fLen;
@@ -167,25 +167,46 @@ void CGround::OnCollisionEnter(CCollider* _pOther)
 		}
 
 
+
+
+
 		//좌우 충돌했을때
 
-		if (pOtherObj->GetPos().y > GetPos().y &&
-			pOtherObj->GetPos().x <= GetPos().x)
+		if (vObjPos.y >= GetPos().y &&
+			vObjPos.x <= GetPos().x)
 		{
-			float fLen = abs(vObjColPos.x - vPos.x);
-			float fValue = (vObjColScale.x / 2.f + vScale.x / 2.f) - fLen;
+			if (vObjPos.y <= GetPos().y + 70.f)
+			{
+				vObjPos.x -= 2.f;
+			}
+			else
+			{
+				float fLen = abs(vObjColPos.x - vPos.x);
+				float fValue = (vObjColScale.x / 2.f + vScale.x / 2.f) - fLen;
 
-			vObjPos.x -= fValue;
+				vObjPos.x -= fValue;
+			}
+
+
 
 		}
 
-		if (pOtherObj->GetPos().y > GetPos().y &&
+		if (pOtherObj->GetPos().y >= GetPos().y &&
 			pOtherObj->GetPos().x >= GetPos().x+GetScale().x)
 		{
-			float fLen = abs(vObjColPos.x - vPos.x);
-			float fValue = (vObjColScale.x / 2.f + vScale.x / 2.f) - fLen;
+			if (vObjPos.y <= GetPos().y + 70.f)
+			{
+				vObjPos.x -= 2.f;
 
-			vObjPos.x += fValue;
+			}
+			else
+			{
+				float fLen = abs(vObjColPos.x - vPos.x);
+				float fValue = (vObjColScale.x / 2.f + vScale.x / 2.f) - fLen;
+
+				vObjPos.x += fValue;
+			}
+
 
 		}
 		
@@ -218,7 +239,7 @@ void CGround::OnCollision(CCollider* _pOther)
 				
 		if (vObjPos.x >= GetPos().x &&
 			vObjPos.x <= GetPos().x + GetScale().x&&
-			vObjPos.y <= GetPos().y+1.f)
+			vObjPos.y <= GetPos().y+5.f)
 		{
 			float fLen = abs(vObjColPos.y - vPos.y);
 			float fValue = (vObjColScale.y / 2.f + vScale.y / 2.f) - fLen;
@@ -234,20 +255,36 @@ void CGround::OnCollision(CCollider* _pOther)
 		if (pOtherObj->GetPos().y > GetPos().y &&
 			pOtherObj->GetPos().x <= GetPos().x)
 		{
-			float fLen = abs(vObjColPos.x - vPos.x);
-			float fValue = (vObjColScale.x / 2.f + vScale.x / 2.f) - fLen;
+			if (vObjPos.y <= GetPos().y + 70.f)
+			{
+				vObjPos.x -= 2.f;
+			}
+			else
+			{
+				float fLen = abs(vObjColPos.x - vPos.x);
+				float fValue = (vObjColScale.x / 2.f + vScale.x / 2.f) - fLen;
 
-			vObjPos.x -= fValue;
+				vObjPos.x -= fValue;
+			}
+			
 
 		}
 
 		if (pOtherObj->GetPos().y > GetPos().y &&
 			pOtherObj->GetPos().x >= GetPos().x + GetScale().x)
 		{
-			float fLen = abs(vObjColPos.x - vPos.x);
-			float fValue = (vObjColScale.x / 2.f + vScale.x / 2.f) - fLen;
+			if (vObjPos.y <= GetPos().y + 70.f)
+			{
 
-			vObjPos.x += fValue;
+			}
+			else
+			{
+				float fLen = abs(vObjColPos.x - vPos.x);
+				float fValue = (vObjColScale.x / 2.f + vScale.x / 2.f) - fLen;
+
+				vObjPos.x += fValue;
+			}
+			
 
 		}
 

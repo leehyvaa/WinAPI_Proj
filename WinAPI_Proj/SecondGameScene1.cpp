@@ -158,7 +158,9 @@ void SecondGameScene1::Enter()
 	playerArm->SetName(L"PlayerArm");
 	playerArm->SetPos(player->GetPos());
 	((PlayerArm*)playerArm)->SetOwner((SPlayer*)player);
-	
+	((SPlayer*)player)->SetArm((PlayerArm*)playerArm);
+
+
 	AddObject(playerArm, GROUP_TYPE::PLAYERARM);
 
 

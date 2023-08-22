@@ -6,7 +6,7 @@ CRigidBody::CRigidBody()
 	:m_pOwner(nullptr)
 	,m_fMass(1)
 	,m_fFricCoeff(100.f)
-	, m_vMaxVelocity(Vec2(800.f,800.f))
+	, m_vMaxVelocity(Vec2(1000.f,1000.f))
 {
 }
 

@@ -104,6 +104,8 @@ void PlayerArm::Update()
 
 	GetAnimator()->Update();
 
+	prevDir = dir;
+	curState = prevState;
 }
 
 void PlayerArm::Render(HDC _dc)
@@ -129,10 +131,6 @@ void PlayerArm::CreateHook()
 
 void PlayerArm::Update_Animation()
 {
-	PLAYER_STATE curState = owner->GetState();
-	PLAYER_STATE prevState = owner->GetPrevState();
-	int dir = owner->GetDir();
-	int prevDir = owner->GetPrevDir();
 
 
 

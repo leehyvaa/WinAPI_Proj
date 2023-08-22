@@ -2,6 +2,7 @@
 #include "GameObject.h"
 
 class CTexture;
+class PlayerArm;
 
 enum class PLAYER_STATE
 {
@@ -10,6 +11,8 @@ enum class PLAYER_STATE
 	ATTACK,
 	JUMP,
 	CLIMB,
+	CLIMBUP,
+	CLIMBDOWN,
 	DAMAGED,
 	DEAD,
 	
@@ -32,6 +35,7 @@ private:
 	bool m_bOnGround;
 	PLAYER_STATE m_eCurState;
 	PLAYER_STATE m_ePrevState;
+	PlayerArm* playerArm;
 
 public:
 	SPlayer();
@@ -47,6 +51,7 @@ public:
 		,m_eCurState(_origin.m_eCurState)
 		,m_ePrevState(_origin.m_ePrevState)
 		,m_iPrevDir(_origin.m_iPrevDir)
+		,playerArm(_origin.playerArm)
 	{}
 	virtual ~SPlayer();
 
@@ -55,6 +60,7 @@ public:
 	int GetDir() { return m_iDir; }
 	int GetPrevDir() { return m_iPrevDir; }
 	void SetOnGround(bool _onGround) { m_bOnGround = _onGround; }
+	void SetArm(PlayerArm* _arm) { playerArm = _arm; }
 
 	PLAYER_STATE GetState() { return m_eCurState; }
 	PLAYER_STATE GetPrevState() { return m_ePrevState; }
@@ -71,6 +77,7 @@ private:
 	void Update_Gravity();
 
 	virtual void OnCollisionEnter(CCollider* _pOther);
+	virtual void OnCollision(CCollider* _pOther);
 	virtual void OnCollisionExit(CCollider* _pOther);
 
 
