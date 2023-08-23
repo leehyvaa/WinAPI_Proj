@@ -21,8 +21,8 @@
 #include "SelectGDI.h"
 #include "CTimeMgr.h"
 #include "CGround.h"
-
-
+#include "CBackGround.h"
+#include "CResMgr.h"
 
 SecondGameScene1::SecondGameScene1()
 	:m_bUseForce(false)
@@ -234,6 +234,23 @@ void SecondGameScene1::Enter()
 	CCamera::GetInst()->SetTarget(player);
 	CCamera::GetInst()->FadeOut(1.f);
 	CCamera::GetInst()->FadeIn(1.f);
+
+
+
+	//CBackGround* backGround2 = new CBackGround;
+	//backGround2->SetPos(Vec2(0, 0));
+	//CTexture* back2 = CResMgr::GetInst()->LoadTexture(L"TutorialBackSky", L"texture\\background\\Forest_Sky.bmp");
+	//backGround2->SetTexture(back2);
+	//backGround2->SetScale(CCore::GetInst()->GetResolution());
+	//AddObject((GameObject*)backGround2, GROUP_TYPE::BACKGROUND);
+
+
+	//CBackGround* backGround = new CBackGround;
+	//backGround->SetPos(Vec2(0, 0));
+	//CTexture* back = CResMgr::GetInst()->LoadTexture(L"TutorialBack", L"texture\\background\\Forest_Mountain.bmp");
+	//backGround->SetTexture(back);
+	//backGround->SetScale(CCore::GetInst()->GetResolution());
+	//AddObject((GameObject*)backGround, GROUP_TYPE::BACKGROUND);
 
 
 

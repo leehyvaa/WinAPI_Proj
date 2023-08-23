@@ -42,6 +42,12 @@ PlayerArm::PlayerArm()
 		Vec2(0.f, 600.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 3, 0.85f, Vec2(-20.f, -12.f));
 	GetAnimator()->CreateAnimation(L"SNB_ARM_RIGHT_LAND", pArmTexRight,
 		Vec2(0.f, 1100.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 3, 0.85f, Vec2(-20.f, -12.f));
+	GetAnimator()->CreateAnimation(L"SNB_ARM_RIGHT_CLIMBUP", pArmTexRight,
+		Vec2(0.f, 2800.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.06f, 10, 0.85f, Vec2(-5.f, -27.f));
+	GetAnimator()->CreateAnimation(L"SNB_ARM_RIGHT_CLIMBDOWN", pArmTexRight,
+		Vec2(0.f, 2700.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.06f, 7, 0.85f, Vec2(-5.f, -22.f));
+	GetAnimator()->CreateAnimation(L"SNB_ARM_RIGHT_CLIMBSTOP", pArmTexRight,
+		Vec2(0.f, 2900.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.2f, 11, 0.85f, Vec2(0.f, -37.f));
 
 
 	//LEFT 局聪皋捞记 积己
@@ -55,6 +61,12 @@ PlayerArm::PlayerArm()
 		Vec2(0.f, 600.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 3, 0.85f, Vec2(20.f, -12.f));
 	GetAnimator()->CreateAnimation(L"SNB_ARM_LEFT_LAND", pArmTexLeft,
 		Vec2(0.f, 1100.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 3, 0.85f, Vec2(20.f, -12.f));
+	GetAnimator()->CreateAnimation(L"SNB_ARM_LEFT_CLIMBUP", pArmTexLeft,
+		Vec2(0.f, 2800.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.06f, 10, 0.85f, Vec2(5.f, -27.f));
+	GetAnimator()->CreateAnimation(L"SNB_ARM_LEFT_CLIMBDOWN", pArmTexLeft,
+		Vec2(0.f, 2700.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.06f, 7, 0.85f, Vec2(5.f, -22.f));
+	GetAnimator()->CreateAnimation(L"SNB_ARM_LEFT_CLIMBSTOP", pArmTexLeft,
+		Vec2(0.f, 2900.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.2f, 11, 0.85f, Vec2(0.f, -37.f));
 
 
 
@@ -64,6 +76,9 @@ PlayerArm::PlayerArm()
 	GetAnimator()->FindAnimation(L"SNB_ARM_RIGHT_JUMP")->Save(L"animation\\playerArm_right_jump.anim");
 	GetAnimator()->FindAnimation(L"SNB_ARM_RIGHT_FALLING")->Save(L"animation\\playerArm_right_falling.anim");
 	GetAnimator()->FindAnimation(L"SNB_ARM_RIGHT_LAND")->Save(L"animation\\playerArm_right_land.anim");
+	GetAnimator()->FindAnimation(L"SNB_ARM_RIGHT_CLIMBUP")->Save(L"animation\\playerArm_right_climbup.anim");
+	GetAnimator()->FindAnimation(L"SNB_ARM_RIGHT_CLIMBDOWN")->Save(L"animation\\playerArm_right_climbdown.anim");
+	GetAnimator()->FindAnimation(L"SNB_ARM_RIGHT_CLIMBSTOP")->Save(L"animation\\playerArm_right_climbstop.anim");
 
 	//LEFT 局聪皋捞记 历厘
 	GetAnimator()->FindAnimation(L"SNB_ARM_LEFT_IDLE")->Save(L"animation\\playerArm_left_idle.anim");
@@ -71,6 +86,9 @@ PlayerArm::PlayerArm()
 	GetAnimator()->FindAnimation(L"SNB_ARM_LEFT_JUMP")->Save(L"animation\\playerArm_left_jump.anim");
 	GetAnimator()->FindAnimation(L"SNB_ARM_LEFT_FALLING")->Save(L"animation\\playerArm_left_falling.anim");
 	GetAnimator()->FindAnimation(L"SNB_ARM_LEFT_LAND")->Save(L"animation\\playerArm_left_land.anim");
+	GetAnimator()->FindAnimation(L"SNB_ARM_LEFT_CLIMBUP")->Save(L"animation\\playerArm_left_climbup.anim");
+	GetAnimator()->FindAnimation(L"SNB_ARM_LEFT_CLIMBDOWN")->Save(L"animation\\playerArm_left_climbdown.anim");
+	GetAnimator()->FindAnimation(L"SNB_ARM_LEFT_CLIMBSTOP")->Save(L"animation\\playerArm_left_climbstop.anim");
 
 
 
@@ -105,7 +123,7 @@ void PlayerArm::Update()
 	GetAnimator()->Update();
 
 	prevDir = dir;
-	curState = prevState;
+	 prevState= curState;
 }
 
 void PlayerArm::Render(HDC _dc)
@@ -135,8 +153,8 @@ void PlayerArm::Update_Animation()
 
 
 
-	//if (prevState == curState && prevDir == dir)
-	//	return;
+	if (prevState == curState && prevDir == dir)
+		return;
 
 
 	switch (curState)
@@ -158,9 +176,29 @@ void PlayerArm::Update_Animation()
 		break;
 
 	case PLAYER_STATE::JUMP:
-		
+		if (dir == -1)
+			GetAnimator()->Play(L"SNB_ARM_LEFT_JUMP", true);
+		else
+			GetAnimator()->Play(L"SNB_ARM_RIGHT_JUMP", true);
 		break;
-
+	case PLAYER_STATE::CLIMB:
+		if (dir == -1)
+			GetAnimator()->Play(L"SNB_ARM_LEFT_CLIMBSTOP", true);
+		else
+			GetAnimator()->Play(L"SNB_ARM_RIGHT_CLIMBSTOP", true);
+		break;
+	case PLAYER_STATE::CLIMBUP:
+		if (dir == -1)
+			GetAnimator()->Play(L"SNB_ARM_LEFT_CLIMBUP", true);
+		else
+			GetAnimator()->Play(L"SNB_ARM_RIGHT_CLIMBUP", true);
+		break;
+	case PLAYER_STATE::CLIMBDOWN:
+		if (dir == -1)
+			GetAnimator()->Play(L"SNB_ARM_LEFT_CLIMBDOWN", true);
+		else
+			GetAnimator()->Play(L"SNB_ARM_RIGHT_CLIMBDOWN", true);
+		break;
 	case PLAYER_STATE::DAMAGED:
 
 		break;

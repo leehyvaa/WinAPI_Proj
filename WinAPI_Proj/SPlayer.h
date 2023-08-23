@@ -33,6 +33,7 @@ private:
 	int m_iPrevDir;
 	float m_fSpeed;
 	bool m_bOnGround;
+	bool isClimbing;
 	PLAYER_STATE m_eCurState;
 	PLAYER_STATE m_ePrevState;
 	PlayerArm* playerArm;
@@ -83,6 +84,7 @@ private:
 
 	void Jump();
 	void Climb();
+	void ClimbJump();
 	void HorizontalMove();
 	void VirticalMove();
 

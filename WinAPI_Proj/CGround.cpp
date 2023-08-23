@@ -255,7 +255,12 @@ void CGround::OnCollision(CCollider* _pOther)
 		if (pOtherObj->GetPos().y > GetPos().y &&
 			pOtherObj->GetPos().x <= GetPos().x)
 		{
-			if (vObjPos.y <= GetPos().y + 70.f)
+		/*	if (vObjPos.y <= GetPos().y + 70.f)
+			{
+				vObjPos.x -= 2.f;
+
+			}*/
+			if (vObjPos.y >= GetPos().y + GetScale().y + 90.f)
 			{
 				vObjPos.x -= 2.f;
 			}
@@ -273,9 +278,13 @@ void CGround::OnCollision(CCollider* _pOther)
 		if (pOtherObj->GetPos().y > GetPos().y &&
 			pOtherObj->GetPos().x >= GetPos().x + GetScale().x)
 		{
-			if (vObjPos.y <= GetPos().y + 70.f)
+		/*	if (vObjPos.y <= GetPos().y + 70.f)
 			{
-
+				vObjPos.x += 2.f;
+			}*/
+			if (vObjPos.y >= GetPos().y + GetScale().y +90.f)
+			{
+				vObjPos.x += 2.f;
 			}
 			else
 			{
