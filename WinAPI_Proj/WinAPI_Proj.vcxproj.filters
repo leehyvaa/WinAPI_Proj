@@ -300,6 +300,9 @@
     <ClInclude Include="PlayerArm.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Raycast.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -438,6 +441,9 @@
       <Filter>Engine\Scene\Scene_Title</Filter>
     </ClCompile>
     <ClCompile Include="PlayerArm.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Raycast.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

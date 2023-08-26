@@ -42,6 +42,15 @@ float Vec2::Length()
 	return sqrt(x * x + y * y);
 }
 
+double Vec2::Angle(Vec2& _vec)
+{
+	double cos = Dot(_vec) / (Length() * _vec.Length());
+	
+	double acCos = acos(cos);
+
+	return acCos*57.2954;
+}
+
 float Vec2::Cross(Vec2& _vec, POINT p)
 {
 	Vec2 v1;
@@ -55,6 +64,7 @@ float Vec2::Cross(Vec2& _vec, POINT p)
 	float ans = v1.x * v2.y - v1.y * v2.x;
 	return ans;
 }
+
 
 bool Vec2::IsZero()
 {

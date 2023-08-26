@@ -3,6 +3,7 @@
 
 class CTexture;
 class PlayerArm;
+class Raycast;
 
 enum class PLAYER_STATE
 {
@@ -37,6 +38,9 @@ private:
 	PLAYER_STATE m_eCurState;
 	PLAYER_STATE m_ePrevState;
 	PlayerArm* playerArm;
+	Raycast* playerRay;
+	CCollider* onCollisionRay;
+	Vec2 targetPos;
 
 public:
 	SPlayer();
@@ -53,6 +57,12 @@ public:
 		,m_ePrevState(_origin.m_ePrevState)
 		,m_iPrevDir(_origin.m_iPrevDir)
 		,playerArm(_origin.playerArm)
+		,playerRay(_origin.playerRay)
+		,m_bOnGround(false)
+		,isClimbing(false)
+		,targetPos(_origin.targetPos)
+		, onCollisionRay(nullptr)
+		
 	{}
 	virtual ~SPlayer();
 
@@ -83,11 +93,12 @@ private:
 
 
 	void Jump();
-	void Climb();
 	void ClimbJump();
 	void HorizontalMove();
 	void VirticalMove();
 
+	void CreateHook();
+	void RayCasting();
 
 	//자신의 데이터를 복사해서 하나 새로 생성한 후 이를 반환하는 클론함수
 	//virtual GameObject* Clone() { return new SPlayer(*this); }

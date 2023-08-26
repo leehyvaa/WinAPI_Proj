@@ -204,6 +204,7 @@
     <ClInclude Include="CTool.h" />
     <ClInclude Include="global.h" />
     <ClInclude Include="PlayerArm.h" />
+    <ClInclude Include="Raycast.h" />
     <ClInclude Include="SecondGameScene1.h" />
     <ClInclude Include="SelectGDI.h" />
     <ClInclude Include="SPlayer.h" />
@@ -258,6 +259,7 @@
     <ClCompile Include="CTimeMgr.cpp" />
     <ClCompile Include="CTool.cpp" />
     <ClCompile Include="PlayerArm.cpp" />
+    <ClCompile Include="Raycast.cpp" />
     <ClCompile Include="SecondGameScene1.cpp" />
     <ClCompile Include="SelectGDI.cpp" />
     <ClCompile Include="SPlayer.cpp" />

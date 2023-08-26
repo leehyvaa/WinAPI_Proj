@@ -24,7 +24,7 @@ private:
 
 public:
 
-    void CreateHook();
+
     void Update_Animation();
     void SetOwner(SPlayer* _owner) { owner = _owner; }
 

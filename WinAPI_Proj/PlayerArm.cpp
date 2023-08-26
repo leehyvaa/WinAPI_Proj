@@ -4,7 +4,6 @@
 #include "CResMgr.h"
 #include "CAnimator.h"
 #include "CAnimation.h"
-#include "CHook.h"
 #include "CCollider.h"
 
 PlayerArm::PlayerArm()
@@ -132,20 +131,6 @@ void PlayerArm::Render(HDC _dc)
 	Component_Render(_dc);
 }
 
-void PlayerArm::CreateHook()
-{
-	Vec2 vWirePos = GetPos();
-	vWirePos.y -= GetScale().y / 2.f;
-
-	CHook* pHook = new CHook;
-	pHook->SetName(L"Hook");
-	pHook->SetPos(vWirePos);
-	pHook->SetScale(Vec2(11.f, 11.f));
-	pHook->SetDir(Vec2(0.f, -1.f));
-
-	CreateObject(pHook, GROUP_TYPE::PROJ_PLAYER);
-	//CreateObject 함수에 포지션, 방향, 스케일을 설정해주는 인자를 넣어야함
-}
 
 void PlayerArm::Update_Animation()
 {

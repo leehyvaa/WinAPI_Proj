@@ -12,6 +12,9 @@
 #include "CRigidBody.h"
 #include "CGravity.h"
 #include "PlayerArm.h"
+#include "Raycast.h"
+#include "CHook.h"
+
 SPlayer::SPlayer()
 	: m_fSpeed(1000)
 	, m_iDir(1)
@@ -21,6 +24,8 @@ SPlayer::SPlayer()
 	, m_bOnGround(false)
 	, playerArm(nullptr)
 	, isClimbing(false)
+	, onCollisionRay(nullptr)
+	, targetPos(Vec2(0.f,0.f))
 {
 	//m_pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\sigong.bmp");
 	
@@ -128,6 +133,12 @@ SPlayer::SPlayer()
 
 	CreateGravity();
 
+	Raycast* pRay = new Raycast();
+	pRay->SetName(L"PlayerRay");
+	pRay->SetPos(GetPos());
+	CreateObject(pRay, GROUP_TYPE::Ray);
+	playerRay = pRay;
+
 }
 
 
@@ -139,11 +150,14 @@ SPlayer::~SPlayer()
 
 void SPlayer::Update()
 {
+	RayCasting();
 	
 	Update_State();
 	Update_Move();
+
 	Update_Animation();
 
+	
 
 	if (KEY_TAP(KEY::E))
 		system("cls");
@@ -155,15 +169,19 @@ void SPlayer::Update()
 
 	if (KEY_TAP(KEY::C))
 	{
+		cout << GetPos().x << " " << GetPos().y << endl;
 		cout << GetRigidBody()->GetSpeed() << endl;
 		cout << GetRigidBody()->GetVelocity().x << endl;
 		cout << GetRigidBody()->GetVelocity().y << endl;
 		cout << (int)m_eCurState <<endl;
+		cout << targetPos.x << " " << targetPos.y << endl;
+		cout << onCollisionRay << endl;
 	}
 
 
 
 	GetAnimator()->Update();
+
 
 	playerArm->SetDir(m_iDir);
 	playerArm->SetState(m_eCurState);
@@ -292,6 +310,7 @@ void SPlayer::Update_State()
 
 
 
+	//방향전환
 	if (KEY_HOLD(KEY::A) && !isClimbing)
 	{
 		m_iDir = -1;
@@ -306,12 +325,15 @@ void SPlayer::Update_State()
 			m_eCurState = PLAYER_STATE::RUN;
 	}
 
+
+	//조작 없을시 Idle전환
 	if (0.f == GetRigidBody()->GetSpeed() && m_bOnGround)
 	{
 		m_eCurState = PLAYER_STATE::IDLE;
 	}
 
 
+	//점프
 	if (KEY_TAP(KEY::SPACE) && m_bOnGround)
 	{
 		m_eCurState = PLAYER_STATE::JUMP;
@@ -320,9 +342,13 @@ void SPlayer::Update_State()
 		{
 			GetRigidBody()->SetVelocity(Vec2(GetRigidBody()->GetVelocity().x, -750.f));
 		}
-
 	}
 
+	//와이어 발사
+	if (KEY_TAP(KEY::LBUTTON))
+	{
+		CreateHook();
+	}
 
 }
 
@@ -711,3 +737,35 @@ void SPlayer::VirticalMove()
 }
 
 
+void SPlayer::CreateHook()
+{
+	Vec2 vHookPos = playerArm->GetPos();
+	//vHookPos.y -= GetScale().y / 2.f;
+
+	CHook* pHook = new CHook;
+	pHook->SetName(L"Hook");
+	pHook->SetPos(vHookPos);
+	pHook->SetScale(Vec2(11.f, 11.f));
+	pHook->SetDir(Vec2(0.f, -1.f));
+
+	CreateObject(pHook, GROUP_TYPE::PROJ_PLAYER);
+	//CreateObject 함수에 포지션, 방향, 스케일을 설정해주는 인자를 넣어야함
+
+
+
+	if (targetPos.IsZero())
+	{
+		pHook->LookAt(CCamera::GetInst()->GetRealPos(MOUSE_POS));
+	}
+	else
+	{
+		pHook->LookAt(targetPos);
+	}
+}
+
+void SPlayer::RayCasting()
+{
+	playerRay->SetPos(playerArm->GetPos());
+	onCollisionRay = playerRay->GetCollisionRay();
+	targetPos = playerRay->GetTargetPos();
+}

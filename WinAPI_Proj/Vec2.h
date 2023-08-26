@@ -78,7 +78,10 @@ public :
 
 	float Length();
 	Vec2& Normalize();
+	float Dot(Vec2& _vec) { return x * _vec.x + y * _vec.y; }
+	double Angle(Vec2& _vec);
 	float Cross(Vec2& _vec,POINT p);
+
 
 	bool IsZero();
 };
