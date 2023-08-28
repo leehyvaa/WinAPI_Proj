@@ -3,6 +3,7 @@
 
 class CTexture;
 class PlayerArm;
+class CHook;
 class Raycast;
 
 enum class PLAYER_STATE
@@ -14,6 +15,9 @@ enum class PLAYER_STATE
 	CLIMB,
 	CLIMBUP,
 	CLIMBDOWN,
+	SHOT,
+	SWING,
+	FALL,
 	DAMAGED,
 	DEAD,
 	
@@ -33,14 +37,19 @@ private:
 	int m_iDir;
 	int m_iPrevDir;
 	float m_fSpeed;
+	float wireRange;
+	float wireMaxRange;
 	bool m_bOnGround;
 	bool isClimbing;
 	PLAYER_STATE m_eCurState;
 	PLAYER_STATE m_ePrevState;
+	CHook* playerHook;
 	PlayerArm* playerArm;
 	Raycast* playerRay;
 	CCollider* onCollisionRay;
 	Vec2 targetPos;
+	float moveEnergy;
+	float posEnergy;
 
 public:
 	SPlayer();
@@ -70,9 +79,10 @@ public:
 	void SetDir(int _dir) { m_iDir = _dir; }
 	int GetDir() { return m_iDir; }
 	int GetPrevDir() { return m_iPrevDir; }
+	Vec2 GetTargetPos() { return targetPos; }
 	void SetOnGround(bool _onGround) { m_bOnGround = _onGround; }
 	void SetArm(PlayerArm* _arm) { playerArm = _arm; }
-
+	
 	PLAYER_STATE GetState() { return m_eCurState; }
 	PLAYER_STATE GetPrevState() { return m_ePrevState; }
 
@@ -96,6 +106,7 @@ private:
 	void ClimbJump();
 	void HorizontalMove();
 	void VirticalMove();
+	void SwingMove();
 
 	void CreateHook();
 	void RayCasting();

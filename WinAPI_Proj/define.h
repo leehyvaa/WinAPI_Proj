@@ -64,6 +64,7 @@ enum class BRUSH_TYPE
 	HOLLOW,
 	BLACK,
 	RED,
+	MAGENTA,
 	END,
 };
 

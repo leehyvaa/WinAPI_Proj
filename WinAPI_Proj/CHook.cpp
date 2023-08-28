@@ -5,11 +5,15 @@
 #include "CAnimator.h"
 #include "CResMgr.h"
 #include "CAnimation.h"
+#include "SPlayer.h"
+#include "CCore.h"
+#include "SelectGDI.h"
+
 CHook::CHook()
-	:m_fSpeed(700)
-	,m_vDir(Vec2(1.f,1.f))
+	:m_fSpeed(1500)
+
+	,hookState(HOOK_STATE::FLYING)
 {
-	m_vDir.Normalize();
 
 	CreateCollider();
 	GetCollider()->SetOffsetPos(Vec2());
@@ -29,28 +33,28 @@ CHook::CHook()
 
 	//RIGHT 애니메이션 생성
 	GetAnimator()->CreateAnimation(L"SNB_GRAB_RIGHT_GRAB", pTexRight,
-		Vec2(0.f, 0.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 1, 1.f, Vec2(0.f, 0.f));
+		Vec2(0.f, 0.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 1, 2.f, Vec2(0.f, 0.f));
 	GetAnimator()->CreateAnimation(L"SNB_GRAB_RIGHT_GRABBING", pTexRight,
-		Vec2(0.f, 200.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 12, 1.f, Vec2(0.f, 0.f));
+		Vec2(0.f, 200.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 12, 2.f, Vec2(0.f, 0.f));
 	GetAnimator()->CreateAnimation(L"SNB_GRAB_RIGHT_RETURN_WITHGRAB", pTexRight,
-		Vec2(0.f, 400.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 3, 1.f, Vec2(0.f, 0.f));
+		Vec2(0.f, 400.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 3, 2.f, Vec2(0.f, 0.f));
 	GetAnimator()->CreateAnimation(L"SNB_GRAB_RIGHT_RETURN_WITHOUTGRAB", pTexRight,
-		Vec2(0.f, 600.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 3, 1.f, Vec2(0.f, 0.f));
+		Vec2(0.f, 600.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 3, 2.f, Vec2(0.f, 0.f));
 	GetAnimator()->CreateAnimation(L"SNB_GRAB_RIGHT_FLYING", pTexRight,
-		Vec2(0.f, 800.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 1, 1.f, Vec2(0.f, 0.f));
+		Vec2(0.f, 800.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 1, 2.f, Vec2(0.f, 0.f));
 
 
 	//LEFT 애니메이션 생성
 	GetAnimator()->CreateAnimation(L"SNB_GRAB_LEFT_GRAB", pTexLeft,
-		Vec2(0.f, 0.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 1, 1.f, Vec2(0.f, 0.f));
+		Vec2(0.f, 0.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 1, 2.f, Vec2(0.f, 0.f));
 	GetAnimator()->CreateAnimation(L"SNB_GRAB_LEFT_GRABBING", pTexLeft,
-		Vec2(0.f, 200.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 12, 1.f, Vec2(0.f, 0.f));
+		Vec2(0.f, 200.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 12, 2.f, Vec2(0.f, 0.f));
 	GetAnimator()->CreateAnimation(L"SNB_GRAB_LEFT_RETURN_WITHGRAB", pTexLeft,
-		Vec2(0.f, 400.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 3, 1.f, Vec2(0.f, 0.f));
+		Vec2(0.f, 400.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 3, 2.f, Vec2(0.f, 0.f));
 	GetAnimator()->CreateAnimation(L"SNB_GRAB_LEFT_RETURN_WITHOUTGRAB", pTexLeft,
-		Vec2(0.f, 600.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 3, 1.f, Vec2(0.f, 0.f));
+		Vec2(0.f, 600.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 3, 2.f, Vec2(0.f, 0.f));
 	GetAnimator()->CreateAnimation(L"SNB_GRAB_LEFT_FLYING", pTexLeft,
-		Vec2(0.f, 800.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 1, 1.f, Vec2(0.f, 0.f));
+		Vec2(0.f, 800.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 1, 2.f, Vec2(0.f, 0.f));
 
 
 
@@ -85,30 +89,137 @@ CHook::~CHook()
 
 }
 
-void CHook::LookAt(Vec2 _target)
-{
-	Vec2 dir = _target - GetPos();
-	Vec2 up = Vec2(0.f, -1.f);
-	m_rotation = dir.Angle(up);
 
-	dir.Normalize();
-	m_vDir = dir;
+void CHook::Update_Animation()
+{
+
+	
+
+	switch (hookState)
+	{
+	case HOOK_STATE::FLYING:
+		if (dir == -1)
+			GetAnimator()->Play(L"SNB_GRAB_LEFT_FLYING", true);
+		else
+			GetAnimator()->Play(L"SNB_GRAB_RIGHT_FLYING", true);
+		break;
+	case HOOK_STATE::GRAB:
+		if (dir == -1)
+			GetAnimator()->Play(L"SNB_GRAB_LEFT_GRAB", true);
+		else
+			GetAnimator()->Play(L"SNB_GRAB_RIGHT_GRAB", true);
+		break;
+	case HOOK_STATE::GRABBING:
+		if (dir == -1)
+			GetAnimator()->Play(L"SNB_GRAB_LEFT_GRABBING", true);
+		else
+			GetAnimator()->Play(L"SNB_GRAB_RIGHT_GRABBING", true);
+		break;
+	case HOOK_STATE::RETURN_WITH:
+		if (dir == -1)
+			GetAnimator()->Play(L"SNB_GRAB_LEFT_RETURN_WITHGRAB", true);
+		else
+			GetAnimator()->Play(L"SNB_GRAB_RIGHT_RETURN_WITHGRAB", true);
+		break;
+	case HOOK_STATE::RETURN_WITHOUT:
+		if (dir == -1)
+			GetAnimator()->Play(L"SNB_GRAB_LEFT_RETURN_WITHOUTGRAB", true);
+		else
+			GetAnimator()->Play(L"SNB_GRAB_RIGHT_RETURN_WITHOUTGRAB", true);
+		break;
+	default:
+		break;
+	}
+
+}
+
+void CHook::Update_State()
+{
+	if (prevState == curState && prevDir == dir)
+		return;
+
+
+
+}
+
+void CHook::Update_Move()
+{
+	Vec2 vPos = GetPos();
+
+	
+
+	switch (hookState)
+	{
+	case HOOK_STATE::FLYING:
+	{
+		vPos.x = vPos.x + m_fSpeed * GetDir().x * fDT;
+		vPos.y = vPos.y + m_fSpeed * GetDir().y * fDT;
+
+		//거리가 제한거리이상 벗어나면 without리턴으로 변환
+		if ((GetPos() - owner->GetPos()).Length() > 500.f)
+		{
+			hookState = HOOK_STATE::RETURN_WITHOUT;
+		}
+	}
+		break;
+	case HOOK_STATE::GRAB:
+		
+		break;
+	case HOOK_STATE::GRABBING:
+		
+		break;
+	case HOOK_STATE::RETURN_WITH:
+	{
+		Vec2 newDir = owner->GetPos() - GetPos();
+		newDir.Normalize();
+
+		vPos.x = vPos.x + m_fSpeed * newDir.x * fDT*2;
+		vPos.y = vPos.y + m_fSpeed * newDir.y * fDT*2;
+
+		//플레이어한테 도달하면 삭제
+		if ((GetPos() - owner->GetPos()).Length() < 10.f)
+		{
+			DeleteObject(this);
+		}
+	}
+		
+
+		break;
+	case HOOK_STATE::RETURN_WITHOUT:
+	{
+		Vec2 newDir = owner->GetPos() - GetPos();
+		newDir.Normalize();
+
+		vPos.x = vPos.x + m_fSpeed * newDir.x * fDT*2;
+		vPos.y = vPos.y + m_fSpeed * newDir.y * fDT*2;
+
+		//플레이어한테 도달하면 삭제
+		if ((GetPos() - owner->GetPos()).Length() < 10.f)
+		{
+			DeleteObject(this);
+		}
+	}
+		break;
+	default:
+		break;
+	}
+
+	SetPos(vPos);
+
 }
 
 
 
 void CHook::Update()
 {
-	Vec2 vPos = GetPos();
+	
 
-	vPos.x = vPos.x + m_fSpeed *m_vDir.x * fDT;
-	vPos.y = vPos.y + m_fSpeed * m_vDir.y * fDT;
-
-
+	Update_State();
+	Update_Move();
+	Update_Animation();
 	
 
 
-	SetPos(vPos);
 }
 
 void CHook::Render(HDC _dc)
@@ -116,17 +227,33 @@ void CHook::Render(HDC _dc)
 	Vec2 vPos = GetPos();
 	Vec2 vScale = GetScale();
 
-
+	
 
 	Component_Render(_dc);
+
+
+	Vec2 pos1 = CCamera::GetInst()->GetRenderPos(GetPos());
+	Vec2 pos2 = CCamera::GetInst()->GetRenderPos(owner->GetPos());
+
+	SelectGDI p(_dc, PEN_TYPE::BLUE);
+
+	MoveToEx(_dc, pos1.x,pos1.y, nullptr);
+	LineTo(_dc, pos2.x,pos2.y);
+
 }
 
 void CHook::OnCollisionEnter(CCollider* _pOther)
 {
 	GameObject* pOtherObj = _pOther->GetObj();
 
-	if (pOtherObj->GetName() == L"Monster")
+	if (pOtherObj->GetName() == L"Ground" && hookState == HOOK_STATE::FLYING)
 	{
-		DeleteObject(this);
+		hookState = HOOK_STATE::GRAB;
+		//DeleteObject(this);
+	}
+	else if (pOtherObj->GetName() == L"NonGround" && hookState == HOOK_STATE::FLYING)
+	{
+		hookState = HOOK_STATE::RETURN_WITHOUT;
+
 	}
 }

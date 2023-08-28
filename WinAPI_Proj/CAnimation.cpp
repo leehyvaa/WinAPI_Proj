@@ -7,6 +7,8 @@
 #include "CCamera.h"
 #include "CPathMgr.h"
 #include "CResMgr.h"
+#include "CCore.h"
+#include "SelectGDI.h"
 
 CAnimation::CAnimation()
 	:m_pAnimator(nullptr)
@@ -15,11 +17,14 @@ CAnimation::CAnimation()
 	,m_fAccTime(0.f)
 	,m_bFinish(false)
 	,m_fSizeMulti(1)
+	,rotPos(nullptr)
 {
+	rotPos = new POINT[4];
 }
 
 CAnimation::~CAnimation()
 {
+	delete[] rotPos;
 }
 void CAnimation::Update()
 {
@@ -61,19 +66,96 @@ void CAnimation::Render(HDC _dc)
 	vPos = CCamera::GetInst()->GetRenderPos(vPos);
 
 
-	TransparentBlt(_dc
-		, (int)(vPos.x - m_vecFrm[m_iCurFrm].vSlice.x *m_fSizeMulti / 2.f)
-		, (int)(vPos.y - m_vecFrm[m_iCurFrm].vSlice.y *m_fSizeMulti / 2.f)
-		, (int)(m_vecFrm[m_iCurFrm].vSlice.x * m_fSizeMulti)
-		, (int)(m_vecFrm[m_iCurFrm].vSlice.y * m_fSizeMulti)
-		, m_pTex->GetDC()
-		, (int)(m_vecFrm[m_iCurFrm].vLT.x)
-		, (int)(m_vecFrm[m_iCurFrm].vLT.y)
-		, (int)(m_vecFrm[m_iCurFrm].vSlice.x)
-		, (int)(m_vecFrm[m_iCurFrm].vSlice.y)
-		, (int)(RGB(255, 0, 255))
-	);
+
+	if (m_pAnimator->GetRotation() != 0.f)
+	{
+		HDC tempDC = m_pAnimator->GetTempTex()->GetDC();
+
+		float rot = m_pAnimator->GetRotation();
+
+		
+	
+
+		double degree[3];
+		degree[0] = rot + 315.f - 90.f;
+		degree[1] = rot + 45.f - 90.f;
+		degree[2] = rot + 225.f - 90.f;
+
+		
+
+		double radian1 = degree[0] * (3.14159 / 180.f);
+		double radian2 = degree[1] * (3.14159 / 180.f);
+		double radian3 = degree[2] * (3.14159 / 180.f);
+
+
+
+		rotPos[0] = {(int)(150 + 141 * cos(radian1)),(int)(150 + 141 * sin(radian1)) };
+		rotPos[1] = { (int)(150 + 141 * cos(radian2)),(int)(150 + 141 * sin(radian2)) };
+		rotPos[2] = { (int)(150 + 141 * cos(radian3)),(int)(150 + 141 * sin(radian3)) };
+
+
+		POINT a = rotPos[0];
+		POINT d = rotPos[1];
+		POINT e = rotPos[2];
+
+
+
+
+		SelectGDI b(tempDC, BRUSH_TYPE::MAGENTA);
+		PatBlt(tempDC, 0, 0, 300, 300, PATCOPY);
+
+
+		PlgBlt(tempDC, rotPos, m_pTex->GetDC()
+			, (int)(m_vecFrm[m_iCurFrm].vLT.x)
+			, (int)(m_vecFrm[m_iCurFrm].vLT.y)
+			, (int)(m_vecFrm[m_iCurFrm].vSlice.x)
+			, (int)(m_vecFrm[m_iCurFrm].vSlice.y)
+			, NULL, NULL, NULL);
+
+
+
+		TransparentBlt(_dc
+			, (int)(vPos.x - m_vecFrm[m_iCurFrm].vSlice.x * m_fSizeMulti / 2.f)
+			, (int)(vPos.y - m_vecFrm[m_iCurFrm].vSlice.y * m_fSizeMulti / 2.f)
+			, (int)(m_vecFrm[m_iCurFrm].vSlice.x * m_fSizeMulti)
+			, (int)(m_vecFrm[m_iCurFrm].vSlice.y * m_fSizeMulti)
+			, tempDC
+			, 0
+			, 0
+			, 300
+			, 300
+			, (int)(RGB(255, 0, 255))
+		);
+	}
+	else
+	{
+		TransparentBlt(_dc
+			, (int)(vPos.x - m_vecFrm[m_iCurFrm].vSlice.x * m_fSizeMulti / 2.f)
+			, (int)(vPos.y - m_vecFrm[m_iCurFrm].vSlice.y * m_fSizeMulti / 2.f)
+			, (int)(m_vecFrm[m_iCurFrm].vSlice.x * m_fSizeMulti)
+			, (int)(m_vecFrm[m_iCurFrm].vSlice.y * m_fSizeMulti)
+			, m_pTex->GetDC()
+			, (int)(m_vecFrm[m_iCurFrm].vLT.x)
+			, (int)(m_vecFrm[m_iCurFrm].vLT.y)
+			, (int)(m_vecFrm[m_iCurFrm].vSlice.x)
+			, (int)(m_vecFrm[m_iCurFrm].vSlice.y)
+			, (int)(RGB(255, 0, 255))
+		);
+	}
+
+
+	
+
+	
+	
+	
+	//PlgBlt()
+
+	
+	//PlgBlt(_dc,)
+
 }
+
 
 void CAnimation::Create(CTexture* _pTex, Vec2 _vLT, Vec2 _vSliceSize,
 					Vec2 _vStep, float _fDuration, UINT _iFrameCount, float _fSizeMulti, Vec2 _vOffset)
@@ -90,6 +172,8 @@ void CAnimation::Create(CTexture* _pTex, Vec2 _vLT, Vec2 _vSliceSize,
 
 		m_vecFrm.push_back(frm);
 	}
+
+
 
 	m_fSizeMulti = _fSizeMulti;
 }

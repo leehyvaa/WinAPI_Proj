@@ -23,6 +23,8 @@ private:
 	float m_fAccTime; //시간 누적
 	bool m_bFinish; //재생 끝에 도달 여부
 	float m_fSizeMulti;
+	POINT* rotPos;
+
 
 public:
 	const wstring& GetName() { return m_strName; }

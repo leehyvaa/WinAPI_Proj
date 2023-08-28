@@ -245,8 +245,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_KEYUP:
     {
 
-        bFlag = FALSE;
-        InvalidateRect(hWnd, NULL, TRUE);
     }break;
 
 
@@ -276,26 +274,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     } 
     break;
     case WM_LBUTTONDOWN:
-        ptMousePos.x = LOWORD(lParam);
-        ptMousePos.y = HIWORD(lParam);
-        if (InCircle(ptMousePos, ptCurPos)) bFlag = TRUE;
-        InvalidateRect(hWnd, NULL, TRUE);
+
         break;
 
     case WM_LBUTTONUP:
-        bFlag = FALSE;
-        InvalidateRect(hWnd, NULL, TRUE);
 
 
         break;
 
     case WM_MOUSEMOVE:
-        if (bFlag)
-        {
-            ptCurPos.x = LOWORD(lParam);
-            ptCurPos.y = HIWORD(lParam);
-            InvalidateRect(hWnd, NULL, TRUE);
-        }
+
         break;
     case WM_PAINT:
     {

@@ -16,6 +16,9 @@ class GameObject
 {
 private:
 	wstring m_strName;
+	Vec2 m_vDir;
+	Vec2 standartDir;
+	float m_rotation;
 
 	Vec2 m_vPos;
 	Vec2 m_vScale;
@@ -34,11 +37,19 @@ public:
 	GameObject(const GameObject& _origin);
 	virtual ~GameObject();
 
+	void LookAt(Vec2 _target);
+
+	void SetDir(Vec2 _dir) { m_vDir = _dir; }
 	void SetPos(Vec2 _vPos) { m_vPos = _vPos; }
 	void SetScale(Vec2 _vScale) { m_vScale = _vScale; }
+	void SetStdDir(Vec2 _dir) { standartDir = _dir; }
+
 	Vec2 GetPos() { return m_vPos; }
 	Vec2 GetScale() { return m_vScale; }
+	Vec2 GetDir() { return m_vDir; }
+	Vec2 GetStdDir() { return standartDir; }
 
+	float GetRotation() { return m_rotation; }
 
 	void SetName(const wstring& _strName) { m_strName = _strName; }
 	const wstring& GetName() { return m_strName; }

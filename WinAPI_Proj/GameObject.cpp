@@ -14,6 +14,9 @@ GameObject::GameObject()
 	,m_pRigidBody(nullptr)
 	, m_pGravity(nullptr)
 	,m_bAlive(true)
+	, m_vDir(Vec2(0.f, 0.f))
+	, m_rotation(0.f)
+	, standartDir(0.f,-1.f)
 {
 }
 GameObject::GameObject(const GameObject& _origin)
@@ -58,6 +61,29 @@ GameObject::~GameObject()
 	if (nullptr != m_pGravity)
 		delete m_pGravity;
 }
+
+void GameObject::LookAt(Vec2 _target)
+{
+	//고칠여지 많음 player swingMove 참조
+	Vec2 dir = _target - GetPos();
+	Vec2 up = Vec2(0.f, -1.f);
+
+	if (_target.x > GetPos().x)
+	{
+		m_rotation = dir.Angle(up);
+	}
+	else
+	{
+		float offset = 180.f - dir.Angle(up);
+
+		m_rotation = offset + 180.f;
+
+	}
+	dir.Normalize();
+	m_vDir = dir;
+	GetAnimator()->SetRotation(m_rotation);
+}
+
 
 
 void GameObject::CreateCollider()

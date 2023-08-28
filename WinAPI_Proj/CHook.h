@@ -1,24 +1,55 @@
 #pragma once
 #include "GameObject.h"
+
+class SPlayer;
+
+
+
+enum class HOOK_STATE
+{
+    FLYING,
+    GRAB,
+    GRABBING,
+    RETURN_WITH,
+    RETURN_WITHOUT,
+
+};
+
 class CHook :
     public GameObject
 {
 private:
-    Vec2 m_vDir;
     float m_fSpeed;
-    float m_rotation;
-
+    GameObject* owner;
+    int dir;
+    int prevDir;
+    PLAYER_STATE curState;
+    PLAYER_STATE prevState;
+    HOOK_STATE hookState;
 
 public:
     CHook();
     virtual ~CHook();
 
-    void SetDir(Vec2 _dir) { m_vDir = _dir; }
-    void LookAt(Vec2 _target);
-
-
     virtual void Update();
     virtual void Render(HDC _dc);
+
+    void SetOwner(GameObject* _owner) { owner = _owner; }
+
+    void Update_Animation();
+    void Update_State();
+    void Update_Move();
+
+    void SetPrevDir(int _dir) { prevDir = _dir; }
+    void SetDir(int _dir) { dir = _dir; }
+
+    void SetHookState(HOOK_STATE _state) { hookState = _state; }
+    HOOK_STATE GetHookState() { return hookState; }
+
+    void SetState(PLAYER_STATE _state) { curState = _state; }
+    void SetPrevState(PLAYER_STATE _state) { prevState = _state; }
+
+
 
 
     virtual void OnCollisionEnter(CCollider* _pOther);

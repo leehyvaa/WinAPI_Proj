@@ -1,18 +1,26 @@
 #include "pch.h"
 #include "CAnimator.h"
 #include "CAnimation.h"
+#include "CCore.h"
+#include "CTexture.h"
+#include "CResMgr.h"
 CAnimator::CAnimator()
 	:m_pOwner(nullptr)
 	,m_pCurAnim(nullptr)
 	,m_bRepeat(false)
+	,rotation(0.f)
+	,tempTex(nullptr)
 {
+	tempTex = CResMgr::GetInst()->LoadTexture(L"AnimatorTemp", L"texture\\player\\Grab_Right.bmp");
+
+
 }
 
 CAnimator::~CAnimator()
 {
 	Safe_Delete_Map(m_mapAnim);
 }
-//
+
 
 
 

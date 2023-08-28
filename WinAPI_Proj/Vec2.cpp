@@ -78,8 +78,13 @@ Vec2& Vec2::Normalize()
 	float fLen = Length();
 
 
-	assert(fLen != 0.f);
-
+	//assert(fLen != 0.f);
+	if (fLen == 0.f)
+	{
+		x = 0.f;
+		y = 0.f;
+		return *this;
+	}
 
 	x /= fLen;
 	y /= fLen;
