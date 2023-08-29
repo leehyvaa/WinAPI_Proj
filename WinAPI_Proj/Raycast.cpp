@@ -105,7 +105,7 @@ void Raycast::CollisionCheck()
 		Vec2 curPos = GetCollider()->GetOffsetPos() +GetPos();
 
 		//레이 최대거리
-		if ((curPos - GetPos()).Length() >= 700.f)
+		if ((curPos - GetPos()).Length() >= 800.f)
 		{
 
 			break;

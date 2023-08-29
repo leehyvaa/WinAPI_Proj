@@ -28,7 +28,7 @@ SPlayer::SPlayer()
 	, onCollisionRay(nullptr)
 	, targetPos(Vec2(0.f,0.f))
 	, wireRange(-1.f)
-	, wireMaxRange(500.f)
+	, wireMaxRange(600.f)
 	, moveEnergy(0.f)
 	, posEnergy(0.f)
 	, canBooster(false)
@@ -848,7 +848,7 @@ void SPlayer::SwingMove()
 	Vec2 nextPos;
 	Vec2 nextDir;
 
-	double radian = (1) * (3.14159 / 180.f);
+	double radian = (1.2f) * (3.14159 / 180.f);
 
 
 
@@ -856,11 +856,11 @@ void SPlayer::SwingMove()
 
 	if (KEY_HOLD(KEY::A))
 	{
-		moveEnergy -= 3.f;
+		moveEnergy -= 25.f;
 	}
 	if (KEY_HOLD(KEY::D))
 	{
-		moveEnergy += 3.f;
+		moveEnergy += 25.f;
 	}
 
 
@@ -868,12 +868,12 @@ void SPlayer::SwingMove()
 	{
 		if (KEY_HOLD(KEY::A) && KEY_HOLD(KEY::LSHIFT))
 		{
-			moveEnergy -= 1800.f;
+			moveEnergy -= 3000.f;
 			canBooster = false;
 		}
 		if (KEY_HOLD(KEY::D) && KEY_HOLD(KEY::LSHIFT))
 		{
-			moveEnergy += 1800.f;
+			moveEnergy += 3000.f;
 			canBooster = false;
 
 		}
@@ -888,48 +888,56 @@ void SPlayer::SwingMove()
 	if (angle > 180.f && angle < 360.f)
 	{
 		posEnergy = -abs(angle - 180.f);
+
+		if (abs(posEnergy) > 90.f)
+			posEnergy = -90.f;
+			
 	}
 	else if (angle > 0.f && angle < 180.f)
 	{
 		posEnergy = abs(180.f - angle);
+
+		if (abs(posEnergy) > 90.f)
+			posEnergy = 90.f;
+
 	}
 
 	if (moveEnergy > 0.f)
 	{
 		if(abs(moveEnergy) > 600.f)
-			moveEnergy -= fDT * 300;
+			moveEnergy -= fDT * 800;
 		else if(abs(moveEnergy) > 300.f)
-			moveEnergy -= fDT * 100;
+			moveEnergy -= fDT * 150;
 		else
-			moveEnergy -= fDT * 30;
+			moveEnergy -= fDT * 20;
 
 	}
 	else
 	{
 		if (abs(moveEnergy) > 600.f)
-			moveEnergy += fDT * 300;
+			moveEnergy += fDT * 800;
 		else if (abs(moveEnergy) > 300.f)
-			moveEnergy += fDT * 100;
+			moveEnergy += fDT * 150;
 		else
-			moveEnergy += fDT * 30;
+			moveEnergy += fDT * 20;
 		
 	}
 
 	if (posEnergy > 0.f)
 	{
 		//posEnergy -= fDT * 50;
-		moveEnergy -= fDT * posEnergy *7;
+		moveEnergy -= fDT * posEnergy *30;
 	}
 	else
 	{
 		//posEnergy += fDT * 50;
-		moveEnergy -= fDT * posEnergy *7;
+		moveEnergy -= fDT * posEnergy *30;
 
 	}
 
 	if (moveEnergy > 0.f)
 	{
-		radian *= -1;
+		radian *= -1.2f;
 
 	}
 	nextPos.x = (playerArm->GetPos().x - targetPos.x) * cos(radian)
@@ -947,6 +955,7 @@ void SPlayer::SwingMove()
 		cout << moveEnergy << endl;
 	}
 	
+
 
 	pRigid->SetVelocity(nextDir * abs(moveEnergy) );
 

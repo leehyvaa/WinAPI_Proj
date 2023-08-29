@@ -13,7 +13,7 @@ MouseCursor::MouseCursor()
 	
 	
 	GetAnimator()->CreateAnimation(L"Cursor", pCursor,
-		Vec2(0.f, 0.f), Vec2(128.f, 128.f), Vec2(128.f, 0.f), 1.f, 1, 0.85f, Vec2(0.f, 0.f));
+		Vec2(0.f, 0.f), Vec2(128.f, 128.f), Vec2(128.f, 0.f), 1.f, 1, 1.1f, Vec2(0.f, 0.f));
 	GetAnimator()->FindAnimation(L"Cursor")->Save(L"animation\\cursor.anim");
 
 	GetAnimator()->Play(L"Cursor", true);

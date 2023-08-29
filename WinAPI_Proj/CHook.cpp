@@ -158,7 +158,7 @@ void CHook::Update_Move()
 		vPos.y = vPos.y + m_fSpeed * GetDir().y * fDT*2;
 
 		//거리가 제한거리이상 벗어나면 without리턴으로 변환
-		if ((GetPos() - owner->GetPos()).Length() > 500.f)
+		if ((GetPos() - owner->GetPos()).Length() > 600.f)
 		{
 			hookState = HOOK_STATE::RETURN_WITHOUT;
 		}
@@ -182,7 +182,7 @@ void CHook::Update_Move()
 		vPos.y = vPos.y + m_fSpeed * newDir.y * fDT*3;
 
 		//플레이어한테 도달하면 삭제
-		if ((GetPos() - owner->GetPos()).Length() < 20.f)
+		if ((GetPos() - owner->GetPos()).Length() < 30.f)
 		{
 			DeleteObject(this);
 			((PlayerArm*)owner)->GetOwner()->SetHookRemove(nullptr);
@@ -201,7 +201,7 @@ void CHook::Update_Move()
 		vPos.y = vPos.y + m_fSpeed * newDir.y * fDT*3;
 
 		//플레이어한테 도달하면 삭제
-		if ((GetPos() - owner->GetPos()).Length() < 20.f)
+		if ((GetPos() - owner->GetPos()).Length() < 30.f)
 		{
 			
 
