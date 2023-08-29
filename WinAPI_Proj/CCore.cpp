@@ -15,7 +15,8 @@
 #include "CTexture.h"
 #include "SelectGDI.h"
 #include "resource.h"
-
+#include "CScene.h"
+#include "CBackGround.h"
 
 CCore::CCore()
 	:m_hWnd(0)
@@ -116,7 +117,7 @@ void CCore::Progress()
 	//렌더링
 	//화면 클리어
 	//memDC에다 먼저 그린다
-	Clear();
+	Clear(m_pMemTex->GetDC());
 	
 
 
@@ -144,15 +145,42 @@ void CCore::CreateBrushPen()
 
 	m_arrPen[(UINT)PEN_TYPE::RED] = CreatePen(PS_SOLID, 1, RGB(255, 0, 0));
 	m_arrPen[(UINT)PEN_TYPE::GREEN] = CreatePen(PS_SOLID, 1, RGB(0, 255, 0));
-	m_arrPen[(UINT)PEN_TYPE::BLUE] = CreatePen(PS_SOLID, 1, RGB(0, 0, 255));
+	m_arrPen[(UINT)PEN_TYPE::BLUE] = CreatePen(PS_SOLID, 1, RGB(80, 183, 220));
+	m_arrPen[(UINT)PEN_TYPE::PURPLE] = CreatePen(PS_SOLID, 1, RGB(102, 0, 153));
+	m_arrPen[(UINT)PEN_TYPE::ORANGE] = CreatePen(PS_SOLID, 1, RGB(255, 165, 0));
 
 
 }
 
-void CCore::Clear()
+void CCore::Clear(HDC _dc)
 {
 	//SelectGDI gdi(m_pMemTex->GetDC(), BRUSH_TYPE::BLACK);
-	Rectangle(m_pMemTex->GetDC(), -1, -1, m_ptResolution.x + 1, m_ptResolution.y + 1);
+	//Rectangle(m_pMemTex->GetDC(), -1, -1, m_ptResolution.x + 1, m_ptResolution.y + 1);
+	CScene* curScene = CSceneMgr::GetInst()->GetCurScene();
+	CBackGround* backGround = curScene->GetBackGround();
+	if (backGround == nullptr)
+		return;
+
+
+	Vec2 vRenderPos = backGround->GetPos();
+
+	Vec2 vScale = backGround->GetScale();
+
+
+	UINT iWidth = backGround->GetTexture()->Width();
+	UINT iHeight = backGround->GetTexture()->Height();
+
+
+	TransparentBlt(_dc
+		, int(vRenderPos.x)
+		, int(vRenderPos.y)
+		, (int)vScale.x, (int)vScale.y
+		, backGround->GetTexture()->GetDC()
+		, 0, 0,
+		iWidth, iHeight, RGB(255, 0, 255));
+
+
+
 }
 
 void CCore::DockMenu()

@@ -203,6 +203,7 @@
     <ClInclude Include="CTimeMgr.h" />
     <ClInclude Include="CTool.h" />
     <ClInclude Include="global.h" />
+    <ClInclude Include="MouseCursor.h" />
     <ClInclude Include="PlayerArm.h" />
     <ClInclude Include="Raycast.h" />
     <ClInclude Include="SecondGameScene1.h" />
@@ -258,6 +259,7 @@
     <ClCompile Include="CCore.cpp" />
     <ClCompile Include="CTimeMgr.cpp" />
     <ClCompile Include="CTool.cpp" />
+    <ClCompile Include="MouseCursor.cpp" />
     <ClCompile Include="PlayerArm.cpp" />
     <ClCompile Include="Raycast.cpp" />
     <ClCompile Include="SecondGameScene1.cpp" />

@@ -23,6 +23,7 @@
 #include "CGround.h"
 #include "CBackGround.h"
 #include "CResMgr.h"
+#include "MouseCursor.h"
 
 SecondGameScene1::SecondGameScene1()
 	:m_bUseForce(false)
@@ -147,7 +148,7 @@ void SecondGameScene1::Enter()
 	
 	GameObject* player = new SPlayer();
 	player->SetName(L"Player");
-	player->SetPos(Vec2(400.f,400.f));
+	player->SetPos(Vec2(700.f,3000.f));
 	//player->SetScale(Vec2(100.f, 100.f));
 	AddObject(player, GROUP_TYPE::PLAYER);
 	RegisterPlayer(player);
@@ -162,6 +163,18 @@ void SecondGameScene1::Enter()
 
 
 	AddObject(playerArm, GROUP_TYPE::PLAYERARM);
+
+
+
+
+	//마우스커서
+	ShowCursor(false);
+
+	GameObject* cursor = new MouseCursor();
+	cursor->SetName(L"Cursor");
+	cursor->SetPos(player->GetPos());
+	AddObject(cursor, GROUP_TYPE::Ray);
+
 
 
 	//클론함수 없이 만든 오브젝트 복사 만약 플레이어를 복사한다면 아래와 같이 사용
@@ -220,7 +233,7 @@ void SecondGameScene1::Enter()
 	AddObject((GameObject*)pGround2, GROUP_TYPE::GROUND);
 
 	//타일 로딩
-	LoadTile(L"Tile\\test6.tile");
+	LoadTile(L"Tile\\test8");
 
 
 	//그룹간 충돌 체크
@@ -238,20 +251,17 @@ void SecondGameScene1::Enter()
 
 
 
-	//CBackGround* backGround2 = new CBackGround;
-	//backGround2->SetPos(Vec2(0, 0));
-	//CTexture* back2 = CResMgr::GetInst()->LoadTexture(L"TutorialBackSky", L"texture\\background\\Forest_Sky.bmp");
-	//backGround2->SetTexture(back2);
-	//backGround2->SetScale(CCore::GetInst()->GetResolution());
-	//AddObject((GameObject*)backGround2, GROUP_TYPE::BACKGROUND);
+	CBackGround* backGround = new CBackGround;
+	backGround->SetPos(Vec2(0, 0));
+	CTexture* back = CResMgr::GetInst()->LoadTexture(L"TutorialBack", L"texture\\background\\Forest_Mountain2.bmp");
+	
+	backGround->SetTexture(back);
+	
+	backGround->SetScale(CCore::GetInst()->GetResolution());
+	AddObject((GameObject*)backGround, GROUP_TYPE::BACKGROUND);
 
+	SetBackGround(backGround);
 
-	//CBackGround* backGround = new CBackGround;
-	//backGround->SetPos(Vec2(0, 0));
-	//CTexture* back = CResMgr::GetInst()->LoadTexture(L"TutorialBack", L"texture\\background\\Forest_Mountain.bmp");
-	//backGround->SetTexture(back);
-	//backGround->SetScale(CCore::GetInst()->GetResolution());
-	//AddObject((GameObject*)backGround, GROUP_TYPE::BACKGROUND);
 
 
 

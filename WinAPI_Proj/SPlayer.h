@@ -6,22 +6,7 @@ class PlayerArm;
 class CHook;
 class Raycast;
 
-enum class PLAYER_STATE
-{
-	IDLE,
-	RUN,
-	ATTACK,
-	JUMP,
-	CLIMB,
-	CLIMBUP,
-	CLIMBDOWN,
-	SHOT,
-	SWING,
-	FALL,
-	DAMAGED,
-	DEAD,
-	
-};
+
 
 enum class PLAYER_ATTACK_STATE
 {
@@ -41,6 +26,7 @@ private:
 	float wireMaxRange;
 	bool m_bOnGround;
 	bool isClimbing;
+	bool canBooster;
 	PLAYER_STATE m_eCurState;
 	PLAYER_STATE m_ePrevState;
 	CHook* playerHook;
@@ -82,7 +68,8 @@ public:
 	Vec2 GetTargetPos() { return targetPos; }
 	void SetOnGround(bool _onGround) { m_bOnGround = _onGround; }
 	void SetArm(PlayerArm* _arm) { playerArm = _arm; }
-	
+	void SetHookRemove(CHook* _hook) { playerHook = _hook; }
+
 	PLAYER_STATE GetState() { return m_eCurState; }
 	PLAYER_STATE GetPrevState() { return m_ePrevState; }
 

@@ -116,20 +116,23 @@ void CScene_Tool::Enter()
 
 
 
-	CBackGround* backGround2 = new CBackGround;
+	/*CBackGround* backGround2 = new CBackGround;
 	backGround2->SetPos(Vec2(0, 0));
-	CTexture* back2 = CResMgr::GetInst()->LoadTexture(L"TutorialBackSky", L"texture\\background\\Forest_Sky.bmp");
 	backGround2->SetTexture(back2);
 	backGround2->SetScale(CCore::GetInst()->GetResolution());
-	AddObject((GameObject*)backGround2, GROUP_TYPE::BACKGROUND);
+	AddObject((GameObject*)backGround2, GROUP_TYPE::BACKGROUND);*/
 	
 
 	CBackGround* backGround = new CBackGround;
 	backGround->SetPos(Vec2(0, 0));
-	CTexture* back = CResMgr::GetInst()->LoadTexture(L"TutorialBack", L"texture\\background\\Forest_Mountain.bmp");
+	CTexture* back = CResMgr::GetInst()->LoadTexture(L"TutorialBack", L"texture\\background\\Forest_Mountain2.bmp");
+	
 	backGround->SetTexture(back);
 	backGround->SetScale(CCore::GetInst()->GetResolution());
 	AddObject((GameObject*)backGround, GROUP_TYPE::BACKGROUND);
+
+	SetBackGround(backGround);
+	
 
 	//카메라 Look 지정
 	CCamera::GetInst()->SetLookAt(vResolution/2.f);
@@ -195,6 +198,7 @@ void CScene_Tool::Update()
 			cout << "ground Type:" << (int)groundType<<endl;
 
 		}
+
 		if (KEY_TAP(KEY::KEY_2))
 		{
 			int a = (int)groundType;
@@ -622,10 +626,20 @@ void CScene_Tool::CreateGround()
 		{
 			CGround* pGround2 = CGroundPrefab::CreateGround(GROUND_TYPE::NONGROUND,
 				mousePos1, mousePos2);
-			//AddObject((GameObject*)pGround2, GROUP_TYPE::GROUND);
 			CreateObject((GameObject*)pGround2, GROUP_TYPE::GROUND);
 		}
-
+		else if (groundType == GROUND_TYPE::DAMAGEZONE)
+		{
+			CGround* pGround2 = CGroundPrefab::CreateGround(GROUND_TYPE::DAMAGEZONE,
+				mousePos1, mousePos2);
+			CreateObject((GameObject*)pGround2, GROUP_TYPE::GROUND);
+		}
+		else if (groundType == GROUND_TYPE::DEADZONE)
+		{
+			CGround* pGround2 = CGroundPrefab::CreateGround(GROUND_TYPE::DEADZONE,
+				mousePos1, mousePos2);
+			CreateObject((GameObject*)pGround2, GROUP_TYPE::GROUND);
+		}
 
 
 		SetGroundCount(GetGroundCount() + 1);

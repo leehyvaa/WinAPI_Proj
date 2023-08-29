@@ -134,7 +134,7 @@ void PlayerArm::Update()
 	GetAnimator()->Update();
 
 	prevDir = dir;
-	 prevState= curState;
+	prevState= curState;
 }
 
 void PlayerArm::Render(HDC _dc)

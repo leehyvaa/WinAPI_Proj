@@ -7,6 +7,7 @@
 #include "CSceneMgr.h"
 #include "CScene.h"
 #include "SPlayer.h"
+#include "CRigidBody.h"
 CGround::CGround()
 {
 	CreateCollider();
@@ -43,8 +44,17 @@ void CGround::Render(HDC _dc)
 		}
 		else if (GetName() == L"NonGround")
 		{
+			ePen = PEN_TYPE::PURPLE;
+		}
+		else if (GetName() == L"DamageZone")
+		{
+			ePen = PEN_TYPE::ORANGE;
+		}
+		else if (GetName() == L"DeadZone")
+		{
 			ePen = PEN_TYPE::RED;
 		}
+
 		SelectGDI b(_dc, BRUSH_TYPE::HOLLOW);
 		SelectGDI p(_dc, ePen);
 
@@ -156,7 +166,7 @@ void CGround::OnCollisionEnter(CCollider* _pOther)
 		//위에서 충돌
 		if (vObjPos.x >= GetPos().x &&
 			vObjPos.x <= GetPos().x + GetScale().x &&
-			vObjPos.y <= GetPos().y+2.f)
+			vObjPos.y <= GetPos().y+10.f)
 		{
 			float fLen = abs(vObjColPos.y - vPos.y);
 			float fValue = (vObjColScale.y / 2.f + vScale.y / 2.f) - fLen;
@@ -173,39 +183,47 @@ void CGround::OnCollisionEnter(CCollider* _pOther)
 		//좌우 충돌했을때
 
 		if (vObjPos.y >= GetPos().y &&
-			vObjPos.x <= GetPos().x)
+			vObjPos.x <= GetPos().x +10.f)
 		{
-			if (vObjPos.y <= GetPos().y + 70.f)
-			{
-				vObjPos.x -= 2.f;
-			}
-			else
-			{
-				float fLen = abs(vObjColPos.x - vPos.x);
-				float fValue = (vObjColScale.x / 2.f + vScale.x / 2.f) - fLen;
+			
+				if (vObjPos.y <= GetPos().y + 70.f)
+				{
+					vObjPos.x -= 2.f;
+				}
+				else
+				{
+					float fLen = abs(vObjColPos.x - vPos.x);
+					float fValue = (vObjColScale.x / 2.f + vScale.x / 2.f) - fLen;
 
-				vObjPos.x -= fValue;
-			}
+					vObjPos.x -= fValue;
+				}
+			
 
 
+		
 
 		}
 
 		if (pOtherObj->GetPos().y >= GetPos().y &&
-			pOtherObj->GetPos().x >= GetPos().x+GetScale().x)
+			pOtherObj->GetPos().x >= GetPos().x+GetScale().x -10.f)
 		{
-			if (vObjPos.y <= GetPos().y + 70.f)
-			{
-				vObjPos.x -= 2.f;
 
-			}
-			else
-			{
-				float fLen = abs(vObjColPos.x - vPos.x);
-				float fValue = (vObjColScale.x / 2.f + vScale.x / 2.f) - fLen;
+			
+				if (vObjPos.y <= GetPos().y + 70.f)
+				{
+					vObjPos.x -= 2.f;
 
-				vObjPos.x += fValue;
-			}
+				}
+				else
+				{
+					float fLen = abs(vObjColPos.x - vPos.x);
+					float fValue = (vObjColScale.x / 2.f + vScale.x / 2.f) - fLen;
+
+					vObjPos.x += fValue;
+				}
+			
+
+			
 
 
 		}
@@ -213,7 +231,17 @@ void CGround::OnCollisionEnter(CCollider* _pOther)
 
 
 		//아래에서 충돌했을때
+		if (vObjPos.x >= GetPos().x &&
+			vObjPos.x <= GetPos().x + GetScale().x &&
+			vObjPos.y >= GetPos().y +GetScale().y - 10.f)
+		{
+			float fLen = abs(vObjColPos.y - vPos.y);
+			float fValue = (vObjColScale.y / 2.f + vScale.y / 2.f) - fLen;
 
+			((SPlayer*)pOtherObj)->SetOnGround(true);
+
+			vObjPos.y += (fValue);
+		}
 
 
 		pOtherObj->SetPos(vObjPos);
@@ -237,9 +265,11 @@ void CGround::OnCollision(CCollider* _pOther)
 		Vec2 vObjPos = pOtherObj->GetPos();
 		Vec2 gPos = GetPos();
 				
+
+		//위에서 충돌
 		if (vObjPos.x >= GetPos().x &&
 			vObjPos.x <= GetPos().x + GetScale().x&&
-			vObjPos.y <= GetPos().y+5.f)
+			vObjPos.y <= GetPos().y+10.f)
 		{
 			float fLen = abs(vObjColPos.y - vPos.y);
 			float fValue = (vObjColScale.y / 2.f + vScale.y / 2.f) - fLen;
@@ -252,49 +282,67 @@ void CGround::OnCollision(CCollider* _pOther)
 			((SPlayer*)pOtherObj)->SetOnGround(true);
 
 
+
 		if (pOtherObj->GetPos().y > GetPos().y &&
-			pOtherObj->GetPos().x <= GetPos().x)
+			pOtherObj->GetPos().x <= GetPos().x+10.f)
 		{
-		/*	if (vObjPos.y <= GetPos().y + 70.f)
-			{
-				vObjPos.x -= 2.f;
+			
+				if (vObjPos.y >= GetPos().y + GetScale().y + 90.f)
+				{
+					vObjPos.x -= 2.f;
+				}
+				else
+				{
+					float fLen = abs(vObjColPos.x - vPos.x);
+					float fValue = (vObjColScale.x / 2.f + vScale.x / 2.f) - fLen;
 
-			}*/
-			if (vObjPos.y >= GetPos().y + GetScale().y + 90.f)
-			{
-				vObjPos.x -= 2.f;
-			}
-			else
-			{
-				float fLen = abs(vObjColPos.x - vPos.x);
-				float fValue = (vObjColScale.x / 2.f + vScale.x / 2.f) - fLen;
+					vObjPos.x -= fValue;
+				}
+			
 
-				vObjPos.x -= fValue;
-			}
+
+			
 			
 
 		}
 
 		if (pOtherObj->GetPos().y > GetPos().y &&
-			pOtherObj->GetPos().x >= GetPos().x + GetScale().x)
+			pOtherObj->GetPos().x >= GetPos().x + GetScale().x -10.f)
 		{
-		/*	if (vObjPos.y <= GetPos().y + 70.f)
-			{
-				vObjPos.x += 2.f;
-			}*/
-			if (vObjPos.y >= GetPos().y + GetScale().y +90.f)
-			{
-				vObjPos.x += 2.f;
-			}
-			else
-			{
-				float fLen = abs(vObjColPos.x - vPos.x);
-				float fValue = (vObjColScale.x / 2.f + vScale.x / 2.f) - fLen;
 
-				vObjPos.x += fValue;
-			}
+			
+				if (vObjPos.y >= GetPos().y + GetScale().y + 90.f)
+				{
+					vObjPos.x += 2.f;
+				}
+				else
+				{
+					float fLen = abs(vObjColPos.x - vPos.x);
+					float fValue = (vObjColScale.x / 2.f + vScale.x / 2.f) - fLen;
+
+					vObjPos.x += fValue;
+				}
 			
 
+			
+			
+
+		}
+
+
+
+
+		//아래에서 충돌했을때
+		if (vObjPos.x >= GetPos().x &&
+			vObjPos.x <= GetPos().x + GetScale().x &&
+			vObjPos.y >= GetPos().y + GetScale().y - 10.f)
+		{
+			float fLen = abs(vObjColPos.y - vPos.y);
+			float fValue = (vObjColScale.y / 2.f + vScale.y / 2.f) - fLen;
+
+			((SPlayer*)pOtherObj)->SetOnGround(true);
+
+			vObjPos.y += (fValue);
 		}
 
 		pOtherObj->SetPos(vObjPos);

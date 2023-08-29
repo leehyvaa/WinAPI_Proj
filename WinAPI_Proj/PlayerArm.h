@@ -34,7 +34,7 @@ public:
     void SetState(PLAYER_STATE _state) { curState=_state ; }
     void SetPrevState(PLAYER_STATE _state) {prevState = _state; }
 
-
+    SPlayer* GetOwner() { return owner; }
 
 public:
     PlayerArm();

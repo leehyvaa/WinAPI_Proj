@@ -14,6 +14,7 @@ CBackGround::~CBackGround()
 
 void CBackGround::Render(HDC _dc)
 {
+	return;
 	CTexture* pTileTex = GetTexture();
 
 	if (nullptr == pTileTex)

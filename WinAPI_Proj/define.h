@@ -73,7 +73,8 @@ enum class PEN_TYPE
 	RED,
 	GREEN,
 	BLUE,
-
+	PURPLE,
+	ORANGE,
 	END,
 };
 
@@ -105,4 +106,21 @@ enum class GROUND_TYPE
 	DAMAGEZONE,
 	DEADZONE,
 	END,
+};
+
+enum class PLAYER_STATE
+{
+	IDLE,
+	RUN,
+	ATTACK,
+	JUMP,
+	CLIMB,
+	CLIMBUP,
+	CLIMBDOWN,
+	SHOT,
+	SWING,
+	FALL,
+	DAMAGED,
+	DEAD,
+
 };

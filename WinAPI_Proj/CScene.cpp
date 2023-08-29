@@ -18,6 +18,7 @@ CScene::CScene()
 	,bDrawCollider(false)
 	,bDrawGroundType(false)
 	, bDrawOutWindow(false)
+	, backGround(nullptr)
 {
 }
 

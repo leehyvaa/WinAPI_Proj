@@ -27,7 +27,7 @@ public:
 	void Progress();
 
 	void CreateBrushPen();
-	void Clear();
+	void Clear(HDC _dc);
 
 	void DockMenu();
 	void DivideMenu();

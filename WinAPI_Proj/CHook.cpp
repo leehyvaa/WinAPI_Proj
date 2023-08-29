@@ -8,9 +8,10 @@
 #include "SPlayer.h"
 #include "CCore.h"
 #include "SelectGDI.h"
-
+#include "CKeyMgr.h"
+#include "PlayerArm.h"
 CHook::CHook()
-	:m_fSpeed(1500)
+	:m_fSpeed(2000)
 
 	,hookState(HOOK_STATE::FLYING)
 {
@@ -87,6 +88,7 @@ CHook::CHook()
 CHook::~CHook()
 {
 
+
 }
 
 
@@ -152,8 +154,8 @@ void CHook::Update_Move()
 	{
 	case HOOK_STATE::FLYING:
 	{
-		vPos.x = vPos.x + m_fSpeed * GetDir().x * fDT;
-		vPos.y = vPos.y + m_fSpeed * GetDir().y * fDT;
+		vPos.x = vPos.x + m_fSpeed * GetDir().x * fDT*2;
+		vPos.y = vPos.y + m_fSpeed * GetDir().y * fDT*2;
 
 		//거리가 제한거리이상 벗어나면 without리턴으로 변환
 		if ((GetPos() - owner->GetPos()).Length() > 500.f)
@@ -163,7 +165,10 @@ void CHook::Update_Move()
 	}
 		break;
 	case HOOK_STATE::GRAB:
-		
+		if (KEY_HOLD(KEY::LBUTTON) == false)
+		{
+			hookState = HOOK_STATE::RETURN_WITH;
+		}
 		break;
 	case HOOK_STATE::GRABBING:
 		
@@ -173,13 +178,15 @@ void CHook::Update_Move()
 		Vec2 newDir = owner->GetPos() - GetPos();
 		newDir.Normalize();
 
-		vPos.x = vPos.x + m_fSpeed * newDir.x * fDT*2;
-		vPos.y = vPos.y + m_fSpeed * newDir.y * fDT*2;
+		vPos.x = vPos.x + m_fSpeed * newDir.x * fDT*3;
+		vPos.y = vPos.y + m_fSpeed * newDir.y * fDT*3;
 
 		//플레이어한테 도달하면 삭제
-		if ((GetPos() - owner->GetPos()).Length() < 10.f)
+		if ((GetPos() - owner->GetPos()).Length() < 20.f)
 		{
 			DeleteObject(this);
+			((PlayerArm*)owner)->GetOwner()->SetHookRemove(nullptr);
+
 		}
 	}
 		
@@ -190,13 +197,17 @@ void CHook::Update_Move()
 		Vec2 newDir = owner->GetPos() - GetPos();
 		newDir.Normalize();
 
-		vPos.x = vPos.x + m_fSpeed * newDir.x * fDT*2;
-		vPos.y = vPos.y + m_fSpeed * newDir.y * fDT*2;
+		vPos.x = vPos.x + m_fSpeed * newDir.x * fDT*3;
+		vPos.y = vPos.y + m_fSpeed * newDir.y * fDT*3;
 
 		//플레이어한테 도달하면 삭제
-		if ((GetPos() - owner->GetPos()).Length() < 10.f)
+		if ((GetPos() - owner->GetPos()).Length() < 20.f)
 		{
+			
+
 			DeleteObject(this);
+			((PlayerArm*)owner)->GetOwner()->SetHookRemove(nullptr);
+
 		}
 	}
 		break;

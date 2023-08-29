@@ -3,6 +3,8 @@
 #include "CGroundPrefab.h"
 
 class GameObject;
+class CBackGround;
+class CTexture;
 
 class CScene
 {
@@ -24,7 +26,7 @@ private:
 	bool bDrawOutWindow;
 
 	GameObject* m_pPlayer;
-
+	CBackGround* backGround;
 
 public:
 	void SetName(const wstring& _strName) { m_strName = _strName;}
@@ -38,6 +40,9 @@ public:
 	GameObject* GetPlayer() { return m_pPlayer; }
 	bool GetDrawGroundType() { return bDrawGroundType; }
 	bool GetDrawCollider() { return bDrawCollider; }
+
+	CBackGround* GetBackGround() { return backGround; }
+	void SetBackGround(CBackGround* _tex) { backGround = _tex; }
 
 	virtual void Start();
 	virtual void Update();

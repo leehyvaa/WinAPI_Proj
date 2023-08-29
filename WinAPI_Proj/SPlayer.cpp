@@ -31,6 +31,7 @@ SPlayer::SPlayer()
 	, wireMaxRange(500.f)
 	, moveEnergy(0.f)
 	, posEnergy(0.f)
+	, canBooster(false)
 {
 	//m_pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\sigong.bmp");
 	
@@ -372,13 +373,7 @@ void SPlayer::Update_State()
 		}
 	}
 
-	//와이어 발사
-	if (KEY_TAP(KEY::LBUTTON))
-	{
 
-		m_eCurState = PLAYER_STATE::SHOT;
-		CreateHook();
-	}
 
 	//와이어 해제
 	if (KEY_AWAY(KEY::LBUTTON))
@@ -388,7 +383,7 @@ void SPlayer::Update_State()
 			//바로 삭제하지 않고 회수모션으로 전환 후 회수되면 삭제
 			playerHook->SetHookState(HOOK_STATE::RETURN_WITH);
 			GetGravity()->SetGround(false);
-			playerHook = nullptr;
+			
 		}
 		
 	}
@@ -431,10 +426,8 @@ void SPlayer::Update_Move()
 
 		break;
 	case PLAYER_STATE::SWING:
-		if(targetPos.y < GetPos().y)
-			GetGravity()->SetGround(true);
-		else
-			GetGravity()->SetGround(false);
+
+
 
 		SwingMove();
 		break;
@@ -452,7 +445,12 @@ void SPlayer::Update_Move()
 
 
 
+	//와이어 발사
+	if (KEY_TAP(KEY::LBUTTON))
+	{
 
+		CreateHook();
+	}
 
 
 }
@@ -535,6 +533,9 @@ void SPlayer::OnCollisionEnter(CCollider* _pOther)
 
 	if (_pOther->GetObj()->GetName() == L"Ground")
 	{
+		if (m_eCurState == PLAYER_STATE::SWING)
+			return;
+
 		Vec2 vPos = GetPos();
 		Vec2 vGroundPos = pOtherObj->GetPos();
 		Vec2 vGroundScale = pOtherObj->GetScale();
@@ -586,9 +587,6 @@ void SPlayer::OnCollisionEnter(CCollider* _pOther)
 	}
 
 
-
-
-
 }
 
 void SPlayer::OnCollision(CCollider* _pOther)
@@ -597,6 +595,10 @@ void SPlayer::OnCollision(CCollider* _pOther)
 
 	if (_pOther->GetObj()->GetName() == L"Ground")
 	{
+		if (m_eCurState == PLAYER_STATE::SWING)
+			return;
+
+
 		Vec2 vPos = GetPos();
 		Vec2 vGroundPos = pOtherObj->GetPos();
 		Vec2 vGroundScale = pOtherObj->GetScale();
@@ -662,6 +664,11 @@ void SPlayer::OnCollision(CCollider* _pOther)
 				m_eCurState = PLAYER_STATE::CLIMB;
 			}
 
+
+
+
+
+			//밑에 코드는 굳이 땅에서 처리해야 하나 싶음
 			if (m_eCurState == PLAYER_STATE::RUN && GetRigidBody()->GetSpeed() == 0.f)
 			{
 				m_eCurState = PLAYER_STATE::IDLE;
@@ -674,6 +681,9 @@ void SPlayer::OnCollision(CCollider* _pOther)
 
 
 	}
+
+
+
 }
 
 void SPlayer::OnCollisionExit(CCollider* _pOther)
@@ -798,8 +808,17 @@ void SPlayer::VirticalMove()
 
 void SPlayer::SwingMove()
 {
+	if (playerHook == nullptr)
+		return;
+
 	CRigidBody* pRigid = GetRigidBody();
 	targetPos = playerHook->GetPos();
+
+	if (playerHook->GetPos().y < playerArm->GetPos().y)
+		GetGravity()->SetGround(true);
+	else
+		GetGravity()->SetGround(false);
+
 
 
 	//플레이어 포지션이 원범위 안에 들어오면 (한번 들어오면 스윙 도중엔 절대 안나가게끔)
@@ -837,47 +856,74 @@ void SPlayer::SwingMove()
 
 	if (KEY_HOLD(KEY::A))
 	{
-		moveEnergy -= 2.f;
-
-		//nextPos = Vec2((float)(targetPos.x + wireRange * cos(radian)),(float)(targetPos.y + wireRange * sin(radian)));
-		
+		moveEnergy -= 3.f;
 	}
 	if (KEY_HOLD(KEY::D))
 	{
-		moveEnergy += 2.f;
-
-		
+		moveEnergy += 3.f;
 	}
 
 
+	if (canBooster)
+	{
+		if (KEY_HOLD(KEY::A) && KEY_HOLD(KEY::LSHIFT))
+		{
+			moveEnergy -= 1800.f;
+			canBooster = false;
+		}
+		if (KEY_HOLD(KEY::D) && KEY_HOLD(KEY::LSHIFT))
+		{
+			moveEnergy += 1800.f;
+			canBooster = false;
 
-	if (angle > 180.f && angle < 270.f)
+		}
+	}
+	
+
+
+
+
+
+
+	if (angle > 180.f && angle < 360.f)
 	{
 		posEnergy = -abs(angle - 180.f);
 	}
-	else if (angle > 90.f && angle < 180.f)
+	else if (angle > 0.f && angle < 180.f)
 	{
 		posEnergy = abs(180.f - angle);
 	}
 
 	if (moveEnergy > 0.f)
 	{
-		moveEnergy -= fDT * 30;
+		if(abs(moveEnergy) > 600.f)
+			moveEnergy -= fDT * 300;
+		else if(abs(moveEnergy) > 300.f)
+			moveEnergy -= fDT * 100;
+		else
+			moveEnergy -= fDT * 30;
+
 	}
 	else
 	{
-		moveEnergy += fDT * 30;
+		if (abs(moveEnergy) > 600.f)
+			moveEnergy += fDT * 300;
+		else if (abs(moveEnergy) > 300.f)
+			moveEnergy += fDT * 100;
+		else
+			moveEnergy += fDT * 30;
+		
 	}
 
 	if (posEnergy > 0.f)
 	{
 		//posEnergy -= fDT * 50;
-		moveEnergy -= fDT * posEnergy;
+		moveEnergy -= fDT * posEnergy *7;
 	}
 	else
 	{
 		//posEnergy += fDT * 50;
-		moveEnergy -= fDT * posEnergy;
+		moveEnergy -= fDT * posEnergy *7;
 
 	}
 
@@ -904,11 +950,25 @@ void SPlayer::SwingMove()
 
 	pRigid->SetVelocity(nextDir * abs(moveEnergy) );
 
+	if (distance > wireRange+5.f)
+	{
+		
+
+
+	}
+
 }
 
 
 void SPlayer::CreateHook()
 {
+	if (playerHook != nullptr)
+		return;
+
+	m_eCurState = PLAYER_STATE::SHOT;
+
+	canBooster = true;
+
 	Vec2 vHookPos = playerArm->GetPos();
 	//vHookPos.y -= GetScale().y / 2.f;
 
@@ -923,7 +983,7 @@ void SPlayer::CreateHook()
 	//CreateObject 함수에 포지션, 방향, 스케일을 설정해주는 인자를 넣어야함
 
 
-	if (targetPos.x < GetPos().x)
+	if (CCamera::GetInst()->GetRealPos(MOUSE_POS).x < GetPos().x)
 		m_iDir = -1;
 	else
 		m_iDir = 1;
@@ -949,21 +1009,21 @@ void SPlayer::CreateHook()
 			{
 
 
-				GetRigidBody()->SetVelocity(dir * 1000);
+				GetRigidBody()->SetVelocity(dir * 500);
 				wireRange = wireMaxRange;
 			}
 			else
 			{
 
-				GetRigidBody()->SetVelocity(dir * 200);
+				GetRigidBody()->SetVelocity(dir * 150);
 				wireRange = distance;
 
 			}
 
 			if (targetPos.x < playerArm->GetPos().x)
-				moveEnergy = -distance;
+				moveEnergy = -distance*1.5;
 			else
-				moveEnergy = distance;
+				moveEnergy = distance* 1.5;
 
 
 		}
