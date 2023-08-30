@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "SecondGameScene1.h"
+#include "Scene_Stage_01.h"
 
 #include "GameObject.h"
 #include "CPathMgr.h"
@@ -25,114 +25,44 @@
 #include "CResMgr.h"
 #include "MouseCursor.h"
 
-SecondGameScene1::SecondGameScene1()
-	:m_bUseForce(false)
-	,m_fForceRadius(500)
-	,m_fCurRadius(0)
-	,m_fForce(500.f)
+Scene_Stage_01::Scene_Stage_01()
+
 {
 }
 
-SecondGameScene1::~SecondGameScene1()
+Scene_Stage_01::~Scene_Stage_01()
 {
 }
 
 
-void SecondGameScene1::Update()
+void Scene_Stage_01::Update()
 {
-	//마우스로 밀어내기
-	/*if (KEY_HOLD(KEY::LBUTTON))
-	{
-		m_bUseForce = true;
-		CreateForce();
-	}
-	else
-	{
-		m_bUseForce = false;
-	}
-
-	for (UINT i = 0; i < (UINT)GROUP_TYPE::END; i++)
-	{
-		const vector<GameObject*>& vecObj = GetGroupObject((GROUP_TYPE)i);
-
-		for (size_t j = 0; j < vecObj.size(); j++)
-		{
-			if (!vecObj[j]->IsDead())
-			{
-				if (m_bUseForce && vecObj[j]->GetRigidBody())
-				{
-					Vec2 vDiff =  vecObj[j]->GetPos() - m_vForcePos;
-					float fLen = vDiff.Length();
-					
-					if (vDiff.Length() < m_fForceRadius)
-					{
-						float fRadio = 1.f - (fLen / m_fForceRadius);
-						float fForce = m_fForce * fRadio;
-						vecObj[j]->GetRigidBody()->AddForce(vDiff.Normalize() * fForce);
-						
-					}
-				
-				}
-				vecObj[j]->Update();
-			}
-		}
-	}*/
-
 
 	//부모클래스의 update가 virtual이 아니기 때문에
 	CScene::Update();
 
 
 
-	if (KEY_TAP(KEY::ENTER))
-	{
-		ChangeScene(SCENE_TYPE::TOOL);
-	}
+
+	if (KEY_TAP(KEY::ESC))
+		ChangeScene(SCENE_TYPE::START);
 
 	if (KEY_TAP(KEY::P))
 	{
 		cout << MOUSE_POS.x <<" "<<MOUSE_POS.y <<endl;
 	}
-
-	/*if (KEY_TAP(KEY::LBUTTON))
-	{
-		Vec2 vLookAt = CCamera::GetInst()->GetRealPos(MOUSE_POS);
-		CCamera::GetInst()->SetLookAt(vLookAt);
-	}*/
-
 	
 }
 
-void SecondGameScene1::Render(HDC _dc)
+void Scene_Stage_01::Render(HDC _dc)
 {
 	CScene::Render(_dc);
-
-
-	if (!m_bUseForce)
-		return;
-
-	SelectGDI gdi1(_dc, BRUSH_TYPE::HOLLOW);
-	SelectGDI gdi2(_dc, PEN_TYPE::BLUE);
-
-	m_fCurRadius += m_fForceRadius * 2.f * fDT;
-	if (m_fCurRadius > m_fForceRadius)
-	{
-		m_fCurRadius = 0.f;
-	}
-
-	Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(m_vForcePos);
-
-	Ellipse(_dc
-		,(int)(vRenderPos.x - m_fCurRadius)
-		,(int)(vRenderPos.y - m_fCurRadius)
-		,(int)(vRenderPos.x + m_fCurRadius) 
-		,(int)(vRenderPos.y + m_fCurRadius));
-
-
 }
 
-void SecondGameScene1::Enter()
+void Scene_Stage_01::Enter()
 {
+	//CCamera::GetInst()->FadeIn(2.f);
+
 	//씬 진입 상황에서는 AddObject 해도 되지만 
 	//Update 상황에서는 CreateObject식으로 이벤트로 오브젝트 생성
 	Vec2 vResolution = CCore::GetInst()->GetResolution();
@@ -215,8 +145,8 @@ void SecondGameScene1::Enter()
 
 
 	//프리팹 몬스터 배치
-	CMonster* pMon = CMonPrefab::CreateMonster(MON_TYPE::NORMAL, vResolution / 2.f - Vec2(0.f, 300.f));
-	CreateObject((GameObject*)pMon, GROUP_TYPE::MONSTER);
+	//CMonster* pMon = CMonPrefab::CreateMonster(MON_TYPE::NORMAL, vResolution / 2.f - Vec2(0.f, 300.f));
+	//CreateObject((GameObject*)pMon, GROUP_TYPE::MONSTER);
 	//AddObject(pMon, GROUP_TYPE::MONSTER);
 
 
@@ -229,11 +159,11 @@ void SecondGameScene1::Enter()
 	AddObject(pGround, GROUP_TYPE::GROUND);*/
 
 
-	CGround* pGround2 = CGroundPrefab::CreateGround(GROUND_TYPE::GROUND, Vec2(400.f, 500.f), Vec2(600.f, 600.f));
-	AddObject((GameObject*)pGround2, GROUP_TYPE::GROUND);
+	//CGround* pGround2 = CGroundPrefab::CreateGround(GROUND_TYPE::GROUND, Vec2(400.f, 500.f), Vec2(600.f, 600.f));
+	//AddObject((GameObject*)pGround2, GROUP_TYPE::GROUND);
 
 	//타일 로딩
-	LoadTile(L"Tile\\test8");
+	LoadTile(L"Tile\\test11");
 
 
 	//그룹간 충돌 체크
@@ -246,8 +176,7 @@ void SecondGameScene1::Enter()
 	//카메라 위치 지정
 	CCamera::GetInst()->SetLookAt(vResolution/2.f);
 	CCamera::GetInst()->SetTarget(player);
-	CCamera::GetInst()->FadeOut(1.f);
-	CCamera::GetInst()->FadeIn(1.f);
+
 
 
 
@@ -269,16 +198,14 @@ void SecondGameScene1::Enter()
 	Start();
 }
 
-void SecondGameScene1::Exit()
+void Scene_Stage_01::Exit()
 {
 	DeleteAll();
-
 	CCollisionMgr::GetInst()->Reset();
-}
+	ShowCursor(true);
 
-void SecondGameScene1::CreateForce()
-{
-	m_vForcePos = CCamera::GetInst()->GetRealPos(MOUSE_POS);
 
 }
+
+
 

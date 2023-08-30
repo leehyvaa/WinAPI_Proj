@@ -1,9 +1,9 @@
 #include "pch.h"
 #include "CSceneMgr.h"
-#include "CScene_Start.h"
-#include "SecondGameScene1.h"
+#include "Scene_Stage_01.h"
 #include "CScene_Tool.h"
 #include "CEventMgr.h"
+#include "CScene_Title.h"
 CSceneMgr::CSceneMgr()
 	:m_pCurScene(nullptr)
 	, m_arrScene{}
@@ -23,22 +23,24 @@ CSceneMgr::~CSceneMgr()
 void CSceneMgr::init()
 {
 	//Scene생성
-	//m_arrScene[(UINT)SCENE_TYPE::START] = new CScene_Start;
-	//m_arrScene[(UINT)SCENE_TYPE::START]->SetName(L"Start Scene");
-
-	m_arrScene[(UINT)SCENE_TYPE::START] = new SecondGameScene1;
-	m_arrScene[(UINT)SCENE_TYPE::START]->SetName(L"SecondGameScene1");
-
+	m_arrScene[(UINT)SCENE_TYPE::START] = new CScene_Title;
+	m_arrScene[(UINT)SCENE_TYPE::START]->SetName(L"Title Scene");
 
 	m_arrScene[(UINT)SCENE_TYPE::TOOL] = new CScene_Tool;
-	m_arrScene[(UINT)SCENE_TYPE::TOOL] ->SetName(L"Tool Scene");
+	m_arrScene[(UINT)SCENE_TYPE::TOOL]->SetName(L"Tool Scene");
+
+	m_arrScene[(UINT)SCENE_TYPE::STAGE_01] = new Scene_Stage_01;
+	m_arrScene[(UINT)SCENE_TYPE::STAGE_01]->SetName(L"Stage_01");
+
+
+	
 
 	//m_arrScene[(UINT)SCENE_TYPE::STAGE_01] = new CScene_STAGE_01;
 	//m_arrScene[(UINT)SCENE_TYPE::STAGE_02] = new CScene_STAGE_02;
 
 
 	//현재 씬 지정
-	m_pCurScene = m_arrScene[(UINT)SCENE_TYPE::TOOL];
+	m_pCurScene = m_arrScene[(UINT)SCENE_TYPE::START];
 	m_pCurScene->Enter();
 }
 

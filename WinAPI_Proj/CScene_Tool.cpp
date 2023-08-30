@@ -19,7 +19,6 @@
 #include "resource.h"
 
 
-void ChangeScene(DWORD_PTR, DWORD_PTR);
 
 CScene_Tool::CScene_Tool()
 	: m_pTexUI(nullptr)
@@ -44,6 +43,7 @@ CScene_Tool::~CScene_Tool()
 
 void CScene_Tool::Enter()
 {
+
 	//¸Þ´º ÀåÂø
 	CCore::GetInst()->DockMenu();
 
@@ -78,7 +78,7 @@ void CScene_Tool::Enter()
 	pBtnPrev->SetPos(Vec2(1.f,288.f));
 	//pBtnUI->SetClickedCallBack(&ChangeScene,0,0);
 	((CBtnUI*)pBtnPrev)->SetClickedCallBack(this,(SCENE_MEMFUNC) & CScene_Tool::PrevTileUI);
-	CTexture* pBtnTexPrev = CResMgr::GetInst()->LoadTexture(L"UI_LEFT", L"Tool\\Button\\UI_LEFT.bmp");
+	CTexture* pBtnTexPrev = CResMgr::GetInst()->LoadTexture(L"UI_LEFT", L"Texture\\UI\\UI_LEFT.bmp");
 	pBtnPrev->SetTexture(pBtnTexPrev);
 	pBtnTileTex->AddChild(pBtnPrev);
 	
@@ -87,7 +87,7 @@ void CScene_Tool::Enter()
 	CBtnUI* pBtnNext = pBtnPrev->Clone();
 	pBtnNext->SetPos(Vec2(283.f, 288.f));
 	((CBtnUI*)pBtnNext)->SetClickedCallBack(this, (SCENE_MEMFUNC)&CScene_Tool::NextTileUI);
-	CTexture* pBtnTexNext = CResMgr::GetInst()->LoadTexture(L"UI_RIGHT", L"Tool\\Button\\UI_RIGHT.bmp");
+	CTexture* pBtnTexNext = CResMgr::GetInst()->LoadTexture(L"UI_RIGHT", L"Texture\\UI\\UI_RIGHT.bmp");
 	pBtnNext->SetTexture(pBtnTexNext);
 	pBtnTileTex->AddChild(pBtnNext);
 
@@ -149,7 +149,7 @@ void CScene_Tool::Update()
 {
 	CScene::Update();
 
-	if (KEY_TAP(KEY::T))
+	if (KEY_TAP(KEY::ESC))
 		ChangeScene(SCENE_TYPE::START);
 
 
@@ -199,14 +199,23 @@ void CScene_Tool::Update()
 
 		}
 
-		if (KEY_TAP(KEY::KEY_2))
+		if (KEY_TAP(KEY::KEY_1))
 		{
-			int a = (int)groundType;
-			groundType= (GROUND_TYPE)++a;
-			if (groundType == GROUND_TYPE::END)
-				groundType = GROUND_TYPE::GROUND;
+			groundType= GROUND_TYPE::GROUND;
 		}
 
+		if (KEY_TAP(KEY::KEY_2))
+		{
+			groundType = GROUND_TYPE::NONGROUND;
+		}
+		if (KEY_TAP(KEY::KEY_3))
+		{
+			groundType = GROUND_TYPE::DAMAGEZONE;
+		}
+		if (KEY_TAP(KEY::KEY_4))
+		{
+			groundType = GROUND_TYPE::DEADZONE;
+		}
 		break;
 	case PREFAB_MODE:
 		break;
@@ -723,11 +732,6 @@ void CScene_Tool::SaveBmp()
 
 
 
-
-void ChangeScene(DWORD_PTR, DWORD_PTR)
-{
-	ChangeScene(SCENE_TYPE::START);
-}
 
 
 

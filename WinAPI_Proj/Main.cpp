@@ -5,7 +5,6 @@
 #include "framework.h"
 #include "WinAPI_Proj.h"
 #include "CCore.h"
-#include "Player.h"
 
 
 using namespace std;
@@ -91,16 +90,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         else
         {
 
-            //일정 프레임마다 정확하게 작동하도록 코드를 수정해야함
-            // update는 일정 시간마다 작동하고,Render는 매번 작동해도 되고
-            // 일정 시간마다 작동해도 된다.
-            //Update(); 타이머가 하는 역할을 여기로
-            // POINT mousePos; //전역변수로 선언
-            // GetCurSorPos(&mousePos) 이러면 mousePos로 마우스 위치값이 들어감
-            // 
-            //Render(); Paint가 하는 역할을 이쪽으로
             CCore::GetInst()->Progress();
-            
+           
 
         }
 

@@ -42,7 +42,6 @@ public:
 	HPEN GetPen(PEN_TYPE _eType) { return m_arrPen[(UINT)_eType]; }
 	
 
-	void GameOver();
 private:
 
 };

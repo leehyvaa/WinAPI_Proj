@@ -1,4 +1,7 @@
 
+#include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CGravity.cpp"
+
+
 #include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CGround.cpp"
 
 
@@ -21,10 +24,4 @@
 
 
 #include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CPanelUI.cpp"
-
-
-#include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CPathMgr.cpp"
-
-
-#include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CRes.cpp"
 

@@ -1,4 +1,10 @@
 
+#include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CPathMgr.cpp"
+
+
+#include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CRes.cpp"
+
+
 #include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CResMgr.cpp"
 
 
@@ -11,9 +17,6 @@
 #include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CSceneMgr.cpp"
 
 
-#include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CScene_Start.cpp"
-
-
 #include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CScene_Title.cpp"
 
 
@@ -21,10 +24,4 @@
 
 
 #include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CSound.cpp"
-
-
-#include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CState.cpp"
-
-
-#include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CTexture.cpp"
 

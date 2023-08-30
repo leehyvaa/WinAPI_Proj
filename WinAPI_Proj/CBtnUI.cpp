@@ -8,8 +8,7 @@ CBtnUI::CBtnUI()
 	,m_param2(0)
 	,m_pSceneInst(nullptr)
 	,m_pSceneFunc(nullptr)
-	,m_pBtnTex(nullptr)
-	,m_iTexIndex(-1)
+
 {
 }
 
@@ -20,8 +19,7 @@ CBtnUI::CBtnUI(const CBtnUI& _origin)
 	, m_param2(0)
 	, m_pSceneInst(nullptr)
 	, m_pSceneFunc(nullptr)
-	, m_pBtnTex(nullptr)
-	, m_iTexIndex(-1)
+
 {
 }
 
@@ -60,17 +58,9 @@ void CBtnUI::Render(HDC _dc)
 {
 	CUI::Render(_dc);
 
-	if (m_pBtnTex != nullptr)
-	{
-		UINT iWidth = m_pBtnTex->Width();
-		UINT iHeight = m_pBtnTex->Height();
+	
 
-		Vec2 vPos = GetFinalPos();
-
-		Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(vPos);
-		Vec2 vScale = GetScale();
-
-		BitBlt(_dc
+		/*BitBlt(_dc
 			, (int)(vPos.x )
 			, (int)(vPos.y )
 			, (int)vScale.x
@@ -78,14 +68,9 @@ void CBtnUI::Render(HDC _dc)
 			, m_pBtnTex->GetDC()
 			, 0
 			, 0
-			, SRCCOPY);
+			, SRCCOPY);*/
 
-		/*TransparentBlt(_dc
-			, (int)(vRenderPos.x)
-			, (int)(vRenderPos.y)
-			, iWidth, iHeight
-			, m_pBtnTex->GetDC()
-			, 0, 0, iWidth, iHeight, RGB(255, 0, 255));*/
+		
 
 
 		//BLENDFUNCTION bf = {};
@@ -102,7 +87,7 @@ void CBtnUI::Render(HDC _dc)
 		//, 0, 0, int(iWidth), int(iHeight)
 		//, bf);
 
-	}
+	
 }
 
 void CBtnUI::Update()

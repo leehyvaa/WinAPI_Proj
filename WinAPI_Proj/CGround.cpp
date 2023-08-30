@@ -166,7 +166,7 @@ void CGround::OnCollisionEnter(CCollider* _pOther)
 		//위에서 충돌
 		if (vObjPos.x >= GetPos().x &&
 			vObjPos.x <= GetPos().x + GetScale().x &&
-			vObjPos.y <= GetPos().y+15.f)
+			vObjPos.y <= GetPos().y+20.f)
 		{
 			float fLen = abs(vObjColPos.y - vPos.y);
 			float fValue = (vObjColScale.y / 2.f + vScale.y / 2.f) - fLen;
@@ -183,7 +183,7 @@ void CGround::OnCollisionEnter(CCollider* _pOther)
 		//좌우 충돌했을때
 
 		if (vObjPos.y >= GetPos().y &&
-			vObjPos.x <= GetPos().x +15.f)
+			vObjPos.x <= GetPos().x +20.f)
 		{
 			
 				if (vObjPos.y <= GetPos().y + 70.f)
@@ -269,7 +269,7 @@ void CGround::OnCollision(CCollider* _pOther)
 		//위에서 충돌
 		if (vObjPos.x >= GetPos().x &&
 			vObjPos.x <= GetPos().x + GetScale().x&&
-			vObjPos.y <= GetPos().y+15.f)
+			vObjPos.y <= GetPos().y+20.f)
 		{
 			float fLen = abs(vObjColPos.y - vPos.y);
 			float fValue = (vObjColScale.y / 2.f + vScale.y / 2.f) - fLen;
@@ -284,7 +284,7 @@ void CGround::OnCollision(CCollider* _pOther)
 
 
 		if (pOtherObj->GetPos().y > GetPos().y &&
-			pOtherObj->GetPos().x <= GetPos().x+15.f)
+			pOtherObj->GetPos().x <= GetPos().x+20.f)
 		{
 			
 				if (vObjPos.y >= GetPos().y + GetScale().y + 90.f)
@@ -307,7 +307,7 @@ void CGround::OnCollision(CCollider* _pOther)
 		}
 
 		if (pOtherObj->GetPos().y > GetPos().y &&
-			pOtherObj->GetPos().x >= GetPos().x + GetScale().x -15.f)
+			pOtherObj->GetPos().x >= GetPos().x + GetScale().x -20.f)
 		{
 
 			
@@ -335,7 +335,7 @@ void CGround::OnCollision(CCollider* _pOther)
 		//아래에서 충돌했을때
 		if (vObjPos.x >= GetPos().x &&
 			vObjPos.x <= GetPos().x + GetScale().x &&
-			vObjPos.y >= GetPos().y + GetScale().y - 15.f)
+			vObjPos.y >= GetPos().y + GetScale().y - 20.f)
 		{
 			float fLen = abs(vObjColPos.y - vPos.y);
 			float fValue = (vObjColScale.y / 2.f + vScale.y / 2.f) - fLen;

@@ -1,5 +1,8 @@
 #pragma once
 #include "GameObject.h"
+class CTexture;
+
+
 class CUI :
     public GameObject
 {
@@ -8,6 +11,9 @@ private:
     CUI* m_pParentUI;
 
     Vec2 m_vFinalPos;
+
+    CTexture* m_pTex;
+    int m_iTexIndex;
 
     bool m_bCamAffected; //UI가 카메라에 영향을 받는 유무
     bool m_bMouseOn; //마우스 UI 위에 있는지
@@ -24,6 +30,9 @@ public:
     void AddChild(CUI* _pUI) {m_vecChildUI.push_back(_pUI); _pUI->m_pParentUI = this;}
     const vector<CUI*>& GetChildUI() { return m_vecChildUI; }
 
+    CTexture* GetTexture() { return m_pTex; }
+    void SetTexture(CTexture* _pTex) { m_pTex = _pTex; }
+    void SetIndex(int _index) { m_iTexIndex = _index; }
 
 private:
     void Update_Child();

@@ -10,7 +10,7 @@ Raycast::Raycast()
 	:onCollisionRay(nullptr)
 {
 	CreateCollider();
-	GetCollider()->SetScale(Vec2(5.f, 5.f));
+	GetCollider()->SetScale(Vec2(10.f, 10.f));
 }
 
 Raycast::~Raycast()

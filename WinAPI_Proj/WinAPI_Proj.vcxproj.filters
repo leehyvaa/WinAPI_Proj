@@ -136,8 +136,8 @@
     <Filter Include="Engine\Scene\Scene_Tool">
       <UniqueIdentifier>{8e40e6f7-83b8-4411-bc26-a4ec6ecd5499}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Scene\Scene_Start">
-      <UniqueIdentifier>{6753f610-0bb7-4583-9aaa-20d5ae1508cd}</UniqueIdentifier>
+    <Filter Include="Engine\Scene\Scene_Stage_01">
+      <UniqueIdentifier>{04281643-bc35-4b74-a423-8a54e3d800e6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -176,12 +176,6 @@
     </ClInclude>
     <ClInclude Include="CSceneMgr.h">
       <Filter>Engine\Manager\SceneMgr</Filter>
-    </ClInclude>
-    <ClInclude Include="CScene_Start.h">
-      <Filter>Engine\Scene\Scene_Start</Filter>
-    </ClInclude>
-    <ClInclude Include="SecondGameScene1.h">
-      <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="GameObject.h">
       <Filter>Engine\Object</Filter>
@@ -306,6 +300,9 @@
     <ClInclude Include="MouseCursor.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Scene_Stage_01.h">
+      <Filter>Engine\Scene\Scene_Stage_01</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -320,7 +317,7 @@
     <ClCompile Include="CTimeMgr.cpp">
       <Filter>Engine\Manager\TimeMgr</Filter>
     </ClCompile>
-    <ClCompile Include="MiniGame.cpp">
+    <ClCompile Include="Main.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="CScene.cpp">
@@ -328,12 +325,6 @@
     </ClCompile>
     <ClCompile Include="CSceneMgr.cpp">
       <Filter>Engine\Manager\SceneMgr</Filter>
-    </ClCompile>
-    <ClCompile Include="CScene_Start.cpp">
-      <Filter>Engine\Scene\Scene_Start</Filter>
-    </ClCompile>
-    <ClCompile Include="SecondGameScene1.cpp">
-      <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="GameObject.cpp">
       <Filter>Engine\Object</Filter>
@@ -451,6 +442,9 @@
     </ClCompile>
     <ClCompile Include="MouseCursor.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene_Stage_01.cpp">
+      <Filter>Engine\Scene\Scene_Stage_01</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

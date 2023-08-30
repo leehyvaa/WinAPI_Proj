@@ -213,19 +213,4 @@ HDC CCore::GetmemDC()
 
 
 
-void CCore::GameOver()
-{
-	//TCHAR buf[10];
-	//wsprintf(buf, TEXT("%d 점"), g_spawner.m_iScore);
-
-	//TextOut(CCore::GetInst()->GetmemDC(), 0, 0, buf, _tcslen(buf));
-
-
-	//MessageBox(CCore::GetInst()->GetMainHwnd(),buf, L"게임 종료!", MB_OK);
-
-
-	
-	DestroyWindow(GetMainHwnd());
-}
-
 

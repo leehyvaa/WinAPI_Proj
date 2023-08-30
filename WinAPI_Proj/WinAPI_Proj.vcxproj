@@ -186,7 +186,6 @@
     <ClInclude Include="CRigidBody.h" />
     <ClInclude Include="CScene.h" />
     <ClInclude Include="CSceneMgr.h" />
-    <ClInclude Include="CScene_Start.h" />
     <ClInclude Include="CScene_Title.h" />
     <ClInclude Include="CScene_Tool.h" />
     <ClInclude Include="CSound.h" />
@@ -206,7 +205,7 @@
     <ClInclude Include="MouseCursor.h" />
     <ClInclude Include="PlayerArm.h" />
     <ClInclude Include="Raycast.h" />
-    <ClInclude Include="SecondGameScene1.h" />
+    <ClInclude Include="Scene_Stage_01.h" />
     <ClInclude Include="SelectGDI.h" />
     <ClInclude Include="SPlayer.h" />
     <ClInclude Include="struct.h" />
@@ -243,7 +242,6 @@
     <ClCompile Include="CRigidBody.cpp" />
     <ClCompile Include="CScene.cpp" />
     <ClCompile Include="CSceneMgr.cpp" />
-    <ClCompile Include="CScene_Start.cpp" />
     <ClCompile Include="CScene_Title.cpp" />
     <ClCompile Include="CScene_Tool.cpp" />
     <ClCompile Include="CSound.cpp" />
@@ -262,10 +260,10 @@
     <ClCompile Include="MouseCursor.cpp" />
     <ClCompile Include="PlayerArm.cpp" />
     <ClCompile Include="Raycast.cpp" />
-    <ClCompile Include="SecondGameScene1.cpp" />
+    <ClCompile Include="Scene_Stage_01.cpp" />
     <ClCompile Include="SelectGDI.cpp" />
     <ClCompile Include="SPlayer.cpp" />
-    <ClCompile Include="MiniGame.cpp">
+    <ClCompile Include="Main.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>

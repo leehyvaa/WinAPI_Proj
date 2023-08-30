@@ -3,12 +3,14 @@
 #include "CKeyMgr.h"
 #include "CCamera.h"
 #include "SelectGDI.h"
-
+#include "CTexture.h"
 CUI::CUI(bool _bCamAff)
 	:m_pParentUI(nullptr)
 	,m_bCamAffected(_bCamAff)
 	, m_bMouseOn(false)
 	, m_bLbtnDown(false)
+	, m_pTex(nullptr)
+	, m_iTexIndex(-1)
 {
 }
 
@@ -18,6 +20,8 @@ CUI::CUI(const CUI& _origin)
 	,m_bCamAffected(_origin.m_bCamAffected)
 	,m_bMouseOn(false)
 	,m_bLbtnDown(false)
+	, m_pTex(nullptr)
+	, m_iTexIndex(-1)
 {
 	for (size_t i = 0; i < _origin.m_vecChildUI.size(); i++)
 	{
@@ -72,18 +76,37 @@ void CUI::Render(HDC _dc)
 		vPos = CCamera::GetInst()->GetRenderPos(vPos);
 	}
 
-	if (m_bLbtnDown)
+	
+
+
+	if (m_pTex != nullptr)
 	{
-		SelectGDI select(_dc,PEN_TYPE::GREEN);
-		Rectangle(_dc, (int)vPos.x, (int)vPos.y, (int)(vPos.x + vScale.x), (int)(vPos.y + vScale.y));
+		UINT iWidth = m_pTex->Width();
+		UINT iHeight = m_pTex->Height();
+
+
+		TransparentBlt(_dc
+			, (int)(vPos.x)
+			, (int)(vPos.y)
+			, iWidth, iHeight
+			, m_pTex->GetDC()
+			, 0, 0, iWidth, iHeight, RGB(0, 0, 0));
+
 
 	}
 	else
 	{
-		Rectangle(_dc, (int)vPos.x, (int)vPos.y, (int)(vPos.x + vScale.x), (int)(vPos.y + vScale.y));
+		if (m_bLbtnDown)
+		{
+			SelectGDI select(_dc, PEN_TYPE::GREEN);
+			Rectangle(_dc, (int)vPos.x, (int)vPos.y, (int)(vPos.x + vScale.x), (int)(vPos.y + vScale.y));
+
+		}
+		else
+		{
+			Rectangle(_dc, (int)vPos.x, (int)vPos.y, (int)(vPos.x + vScale.x), (int)(vPos.y + vScale.y));
+		}
 	}
-
-
 	//ÀÚ½Ä ui ·»´õ
 	Render_Child(_dc);
 }
