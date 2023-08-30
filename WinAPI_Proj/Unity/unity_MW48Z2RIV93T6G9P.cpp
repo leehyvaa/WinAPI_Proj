@@ -25,3 +25,6 @@
 
 #include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CEventMgr.cpp"
 
+
+#include "D:\VisualC\WinAPI_Proj\WinAPI_Proj\CGravity.cpp"
+

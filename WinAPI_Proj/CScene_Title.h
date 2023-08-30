@@ -6,7 +6,7 @@ class CScene_Title :
 
 public:
 	virtual void Update();
-	virtual void Render(HDC _dc);
+
 
 	virtual void Enter() override;
 	virtual void Exit() override;

@@ -16,9 +16,7 @@ void CScene_Title::Update()
 {
 }
 
-void CScene_Title::Render(HDC _dc)
-{
-}
+
 
 void CScene_Title::Enter()
 {
