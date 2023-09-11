@@ -282,7 +282,7 @@ void CGround::OnCollision(CCollider* _pOther)
 			((SPlayer*)pOtherObj)->SetOnGround(true);
 
 
-
+		//
 		if (pOtherObj->GetPos().y > GetPos().y &&
 			pOtherObj->GetPos().x <= GetPos().x+20.f)
 		{

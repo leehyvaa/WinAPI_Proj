@@ -139,6 +139,9 @@
     <Filter Include="Engine\Scene\Scene_Stage_01">
       <UniqueIdentifier>{04281643-bc35-4b74-a423-8a54e3d800e6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Manager\CSoundMgr">
+      <UniqueIdentifier>{9bab10a8-549e-4ff5-9021-64feb09f89c5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WinAPI_Proj.h">
@@ -303,6 +306,9 @@
     <ClInclude Include="Scene_Stage_01.h">
       <Filter>Engine\Scene\Scene_Stage_01</Filter>
     </ClInclude>
+    <ClInclude Include="CSoundMgr.h">
+      <Filter>Engine\Manager\CSoundMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -445,6 +451,9 @@
     </ClCompile>
     <ClCompile Include="Scene_Stage_01.cpp">
       <Filter>Engine\Scene\Scene_Stage_01</Filter>
+    </ClCompile>
+    <ClCompile Include="CSoundMgr.cpp">
+      <Filter>Engine\Manager\CSoundMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

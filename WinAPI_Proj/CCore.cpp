@@ -17,7 +17,8 @@
 #include "resource.h"
 #include "CScene.h"
 #include "CBackGround.h"
-
+#include "CSoundMgr.h"
+#include "CSound.h"
 CCore::CCore()
 	:m_hWnd(0)
 	, m_ptResolution{}
@@ -77,18 +78,19 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 	CKeyMgr::GetInst()->init();
 	CPathMgr::GetInst()->init();
 	CCamera::GetInst()->init();
+	CSoundMgr::GetInst()->init();
 	CSceneMgr::GetInst()->init();
 
 
 	//Sound 로드 테스트
-	//CResMgr::GetInst->LoadSound(L"BGM_01", L"sound\\DM.wav");
-	//CSound* pNewSound = CResMgr::GetInst()->FindSound(L"BGM_01");
+	CResMgr::GetInst()->LoadSound(L"BGM_01", L"sound\\BGM_Title.wav");
+	CSound* pNewSound = CResMgr::GetInst()->FindSound(L"BGM_01");
 
+	pNewSound->PlayToBGM(true);
 	//pNewSound->Play();
 
-	//pNewSound->SetPosition(50.f); //백분율, 소리 위치 설정
-	//pNewSound -> PlayToBGM(true);
-	//pNewSound->SetVolume(60.f);
+	pNewSound->SetPosition(50.f); //백분율, 소리 위치 설정
+	pNewSound->SetVolume(20.f);
 
 
 	return S_OK;
