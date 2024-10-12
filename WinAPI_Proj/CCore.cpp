@@ -83,14 +83,14 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 
 
 	//Sound 로드 테스트
-	//CResMgr::GetInst()->LoadSound(L"BGM_01", L"sound\\BGM_Title.wav");
-	//CSound* pNewSound = CResMgr::GetInst()->FindSound(L"BGM_01");
+	CResMgr::GetInst()->LoadSound(L"BGM_01", L"sound\\BGM_Title.wav");
+	CSound* pNewSound = CResMgr::GetInst()->FindSound(L"BGM_01");
 
-	//pNewSound->PlayToBGM(true);
+	pNewSound->PlayToBGM(true);
 	//pNewSound->Play();
 
 	//pNewSound->SetPosition(50.f); //백분율, 소리 위치 설정
-	//pNewSound->SetVolume(20.f);
+	pNewSound->SetVolume(20.f);
 
 
 	return S_OK;
