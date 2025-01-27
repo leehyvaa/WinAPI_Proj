@@ -21,31 +21,29 @@ CHook::CHook()
 	GetCollider()->SetScale(Vec2(20.f, 20.f));
 
 	CreateAnimator();
-#pragma region ��ũ �ִϸ��̼�
-	//�ؽ��� �ε�
+#pragma region 애니메이션설정
+	// 텍스처 리소스 로드
 	CTexture* pTexRight = CResMgr::GetInst()->LoadTexture(L"GrabTex_Right", L"texture\\player\\Grab_Right.bmp");
 	CTexture* pTexLeft = CResMgr::GetInst()->LoadTexture(L"GrabTex_Left", L"texture\\player\\Grab_Left.bmp");
 
 
-	//�ִϸ��̼� �ε�
 	//GetAnimator()->LoadAnimation(L"animation\\player_right_idle.anim");
 
 
 
-	//RIGHT �ִϸ��̼� ����
+	// 오른쪽 훅 애니메이션 생성
 	GetAnimator()->CreateAnimation(L"SNB_GRAB_RIGHT_GRAB", pTexRight,
-		Vec2(0.f, 0.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 1, 2.f, Vec2(0.f, 0.f));
+		Vec2(0.f, 0.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 1, 2.f, Vec2(0.f, 0.f)); // 기본 잡기 동작
 	GetAnimator()->CreateAnimation(L"SNB_GRAB_RIGHT_GRABBING", pTexRight,
-		Vec2(0.f, 200.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 12, 2.f, Vec2(0.f, 0.f));
+		Vec2(0.f, 200.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 12, 2.f, Vec2(0.f, 0.f)); // 지속 잡기 상태
 	GetAnimator()->CreateAnimation(L"SNB_GRAB_RIGHT_RETURN_WITHGRAB", pTexRight,
-		Vec2(0.f, 400.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 3, 2.f, Vec2(0.f, 0.f));
+		Vec2(0.f, 400.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 3, 2.f, Vec2(0.f, 0.f)); // 오브젝트 획득 후 복귀
 	GetAnimator()->CreateAnimation(L"SNB_GRAB_RIGHT_RETURN_WITHOUTGRAB", pTexRight,
-		Vec2(0.f, 600.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 3, 2.f, Vec2(0.f, 0.f));
+		Vec2(0.f, 600.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 3, 2.f, Vec2(0.f, 0.f)); // 빈 상태 복귀
 	GetAnimator()->CreateAnimation(L"SNB_GRAB_RIGHT_FLYING", pTexRight,
-		Vec2(0.f, 800.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 1, 2.f, Vec2(0.f, 0.f));
+		Vec2(0.f, 800.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 1, 2.f, Vec2(0.f, 0.f)); // 발사 중 이동
 
-
-	//LEFT �ִϸ��̼� ����
+	// 왼쪽 훅 애니메이션 생성 (오른쪽과 동일 구조)
 	GetAnimator()->CreateAnimation(L"SNB_GRAB_LEFT_GRAB", pTexLeft,
 		Vec2(0.f, 0.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 1, 2.f, Vec2(0.f, 0.f));
 	GetAnimator()->CreateAnimation(L"SNB_GRAB_LEFT_GRABBING", pTexLeft,
@@ -57,18 +55,13 @@ CHook::CHook()
 	GetAnimator()->CreateAnimation(L"SNB_GRAB_LEFT_FLYING", pTexLeft,
 		Vec2(0.f, 800.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 1, 2.f, Vec2(0.f, 0.f));
 
-
-
-
-	//RIGHT �ִϸ��̼� ����
+	// 애니메이션 리소스 저장 (에디터용)
 	GetAnimator()->FindAnimation(L"SNB_GRAB_RIGHT_GRAB")->Save(L"animation\\grab_right_grab.anim");
 	GetAnimator()->FindAnimation(L"SNB_GRAB_RIGHT_GRABBING")->Save(L"animation\\grab_right_grabbing.anim");
 	GetAnimator()->FindAnimation(L"SNB_GRAB_RIGHT_RETURN_WITHGRAB")->Save(L"animation\\grab_right_return_withgrab.anim");
 	GetAnimator()->FindAnimation(L"SNB_GRAB_RIGHT_RETURN_WITHOUTGRAB")->Save(L"animation\\grab_right_return_withoutgrab.anim");
 	GetAnimator()->FindAnimation(L"SNB_GRAB_RIGHT_FLYING")->Save(L"animation\\grab_right_flying.anim");
 
-
-	//LEFT �ִϸ��̼� ����
 	GetAnimator()->FindAnimation(L"SNB_GRAB_LEFT_GRAB")->Save(L"animation\\player_left_grab.anim");
 	GetAnimator()->FindAnimation(L"SNB_GRAB_LEFT_GRABBING")->Save(L"animation\\grab_left_grabbing.anim");
 	GetAnimator()->FindAnimation(L"SNB_GRAB_LEFT_RETURN_WITHGRAB")->Save(L"animation\\grab_left_return_withgrab.anim");
@@ -158,7 +151,6 @@ void CHook::Update_Move()
 		vPos.x = vPos.x + m_fSpeed * GetDir().x * fDT*2;
 		vPos.y = vPos.y + m_fSpeed * GetDir().y * fDT*2;
 			
-		//�Ÿ��� ���ѰŸ��̻� ����� without�������� ��ȯ
 		if ((GetPos() - owner->GetPos()).Length() > 600.f)
 		{
 			hookState = HOOK_STATE::RETURN_WITHOUT;
@@ -182,7 +174,7 @@ void CHook::Update_Move()
 		vPos.x = vPos.x + m_fSpeed * newDir.x * fDT*3;
 		vPos.y = vPos.y + m_fSpeed * newDir.y * fDT*3;
 
-		//�÷��̾����� �����ϸ� ����
+
 		if ((GetPos() - owner->GetPos()).Length() < 30.f)
 		{
 			DeleteObject(this);
@@ -201,7 +193,7 @@ void CHook::Update_Move()
 		vPos.x = vPos.x + m_fSpeed * newDir.x * fDT*3;
 		vPos.y = vPos.y + m_fSpeed * newDir.y * fDT*3;
 
-		//�÷��̾����� �����ϸ� ����
+
 		if ((GetPos() - owner->GetPos()).Length() < 30.f)
 		{
 			
