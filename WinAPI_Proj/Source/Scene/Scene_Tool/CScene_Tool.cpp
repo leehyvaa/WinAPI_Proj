@@ -15,7 +15,6 @@
 #include "CTexture.h"
 #include "CGround.h"
 #include "CBackGround.h"
-
 #include "resource.h"
 
 
@@ -148,6 +147,7 @@ void CScene_Tool::Exit()
 void CScene_Tool::Update()
 {
 	CScene::Update();
+
 
 	if (KEY_TAP(KEY::ESC))
 		ChangeScene(SCENE_TYPE::START);
@@ -665,6 +665,7 @@ void CScene_Tool::PrevTileUI()
 	ChangeTileTexUI();
 
 }
+
 
 
 void CScene_Tool::NextTileUI()

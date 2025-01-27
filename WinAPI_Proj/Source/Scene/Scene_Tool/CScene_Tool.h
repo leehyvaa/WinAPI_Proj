@@ -1,7 +1,7 @@
 #pragma once
 #include "CScene.h"
 
-
+class CTextUI;
 class CBtnUI;
 class CPanelUI;
 
@@ -21,6 +21,9 @@ class CScene_Tool : public CScene
 private:
 	CBtnUI* m_pTexUI;
 	CPanelUI* m_pPanelUI;
+	CTextUI* m_pModeText;  // 모드 표시용 텍스트 UI
+
+
 
 	vector<std::string> m_vecTile_list;
 
@@ -49,7 +52,6 @@ public:
 	void DrawSelectTile();
 
 
-
 	void SaveTile(const wstring& _strFilePath);
 	void SaveTileData();
 	void LoadTileData();
@@ -62,6 +64,10 @@ public:
 
 	void CreateGround();
 	void SaveBmp();
+
+
+
+
 
 	CScene_Tool();
 	virtual ~CScene_Tool();

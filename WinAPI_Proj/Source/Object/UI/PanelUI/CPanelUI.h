@@ -1,7 +1,6 @@
 #pragma once
 #include "CUI.h"
-class CPanelUI :
-    public CUI
+class CPanelUI : public CUI
 {
 private:
     Vec2 m_vDragStart;

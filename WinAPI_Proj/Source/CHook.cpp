@@ -13,7 +13,7 @@
 CHook::CHook()
 	:m_fSpeed(2000)
 
-	,hookState(HOOK_STATE::FLYING)
+	, hookState(HOOK_STATE::FLYING)
 {
 
 	CreateCollider();
@@ -21,29 +21,31 @@ CHook::CHook()
 	GetCollider()->SetScale(Vec2(20.f, 20.f));
 
 	CreateAnimator();
-#pragma region 애니메이션설정
-	// 텍스처 리소스 로드
+#pragma region 후크 애니메이션
+	//텍스쳐 로딩
 	CTexture* pTexRight = CResMgr::GetInst()->LoadTexture(L"GrabTex_Right", L"texture\\player\\Grab_Right.bmp");
 	CTexture* pTexLeft = CResMgr::GetInst()->LoadTexture(L"GrabTex_Left", L"texture\\player\\Grab_Left.bmp");
 
 
+	//애니메이션 로딩
 	//GetAnimator()->LoadAnimation(L"animation\\player_right_idle.anim");
 
 
 
-	// 오른쪽 훅 애니메이션 생성
+	//RIGHT 애니메이션 생성
 	GetAnimator()->CreateAnimation(L"SNB_GRAB_RIGHT_GRAB", pTexRight,
-		Vec2(0.f, 0.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 1, 2.f, Vec2(0.f, 0.f)); // 기본 잡기 동작
+		Vec2(0.f, 0.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 1, 2.f, Vec2(0.f, 0.f));
 	GetAnimator()->CreateAnimation(L"SNB_GRAB_RIGHT_GRABBING", pTexRight,
-		Vec2(0.f, 200.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 12, 2.f, Vec2(0.f, 0.f)); // 지속 잡기 상태
+		Vec2(0.f, 200.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 12, 2.f, Vec2(0.f, 0.f));
 	GetAnimator()->CreateAnimation(L"SNB_GRAB_RIGHT_RETURN_WITHGRAB", pTexRight,
-		Vec2(0.f, 400.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 3, 2.f, Vec2(0.f, 0.f)); // 오브젝트 획득 후 복귀
+		Vec2(0.f, 400.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 3, 2.f, Vec2(0.f, 0.f));
 	GetAnimator()->CreateAnimation(L"SNB_GRAB_RIGHT_RETURN_WITHOUTGRAB", pTexRight,
-		Vec2(0.f, 600.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 3, 2.f, Vec2(0.f, 0.f)); // 빈 상태 복귀
+		Vec2(0.f, 600.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 3, 2.f, Vec2(0.f, 0.f));
 	GetAnimator()->CreateAnimation(L"SNB_GRAB_RIGHT_FLYING", pTexRight,
-		Vec2(0.f, 800.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 1, 2.f, Vec2(0.f, 0.f)); // 발사 중 이동
+		Vec2(0.f, 800.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 1, 2.f, Vec2(0.f, 0.f));
 
-	// 왼쪽 훅 애니메이션 생성 (오른쪽과 동일 구조)
+
+	//LEFT 애니메이션 생성
 	GetAnimator()->CreateAnimation(L"SNB_GRAB_LEFT_GRAB", pTexLeft,
 		Vec2(0.f, 0.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 1, 2.f, Vec2(0.f, 0.f));
 	GetAnimator()->CreateAnimation(L"SNB_GRAB_LEFT_GRABBING", pTexLeft,
@@ -55,13 +57,18 @@ CHook::CHook()
 	GetAnimator()->CreateAnimation(L"SNB_GRAB_LEFT_FLYING", pTexLeft,
 		Vec2(0.f, 800.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 1, 2.f, Vec2(0.f, 0.f));
 
-	// 애니메이션 리소스 저장 (에디터용)
+
+
+
+	//RIGHT 애니메이션 저장
 	GetAnimator()->FindAnimation(L"SNB_GRAB_RIGHT_GRAB")->Save(L"animation\\grab_right_grab.anim");
 	GetAnimator()->FindAnimation(L"SNB_GRAB_RIGHT_GRABBING")->Save(L"animation\\grab_right_grabbing.anim");
 	GetAnimator()->FindAnimation(L"SNB_GRAB_RIGHT_RETURN_WITHGRAB")->Save(L"animation\\grab_right_return_withgrab.anim");
 	GetAnimator()->FindAnimation(L"SNB_GRAB_RIGHT_RETURN_WITHOUTGRAB")->Save(L"animation\\grab_right_return_withoutgrab.anim");
 	GetAnimator()->FindAnimation(L"SNB_GRAB_RIGHT_FLYING")->Save(L"animation\\grab_right_flying.anim");
 
+
+	//LEFT 애니메이션 저장
 	GetAnimator()->FindAnimation(L"SNB_GRAB_LEFT_GRAB")->Save(L"animation\\player_left_grab.anim");
 	GetAnimator()->FindAnimation(L"SNB_GRAB_LEFT_GRABBING")->Save(L"animation\\grab_left_grabbing.anim");
 	GetAnimator()->FindAnimation(L"SNB_GRAB_LEFT_RETURN_WITHGRAB")->Save(L"animation\\grab_left_return_withgrab.anim");
@@ -88,7 +95,7 @@ CHook::~CHook()
 void CHook::Update_Animation()
 {
 
-	
+
 
 	switch (hookState)
 	{
@@ -141,22 +148,22 @@ void CHook::Update_Move()
 {
 	Vec2 vPos = GetPos();
 
-	
+
 
 	switch (hookState)
 	{
 	case HOOK_STATE::FLYING:
 	{
-			
-		vPos.x = vPos.x + m_fSpeed * GetDir().x * fDT*2;
-		vPos.y = vPos.y + m_fSpeed * GetDir().y * fDT*2;
-			
+		vPos.x = vPos.x + m_fSpeed * GetDir().x * fDT * 2;
+		vPos.y = vPos.y + m_fSpeed * GetDir().y * fDT * 2;
+
+		//거리가 제한거리이상 벗어나면 without리턴으로 변환
 		if ((GetPos() - owner->GetPos()).Length() > 600.f)
 		{
 			hookState = HOOK_STATE::RETURN_WITHOUT;
 		}
 	}
-		break;
+	break;
 	case HOOK_STATE::GRAB:
 		if (KEY_HOLD(KEY::LBUTTON) == false)
 		{
@@ -164,17 +171,17 @@ void CHook::Update_Move()
 		}
 		break;
 	case HOOK_STATE::GRABBING:
-		
+
 		break;
 	case HOOK_STATE::RETURN_WITH:
 	{
 		Vec2 newDir = owner->GetPos() - GetPos();
 		newDir.Normalize();
 
-		vPos.x = vPos.x + m_fSpeed * newDir.x * fDT*3;
-		vPos.y = vPos.y + m_fSpeed * newDir.y * fDT*3;
+		vPos.x = vPos.x + m_fSpeed * newDir.x * fDT * 3;
+		vPos.y = vPos.y + m_fSpeed * newDir.y * fDT * 3;
 
-
+		//플레이어한테 도달하면 삭제
 		if ((GetPos() - owner->GetPos()).Length() < 30.f)
 		{
 			DeleteObject(this);
@@ -182,28 +189,28 @@ void CHook::Update_Move()
 
 		}
 	}
-		
 
-		break;
+
+	break;
 	case HOOK_STATE::RETURN_WITHOUT:
 	{
 		Vec2 newDir = owner->GetPos() - GetPos();
 		newDir.Normalize();
 
-		vPos.x = vPos.x + m_fSpeed * newDir.x * fDT*3;
-		vPos.y = vPos.y + m_fSpeed * newDir.y * fDT*3;
+		vPos.x = vPos.x + m_fSpeed * newDir.x * fDT * 3;
+		vPos.y = vPos.y + m_fSpeed * newDir.y * fDT * 3;
 
-
+		//플레이어한테 도달하면 삭제
 		if ((GetPos() - owner->GetPos()).Length() < 30.f)
 		{
-			
+
 
 			DeleteObject(this);
 			((PlayerArm*)owner)->GetOwner()->SetHookRemove(nullptr);
 
 		}
 	}
-		break;
+	break;
 	default:
 		break;
 	}
@@ -216,12 +223,12 @@ void CHook::Update_Move()
 
 void CHook::Update()
 {
-	
+
 
 	Update_State();
 	Update_Move();
 	Update_Animation();
-	
+
 
 
 }
@@ -231,7 +238,7 @@ void CHook::Render(HDC _dc)
 	Vec2 vPos = GetPos();
 	Vec2 vScale = GetScale();
 
-	
+
 
 	Component_Render(_dc);
 
@@ -241,8 +248,8 @@ void CHook::Render(HDC _dc)
 
 	SelectGDI p(_dc, PEN_TYPE::BLUE);
 
-	MoveToEx(_dc, pos1.x,pos1.y, nullptr);
-	LineTo(_dc, pos2.x,pos2.y);
+	MoveToEx(_dc, pos1.x, pos1.y, nullptr);
+	LineTo(_dc, pos2.x, pos2.y);
 
 }
 

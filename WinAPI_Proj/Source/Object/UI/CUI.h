@@ -15,12 +15,16 @@ private:
     CTexture* m_pTex;
     int m_iTexIndex;
 
-    bool m_bCamAffected; //UI가 카메라에 영향을 받는 유무
+    
     bool m_bMouseOn; //마우스 UI 위에 있는지
     bool m_bLbtnDown; //UI가 왼쪽버튼이 눌린 적 있는지
 
+protected:
+    bool m_bCamAffected; //UI가 카메라에 영향을 받는 유무
+
 public:
-   
+    
+
     Vec2 GetFinalPos() { return m_vFinalPos; }
     CUI* GetParent() { return m_pParentUI; }
     bool IsMouseOn() { return m_bMouseOn; }
