@@ -59,10 +59,10 @@ void CAnimation::Render(HDC _dc)
 	Vec2 vPos = pObj->GetPos();
 
 	
-	vPos += m_vecFrm[m_iCurFrm].vOffset; //object À§Ä¡¿¡ offset ¸¸Å­ Ãß°¡ ÀÌµ¿À§Ä¡
+	vPos += m_vecFrm[m_iCurFrm].vOffset; //object ìœ„ì¹˜ì— offset ë§Œí¼ ì¶”ê°€ ì´ë™ìœ„ì¹˜
 	
 
-	//·»´õ¸µ ÁÂÇ¥·Î º¯È¯
+	//ë Œë”ë§ ì¢Œí‘œë¡œ ë³€í™˜
 	vPos = CCamera::GetInst()->GetRenderPos(vPos);
 
 
@@ -187,7 +187,7 @@ void CAnimation::Save(const wstring& _strRelativePath)
 	_wfopen_s(&pFile, strFilePath.c_str(), L"wb");
 	assert(pFile);
 
-	//AnimationÀÇ ÀÌ¸§À» ÀúÀåÇÑ´Ù. (µ¥ÀÌÅÍ Á÷·ÄÈ­)
+	//Animationì˜ ì´ë¦„ì„ ì €ìž¥í•œë‹¤. (ë°ì´í„° ì§ë ¬í™”)
 	//SaveWString(m_strName, pFile);
 	fprintf(pFile, "[Animation_Name]\n");
 	string strName = string(m_strName.begin(), m_strName.end());
@@ -195,7 +195,7 @@ void CAnimation::Save(const wstring& _strRelativePath)
 	fprintf(pFile, "\n");
 
 
-	//AnimationÀÌ »ç¿ëÇÏ´Â ÅØ½ºÃÄ
+	//Animationì´ ì‚¬ìš©í•˜ëŠ” í…ìŠ¤ì³
 	//SaveWString(m_pTex->GetKey(),pFile);
 	//SaveWString(m_pTex->GetRelativePath(), pFile);
 	fprintf(pFile, "[Texture_Name]\n");
@@ -209,7 +209,7 @@ void CAnimation::Save(const wstring& _strRelativePath)
 	fprintf(pFile, "\n");
 
 
-	//ÇÁ·¹ÀÓ °³¼ö
+	//í”„ë ˆìž„ ê°œìˆ˜
 	//size_t iFrameCount = m_vecFrm.size();
 	//fwrite(&iFrameCount, sizeof(size_t), 1, pFile);
 	fprintf(pFile, "[Frame_Count]\n");
@@ -220,7 +220,7 @@ void CAnimation::Save(const wstring& _strRelativePath)
 	fprintf(pFile, "%f\n", m_fSizeMulti);
 
 
-	//¸ðµç ÇÁ·¹ÀÓ Á¤º¸
+	//ëª¨ë“  í”„ë ˆìž„ ì •ë³´
 	//fwrite(m_vecFrm.data(), sizeof(tAnimFrm), iFrameCount, pFile);
 	for (size_t i = 0; i < m_vecFrm.size(); i++)
 	{
@@ -261,10 +261,10 @@ void CAnimation::Load(const wstring& _strRelativePath)
 
 
 
-	////¾Ö´Ï¸ÞÀÌ¼Ç ÀÌ¸§ ÀÐ±â(¹ÙÀÌ³Ê¸®)
+	////ì• ë‹ˆë©”ì´ì…˜ ì´ë¦„ ì½ê¸°(ë°”ì´ë„ˆë¦¬)
 	//LoadWString(m_strName, pFile);
 
-	////ÅØ½ºÃÄ
+	////í…ìŠ¤ì³
 	//wstring strTexKey, strTexPath;
 	//LoadWString(strTexKey, pFile);
 	//LoadWString(strTexPath, pFile);
@@ -272,11 +272,11 @@ void CAnimation::Load(const wstring& _strRelativePath)
 
 
 
-	////ÇÁ·¹ÀÓ °³¼ö
+	////í”„ë ˆìž„ ê°œìˆ˜
 	//size_t iFrameCount = 0;
 	//fread(&iFrameCount, sizeof(size_t), 1, pFile);
 
-	////¸ðµç ÇÁ·¹ÀÓ Á¤º¸
+	////ëª¨ë“  í”„ë ˆìž„ ì •ë³´
 	//m_vecFrm.resize(iFrameCount);
 	//fread(m_vecFrm.data(), sizeof(tAnimFrm), iFrameCount, pFile);
 
@@ -284,18 +284,18 @@ void CAnimation::Load(const wstring& _strRelativePath)
 
 
 
-	//AnimationÀÇ ÀÌ¸§À» ÀÐ¾î¿Â´Ù.
+	//Animationì˜ ì´ë¦„ì„ ì½ì–´ì˜¨ë‹¤.
 	string str;
 	char szBuff[256] = {};
 
 	FScanf(szBuff, pFile);
-	FScanf(szBuff, pFile); //ÇÑÁÙ¾¿ ÀÐ¾î¿À´Â ÇÔ¼ö
+	FScanf(szBuff, pFile); //í•œì¤„ì”© ì½ì–´ì˜¤ëŠ” í•¨ìˆ˜
 	
 	str = szBuff;
 	m_strName = wstring(str.begin(), str.end());
 
 
-	//ÂüÁ¶ÇÏ´Â ÅØ½ºÃ³ ÀÌ¸§ ¹× °æ·Î
+	//ì°¸ì¡°í•˜ëŠ” í…ìŠ¤ì²˜ ì´ë¦„ ë° ê²½ë¡œ
 	FScanf(szBuff, pFile);
 	FScanf(szBuff, pFile);
 
@@ -315,21 +315,21 @@ void CAnimation::Load(const wstring& _strRelativePath)
 
 
 
-	//ÇÁ·¹ÀÓ °³¼ö
+	//í”„ë ˆìž„ ê°œìˆ˜
 	FScanf(szBuff, pFile);
 	int iFrameCount = 0;
-	fscanf_s(pFile, "%d", &iFrameCount); //¹®ÀÚ¸¦ Á¤¼ö·Î ¹Ù²ã¼­ ÀÐÀ½
+	fscanf_s(pFile, "%d", &iFrameCount); //ë¬¸ìžë¥¼ ì •ìˆ˜ë¡œ ë°”ê¿”ì„œ ì½ìŒ
 	FScanf(szBuff, pFile);
 
 
-	//»çÀÌÁî ¹èÀ²
+	//ì‚¬ì´ì¦ˆ ë°°ìœ¨
 	FScanf(szBuff, pFile);
 	fscanf_s(pFile, "%f", &m_fSizeMulti);
 	FScanf(szBuff, pFile);
 
 
 
-	//¸ðµç ÇÁ·¹ÀÓ Á¤º¸
+	//ëª¨ë“  í”„ë ˆìž„ ì •ë³´
 	tAnimFrm frm = {};
 
 	for (int i = 0; i < iFrameCount; i++)
@@ -349,7 +349,7 @@ void CAnimation::Load(const wstring& _strRelativePath)
 			else if (!strcmp("[Left Top]",szBuff))
 			{
 				fscanf_s(pFile, "%d", &pt.x);
-				fscanf_s(pFile, "%d", &pt.y); //Á¤¼ö¸¸³¯¶§±îÁö ,³ª °ø¹é¹®ÀÚ¸¦ ´Ù ÀÐÀ¸¸é¼­ ³Ñ±è
+				fscanf_s(pFile, "%d", &pt.y); //ì •ìˆ˜ë§Œë‚ ë•Œê¹Œì§€ ,ë‚˜ ê³µë°±ë¬¸ìžë¥¼ ë‹¤ ì½ìœ¼ë©´ì„œ ë„˜ê¹€
 			
 				frm.vLT = pt;
 			}

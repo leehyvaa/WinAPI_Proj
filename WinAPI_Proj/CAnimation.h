@@ -6,7 +6,7 @@ class CTexture;
 struct tAnimFrm
 {
 	Vec2 vLT; 
-	Vec2 vSlice;//ÅØ½ºÃÄ¸¶´Ù Å©±â°¡ ´Ù¸¦ ¼ö ÀÖÀ¸´Ï ÇÁ·¹ÀÓ¸¶´Ù ÀÚ¸¦ »çÀÌÁî
+	Vec2 vSlice;//í…ìŠ¤ì³ë§ˆë‹¤ í¬ê¸°ê°€ ë‹¤ë¥¼ ìˆ˜ ìˆìœ¼ë‹ˆ í”„ë ˆì„ë§ˆë‹¤ ìë¥¼ ì‚¬ì´ì¦ˆ
 	Vec2 vOffset;
 	float fDuration;
 };
@@ -17,11 +17,11 @@ private:
 	wstring m_strName;
 	CAnimator* m_pAnimator;
 
-	CTexture* m_pTex; //AnimationÀÌ »ç¿ëÇÏ´Â ÅØ½ºÃÄ
-	vector<tAnimFrm> m_vecFrm; //¸ğµç ÇÁ·¹ÀÓ Á¤º¸
-	int	m_iCurFrm; //ÇöÀçÇÁ·¹ÀÓ
-	float m_fAccTime; //½Ã°£ ´©Àû
-	bool m_bFinish; //Àç»ı ³¡¿¡ µµ´Ş ¿©ºÎ
+	CTexture* m_pTex; //Animationì´ ì‚¬ìš©í•˜ëŠ” í…ìŠ¤ì³
+	vector<tAnimFrm> m_vecFrm; //ëª¨ë“  í”„ë ˆì„ ì •ë³´
+	int	m_iCurFrm; //í˜„ì¬í”„ë ˆì„
+	float m_fAccTime; //ì‹œê°„ ëˆ„ì 
+	bool m_bFinish; //ì¬ìƒ ëì— ë„ë‹¬ ì—¬ë¶€
 	float m_fSizeMulti;
 	POINT* rotPos;
 

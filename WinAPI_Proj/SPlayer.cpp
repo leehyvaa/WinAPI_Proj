@@ -15,6 +15,7 @@
 #include "Raycast.h"
 #include "CHook.h"
 
+
 SPlayer::SPlayer()
 	: m_fSpeed(1000)
 	, m_iDir(1)
@@ -959,13 +960,30 @@ void SPlayer::SwingMove()
 
 	pRigid->SetVelocity(nextDir * abs(moveEnergy) );
 
-	if (distance > wireRange+5.f)
+	if (distance > wireRange + 5.f)
 	{
-		
+		// 1. 방향 벡터 계산
+		Vec2 dir = (playerArm->GetPos() - targetPos).Normalize();
 
+		// 2. 원하는 위치 계산 (최대 길이 내로 제한)
+		Vec2 desiredPos = targetPos + dir * wireRange;
 
+		// 3. 현재 위치와 원하는 위치의 차이 (보정 벡터)
+		Vec2 correction = desiredPos - playerArm->GetPos();
+
+		// 4. 스프링 힘 계산 (강성 계수 k 사용)
+		float k = 1000.0f; // 값 조절로 탄성 조절
+		Vec2 springForce = correction * k;
+
+		// 5. 리지드바디에 힘 적용
+		pRigid->AddForce(springForce);
+
+		// 6. 접선 방향으로만 속도 유지
+		Vec2 tangentDir = Vec2(-dir.y, dir.x);
+		Vec2 currentVelocity = pRigid->GetVelocity();
+		float tangentSpeed = currentVelocity.Dot(tangentDir);
+		pRigid->SetVelocity(tangentDir * tangentSpeed * 0.7f);
 	}
-
 }
 
 

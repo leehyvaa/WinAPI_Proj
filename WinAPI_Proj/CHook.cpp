@@ -21,18 +21,18 @@ CHook::CHook()
 	GetCollider()->SetScale(Vec2(20.f, 20.f));
 
 	CreateAnimator();
-#pragma region ÈÄÅ© ¾Ö´Ï¸ÞÀÌ¼Ç
-	//ÅØ½ºÃÄ ·Îµù
+#pragma region ï¿½ï¿½Å© ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½
+	//ï¿½Ø½ï¿½ï¿½ï¿½ ï¿½Îµï¿½
 	CTexture* pTexRight = CResMgr::GetInst()->LoadTexture(L"GrabTex_Right", L"texture\\player\\Grab_Right.bmp");
 	CTexture* pTexLeft = CResMgr::GetInst()->LoadTexture(L"GrabTex_Left", L"texture\\player\\Grab_Left.bmp");
 
 
-	//¾Ö´Ï¸ÞÀÌ¼Ç ·Îµù
+	//ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½Îµï¿½
 	//GetAnimator()->LoadAnimation(L"animation\\player_right_idle.anim");
 
 
 
-	//RIGHT ¾Ö´Ï¸ÞÀÌ¼Ç »ý¼º
+	//RIGHT ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½
 	GetAnimator()->CreateAnimation(L"SNB_GRAB_RIGHT_GRAB", pTexRight,
 		Vec2(0.f, 0.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 1, 2.f, Vec2(0.f, 0.f));
 	GetAnimator()->CreateAnimation(L"SNB_GRAB_RIGHT_GRABBING", pTexRight,
@@ -45,7 +45,7 @@ CHook::CHook()
 		Vec2(0.f, 800.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 1, 2.f, Vec2(0.f, 0.f));
 
 
-	//LEFT ¾Ö´Ï¸ÞÀÌ¼Ç »ý¼º
+	//LEFT ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½
 	GetAnimator()->CreateAnimation(L"SNB_GRAB_LEFT_GRAB", pTexLeft,
 		Vec2(0.f, 0.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 1, 2.f, Vec2(0.f, 0.f));
 	GetAnimator()->CreateAnimation(L"SNB_GRAB_LEFT_GRABBING", pTexLeft,
@@ -60,7 +60,7 @@ CHook::CHook()
 
 
 
-	//RIGHT ¾Ö´Ï¸ÞÀÌ¼Ç ÀúÀå
+	//RIGHT ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½
 	GetAnimator()->FindAnimation(L"SNB_GRAB_RIGHT_GRAB")->Save(L"animation\\grab_right_grab.anim");
 	GetAnimator()->FindAnimation(L"SNB_GRAB_RIGHT_GRABBING")->Save(L"animation\\grab_right_grabbing.anim");
 	GetAnimator()->FindAnimation(L"SNB_GRAB_RIGHT_RETURN_WITHGRAB")->Save(L"animation\\grab_right_return_withgrab.anim");
@@ -68,7 +68,7 @@ CHook::CHook()
 	GetAnimator()->FindAnimation(L"SNB_GRAB_RIGHT_FLYING")->Save(L"animation\\grab_right_flying.anim");
 
 
-	//LEFT ¾Ö´Ï¸ÞÀÌ¼Ç ÀúÀå
+	//LEFT ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½
 	GetAnimator()->FindAnimation(L"SNB_GRAB_LEFT_GRAB")->Save(L"animation\\player_left_grab.anim");
 	GetAnimator()->FindAnimation(L"SNB_GRAB_LEFT_GRABBING")->Save(L"animation\\grab_left_grabbing.anim");
 	GetAnimator()->FindAnimation(L"SNB_GRAB_LEFT_RETURN_WITHGRAB")->Save(L"animation\\grab_left_return_withgrab.anim");
@@ -154,10 +154,11 @@ void CHook::Update_Move()
 	{
 	case HOOK_STATE::FLYING:
 	{
+			
 		vPos.x = vPos.x + m_fSpeed * GetDir().x * fDT*2;
 		vPos.y = vPos.y + m_fSpeed * GetDir().y * fDT*2;
-
-		//°Å¸®°¡ Á¦ÇÑ°Å¸®ÀÌ»ó ¹þ¾î³ª¸é without¸®ÅÏÀ¸·Î º¯È¯
+			
+		//ï¿½Å¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ñ°Å¸ï¿½ï¿½Ì»ï¿½ ï¿½ï¿½ï¿½î³ªï¿½ï¿½ withoutï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯
 		if ((GetPos() - owner->GetPos()).Length() > 600.f)
 		{
 			hookState = HOOK_STATE::RETURN_WITHOUT;
@@ -181,7 +182,7 @@ void CHook::Update_Move()
 		vPos.x = vPos.x + m_fSpeed * newDir.x * fDT*3;
 		vPos.y = vPos.y + m_fSpeed * newDir.y * fDT*3;
 
-		//ÇÃ·¹ÀÌ¾îÇÑÅ× µµ´ÞÇÏ¸é »èÁ¦
+		//ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½
 		if ((GetPos() - owner->GetPos()).Length() < 30.f)
 		{
 			DeleteObject(this);
@@ -200,7 +201,7 @@ void CHook::Update_Move()
 		vPos.x = vPos.x + m_fSpeed * newDir.x * fDT*3;
 		vPos.y = vPos.y + m_fSpeed * newDir.y * fDT*3;
 
-		//ÇÃ·¹ÀÌ¾îÇÑÅ× µµ´ÞÇÏ¸é »èÁ¦
+		//ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½
 		if ((GetPos() - owner->GetPos()).Length() < 30.f)
 		{
 			
