@@ -21,6 +21,7 @@ private:
 	CBtnUI* m_pTexUI;
 	CPanelUI* m_pPanelUI;
 	CTextUI* m_pModeText;  // 모드 표시용 텍스트 UI
+	CTextUI* m_pHelpText;  // 설명서용 텍스트 UI
     
 
 

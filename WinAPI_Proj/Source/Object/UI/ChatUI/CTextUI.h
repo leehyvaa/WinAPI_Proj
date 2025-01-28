@@ -41,6 +41,9 @@ public:
     void SetText(const std::wstring& _str, wchar_t _delimiter = L'\n');
     void SetFontSize(int _size);
     int GetFontSize() const { return m_iFontSize; }
+    void SetFontColor(COLORREF color) { m_TextColor = color; }
 
     virtual void Render(HDC _dc) override;
 };
+
+

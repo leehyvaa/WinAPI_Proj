@@ -112,22 +112,55 @@ void CScene_Tool::Enter()
 
 
 
-    // 텍스트 박스 생성
+    // 모드 텍스트 박스 생성
     m_pModeText = new CTextUI();
-    m_pModeText->SetPos(Vec2(50, 50));
-
-    // 폰트 생성
-    m_pModeText->SetAlign(CTextUI::TEXT_ALIGN::LEFT);
+    m_pModeText->SetPos(Vec2(1450, 0));
+    m_pModeText->SetAlign(CTextUI::TEXT_ALIGN::CENTER);
     m_pModeText->SetLineSpace(5);
     m_pModeText->SetVisibleBox(false);
-
-    m_pModeText->SetFontSize(20); // 20포인트로 설정
-
-
-    
+    m_pModeText->SetFontSize(20);
+    m_pModeText->SetFontColor(RGB(0,0,255));
     AddObject(m_pModeText, GROUP_TYPE::UI);
 
 
+    // 설명서 텍스트 박스 생성
+    m_pHelpText = new CTextUI();
+    m_pHelpText->SetPos(Vec2(0, 0));
+    m_pHelpText->SetAlign(CTextUI::TEXT_ALIGN::LEFT);
+    m_pHelpText->SetLineSpace(5);
+    m_pHelpText->SetVisibleBox(false);
+    m_pHelpText->SetFontColor(RGB(137,0,255));
+
+    m_pHelpText->SetFontSize(20);
+    
+
+    vector<wstring> helpText =
+    {
+        L"[조작법]",
+        L"",
+        L"[모드 변경]",
+        L"F1 - 텍스처 모드",
+        L"F2 - 지형 모드",
+        L"F3 - 트리거 모드", 
+        L"F4 - 프리팹 모드",
+        L"",
+        L"[텍스처 모드]",
+        L"좌클릭 - 타일 배치",
+        L"우클릭 - 타일 복사",
+        L"BACK - 지우기",
+        L"1,2 - 전경/배경 레이어",
+        L"",
+        L"[지형 모드]",
+        L"드래그 - 지형 생성",
+        L"1~4 - 지형 타입 변경",
+        L"BACK - 마지막 지형 삭제",
+        L"",
+        L"F5 - 타일 테두리 표시",
+        L"CTRL - 타일맵 불러오기",
+        L"ESC - 시작 화면으로"
+    };
+    m_pHelpText->AddLines(helpText);
+    AddObject(m_pHelpText, GROUP_TYPE::UI);
 
 	/*CBackGround* backGround2 = new CBackGround;
 	backGround2->SetPos(Vec2(0, 0));
@@ -167,7 +200,8 @@ void CScene_Tool::Update()
 	if (KEY_TAP(KEY::ESC))
 		ChangeScene(SCENE_TYPE::START);
 
-    static wstring mode, subMode;
+    static wstring mode;
+    static wstring subMode = L"None";
 
 	switch (toolMode)
 	{
@@ -280,16 +314,15 @@ void CScene_Tool::Update()
 	if (KEY_TAP(KEY::F4))
 	{
 		toolMode = TOOL_MODE::PREFAB_MODE;
-	}
+    }
 
-	
-    vector<wstring> tutorialText = {
-        mode,
-        subMode,
-        L"Space - 점프"
-    };
-    m_pModeText->AddLines(tutorialText);
-	
+    vector<wstring> modeText =
+        {
+	    mode,
+	    subMode,
+	    };
+
+   m_pModeText->AddLines(modeText);
 }
 
 void CScene_Tool::SetTileIdx()
