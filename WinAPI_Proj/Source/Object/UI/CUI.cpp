@@ -11,6 +11,8 @@ CUI::CUI(bool _bCamAff)
 	, m_bLbtnDown(false)
 	, m_pTex(nullptr)
 	, m_iTexIndex(-1)
+    , m_bVisibleBox(true)
+    , m_BorderColor(PEN_TYPE::GREEN)
 {
 }
 
@@ -94,22 +96,27 @@ void CUI::Render(HDC _dc)
 
 
 	}
-	else
+	else if(m_bVisibleBox)
 	{
+        SelectGDI select(_dc, m_BoxColor);
+        SelectGDI select2(_dc, m_BorderColor);
+
+
 		if (m_bLbtnDown)
 		{
-			SelectGDI select(_dc, PEN_TYPE::GREEN);
+            SelectGDI select(_dc, PEN_TYPE::GREEN);
 			Rectangle(_dc, (int)vPos.x, (int)vPos.y, (int)(vPos.x + vScale.x), (int)(vPos.y + vScale.y));
-
 		}
 		else
 		{
 			Rectangle(_dc, (int)vPos.x, (int)vPos.y, (int)(vPos.x + vScale.x), (int)(vPos.y + vScale.y));
 		}
 	}
+
 	//자식 ui 렌더
 	Render_Child(_dc);
 }
+
 
 void CUI::Update_Child()
 {

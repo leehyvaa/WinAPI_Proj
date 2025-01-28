@@ -150,8 +150,10 @@ void CCore::CreateBrushPen()
 	m_arrPen[(UINT)PEN_TYPE::BLUE] = CreatePen(PS_SOLID, 1, RGB(80, 183, 220));
 	m_arrPen[(UINT)PEN_TYPE::PURPLE] = CreatePen(PS_SOLID, 1, RGB(102, 0, 153));
 	m_arrPen[(UINT)PEN_TYPE::ORANGE] = CreatePen(PS_SOLID, 1, RGB(255, 165, 0));
+    m_arrPen[(UINT)PEN_TYPE::HOLLOW] = CreatePen(PS_NULL, 1, 0);
 
 
+    
 }
 
 void CCore::Clear(HDC _dc)

@@ -112,26 +112,20 @@ void CScene_Tool::Enter()
 
 
 
-    // 1. 기본 사용법
-    CTextUI* pChatBox = new CTextUI();
-    pChatBox->SetAlign(CTextUI::TEXT_ALIGN::LEFT);
-    pChatBox->SetLineSpace(5);
+    // 텍스트 박스 생성
+    m_pModeText = new CTextUI();
+    m_pModeText->SetPos(Vec2(50, 50));
 
-    // 라인 직접 추가
-    pChatBox->AddLine(L"[시스템] 환영합니다!");
-    pChatBox->AddLine(L"> 플레이어가 입장했습니다");
+    // 폰트 생성
+    m_pModeText->SetAlign(CTextUI::TEXT_ALIGN::LEFT);
+    m_pModeText->SetLineSpace(5);
+    m_pModeText->SetVisibleBox(false);
 
-    // 2. 개행 문자로 분할
-    pChatBox->SetText(L"첫번째 줄\n두번째 줄\n세번째 줄");
+    m_pModeText->SetFontSize(20); // 20포인트로 설정
 
-    // 3. 벡터로 일괄 추가
-    vector<wstring> tutorialText = {
-        L"조작 방법:",
-        L"WASD - 이동",
-        L"Space - 점프"
-    };
-    pChatBox->AddLines(tutorialText);
-    AddObject(pChatBox, GROUP_TYPE::UI);
+
+    
+    AddObject(m_pModeText, GROUP_TYPE::UI);
 
 
 
@@ -167,16 +161,19 @@ void CScene_Tool::Exit()
 void CScene_Tool::Update()
 {
 	CScene::Update();
+    m_pModeText->ClearLines();
 
 
 	if (KEY_TAP(KEY::ESC))
 		ChangeScene(SCENE_TYPE::START);
 
+    static wstring mode, subMode;
 
 	switch (toolMode)
 	{
 	case TEXTURE_MODE:
 	{
+        mode = L"TextureMode";
 		SetTileUIIdx();
 
 		if(!m_pPanelUI->IsMouseOn())
@@ -185,15 +182,18 @@ void CScene_Tool::Update()
 
 		if (KEY_TAP(KEY::BACK))
 		{
+            subMode = L"Erase";
 			m_bErase = !m_bErase;
 		}
 		if (KEY_TAP(KEY::KEY_1))
 		{
+            subMode = L"FrontTexture";
 			m_bSecondTex = false;
 			m_bErase = false;
 		}
 		if (KEY_TAP(KEY::KEY_2))
 		{
+            subMode = L"BackTexture";
 			m_bSecondTex = true;
 			m_bErase = false;
 
@@ -202,41 +202,44 @@ void CScene_Tool::Update()
 	}
 	break;
 	case GROUND_MODE:
-		CreateGround();
-		if (KEY_TAP(KEY::BACK))
-		{
-			if (GetGroundCount() > 0)
-			{
-				DeleteObject(CSceneMgr::GetInst()->GetCurScene()->GetGroupObject(GROUP_TYPE::GROUND).back());
-				SetGroundCount(GetGroundCount() - 1);
-			}
-		}
+    {
+        mode = L"GroundMode";
+        CreateGround();
+        if (KEY_TAP(KEY::BACK))
+        {
+            if (GetGroundCount() > 0)
+            {
+                DeleteObject(CSceneMgr::GetInst()->GetCurScene()->GetGroupObject(GROUP_TYPE::GROUND).back());
+                SetGroundCount(GetGroundCount() - 1);
+            }
+        }
 
-		if (KEY_TAP(KEY::P))
-		{
-			cout <<"ground Count: " << GetGroundCount() << endl;
-			cout << "ground Type:" << (int)groundType<<endl;
+        if (KEY_TAP(KEY::P))
+        {
+            cout << "ground Count: " << GetGroundCount() << endl;
+            cout << "ground Type:" << (int)groundType << endl;
 
-		}
+        }
 
-		if (KEY_TAP(KEY::KEY_1))
-		{
-			groundType= GROUND_TYPE::GROUND;
-		}
+        if (KEY_TAP(KEY::KEY_1))
+        {
+            groundType = GROUND_TYPE::GROUND;
+        }
 
-		if (KEY_TAP(KEY::KEY_2))
-		{
-			groundType = GROUND_TYPE::NONGROUND;
-		}
-		if (KEY_TAP(KEY::KEY_3))
-		{
-			groundType = GROUND_TYPE::DAMAGEZONE;
-		}
-		if (KEY_TAP(KEY::KEY_4))
-		{
-			groundType = GROUND_TYPE::DEADZONE;
-		}
-		break;
+        if (KEY_TAP(KEY::KEY_2))
+        {
+            groundType = GROUND_TYPE::NONGROUND;
+        }
+        if (KEY_TAP(KEY::KEY_3))
+        {
+            groundType = GROUND_TYPE::DAMAGEZONE;
+        }
+        if (KEY_TAP(KEY::KEY_4))
+        {
+            groundType = GROUND_TYPE::DEADZONE;
+        }
+    }
+	    break;
 	case PREFAB_MODE:
 		break;
 	case TRIGGER_MODE:
@@ -280,7 +283,12 @@ void CScene_Tool::Update()
 	}
 
 	
-
+    vector<wstring> tutorialText = {
+        mode,
+        subMode,
+        L"Space - 점프"
+    };
+    m_pModeText->AddLines(tutorialText);
 	
 }
 
@@ -750,6 +758,32 @@ void CScene_Tool::SaveBmp()
 	DeleteDC(hdcMem);
 	ReleaseDC(NULL, hdcScreen);
  }
+
+void CScene_Tool::UpdateTextBox()
+{
+    m_pModeText->ClearLines();
+
+ 
+
+    
+    
+
+
+    // 라인 직접 추가
+    //pChatBox->AddLine(L"[시스템] 환영합니다!");
+    //pChatBox->AddLine(L"> 플레이어가 입장했습니다");
+
+    //// 2. 개행 문자로 분할
+    //pChatBox->SetText(L"첫번째 줄\n두번째 줄\n세번째 줄");
+
+    // 3. 벡터로 일괄 추가
+    /*vector<wstring> tutorialText = {
+        mode,
+        L"WASD - 이동",
+        L"Space - 점프"
+    };
+    m_pModeText->AddLines(tutorialText);*/
+}
 
 
 

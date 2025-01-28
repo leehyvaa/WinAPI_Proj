@@ -11,6 +11,8 @@ private:
     CUI* m_pParentUI;
 
     Vec2 m_vFinalPos;
+    BRUSH_TYPE m_BoxColor;
+    PEN_TYPE m_BorderColor;
 
     CTexture* m_pTex;
     int m_iTexIndex;
@@ -21,6 +23,7 @@ private:
 
 protected:
     bool m_bCamAffected; //UI가 카메라에 영향을 받는 유무
+    bool m_bVisibleBox;
 
 public:
     
@@ -37,6 +40,9 @@ public:
     CTexture* GetTexture() { return m_pTex; }
     void SetTexture(CTexture* _pTex) { m_pTex = _pTex; }
     void SetIndex(int _index) { m_iTexIndex = _index; }
+    void SetBoxColor(BRUSH_TYPE color) { m_BoxColor = color; }
+    void SetBorderColor(PEN_TYPE color) { m_BorderColor = color; }
+    void SetVisibleBox(bool b) { m_bVisibleBox = b; }
 
 private:
     void Update_Child();

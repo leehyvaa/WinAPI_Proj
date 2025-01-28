@@ -3,9 +3,11 @@
 
 CTextUI::CTextUI()
     : CUI(false) // 카메라 영향 받지 않음
-    , m_TextColor(RGB(255, 255, 255)) // 기본 흰색
+    , m_TextColor(RGB(0, 255, 0)) // 기본 흰색
     , m_hFont(nullptr)
+    , m_iFontSize(15)
 {
+    m_bVisibleBox = true;
 }
 
 CTextUI::~CTextUI()
@@ -45,9 +47,38 @@ void CTextUI::SetText(const std::wstring& _str, wchar_t _delimiter)
     m_vecLines.push_back(_str.substr(start));
 }
 
+void CTextUI::CreateFontHandle()
+{
+    if (m_hFont)
+        DeleteObject(m_hFont);
+
+    LOGFONT lf;
+    ZeroMemory(&lf, sizeof(LOGFONT));
+    lf.lfHeight = -m_iFontSize; // 폰트 높이 설정
+    lf.lfWeight = FW_NORMAL;    // 폰트 두께
+    wcscpy_s(lf.lfFaceName, L"Arial"); // 기본 글꼴
+
+    m_hFont = CreateFontIndirect(&lf);
+}
+
+void CTextUI::SetFontSize(int _size)
+{
+    if (m_iFontSize != _size && _size > 0)
+    {
+        m_iFontSize = _size;
+        CreateFontHandle(); // 새 폰트 생성
+    }
+}
+
 void CTextUI::Render(HDC _dc)
 {
     CUI::Render(_dc); // 기본 UI 렌더
+    if (!m_hFont) {
+        CreateFontHandle();
+    }
+    // 배경 투명화 추가
+    SetBkMode(_dc, TRANSPARENT); 
+    SetBkColor(_dc, RGB(0, 0, 0)); 
 
     Vec2 vPos = GetFinalPos();
     if (m_bCamAffected)

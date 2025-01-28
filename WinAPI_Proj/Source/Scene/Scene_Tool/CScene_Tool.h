@@ -8,7 +8,6 @@ class CPanelUI;
 enum TOOL_MODE
 {
 	TEXTURE_MODE,
-
 	GROUND_MODE,
 	PREFAB_MODE,
 	TRIGGER_MODE,
@@ -22,7 +21,7 @@ private:
 	CBtnUI* m_pTexUI;
 	CPanelUI* m_pPanelUI;
 	CTextUI* m_pModeText;  // 모드 표시용 텍스트 UI
-
+    
 
 
 	vector<std::string> m_vecTile_list;
@@ -64,7 +63,7 @@ public:
 
 	void CreateGround();
 	void SaveBmp();
-
+    void UpdateTextBox();
 
 
 

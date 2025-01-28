@@ -68,6 +68,8 @@ enum class BRUSH_TYPE
 	END,
 };
 
+
+
 enum class PEN_TYPE
 {
 	RED,
@@ -75,6 +77,7 @@ enum class PEN_TYPE
 	BLUE,
 	PURPLE,
 	ORANGE,
+    HOLLOW,
 	END,
 };
 
