@@ -170,6 +170,7 @@
     <ClInclude Include="Source\Component\Gravity\CGravity.h" />
     <ClInclude Include="Source\Component\RigidBody\CRigidBody.h" />
     <ClInclude Include="Source\Core\CCore.h" />
+    <ClInclude Include="Source\framework.h" />
     <ClInclude Include="Source\Header\define.h" />
     <ClInclude Include="Source\Header\func.h" />
     <ClInclude Include="Source\Header\global.h" />
@@ -201,6 +202,7 @@
     <ClInclude Include="Source\Object\UI\PanelUI\CPanelUI.h" />
     <ClInclude Include="Source\Prefab\CGroundPrefab.h" />
     <ClInclude Include="Source\Prefab\CMonPrefab.h" />
+    <ClInclude Include="Source\resource.h" />
     <ClInclude Include="Source\Resource\CRes.h" />
     <ClInclude Include="Source\Resource\Sound\CSound.h" />
     <ClInclude Include="Source\Resource\Texture\CTexture.h" />
@@ -208,6 +210,7 @@
     <ClInclude Include="Source\Scene\Scene_Stage_01\Scene_Stage_01.h" />
     <ClInclude Include="Source\Scene\Scene_Title\CScene_Title.h" />
     <ClInclude Include="Source\Scene\Scene_Tool\CScene_Tool.h" />
+    <ClInclude Include="Source\targetver.h" />
     <ClInclude Include="Source\Tool\CTool.h" />
     <ClInclude Include="Source\Tool\Vec2.h" />
     <ClInclude Include="Source\MouseCursor.h" />
