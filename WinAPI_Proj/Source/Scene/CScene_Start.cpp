@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "CScene_Start.h"
 #include "GameObject.h"
 #include "CMonster.h"
@@ -15,7 +15,7 @@ CScene_Start::~CScene_Start()
 
 void CScene_Start::Enter()
 {
-	//¿ÀºêÁ§Æ® Ãß°¡
+	//ì˜¤ë¸Œì íŠ¸ ì¶”ê°€
 	/*GameObject* pObj = new Player;
 	pObj->SetPos(Vec2(640.f,384.f));
 	pObj->SetScale(Vec2(100.f, 100.f));

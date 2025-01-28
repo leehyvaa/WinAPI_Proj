@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "CRigidBody.h"
 #include "CTimeMgr.h"
 #include "GameObject.h"
@@ -16,33 +16,33 @@ CRigidBody::~CRigidBody()
 
 void CRigidBody::FinalUpdate()
 {
-	float fForce = m_vForce.Length(); //ÈûÀÇ Å©±â
+	float fForce = m_vForce.Length(); //í˜ì˜ í¬ê¸°
 	
 
 	if (0.f != fForce)
 	{
-		//ÈûÀÇ ¹æÇâ
+		//í˜ì˜ ë°©í–¥
 		m_vForce.Normalize(); 
 
-		//°¡¼ÓµµÀÇ Å©±â
+		//ê°€ì†ë„ì˜ í¬ê¸°
 		float m_fAccel = fForce / m_fMass; 
 
-		//°¡¼Óµµ
+		//ê°€ì†ë„
 		m_vAccel =m_vForce * m_fAccel; // m_vForce / m_fMass;
 		
 
 	}
 
-	//Ãß°¡ °¡¼Óµµ(Áß·Âµî)
+	//ì¶”ê°€ ê°€ì†ë„(ì¤‘ë ¥ë“±)
 	m_vAccel += m_vAccelA;
 
-	//¼Óµµ
+	//ì†ë„
 	m_vVelocity += m_vAccel * fDT;
 
 	
 
 
-	//¸¶Âû·Â¿¡ ÀÇÇÑ ¹İ´ë¹æÇâÀ¸·ÎÀÇ °¡¼Óµµ
+	//ë§ˆì°°ë ¥ì— ì˜í•œ ë°˜ëŒ€ë°©í–¥ìœ¼ë¡œì˜ ê°€ì†ë„
 	if (!m_vVelocity.IsZero())
 	{
 		Vec2 vFricDir = -m_vVelocity;
@@ -51,7 +51,7 @@ void CRigidBody::FinalUpdate()
 		Vec2 vFriction = vFricDir * m_fFricCoeff * fDT;
 		if (m_vVelocity.Length() <= vFriction.Length())
 		{
-			//¸¶Âû °¡¼Óµµ°¡ º»·¡ ¼Óµµº¸´Ù Å« °æ¿ì
+			//ë§ˆì°° ê°€ì†ë„ê°€ ë³¸ë˜ ì†ë„ë³´ë‹¤ í° ê²½ìš°
 			m_vVelocity = Vec2(0.f, 0.f);
 		}
 		else
@@ -63,7 +63,7 @@ void CRigidBody::FinalUpdate()
 	
 
 
-	//¼Óµµ Á¦ÇÑ °Ë»ç
+	//ì†ë„ ì œí•œ ê²€ì‚¬
 	if (abs(m_vMaxVelocity.x) < abs(m_vVelocity.x))
 	{
 		m_vVelocity.x = (m_vVelocity.x / abs(m_vVelocity.x)) * abs(m_vMaxVelocity.x);
@@ -74,24 +74,24 @@ void CRigidBody::FinalUpdate()
 	}
 
 
-	//¼Óµµ¿¡ µû¸¥ ÀÌµ¿
+	//ì†ë„ì— ë”°ë¥¸ ì´ë™
 	Move();
 
-	//Èû ÃÊ±âÈ­
+	//í˜ ì´ˆê¸°í™”
 	m_vForce = Vec2(0.f, 0.f);
 
-	//°¡¼Óµµ ÃÊ±âÈ­
+	//ê°€ì†ë„ ì´ˆê¸°í™”
 	m_vAccel = Vec2(0.f, 0.f);
 	m_vAccelA = Vec2(0.f, 0.f);
 }
 
 void CRigidBody::Move()
 {
-	//Èû°ú ¹æÇâ ºĞÇØ
+	//í˜ê³¼ ë°©í–¥ ë¶„í•´
 	//Vec2 vDir = m_vVelocity;
-	//vDir.normalize(); //¹æÇâ
+	//vDir.normalize(); //ë°©í–¥
 
-	float fSpeed = m_vVelocity.Length(); //ÀÌµ¿ ¼Ó·Â
+	float fSpeed = m_vVelocity.Length(); //ì´ë™ ì†ë ¥
 	if (0.f != fSpeed)
 	{
 		Vec2 vPos = m_pOwner->GetPos();

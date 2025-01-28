@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Scene_Stage_01.h"
 
 #include "GameObject.h"
@@ -38,7 +38,7 @@ Scene_Stage_01::~Scene_Stage_01()
 void Scene_Stage_01::Update()
 {
 
-	//ºÎ¸ğÅ¬·¡½ºÀÇ update°¡ virtualÀÌ ¾Æ´Ï±â ¶§¹®¿¡
+	//ë¶€ëª¨í´ë˜ìŠ¤ì˜ updateê°€ virtualì´ ì•„ë‹ˆê¸° ë•Œë¬¸ì—
 	CScene::Update();
 
 
@@ -63,13 +63,13 @@ void Scene_Stage_01::Enter()
 {
 	//CCamera::GetInst()->FadeIn(2.f);
 
-	//¾À ÁøÀÔ »óÈ²¿¡¼­´Â AddObject ÇØµµ µÇÁö¸¸ 
-	//Update »óÈ²¿¡¼­´Â CreateObject½ÄÀ¸·Î ÀÌº¥Æ®·Î ¿ÀºêÁ§Æ® »ı¼º
+	//ì”¬ ì§„ì… ìƒí™©ì—ì„œëŠ” AddObject í•´ë„ ë˜ì§€ë§Œ 
+	//Update ìƒí™©ì—ì„œëŠ” CreateObjectì‹ìœ¼ë¡œ ì´ë²¤íŠ¸ë¡œ ì˜¤ë¸Œì íŠ¸ ìƒì„±
 	Vec2 vResolution = CCore::GetInst()->GetResolution();
 
 
 
-	//¿ÀºêÁ§Æ® Ãß°¡
+	//ì˜¤ë¸Œì íŠ¸ ì¶”ê°€
 	/*GObject* pObj = new GObject;
 
 	pObj->SetPos(Vec2(640.f, 384.f));
@@ -97,7 +97,7 @@ void Scene_Stage_01::Enter()
 
 
 
-	//¸¶¿ì½ºÄ¿¼­
+	//ë§ˆìš°ìŠ¤ì»¤ì„œ
 	ShowCursor(false);
 
 	GameObject* cursor = new MouseCursor();
@@ -107,7 +107,7 @@ void Scene_Stage_01::Enter()
 
 
 
-	//Å¬·ĞÇÔ¼ö ¾øÀÌ ¸¸µç ¿ÀºêÁ§Æ® º¹»ç ¸¸¾à ÇÃ·¹ÀÌ¾î¸¦ º¹»çÇÑ´Ù¸é ¾Æ·¡¿Í °°ÀÌ »ç¿ë
+	//í´ë¡ í•¨ìˆ˜ ì—†ì´ ë§Œë“  ì˜¤ë¸Œì íŠ¸ ë³µì‚¬ ë§Œì•½ í”Œë ˆì´ì–´ë¥¼ ë³µì‚¬í•œë‹¤ë©´ ì•„ë˜ì™€ ê°™ì´ ì‚¬ìš©
 	/*GameObject* pOtherPlayer = new SPlayer(*(SPlayer*)player);
 	pOtherPlayer->SetPos(Vec2(200.f, 200.f));
 	AddObject(pOtherPlayer, GROUP_TYPE::PLAYER);*/
@@ -116,7 +116,7 @@ void Scene_Stage_01::Enter()
 
 
 
-	//¸ó½ºÅÍ ¹èÄ¡ ±âº»¹æ½Ä 1
+	//ëª¬ìŠ¤í„° ë°°ì¹˜ ê¸°ë³¸ë°©ì‹ 1
 	/*int iMonCount = 1;
 	CMonster* pMonsterObj = nullptr;
 
@@ -138,20 +138,20 @@ void Scene_Stage_01::Enter()
 	
 
 
-	//Å¬·Ğ ÇÔ¼ö¸¦ »ç¿ëÇÑ ´õ °£´ÜÇÑ ¸ó½ºÅÍ º¹»ç
+	//í´ë¡  í•¨ìˆ˜ë¥¼ ì‚¬ìš©í•œ ë” ê°„ë‹¨í•œ ëª¬ìŠ¤í„° ë³µì‚¬
 	/*GameObject* pOtherMonster = pMonsterObj->Clone();
 	pOtherMonster->SetPos(Vec2(500.f, 400.f));
 	AddObject(pOtherMonster, GROUP_TYPE::MONSTER);*/
 
 
-	//ÇÁ¸®ÆÕ ¸ó½ºÅÍ ¹èÄ¡
+	//í”„ë¦¬íŒ¹ ëª¬ìŠ¤í„° ë°°ì¹˜
 	//CMonster* pMon = CMonPrefab::CreateMonster(MON_TYPE::NORMAL, vResolution / 2.f - Vec2(0.f, 300.f));
 	//CreateObject((GameObject*)pMon, GROUP_TYPE::MONSTER);
 	//AddObject(pMon, GROUP_TYPE::MONSTER);
 
 
 
-	//¶¥ ¹°Ã¼ ¹èÄ¡
+	//ë•… ë¬¼ì²´ ë°°ì¹˜
 	/*GameObject* pGround = new CGround;
 	pGround->SetName(L"Ground");
 	pGround->SetPos(Vec2(400.f, 900.f));
@@ -162,18 +162,18 @@ void Scene_Stage_01::Enter()
 	//CGround* pGround2 = CGroundPrefab::CreateGround(GROUND_TYPE::GROUND, Vec2(400.f, 500.f), Vec2(600.f, 600.f));
 	//AddObject((GameObject*)pGround2, GROUP_TYPE::GROUND);
 
-	//Å¸ÀÏ ·Îµù
+	//íƒ€ì¼ ë¡œë”©
 	LoadTile(L"Tile\\test11");
 
 
-	//±×·ì°£ Ãæµ¹ Ã¼Å©
+	//ê·¸ë£¹ê°„ ì¶©ëŒ ì²´í¬
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::MONSTER);
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::MONSTER, GROUP_TYPE::PROJ_PLAYER);
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::GROUND);
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::GROUND, GROUP_TYPE::PROJ_PLAYER);
 
 
-	//Ä«¸Ş¶ó À§Ä¡ ÁöÁ¤
+	//ì¹´ë©”ë¼ ìœ„ì¹˜ ì§€ì •
 	CCamera::GetInst()->SetLookAt(vResolution/2.f);
 	CCamera::GetInst()->SetTarget(player);
 
@@ -194,7 +194,7 @@ void Scene_Stage_01::Enter()
 
 
 
-	//½ºÅ¸Æ® ÇÔ¼ö È£Ãâ
+	//ìŠ¤íƒ€íŠ¸ í•¨ìˆ˜ í˜¸ì¶œ
 	Start();
 }
 

@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "CPathMgr.h"
 #include "CCore.h"
 
@@ -31,7 +31,7 @@ void CPathMgr::init()
 	wcscat_s(m_szContentPath, 255, L"\\bin\\content\\");
 
 	//$(SolutionDir)Output\bin\
-	//»óÀ§Æú´õ -> bin -> content
+	//ìƒìœ„í´ë” -> bin -> content
 
 
 	SetWindowText(CCore::GetInst()->GetMainHwnd(), m_szContentPath);

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 class GameObject;
 class AI;
 
@@ -22,7 +22,7 @@ void Safe_Delete_Vec(vector<T>& _vec)
 template<typename T1,typename T2>
 void Safe_Delete_Map(map<T1, T2>& _map)
 {
-	//ÅÛÇÃ¸´ ¾È¿¡¼­ iterator °°Àº ÀÌ³ÊÅ¬·¡½º ¾²·Á¸é typenameÀ» Àû¾îÁà¾ßÇÔ
+	//í…œí”Œë¦¿ ì•ˆì—ì„œ iterator ê°™ì€ ì´ë„ˆí´ë˜ìŠ¤ ì“°ë ¤ë©´ typenameì„ ì ì–´ì¤˜ì•¼í•¨
 	typename map<T1, T2>::iterator iter = _map.begin();
 
 	for (; iter != _map.end(); iter++)

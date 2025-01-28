@@ -1,8 +1,8 @@
-#pragma once
+ï»¿#pragma once
 
 class CTexture;
 
-//°´Ã¼¸¦ µ¥ÀÌÅÍ¿µ¿ª¿¡ ³Ö¾îµÎ´Â ¹æ½Ä
+//ê°ì²´ë¥¼ ë°ì´í„°ì˜ì—­ì— ë„£ì–´ë‘ëŠ” ë°©ì‹
 class CCore
 {
 	SINGLE(CCore)
@@ -12,15 +12,15 @@ private:
 	POINT	m_ptResolution;
 	HDC		m_hDC;
 
-	CTexture* m_pMemTex; //¹é¹öÆÛ ÅØ½ºÃÄ
+	CTexture* m_pMemTex; //ë°±ë²„í¼ í…ìŠ¤ì³
 
 
 	//GDI Object
 	HBRUSH m_arrBrush[(UINT)BRUSH_TYPE::END];
 	HPEN m_arrPen[(UINT)PEN_TYPE::END];
 
-	//¸Ş´º
-	HMENU m_hMenu; //Tool¾À¿¡¼­ »ç¿ë
+	//ë©”ë‰´
+	HMENU m_hMenu; //Toolì”¬ì—ì„œ ì‚¬ìš©
 
 public:
 	int init(HWND _hWnd, POINT _ptResolution);
@@ -52,7 +52,7 @@ private:
 
 
 
-//Æ÷ÀÎÅÍ¸¸ µ¥ÀÌÅÍ¿µ¿ª¿¡ ³Ö´Â ¹æ½Ä
+//í¬ì¸í„°ë§Œ ë°ì´í„°ì˜ì—­ì— ë„£ëŠ” ë°©ì‹
 //class CCore
 //{
 //private:
@@ -64,7 +64,7 @@ private:
 //public:
 //	static CCore* GetIstance()
 //	{
-//		//ÃÖÃÊÈ£Ãâ
+//		//ìµœì´ˆí˜¸ì¶œ
 //		if (nullptr == g_pInst)
 //		{
 //			g_pInst = new CCore;

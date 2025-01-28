@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "CKeyMgr.h"
 #include "CCore.h"
 
@@ -91,34 +91,34 @@ void CKeyMgr::Update()
 	{
 		for (int i = 0; i < (int)KEY::LAST; i++)
 		{
-			//Å°°¡ ´­·ÁÀÖ´Ù.
+			//í‚¤ê°€ ëˆŒë ¤ìžˆë‹¤.
 			if (GetAsyncKeyState(g_arrVK[i]) * 0x8000)
 			{
 				if (m_vecKey[i].bPrevPush)
 				{
-					//ÀÌÀü¿¡µµ ´­·ÁÀÖ¾ú´Ù.
+					//ì´ì „ì—ë„ ëˆŒë ¤ìžˆì—ˆë‹¤.
 					m_vecKey[i].eState = KEY_STATE::HOLD;
 				}
 				else
 				{
-					//ÀÌÀü¿¡ ´­·ÁÀÖÁö ¾Ê¾Ò´Ù.
+					//ì´ì „ì— ëˆŒë ¤ìžˆì§€ ì•Šì•˜ë‹¤.
 					m_vecKey[i].eState = KEY_STATE::TAP;
 				}
 
 				m_vecKey[i].bPrevPush = true;
 			}
 
-			//Å°°¡ ¾È´­·ÁÀÖ´Ù.
+			//í‚¤ê°€ ì•ˆëˆŒë ¤ìžˆë‹¤.
 			else
 			{
 				if (m_vecKey[i].bPrevPush)
 				{
-					//ÀÌÀü¿¡ ´­·ÁÀÖ¾ú´Ù.
+					//ì´ì „ì— ëˆŒë ¤ìžˆì—ˆë‹¤.
 					m_vecKey[i].eState = KEY_STATE::AWAY;
 				}
 				else
 				{
-					//ÀÌÀü¿¡µµ ¾È´­·ÁÀÖ¾ú´Ù.
+					//ì´ì „ì—ë„ ì•ˆëˆŒë ¤ìžˆì—ˆë‹¤.
 					m_vecKey[i].eState = KEY_STATE::NONE;
 
 				}
@@ -126,7 +126,7 @@ void CKeyMgr::Update()
 			}
 		}
 
-		//¸¶¿ì½º À§Ä¡ °è»ê
+		//ë§ˆìš°ìŠ¤ ìœ„ì¹˜ ê³„ì‚°
 		POINT ptPos = {};
 		GetCursorPos(&ptPos);
 		ScreenToClient(CCore::GetInst()->GetMainHwnd(), &ptPos);

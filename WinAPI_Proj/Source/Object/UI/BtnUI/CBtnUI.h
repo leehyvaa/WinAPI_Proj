@@ -1,17 +1,17 @@
-#pragma once
+ï»¿#pragma once
 #include "CUI.h"
 
 #include "CScene.h"
 #include "GameObject.h"
-//ÀÏ¹Ý ÇÔ¼öÆ÷ÀÎÅÍ
+//ì¼ë°˜ í•¨ìˆ˜í¬ì¸í„°
 typedef void(*BTN_FUNC)(DWORD_PTR, DWORD_PTR);
 
 
-//¸â¹öÇÔ¼ö ÇÔ¼öÆ÷ÀÎÅÍ
-//ÀÌ ¶§ ¾Æ·¡ÀÇ Å¬·¡½º¸¦ ºÎ¸ðÅ¬·¡½º¸¦ ÀûÀ¸¸é ÀÚ½Ä Å¬·¡½ºÀÇ ¸â¹öÇÔ¼öµµ ¹ÞÀ» ¼ö°¡ ÀÖ´Ù.
-//µû¶ó¼­ Å¬·¡½º ¼³°è½Ã ÇÁ·Î±×·¥ÀÇ ¸ðµç ¶óÀÌºê·¯¸®¸¦ ÀÚ½ÄÀ¸·Î °¡Áö´Â Å¬·¡½º ÇÏ³ª¸¦ ¼±¾ðÇØ µÎ¸é
-//ÀÌ Å¬·¡½º ¸â¹öÇÔ¼ö Æ÷ÀÎÅÍ·Î ¸ðµç ÇÔ¼ö¸¦ ¹ÞÀ» ¼ö ÀÖ´Ù.
-//¸â¹öÇÔ¼ö¸¦ »ç¿ëÇÒ¶© ±× Å¬·¡½ºÀÇ Çì´õ¸¦ À§¿¡ ÂüÁ¶¹Þ¾Æ¾ß ÇÑ´Ù Àü¹æ¼±¾ð¸¸À¸·Ð ¾ÈµÊ
+//ë©¤ë²„í•¨ìˆ˜ í•¨ìˆ˜í¬ì¸í„°
+//ì´ ë•Œ ì•„ëž˜ì˜ í´ëž˜ìŠ¤ë¥¼ ë¶€ëª¨í´ëž˜ìŠ¤ë¥¼ ì ìœ¼ë©´ ìžì‹ í´ëž˜ìŠ¤ì˜ ë©¤ë²„í•¨ìˆ˜ë„ ë°›ì„ ìˆ˜ê°€ ìžˆë‹¤.
+//ë”°ë¼ì„œ í´ëž˜ìŠ¤ ì„¤ê³„ì‹œ í”„ë¡œê·¸ëž¨ì˜ ëª¨ë“  ë¼ì´ë¸ŒëŸ¬ë¦¬ë¥¼ ìžì‹ìœ¼ë¡œ ê°€ì§€ëŠ” í´ëž˜ìŠ¤ í•˜ë‚˜ë¥¼ ì„ ì–¸í•´ ë‘ë©´
+//ì´ í´ëž˜ìŠ¤ ë©¤ë²„í•¨ìˆ˜ í¬ì¸í„°ë¡œ ëª¨ë“  í•¨ìˆ˜ë¥¼ ë°›ì„ ìˆ˜ ìžˆë‹¤.
+//ë©¤ë²„í•¨ìˆ˜ë¥¼ ì‚¬ìš©í• ë• ê·¸ í´ëž˜ìŠ¤ì˜ í—¤ë”ë¥¼ ìœ„ì— ì°¸ì¡°ë°›ì•„ì•¼ í•œë‹¤ ì „ë°©ì„ ì–¸ë§Œìœ¼ë¡  ì•ˆë¨
 typedef void(CScene::* SCENE_MEMFUNC)(void);
 typedef void(GameObject::* OBJECT_MEMFUNC)(void);
 

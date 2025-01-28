@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Raycast.h"
 #include "CCollider.h"
 #include "CKeyMgr.h"
@@ -96,7 +96,7 @@ void Raycast::CollisionCheck()
 		{
 			Vec2 pos = GetPos();
 			Vec2 ColPos = GetCollider()->GetOffsetPos();
-			//targetpos°¡ ÇÃ·¹ÀÌ¾î¿Í °¡Àå °¡±î¿î °÷À¸·Î ÂïÈ÷°Ô ¼öÁ¤ÇÒ ¿©Áö ÀÖÀ½
+			//targetposê°€ í”Œë ˆì´ì–´ì™€ ê°€ìž¥ ê°€ê¹Œìš´ ê³³ìœ¼ë¡œ ì°ížˆê²Œ ìˆ˜ì •í•  ì—¬ì§€ ìžˆìŒ
 			
 			targetPos = GetPos() + GetCollider()->GetOffsetPos();
 			break;
@@ -104,7 +104,7 @@ void Raycast::CollisionCheck()
 
 		Vec2 curPos = GetCollider()->GetOffsetPos() +GetPos();
 
-		//·¹ÀÌ ÃÖ´ë°Å¸®
+		//ë ˆì´ ìµœëŒ€ê±°ë¦¬
 		if ((curPos - GetPos()).Length() >= 800.f)
 		{
 

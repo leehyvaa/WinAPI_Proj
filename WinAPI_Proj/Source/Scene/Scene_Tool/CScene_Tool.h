@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "CScene.h"
 
 class CTextUI;
@@ -21,7 +21,7 @@ class CScene_Tool : public CScene
 private:
 	CBtnUI* m_pTexUI;
 	CPanelUI* m_pPanelUI;
-	CTextUI* m_pModeText;  // ¸ğµå Ç¥½Ã¿ë ÅØ½ºÆ® UI
+	CTextUI* m_pModeText;  // ëª¨ë“œ í‘œì‹œìš© í…ìŠ¤íŠ¸ UI
 
 
 

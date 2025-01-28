@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "CTool.h"
 
 float CTool::LengthPts(Vec2 pt1, Vec2 pt2)

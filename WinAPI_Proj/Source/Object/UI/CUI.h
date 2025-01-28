@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "GameObject.h"
 class CTexture;
 
@@ -16,11 +16,11 @@ private:
     int m_iTexIndex;
 
     
-    bool m_bMouseOn; //¸¶¿ì½º UI À§¿¡ ÀÖ´ÂÁö
-    bool m_bLbtnDown; //UI°¡ ¿ŞÂÊ¹öÆ°ÀÌ ´­¸° Àû ÀÖ´ÂÁö
+    bool m_bMouseOn; //ë§ˆìš°ìŠ¤ UI ìœ„ì— ìˆëŠ”ì§€
+    bool m_bLbtnDown; //UIê°€ ì™¼ìª½ë²„íŠ¼ì´ ëˆŒë¦° ì  ìˆëŠ”ì§€
 
 protected:
-    bool m_bCamAffected; //UI°¡ Ä«¸Ş¶ó¿¡ ¿µÇâÀ» ¹Ş´Â À¯¹«
+    bool m_bCamAffected; //UIê°€ ì¹´ë©”ë¼ì— ì˜í–¥ì„ ë°›ëŠ” ìœ ë¬´
 
 public:
     

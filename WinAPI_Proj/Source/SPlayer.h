@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "GameObject.h"
 
 class CTexture;
@@ -40,10 +40,10 @@ private:
 public:
 	SPlayer();
 
-	// ºÎ¸ð¿Í ÀÚ½ÄºÎºÐÀ» µû·Î º¹»çÇÏ´Â º¹»ç»ý¼ºÀÚ ¾Æ·¡ ³»¿ëÀ» ¾ÈÀû¾îµµ ¾Æ·¡¿Í °°ÀÌ 
-	//ÄÄÆÄÀÏ·¯°¡ ÀÚµ¿À¸·Î ±¸ÇöÇØÁÜ
-	//º¹»ç»ý¼ºÀÚ°¡ ¹®Á¦°¡ µÇ´Â °æ¿ì´Â ÄÝ¶óÀÌ´õÃ³·³ ÀÚ½ÅÀÇ owner¸¦ °¡Áö°í ÀÖ°Å³ª
-	//°íÀ¯ÇÑ id°ªÀ» °¡Áö°í ÀÖÀ»¶§ ¾èÀºº¹»ç¸¦ ÇÏ¸é ¹®Á¦°¡ µÊ
+	// ë¶€ëª¨ì™€ ìžì‹ë¶€ë¶„ì„ ë”°ë¡œ ë³µì‚¬í•˜ëŠ” ë³µì‚¬ìƒì„±ìž ì•„ëž˜ ë‚´ìš©ì„ ì•ˆì ì–´ë„ ì•„ëž˜ì™€ ê°™ì´ 
+	//ì»´íŒŒì¼ëŸ¬ê°€ ìžë™ìœ¼ë¡œ êµ¬í˜„í•´ì¤Œ
+	//ë³µì‚¬ìƒì„±ìžê°€ ë¬¸ì œê°€ ë˜ëŠ” ê²½ìš°ëŠ” ì½œë¼ì´ë”ì²˜ëŸ¼ ìžì‹ ì˜ ownerë¥¼ ê°€ì§€ê³  ìžˆê±°ë‚˜
+	//ê³ ìœ í•œ idê°’ì„ ê°€ì§€ê³  ìžˆì„ë•Œ ì–•ì€ë³µì‚¬ë¥¼ í•˜ë©´ ë¬¸ì œê°€ ë¨
 	SPlayer(const SPlayer& _origin) 
 		:GameObject(_origin)
 		,m_iDir(_origin.m_iDir)
@@ -98,7 +98,7 @@ private:
 	void CreateHook();
 	void RayCasting();
 
-	//ÀÚ½ÅÀÇ µ¥ÀÌÅÍ¸¦ º¹»çÇØ¼­ ÇÏ³ª »õ·Î »ý¼ºÇÑ ÈÄ ÀÌ¸¦ ¹ÝÈ¯ÇÏ´Â Å¬·ÐÇÔ¼ö
+	//ìžì‹ ì˜ ë°ì´í„°ë¥¼ ë³µì‚¬í•´ì„œ í•˜ë‚˜ ìƒˆë¡œ ìƒì„±í•œ í›„ ì´ë¥¼ ë°˜í™˜í•˜ëŠ” í´ë¡ í•¨ìˆ˜
 	//virtual GameObject* Clone() { return new SPlayer(*this); }
 	CLONE(SPlayer)
 

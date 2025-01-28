@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "CTraceState.h"
 #include "CSceneMgr.h"
 #include "CScene.h"
@@ -17,7 +17,7 @@ CTraceState::~CTraceState()
 
 void CTraceState::Update()
 {
-	//Å¸°ÙµÈ Player¸¦ ¦i¾Æ°£´Ù.
+	//íƒ€ê²Ÿëœ Playerë¥¼ ì«’ì•„ê°„ë‹¤.
 	SPlayer* pPlayer = (SPlayer*)CSceneMgr::GetInst()->GetCurScene()->GetPlayer();
 	Vec2 vPlayerPos = pPlayer->GetPos();
 

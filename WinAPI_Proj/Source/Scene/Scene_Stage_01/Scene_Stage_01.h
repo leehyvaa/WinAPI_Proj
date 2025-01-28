@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "CScene.h"
 class Scene_Stage_01 :public CScene
 {

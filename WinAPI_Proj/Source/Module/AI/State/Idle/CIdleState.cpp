@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "CIdleState.h"
 #include "CSceneMgr.h"
 #include "CScene.h"
@@ -16,11 +16,11 @@ CIdleState::~CIdleState()
 
 void CIdleState::Update()
 {
-	//PlayerÀÇ À§Ä¡ Ã¼Å©
+	//Playerì˜ ìœ„ì¹˜ ì²´í¬
 	SPlayer*  pPlayer = (SPlayer*)CSceneMgr::GetInst()->GetCurScene()->GetPlayer();
 	Vec2 vPlayerPos = pPlayer->GetPos();
 
-	//ÀÏÁ¤ ¹üÀ§ ¾È¿¡ µé¾î¿À¸é ÃßÀû»óÅÂ·Î ÀüÈ¯
+	//ì¼ì • ë²”ìœ„ ì•ˆì— ë“¤ì–´ì˜¤ë©´ ì¶”ì ìƒíƒœë¡œ ì „í™˜
 	CMonster* pMonster = GetMonster();
 	Vec2 vMonPos = pMonster->GetPos();
 

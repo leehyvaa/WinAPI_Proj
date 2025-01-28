@@ -1,4 +1,4 @@
-#include "CUI.h"
+ï»¿#include "CUI.h"
 
 #include "CKeyMgr.h"
 #include "CCamera.h"
@@ -40,7 +40,7 @@ CUI::~CUI()
 void CUI::Update()
 {
 
-	// ÀÚ½Ä ui ¾÷µ¥ÀÌÆ®
+	// ìì‹ ui ì—…ë°ì´íŠ¸
 	Update_Child();
 }
 
@@ -48,7 +48,7 @@ void CUI::FinalUpdate()
 {
 	GameObject::FinalUpdate();
 
-	//uiÀÇ ÃÖÁ¾ ÁÂÇ¥¸¦ ±¸ÇÑ´Ù.
+	//uiì˜ ìµœì¢… ì¢Œí‘œë¥¼ êµ¬í•œë‹¤.
 	m_vFinalPos = GetPos();
 
 	if (GetParent())
@@ -57,7 +57,7 @@ void CUI::FinalUpdate()
 		m_vFinalPos += vParentPos;
 	}
 
-	//UI Mouse Ã¼Å©
+	//UI Mouse ì²´í¬
 	MouseOnCheck();
 
 	
@@ -107,7 +107,7 @@ void CUI::Render(HDC _dc)
 			Rectangle(_dc, (int)vPos.x, (int)vPos.y, (int)(vPos.x + vScale.x), (int)(vPos.y + vScale.y));
 		}
 	}
-	//ÀÚ½Ä ui ·»´õ
+	//ìì‹ ui ë Œë”
 	Render_Child(_dc);
 }
 

@@ -1,4 +1,4 @@
-#include "CBtnUI.h"
+ï»¿#include "CBtnUI.h"
 #include "CScene_Tool.h"
 #include "CTexture.h"
 CBtnUI::CBtnUI()
@@ -77,7 +77,7 @@ void CBtnUI::Render(HDC _dc)
 		//bf.BlendOp = AC_SRC_OVER;
 		//bf.BlendFlags = 0;
 		//bf.AlphaFormat = AC_SRC_ALPHA;
-		//bf.SourceConstantAlpha = 127; //Àü¿ªÀûÀ¸·Î Àû¿ëµÇ´Â ¾ËÆÄ
+		//bf.SourceConstantAlpha = 127; //ì „ì—­ì ìœ¼ë¡œ ì ìš©ë˜ëŠ” ì•ŒíŒŒ
 
 		//AlphaBlend(_dc
 		//, (int)(vRenderPos.x)

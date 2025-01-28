@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "CScene.h"
 class CScene_Title :
     public CScene

@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "CCamera.h"
 
 #include "GameObject.h"
@@ -48,7 +48,7 @@ void CCamera::Update()
 		m_vLookAt.x += 500.f * fDT;
 
 
-	//È­¸é Áß¾ÓÁÂÇ¥¿Í Ä«¸Ş¶ó LookAt ÁÂÇ¥°£ÀÇ Â÷ÀÌ°ª °è»ê
+	//í™”ë©´ ì¤‘ì•™ì¢Œí‘œì™€ ì¹´ë©”ë¼ LookAt ì¢Œí‘œê°„ì˜ ì°¨ì´ê°’ ê³„ì‚°
 	CalDiff();
 }
 
@@ -64,7 +64,7 @@ void CCamera::Render(HDC _dc)
 
 
 
-	float fRatio = 0.f; //ÀÌÆåÆ® ÁøÇà ºñÀ²
+	float fRatio = 0.f; //ì´í™íŠ¸ ì§„í–‰ ë¹„ìœ¨
 	fRatio = effect.fCurTime / effect.fDuration;
 
 	if (fRatio < 0.f)
@@ -89,7 +89,7 @@ void CCamera::Render(HDC _dc)
 	bf.BlendOp = AC_SRC_OVER;
 	bf.BlendFlags = 0;
 	bf.AlphaFormat = 0;
-	bf.SourceConstantAlpha = iAlpha; //Àü¿ªÀûÀ¸·Î Àû¿ëµÇ´Â ¾ËÆÄ
+	bf.SourceConstantAlpha = iAlpha; //ì „ì—­ì ìœ¼ë¡œ ì ìš©ë˜ëŠ” ì•ŒíŒŒ
 
 	AlphaBlend(_dc
 		, 0
@@ -100,7 +100,7 @@ void CCamera::Render(HDC _dc)
 		, bf);
 
 
-	//ÁøÇà½Ã°£ÀÌ ÀÌÆåÆ® Áö¼Ó½Ã°£À» ³Ñ¾î¼­¸é ½ºÅé
+	//ì§„í–‰ì‹œê°„ì´ ì´í™íŠ¸ ì§€ì†ì‹œê°„ì„ ë„˜ì–´ì„œë©´ ìŠ¤í†±
 	if (effect.fDuration < effect.fCurTime)
 	{
 		m_listCamEffect.pop_front();
@@ -119,7 +119,7 @@ void CCamera::init()
 
 void CCamera::CalDiff()
 {
-	//ÀÌÀü LookAt °ú ÇöÀç LookÀÇ Â÷ÀÌ°ªÀ» º¸Á¤ÇØ¼­ ÇöÀçÀÇ LookAtÀ» ±¸ÇÑ´Ù.
+	//ì´ì „ LookAt ê³¼ í˜„ì¬ Lookì˜ ì°¨ì´ê°’ì„ ë³´ì •í•´ì„œ í˜„ì¬ì˜ LookAtì„ êµ¬í•œë‹¤.
 	m_fAccTime += fDT;
 
 	if (m_fAccTime >= m_fTime)
@@ -169,5 +169,5 @@ void CCamera::FadeOut(float _fDuration)
 	if (0.f == _fDuration)
 		assert(nullptr);
 }
-//Ä«¸Ş¶ó ºü¸£°Ô ¿òÁ÷ÀÌ´Ù ¸ñÇ¥ÁöÁ¡ µµÂøÇÒ¶§Âë ¼Óµµ¸¦ ÁÙ¿©¼­ µµÂøÇÏ°Ô²û ÇÏ´Â °³¼± °¡´É
-//Ä«¸Ş¶ó ½¦ÀÌÅ· ±â´Éµî 
+//ì¹´ë©”ë¼ ë¹ ë¥´ê²Œ ì›€ì§ì´ë‹¤ ëª©í‘œì§€ì  ë„ì°©í• ë•Œì¯¤ ì†ë„ë¥¼ ì¤„ì—¬ì„œ ë„ì°©í•˜ê²Œë” í•˜ëŠ” ê°œì„  ê°€ëŠ¥
+//ì¹´ë©”ë¼ ì‰ì´í‚¹ ê¸°ëŠ¥ë“± 

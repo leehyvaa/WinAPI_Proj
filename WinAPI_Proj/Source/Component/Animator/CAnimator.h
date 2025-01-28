@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 class GameObject;
 class CAnimation;
 class CTexture;
@@ -6,8 +6,8 @@ class CTexture;
 class CAnimator
 {
 private:
-	map<wstring, CAnimation*> m_mapAnim; //¸ğµç Animation
-	CAnimation* m_pCurAnim; //ÇöÀç Àç»ıÁß Animation
+	map<wstring, CAnimation*> m_mapAnim; //ëª¨ë“  Animation
+	CAnimation* m_pCurAnim; //í˜„ì¬ ì¬ìƒì¤‘ Animation
 	GameObject* m_pOwner;
 	bool m_bRepeat;
 	float rotation;

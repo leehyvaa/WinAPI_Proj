@@ -1,4 +1,4 @@
-#include "GameObject.h"
+ï»¿#include "GameObject.h"
 #include "CKeyMgr.h"
 #include "CCollider.h"
 #include "CAnimator.h"
@@ -64,7 +64,7 @@ GameObject::~GameObject()
 
 void GameObject::LookAt(Vec2 _target)
 {
-	//°íÄ¥¿©Áö ¸¹À½ player swingMove ÂüÁ¶
+	//ê³ ì¹ ì—¬ì§€ ë§ìŒ player swingMove ì°¸ì¡°
 	Vec2 dir = _target - GetPos();
 	Vec2 up = Vec2(0.f, -1.f);
 

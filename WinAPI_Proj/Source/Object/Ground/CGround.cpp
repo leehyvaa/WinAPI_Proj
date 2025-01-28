@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "CGround.h"
 #include "CCollider.h"
 #include "CGravity.h"
@@ -163,7 +163,7 @@ void CGround::OnCollisionEnter(CCollider* _pOther)
 
 		}*/
 
-		//À§¿¡¼­ Ãæµ¹
+		//ìœ„ì—ì„œ ì¶©ëŒ
 		if (vObjPos.x >= GetPos().x &&
 			vObjPos.x <= GetPos().x + GetScale().x &&
 			vObjPos.y <= GetPos().y+20.f)
@@ -180,7 +180,7 @@ void CGround::OnCollisionEnter(CCollider* _pOther)
 
 
 
-		//ÁÂ¿ì Ãæµ¹ÇßÀ»¶§
+		//ì¢Œìš° ì¶©ëŒí–ˆì„ë•Œ
 
 		if (vObjPos.y >= GetPos().y &&
 			vObjPos.x <= GetPos().x +20.f)
@@ -230,7 +230,7 @@ void CGround::OnCollisionEnter(CCollider* _pOther)
 		
 
 
-		//¾Æ·¡¿¡¼­ Ãæµ¹ÇßÀ»¶§
+		//ì•„ëž˜ì—ì„œ ì¶©ëŒí–ˆì„ë•Œ
 		if (vObjPos.x >= GetPos().x &&
 			vObjPos.x <= GetPos().x + GetScale().x &&
 			vObjPos.y >= GetPos().y +GetScale().y - 15.f)
@@ -266,7 +266,7 @@ void CGround::OnCollision(CCollider* _pOther)
 		Vec2 gPos = GetPos();
 				
 
-		//À§¿¡¼­ Ãæµ¹
+		//ìœ„ì—ì„œ ì¶©ëŒ
 		if (vObjPos.x >= GetPos().x &&
 			vObjPos.x <= GetPos().x + GetScale().x&&
 			vObjPos.y <= GetPos().y+20.f)
@@ -332,7 +332,7 @@ void CGround::OnCollision(CCollider* _pOther)
 
 
 
-		//¾Æ·¡¿¡¼­ Ãæµ¹ÇßÀ»¶§
+		//ì•„ëž˜ì—ì„œ ì¶©ëŒí–ˆì„ë•Œ
 		if (vObjPos.x >= GetPos().x &&
 			vObjPos.x <= GetPos().x + GetScale().x &&
 			vObjPos.y >= GetPos().y + GetScale().y - 20.f)

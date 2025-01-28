@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "CSceneMgr.h"
 #include "Scene_Stage_01.h"
 #include "CScene_Tool.h"
@@ -12,7 +12,7 @@ CSceneMgr::CSceneMgr()
 }
 CSceneMgr::~CSceneMgr()
 {
-	//¾À ÀüºÎ »èÁ¦
+	//ì”¬ ì „ë¶€ ì‚­ì œ
 	for (UINT i = 0; i < (UINT)SCENE_TYPE::END; ++i)
 	{
 		if (nullptr != m_arrScene[i])
@@ -22,7 +22,7 @@ CSceneMgr::~CSceneMgr()
 
 void CSceneMgr::init()
 {
-	//Scene»ý¼º
+	//Sceneìƒì„±
 	m_arrScene[(UINT)SCENE_TYPE::START] = new CScene_Title;
 	m_arrScene[(UINT)SCENE_TYPE::START]->SetName(L"Title Scene");
 
@@ -39,7 +39,7 @@ void CSceneMgr::init()
 	//m_arrScene[(UINT)SCENE_TYPE::STAGE_02] = new CScene_STAGE_02;
 
 
-	//ÇöÀç ¾À ÁöÁ¤
+	//í˜„ìž¬ ì”¬ ì§€ì •
 	m_pCurScene = m_arrScene[(UINT)SCENE_TYPE::START];
 	m_pCurScene->Enter();
 }

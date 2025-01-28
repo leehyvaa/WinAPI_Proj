@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "CScene_Title.h"
 #include "CBackGround.h"
 #include "CResMgr.h"
@@ -40,14 +40,14 @@ void CScene_Title::Enter()
 
 
 
-	//Ä«¸Þ¶ó À§Ä¡ ÁöÁ¤
+	//ì¹´ë©”ë¼ ìœ„ì¹˜ ì§€ì •
 	CCamera::GetInst()->SetLookAt(vResolution / 2.f);
 	CCamera::GetInst()->FadeIn(3.f);
 
 
 
 
-	//¹é±×¶ó¿îµå
+	//ë°±ê·¸ë¼ìš´ë“œ
 	CBackGround* backGround = new CBackGround;
 	backGround->SetPos(Vec2(0, 0));
 	CTexture* back = CResMgr::GetInst()->LoadTexture(L"TitleBack", L"texture\\background\\Title.bmp");

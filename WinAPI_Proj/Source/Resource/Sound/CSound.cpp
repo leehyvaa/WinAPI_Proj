@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "CSound.h"
 
 CSound::CSound()
@@ -18,13 +18,13 @@ CSound::~CSound()
 int CSound::Load(const wstring& _strPath)
 {
 	if (nullptr == CSoundMgr::GetInst()->GetSoundDevice())
-		assert(nullptr); // »ç¿îµå °´Ã¼ »ý¼ºµÇÁö ¾ÊÀ½
+		assert(nullptr); // ì‚¬ìš´ë“œ ê°ì²´ ìƒì„±ë˜ì§€ ì•ŠìŒ
 
-	//È®ÀåÀÚ ÀÌ¸§ ±¸º°ÇÏ±â
+	//í™•ìž¥ìž ì´ë¦„ êµ¬ë³„í•˜ê¸°
 	wchar_t szExt[10] = { 0 };
 	_wsplitpath_s(_strPath.c_str(), nullptr, 0, nullptr, 0, nullptr, 0, szExt, 10);
 
-	if (!wcscmp(szExt, L".wav")) // WAV ÆÄÀÏ ·Îµå
+	if (!wcscmp(szExt, L".wav")) // WAV íŒŒì¼ ë¡œë“œ
 	{
 		if (false == LoadWaveSound(_strPath))
 			assert(nullptr);
@@ -44,15 +44,15 @@ bool CSound::LoadWaveSound(const wstring& _strPath)
 	wstring strFilePath = _strPath;
 
 	//CreateFile
-	hFile = mmioOpen((wchar_t*)strFilePath.c_str(), NULL, MMIO_READ);//waveÆÄÀÏÀ» ¿¬´Ù.
+	hFile = mmioOpen((wchar_t*)strFilePath.c_str(), NULL, MMIO_READ);//waveíŒŒì¼ì„ ì—°ë‹¤.
 	
 	if (nullptr == hFile)
 	{
-		MessageBox(NULL, L"»ç¿îµå ¸®¼Ò½º °æ·Î¿¡ ÆÄÀÏ ¾øÀ½", L"»ç¿îµå ·Îµù ½ÇÆÐ", MB_OK);
+		MessageBox(NULL, L"ì‚¬ìš´ë“œ ë¦¬ì†ŒìŠ¤ ê²½ë¡œì— íŒŒì¼ ì—†ìŒ", L"ì‚¬ìš´ë“œ ë¡œë”© ì‹¤íŒ¨", MB_OK);
 		return false;
 	}
 
-	//Chunk Ã»Å© ±¸Á¶Ã¼, ¹®ÀÚ¿­·Î »öÀÎÀ» ÀÎ½ÄÇØ¼­ waveFormat ¹× ¹öÆÛ¼±¾ðÁ¤º¸¸¦ ÀÐ¾î¿Â´Ù.
+	//Chunk ì²­í¬ êµ¬ì¡°ì²´, ë¬¸ìžì—´ë¡œ ìƒ‰ì¸ì„ ì¸ì‹í•´ì„œ waveFormat ë° ë²„í¼ì„ ì–¸ì •ë³´ë¥¼ ì½ì–´ì˜¨ë‹¤.
 	MMCKINFO pParent;
 	memset(&pParent, 0, sizeof(pParent));
 	pParent.fccType = mmioFOURCC('W', 'A', 'V', 'E');
@@ -80,7 +80,7 @@ bool CSound::LoadWaveSound(const wstring& _strPath)
 
 	if (FAILED(CSoundMgr::GetInst()->GetSoundDevice()->CreateSoundBuffer(&m_tBuffInfo, &m_pSoundBuffer, NULL)))
 	{
-		MessageBox(NULL, L"»ç¿îµå¹öÆÛ»ý¼º½ÇÆÐ", L"", MB_OK);
+		MessageBox(NULL, L"ì‚¬ìš´ë“œë²„í¼ìƒì„±ì‹¤íŒ¨", L"", MB_OK);
 		return false;
 	}
 
@@ -100,7 +100,7 @@ bool CSound::LoadWaveSound(const wstring& _strPath)
 
 	mmioClose(hFile, 0);
 
-	//ÃÊ±â À½·® Àý¹ÝÀ¸·Î ¼³Á¤
+	//ì´ˆê¸° ìŒëŸ‰ ì ˆë°˜ìœ¼ë¡œ ì„¤ì •
 	SetVolume(50.f);
 
 	return true;
@@ -110,8 +110,8 @@ bool CSound::LoadWaveSound(const wstring& _strPath)
 
 void CSound::Play(bool _bLoop)
 {
-	//Play ÇÔ¼öÀÇ 1¹øÂ° 2¹øÂ° ÀÎÀÚ´Â 0À¸·Î ÀÌ¹Ì ¿¹¾àµÇ¾îÀÖ´Ù.
-	//3¹øÂ° º¯¼ö´Â »ç¿îµå¸¦ ¹Ýº¹Àç»ý ÇÒ °ÍÀÎÁö ¾Æ´ÑÁö¸¦ °áÁ¤ÇÑ´Ù.
+	//Play í•¨ìˆ˜ì˜ 1ë²ˆì§¸ 2ë²ˆì§¸ ì¸ìžëŠ” 0ìœ¼ë¡œ ì´ë¯¸ ì˜ˆì•½ë˜ì–´ìžˆë‹¤.
+	//3ë²ˆì§¸ ë³€ìˆ˜ëŠ” ì‚¬ìš´ë“œë¥¼ ë°˜ë³µìž¬ìƒ í•  ê²ƒì¸ì§€ ì•„ë‹Œì§€ë¥¼ ê²°ì •í•œë‹¤.
 	//m_pSoundBuffer->SetCurrentPosition(0);
 
 	if (_bLoop)
@@ -125,8 +125,8 @@ void CSound::PlayToBGM(bool _bLoop)
 {
 	CSoundMgr::GetInst()->RegisterToBGM(this);
 
-	//Play ÇÔ¼öÀÇ 1¹øÂ° 2¹øÂ° ÀÎÀÚ´Â 0À¸·Î ÀÌ¹Ì ¿¹¾àµÇ¾îÀÖ´Ù.
-	//3¹øÂ° º¯¼ö´Â »ç¿îµå¸¦ ¹Ýº¹Àç»ý ÇÒ °ÍÀÎÁö ¾Æ´ÑÁö¸¦ °áÁ¤ÇÑ´Ù.
+	//Play í•¨ìˆ˜ì˜ 1ë²ˆì§¸ 2ë²ˆì§¸ ì¸ìžëŠ” 0ìœ¼ë¡œ ì´ë¯¸ ì˜ˆì•½ë˜ì–´ìžˆë‹¤.
+	//3ë²ˆì§¸ ë³€ìˆ˜ëŠ” ì‚¬ìš´ë“œë¥¼ ë°˜ë³µìž¬ìƒ í•  ê²ƒì¸ì§€ ì•„ë‹Œì§€ë¥¼ ê²°ì •í•œë‹¤.
 	if (_bLoop)
 		m_pSoundBuffer->Play(0, 0, DSBPLAY_LOOPING);
 	else
@@ -166,7 +166,7 @@ int CSound::GetDecibel(float _fVolume)
 	else if (_fVolume <= 0.f)
 		_fVolume = 0.00001f;
 
-	//1~100 »çÀÌ°ªÀ» µ¥½Ãº§ ´ÜÀ§·Î º¯°æ
+	//1~100 ì‚¬ì´ê°’ì„ ë°ì‹œë²¨ ë‹¨ìœ„ë¡œ ë³€ê²½
 	int iVolume = (LONG)(-2000.0 * log10(100.f / _fVolume));
 
 	if (iVolume < -10000)

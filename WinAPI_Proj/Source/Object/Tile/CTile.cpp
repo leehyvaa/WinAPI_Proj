@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "CTile.h"
 #include "CTexture.h"
 #include "SelectGDI.h"
@@ -40,7 +40,7 @@ void CTile::Render(HDC _dc)
 		UINT iCurRow = (UINT)m_iImgIdx / iMaxCol;
 		UINT iCurCol = (UINT)m_iImgIdx % iMaxCol;
 
-		// ÀÌ¹ÌÁö ¹üÀ§¸¦ ¹ş¾î³­ ÀÎµ¦½º Ã¼Å©
+		// ì´ë¯¸ì§€ ë²”ìœ„ë¥¼ ë²—ì–´ë‚œ ì¸ë±ìŠ¤ ì²´í¬
 		if (iMaxRow <= iCurRow)
 		{
 			return;
@@ -87,7 +87,7 @@ void CTile::Render(HDC _dc)
 		UINT iCurRow = (UINT)m_iImgIdx2 / iMaxCol;
 		UINT iCurCol = (UINT)m_iImgIdx2 % iMaxCol;
 
-		// ÀÌ¹ÌÁö ¹üÀ§¸¦ ¹ş¾î³­ ÀÎµ¦½º Ã¼Å©
+		// ì´ë¯¸ì§€ ë²”ìœ„ë¥¼ ë²—ì–´ë‚œ ì¸ë±ìŠ¤ ì²´í¬
 		if (iMaxRow <= iCurRow)
 		{
 			return;

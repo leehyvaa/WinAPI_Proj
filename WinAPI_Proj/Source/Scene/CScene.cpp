@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "CScene.h"
 #include "GameObject.h"
 #include "CTile.h"
@@ -28,7 +28,7 @@ CScene::~CScene()
 	{
 		for (UINT j = 0; j < m_arrObj[i].size(); j++)
 		{
-			//m_arrObj[i] ±×·ì º¤ÅÍÀÇ j ¹°Ã¼ »èÁ¦
+			//m_arrObj[i] ê·¸ë£¹ ë²¡í„°ì˜ j ë¬¼ì²´ ì‚­ì œ
 			delete m_arrObj[i][j];
 		}
 	}
@@ -175,7 +175,7 @@ void CScene::Render_Tile(HDC _dc)
 }
 
 
-//ÁöÁ¤µÈ ±×·ìÀÇ º¤ÅÍ¸¦ Áö¿ì´Â ÇÔ¼ö
+//ì§€ì •ëœ ê·¸ë£¹ì˜ ë²¡í„°ë¥¼ ì§€ìš°ëŠ” í•¨ìˆ˜
 void CScene::DeleteGroup(GROUP_TYPE _eTarget)
 {
 	Safe_Delete_Vec<GameObject*>(m_arrObj[(UINT)_eTarget]);
@@ -224,13 +224,13 @@ void CScene::LoadTile(const wstring& _strRelativePath)
 	wstring strFilePath = CPathMgr::GetInst()->GetContentPath();
 	strFilePath += _strRelativePath;
 
-	//Ä¿³Î ¿ÀºêÁ§Æ®
+	//ì»¤ë„ ì˜¤ë¸Œì íŠ¸
 	FILE* pFile = nullptr;
 
 	_wfopen_s(&pFile, strFilePath.c_str(), L"rb");
 	assert(pFile);
 
-	//Å¸ÀÏ °¡·Î ¼¼·Î °³¼ö ºÒ·¯¿À±â
+	//íƒ€ì¼ ê°€ë¡œ ì„¸ë¡œ ê°œìˆ˜ ë¶ˆëŸ¬ì˜¤ê¸°
 	UINT xCount =0;
 	UINT yCount =0;
 
@@ -245,11 +245,11 @@ void CScene::LoadTile(const wstring& _strRelativePath)
 	FScanf(szBuff, pFile);
 
 
-	//ºÒ·¯¿Â °³¼ö¿¡ ¸Â°Ô EmptyTile µé ¸¸µé¾îµÎ±â
+	//ë¶ˆëŸ¬ì˜¨ ê°œìˆ˜ì— ë§ê²Œ EmptyTile ë“¤ ë§Œë“¤ì–´ë‘ê¸°
 	CreateTile(xCount, yCount);
 
 
-	//¸¸µé¾îÁø Å¸ÀÏ °³º°·ÎÇÊ¿äÇÑ Á¤º¸¸¦ ºÒ·¯¿È
+	//ë§Œë“¤ì–´ì§„ íƒ€ì¼ ê°œë³„ë¡œí•„ìš”í•œ ì •ë³´ë¥¼ ë¶ˆëŸ¬ì˜´
 	const vector<GameObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
 
 	for (size_t i = 0; i < vecTile.size(); i++)
@@ -265,7 +265,7 @@ void CScene::LoadTile(const wstring& _strRelativePath)
 	fscanf_s(pFile, "%d", &m_iGroundCount);
 	FScanf(szBuff, pFile); //[GroundCount]
 
-	//ºÒ·¯¿Â °³¼ö¿¡ ¸Â°Ô Ground»ı¼º
+	//ë¶ˆëŸ¬ì˜¨ ê°œìˆ˜ì— ë§ê²Œ Groundìƒì„±
 	CreateEmptyGround(m_iGroundCount);
 
 	for (size_t i = 0; i < vecGround.size(); i++)

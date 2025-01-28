@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "CRes.h"
 class CTexture :
     public CRes
@@ -21,8 +21,8 @@ private:
     CTexture();
     virtual ~CTexture();
 
-    //ÅØ½ºÃ³ Å¬·¡½ºÀÇ »ı¼ºÀÚ¸¦ privateÀ¸·Î ÇØ ¾Æ¹«µ¥¼­³ª »ı¼ºÇÒ ¼ö ¾ø°Ô ÇÏ°í
-    //friend Ã³¸®µÈ CResMgr¿¡¼­¸¸ »ı¼ºÇÒ ¼ö ÀÖ°Ô ÇÔ
+    //í…ìŠ¤ì²˜ í´ë˜ìŠ¤ì˜ ìƒì„±ìë¥¼ privateìœ¼ë¡œ í•´ ì•„ë¬´ë°ì„œë‚˜ ìƒì„±í•  ìˆ˜ ì—†ê²Œ í•˜ê³ 
+    //friend ì²˜ë¦¬ëœ CResMgrì—ì„œë§Œ ìƒì„±í•  ìˆ˜ ìˆê²Œ í•¨
     friend class CResMgr;
 };
 

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 class GameObject;
 class CTexture;
@@ -12,9 +12,9 @@ enum class CAM_EFFECT
 
 struct tCamEffect
 {
-	CAM_EFFECT eEffect;//Ä«¸Ş¶ó È¿°ú
-	float fDuration;//È¿°ú ÁøÇà ½Ã°£
-	float fCurTime;//È¿°ú°¡ ÁøÇàµÈ ½Ã°£
+	CAM_EFFECT eEffect;//ì¹´ë©”ë¼ íš¨ê³¼
+	float fDuration;//íš¨ê³¼ ì§„í–‰ ì‹œê°„
+	float fCurTime;//íš¨ê³¼ê°€ ì§„í–‰ëœ ì‹œê°„
 };
 
 
@@ -24,17 +24,17 @@ class CCamera
 
 private:
 	Vec2 m_vLookAt;
-	Vec2 m_vCurLookAt; //ÀÌÀüÀ§Ä¡¿Í ÇöÀçÀ§Ä¡ º¸Á¤ À§Ä¡
-	Vec2 m_vPrevLookAt; //Ä«¸Ş¶ó°¡ º¸´Â ÀÌÀüÇÁ·¹ÀÓ À§Ä¡
+	Vec2 m_vCurLookAt; //ì´ì „ìœ„ì¹˜ì™€ í˜„ì¬ìœ„ì¹˜ ë³´ì • ìœ„ì¹˜
+	Vec2 m_vPrevLookAt; //ì¹´ë©”ë¼ê°€ ë³´ëŠ” ì´ì „í”„ë ˆì„ ìœ„ì¹˜
 
-	GameObject* m_pTargetObj; //Ä«¸Ş¶ó Å¸°Ù ¿ÀºêÁ§Æ®
-	Vec2 m_vDiff; //ÇØ»óµµ Áß½ÉÀ§Ä¡¿Í, Ä«¸Ş¶ó LookAt °£ÀÇ Â÷ÀÌ °ª
+	GameObject* m_pTargetObj; //ì¹´ë©”ë¼ íƒ€ê²Ÿ ì˜¤ë¸Œì íŠ¸
+	Vec2 m_vDiff; //í•´ìƒë„ ì¤‘ì‹¬ìœ„ì¹˜ì™€, ì¹´ë©”ë¼ LookAt ê°„ì˜ ì°¨ì´ ê°’
 
-	float m_fTime; //Å¸°ÙÀ» µû¶ó°¡´Âµ¥ °É¸®´Â ½Ã°£
-	float m_fSpeed; //Å¸°ÙÀ» µû¶ó°¡´Â ¼Óµµ
-	float m_fAccTime; //´©Àû ½Ã°£
+	float m_fTime; //íƒ€ê²Ÿì„ ë”°ë¼ê°€ëŠ”ë° ê±¸ë¦¬ëŠ” ì‹œê°„
+	float m_fSpeed; //íƒ€ê²Ÿì„ ë”°ë¼ê°€ëŠ” ì†ë„
+	float m_fAccTime; //ëˆ„ì  ì‹œê°„
 
-	CTexture* m_pVeilTex; //Ä«¸Ş¶ó °¡¸²¸· ÅØ½ºÃÄ
+	CTexture* m_pVeilTex; //ì¹´ë©”ë¼ ê°€ë¦¼ë§‰ í…ìŠ¤ì³
 	list<tCamEffect> m_listCamEffect;
 
 public:

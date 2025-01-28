@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "CScene_Tool.h"
 
 #include "CKeyMgr.h"
@@ -43,14 +43,14 @@ CScene_Tool::~CScene_Tool()
 void CScene_Tool::Enter()
 {
 
-	//¸Ş´º ÀåÂø
+	//ë©”ë‰´ ì¥ì°©
 	CCore::GetInst()->DockMenu();
 
 
-	//Å¸ÀÏ »ı¼º
+	//íƒ€ì¼ ìƒì„±
 	CreateTile(5, 5);
 
-	//UI ÇÏ³ª »ı¼º
+	//UI í•˜ë‚˜ ìƒì„±
 	Vec2 vResolution = CCore::GetInst()->GetResolution();
 
 	CUI* pPanelUI = new CPanelUI;
@@ -99,7 +99,7 @@ void CScene_Tool::Enter()
 	pBtnTileTex->AddChild(pBtnSave);
 
 
-	//UI Å¬·Ğ ÇÏ³ª Ãß°¡
+	//UI í´ë¡  í•˜ë‚˜ ì¶”ê°€
 	/*CUI* pClonepPanel = pPanelUI->Clone();
 	pClonepPanel->SetPos(pClonepPanel->GetPos() + Vec2(-100.f, 0.f));
 	((CBtnUI*)pClonepPanel->GetChildUI()[0])->SetClickedCallBack(&ChangeScene, 0, 0);
@@ -133,7 +133,7 @@ void CScene_Tool::Enter()
 	SetBackGround(backGround);
 	
 
-	//Ä«¸Ş¶ó Look ÁöÁ¤
+	//ì¹´ë©”ë¼ Look ì§€ì •
 	CCamera::GetInst()->SetLookAt(vResolution/2.f);
 }
 
@@ -231,7 +231,7 @@ void CScene_Tool::Update()
 
 	//if (KEY_TAP(KEY::LSHIFT))
 	//{
-	//	//ÀúÀåÇØ ³õÀº m_pUI¸¦ Æ÷Ä¿½Ì
+	//	//ì €ì¥í•´ ë†“ì€ m_pUIë¥¼ í¬ì»¤ì‹±
 	//	//CUIMgr::GetInst()->SetFocusedUI(m_pUI);
 	//	SaveTileData();
 	//}
@@ -437,7 +437,7 @@ void CScene_Tool::SaveTile(const wstring& _strFilePath)
 	_wfopen_s(&pFile,_strFilePath.c_str(),L"wb");
 	assert(pFile);
 
-	//Å¸ÀÏ °¡·Î¼¼·Î °³¼ö ÀúÀå
+	//íƒ€ì¼ ê°€ë¡œì„¸ë¡œ ê°œìˆ˜ ì €ì¥
 	UINT xCount = GetTileX();
 	UINT yCount = GetTileY();
 
@@ -447,7 +447,7 @@ void CScene_Tool::SaveTile(const wstring& _strFilePath)
 
 	fprintf(pFile,"\n");
 
-	//¸ğµç Å¸ÀÏµéÀ» °³º°ÀûÀ¸·Î ÀúÀåÇÒ µ¥ÀÌÅÍ¸¦ ÀúÀåÇÏ°Ô ÇÔ
+	//ëª¨ë“  íƒ€ì¼ë“¤ì„ ê°œë³„ì ìœ¼ë¡œ ì €ì¥í•  ë°ì´í„°ë¥¼ ì €ì¥í•˜ê²Œ í•¨
 	const vector<GameObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
 	const vector<GameObject*>& vecGround = GetGroupObject(GROUP_TYPE::GROUND);
 
@@ -490,7 +490,7 @@ void CScene_Tool::SaveTileData()
 	ofn.lpstrInitialDir = strTileFolder.c_str();
 	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
-	//Modal ¹æ½Ä
+	//Modal ë°©ì‹
 	if (GetSaveFileName(&ofn))
 	{
 		SaveTile(szName);
@@ -520,7 +520,7 @@ void CScene_Tool::LoadTileData()
 	ofn.lpstrInitialDir = strTileFolder.c_str();
 	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
-	//Modal ¹æ½Ä
+	//Modal ë°©ì‹
 	if (GetOpenFileName(&ofn))
 	{
 		wstring strRelativePath = CPathMgr::GetInst()->GetRelativePath(szName);
@@ -541,29 +541,29 @@ void CScene_Tool::LoadTileTexUI()
 	string path2 = string().assign(path.begin(), path.end());
 
 	try {
-		HANDLE hFind = FindFirstFileA(path2.c_str(), &data); //Ã¹¹øÂ° ÆÄÀÏ Ã£¾Æ ÇÚµé ¸®ÅÏ
+		HANDLE hFind = FindFirstFileA(path2.c_str(), &data); //ì²«ë²ˆì§¸ íŒŒì¼ ì°¾ì•„ í•¸ë“¤ ë¦¬í„´
 		if (hFind == INVALID_HANDLE_VALUE)
-			throw std::runtime_error("FindFirstFile ½ÇÆĞ"); //¿¹¿ÜÃ³¸® 
+			throw std::runtime_error("FindFirstFile ì‹¤íŒ¨"); //ì˜ˆì™¸ì²˜ë¦¬ 
 
 		while (FindNextFileA(hFind, &data))
 		{
 
-			if ((data.dwFileAttributes & FILE_ATTRIBUTE_ARCHIVE) &&  //ÆÄÀÏÀÌ¶ó¸é
-				!(data.dwFileAttributes & FILE_ATTRIBUTE_SYSTEM)) //½Ã½ºÅÛÆÄÀÏÀº Á¦¿Ü
+			if ((data.dwFileAttributes & FILE_ATTRIBUTE_ARCHIVE) &&  //íŒŒì¼ì´ë¼ë©´
+				!(data.dwFileAttributes & FILE_ATTRIBUTE_SYSTEM)) //ì‹œìŠ¤í…œíŒŒì¼ì€ ì œì™¸
 			{
 				m_vecTile_list.push_back(std::string(data.cFileName));
 			}
 		}
-		FindClose(hFind); //ÇÚµé ´İ¾ÆÁÖ±â 
+		FindClose(hFind); //í•¸ë“¤ ë‹«ì•„ì£¼ê¸° 
 	}
 	catch (std::runtime_error e)
 	{
 		std::cerr << e.what() << std::endl;
-		cout << "Åø ¿¡·¯";
+		cout << "íˆ´ ì—ëŸ¬";
 	}
 
-	//Ãâ·ÂÀ¸·Î È®ÀÎÇÏ±â 
-	std::cout << "ÆÄÀÏ¸®½ºÆ®" << std::endl;
+	//ì¶œë ¥ìœ¼ë¡œ í™•ì¸í•˜ê¸° 
+	std::cout << "íŒŒì¼ë¦¬ìŠ¤íŠ¸" << std::endl;
 	for (std::string str : m_vecTile_list)
 	{
 		std::cout << str << std::endl;
@@ -575,7 +575,7 @@ void CScene_Tool::LoadTileTexUI()
 	path2 = m_vecTile_list[m_iImgIndex];
 	path += wstring().assign(path2.begin(), path2.end());
 
-	//ºÒ·¯¿Ã Å¸ÀÏÀÌ ¾øÀ¸¸é ÁßÁö
+	//ë¶ˆëŸ¬ì˜¬ íƒ€ì¼ì´ ì—†ìœ¼ë©´ ì¤‘ì§€
 	if (m_vecTile_list.size() == 0)
 		assert(nullptr);
 
@@ -693,10 +693,10 @@ void CScene_Tool::SaveBmp()
 	HBITMAP hBitmap = CreateCompatibleBitmap(hdcScreen, screenX, screenY);
 	SelectObject(hdcMem, hBitmap);
 
-	//È­¸é Ä¸Ã³
+	//í™”ë©´ ìº¡ì²˜
 	BitBlt(hdcMem, 0, 0, screenX, screenY, hdcScreen, 0, 0, SRCCOPY);
 
-	//ºñÆ®¸Ê ÀúÀå
+	//ë¹„íŠ¸ë§µ ì €ì¥
 	BITMAPINFOHEADER bi;
 	bi.biSize = sizeof(BITMAPINFOHEADER);
 	bi.biWidth = screenX;
@@ -754,7 +754,7 @@ INT_PTR CALLBACK TileCountProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 
 			CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
 
-			// ToolScene È®ÀÎ
+			// ToolScene í™•ì¸
 			CScene_Tool* pToolScene = dynamic_cast<CScene_Tool*>(pCurScene);
 			assert(pToolScene);
 

@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "CAnimator.h"
 #include "CAnimation.h"
 #include "CCore.h"
@@ -36,8 +36,8 @@ void CAnimator::FinalUpdate()
 	{
 		m_pCurAnim->Update();
 
-		//c´Â ¾ÕÀÇ Á¶°ÇÀÌ °ÅÁþÀÌ¸é µÚÀÇ Á¶°ÇÀº º¸Áöµµ ¾Ê°í ÆÐ½ºÇÑ´Ù
-		//ÀÌ¸¦ ÀÌ¿ëÇÑ ÇÁ·Î±×·¡¹Ö ¹æ½ÄÀ» °í¹ÎÇÒ°Í
+		//cëŠ” ì•žì˜ ì¡°ê±´ì´ ê±°ì§“ì´ë©´ ë’¤ì˜ ì¡°ê±´ì€ ë³´ì§€ë„ ì•Šê³  íŒ¨ìŠ¤í•œë‹¤
+		//ì´ë¥¼ ì´ìš©í•œ í”„ë¡œê·¸ëž˜ë° ë°©ì‹ì„ ê³ ë¯¼í• ê²ƒ
 		if (m_bRepeat && m_pCurAnim->IsFinish())
 		{
 			m_pCurAnim->SetFrame(0);

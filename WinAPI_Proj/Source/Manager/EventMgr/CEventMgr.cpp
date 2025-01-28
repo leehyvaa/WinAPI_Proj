@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "CEventMgr.h"
 #include "GameObject.h"
 #include "CSceneMgr.h"
@@ -16,7 +16,7 @@ CEventMgr::~CEventMgr()
 
 void CEventMgr::Update()
 {
-	//ÀÌÀü ÇÁ·¹ÀÓ¿¡ µî·ÏÇØµĞ dead objectµéÀ» »èÁ¦
+	//ì´ì „ í”„ë ˆì„ì— ë“±ë¡í•´ë‘” dead objectë“¤ì„ ì‚­ì œ
 	for (size_t i = 0; i < m_vecDead.size(); i++)
 	{
 		delete m_vecDead[i];
@@ -24,7 +24,7 @@ void CEventMgr::Update()
 	m_vecDead.clear();
 
 
-	//Event Ã³¸®
+	//Event ì²˜ë¦¬
 	for (size_t i = 0; i < m_vecEvent.size(); i++)
 	{
 		Excute(m_vecEvent[i]);
@@ -47,9 +47,9 @@ void CEventMgr::Excute(const tEvent& _eve)
 	break;
 	case EVENT_TYPE::DELETE_OBJECT:
 	{
-		//lParam : »èÁ¦µÉ ¿ÀºêÁ§Æ® ÁÖ¼Ò
-		//object¸¦ dead »óÅÂ·Î º¯°æ
-		//»èÁ¦¿¹Á¤ ¿ÀºêÁ§Æ®µéÀ» ¸ğ¾ÆµĞ´Ù.
+		//lParam : ì‚­ì œë  ì˜¤ë¸Œì íŠ¸ ì£¼ì†Œ
+		//objectë¥¼ dead ìƒíƒœë¡œ ë³€ê²½
+		//ì‚­ì œì˜ˆì • ì˜¤ë¸Œì íŠ¸ë“¤ì„ ëª¨ì•„ë‘”ë‹¤.
 		GameObject* pDeadObj = (GameObject*)_eve.lParam;
 		pDeadObj->SetDead();
 		m_vecDead.push_back(pDeadObj);
@@ -60,7 +60,7 @@ void CEventMgr::Excute(const tEvent& _eve)
 		// lParam : Next Cene Type
 		CSceneMgr::GetInst()->ChangeScene((SCENE_TYPE)_eve.lParam);
 
-		//Æ÷Ä¿½º UI ÇØÁ¦(ÀÌÀü SceneÀÇ UI¸¦ °¡¸®Å°°í ÀÖ±â ¶§¹®
+		//í¬ì»¤ìŠ¤ UI í•´ì œ(ì´ì „ Sceneì˜ UIë¥¼ ê°€ë¦¬í‚¤ê³  ìˆê¸° ë•Œë¬¸
 		CUIMgr::GetInst()->SetFocusedUI(nullptr);
 	}break;
 	

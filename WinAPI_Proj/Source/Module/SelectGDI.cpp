@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "SelectGDI.h"
 #include "CCore.h"
 

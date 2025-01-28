@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "CCore.h"
 #include "CKeyMgr.h"
 #include "GameObject.h"
@@ -31,7 +31,7 @@ CCore::CCore()
 
 CCore::~CCore()
 {
-	ReleaseDC(m_hWnd,m_hDC); //GetDC·Î ¸¸µç Dc´Â ¸±¸®Áî·Î ÇØÁ¦
+	ReleaseDC(m_hWnd,m_hDC); //GetDCë¡œ ë§Œë“  DcëŠ” ë¦´ë¦¬ì¦ˆë¡œ í•´ì œ
 
 	for (int i = 0; i < (UINT)PEN_TYPE::END; i++)
 	{
@@ -59,21 +59,21 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 	m_hWnd = _hWnd;
 	m_ptResolution = _ptResolution;
 
-	//ÇØ»óµµ¿¡ ¸Â°Ô À©µµ¿ì Å©±â Á¶Àý
+	//í•´ìƒë„ì— ë§žê²Œ ìœˆë„ìš° í¬ê¸° ì¡°ì ˆ
 	ChangeWindowSize(m_ptResolution, false);
 	
-	//¸Þ´º¹Ù »ý¼º
+	//ë©”ë‰´ë°” ìƒì„±
 	m_hMenu = LoadMenu(nullptr, MAKEINTRESOURCEW(IDC_WINAPIPROJ));
 
 	m_hDC = GetDC(m_hWnd);
 
-	//´õºí¹öÆÛ¸µ ¿ëµµÀÇ ÅØ½ºÃÄ ÇÑÀåÀ» ¸¸µç´Ù.
+	//ë”ë¸”ë²„í¼ë§ ìš©ë„ì˜ í…ìŠ¤ì³ í•œìž¥ì„ ë§Œë“ ë‹¤.
 	m_pMemTex = CResMgr::GetInst()->CreateTexture(L"BackBuffer",(UINT)m_ptResolution.x, (UINT)m_ptResolution.y);
 
 	
 	CreateBrushPen();
 
-	//Manager ÃÊ±âÈ­
+	//Manager ì´ˆê¸°í™”
 	CTimeMgr::GetInst()->init();
 	CKeyMgr::GetInst()->init();
 	CPathMgr::GetInst()->init();
@@ -82,14 +82,14 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 	CSceneMgr::GetInst()->init();
 
 
-	//Sound ·Îµå Å×½ºÆ®
+	//Sound ë¡œë“œ í…ŒìŠ¤íŠ¸
 	CResMgr::GetInst()->LoadSound(L"BGM_01", L"sound\\BGM_Title.wav");
 	CSound* pNewSound = CResMgr::GetInst()->FindSound(L"BGM_01");
 
 	pNewSound->PlayToBGM(true);
 	//pNewSound->Play();
 
-	//pNewSound->SetPosition(50.f); //¹éºÐÀ², ¼Ò¸® À§Ä¡ ¼³Á¤
+	//pNewSound->SetPosition(50.f); //ë°±ë¶„ìœ¨, ì†Œë¦¬ ìœ„ì¹˜ ì„¤ì •
 	pNewSound->SetVolume(20.f);
 
 
@@ -100,25 +100,25 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 
 void CCore::Progress()
 {
-	//Manager ¾÷µ¥ÀÌÆ®
+	//Manager ì—…ë°ì´íŠ¸
 	CTimeMgr::GetInst()->Update();
 	CKeyMgr::GetInst()->Update();
 	CCamera::GetInst()->Update();
 
 
-	//¾À ¾÷µ¥ÀÌÆ®, Ãæµ¹Ã³¸®
+	//ì”¬ ì—…ë°ì´íŠ¸, ì¶©ëŒì²˜ë¦¬
 	CSceneMgr::GetInst()->Update();
 	CCollisionMgr::GetInst()->Update();
 
 
-	//UI ÀÌº¥Æ® Ã¼Å©
+	//UI ì´ë²¤íŠ¸ ì²´í¬
 	CUIMgr::GetInst()->Update();
 
 
 
-	//·»´õ¸µ
-	//È­¸é Å¬¸®¾î
-	//memDC¿¡´Ù ¸ÕÀú ±×¸°´Ù
+	//ë Œë”ë§
+	//í™”ë©´ í´ë¦¬ì–´
+	//memDCì—ë‹¤ ë¨¼ì € ê·¸ë¦°ë‹¤
 	Clear(m_pMemTex->GetDC());
 	
 
@@ -128,11 +128,11 @@ void CCore::Progress()
 
 
 	BitBlt(m_hDC, 0, 0, m_ptResolution.x, m_ptResolution.y
-		, m_pMemTex->GetDC(), 0, 0, SRCCOPY); //¼Ò½º ºñÆ®¸Ê¿¡¼­ ¸ñÀûºñÆ®¸ÊÀ¸·Î º¹»ç
+		, m_pMemTex->GetDC(), 0, 0, SRCCOPY); //ì†ŒìŠ¤ ë¹„íŠ¸ë§µì—ì„œ ëª©ì ë¹„íŠ¸ë§µìœ¼ë¡œ ë³µì‚¬
 
 	CTimeMgr::GetInst()->Render();
 
-	//ÀÌº¥Æ® Áö¿¬Ã³¸®
+	//ì´ë²¤íŠ¸ ì§€ì—°ì²˜ë¦¬
 	CEventMgr::GetInst()->Update();
 }
 
@@ -187,7 +187,7 @@ void CCore::Clear(HDC _dc)
 
 void CCore::DockMenu()
 {
-	//¸Þ´º¹Ù ÀåÂø
+	//ë©”ë‰´ë°” ìž¥ì°©
 	SetMenu(m_hWnd, m_hMenu);
 	ChangeWindowSize(GetResolution(), true);
 

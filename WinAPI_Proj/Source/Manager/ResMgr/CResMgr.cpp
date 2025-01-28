@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "CResMgr.h"
 #include "CPathMgr.h"
 #include "CTexture.h"
@@ -13,7 +13,7 @@ CResMgr::~CResMgr()
     for (; iter != m_mapTex.end() ; iter++)
     {
         delete iter->second;
-    } ¾Æ·¡ ÅÛÇÃ¸´ÇÔ¼ö·Î ´ëÃ¼ */
+    } ì•„ë˜ í…œí”Œë¦¿í•¨ìˆ˜ë¡œ ëŒ€ì²´ */
 
     Safe_Delete_Map(m_mapTex);
 }
@@ -23,7 +23,7 @@ CResMgr::~CResMgr()
 CTexture* CResMgr::CreateTexture(const wstring& _strKey, UINT _iWidth, UINT _iHeight)
 {
     CTexture* pTex = FindTexture(_strKey);
-    if (nullptr != pTex) //ÅØ½ºÃ³°¡ ÀÌ¹Ì Á¸ÀçÇÒ °æ¿ì ¸¸µéÁö ¾Ê°í Ã£¾Æ¼­ ÁÜ
+    if (nullptr != pTex) //í…ìŠ¤ì²˜ê°€ ì´ë¯¸ ì¡´ì¬í•  ê²½ìš° ë§Œë“¤ì§€ ì•Šê³  ì°¾ì•„ì„œ ì¤Œ
         return pTex;
 
   
@@ -44,7 +44,7 @@ CTexture* CResMgr::CreateTexture(const wstring& _strKey, UINT _iWidth, UINT _iHe
 CTexture* CResMgr::LoadTexture(const wstring& _strKey, const wstring& _strRelativePath)
 {
     CTexture* pTex = FindTexture(_strKey);
-    if (nullptr != pTex) //ÅØ½ºÃ³°¡ ÀÌ¹Ì Á¸ÀçÇÒ °æ¿ì ¸¸µéÁö ¾Ê°í Ã£¾Æ¼­ ÁÜ
+    if (nullptr != pTex) //í…ìŠ¤ì²˜ê°€ ì´ë¯¸ ì¡´ì¬í•  ê²½ìš° ë§Œë“¤ì§€ ì•Šê³  ì°¾ì•„ì„œ ì¤Œ
         return pTex;
 
     wstring strFilePath = CPathMgr::GetInst()->GetContentPath();
@@ -64,7 +64,7 @@ CTexture* CResMgr::FindTexture(const wstring& _strKey)
 {
 
 
-    //map ÀÇ find ¸®ÅÏÇüÀº iterator·Î ³ª¿È
+    //map ì˜ find ë¦¬í„´í˜•ì€ iteratorë¡œ ë‚˜ì˜´
     map<wstring,CRes*>::iterator iter = m_mapTex.find(_strKey);
 
     if (iter == m_mapTex.end())

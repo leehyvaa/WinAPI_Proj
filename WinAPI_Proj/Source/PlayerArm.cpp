@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "PlayerArm.h"
 #include "SPlayer.h"
 #include "CResMgr.h"
@@ -18,19 +18,19 @@ PlayerArm::PlayerArm()
 
 	
 
-#pragma region  ÇÃ·¹ÀÌ¾î Arm ¾Ö´Ï¸ÞÀÌ¼Ç
-	//ÅØ½ºÃÄ ·Îµù
+#pragma region  í”Œë ˆì´ì–´ Arm ì• ë‹ˆë©”ì´ì…˜
+	//í…ìŠ¤ì³ ë¡œë”©
 	CTexture* pArmTexRight = CResMgr::GetInst()->LoadTexture(L"ArmTex_Right", L"texture\\player\\Arm_Right.bmp");
 	CTexture* pArmTexLeft = CResMgr::GetInst()->LoadTexture(L"ArmTex_Left", L"texture\\player\\Arm_Left.bmp");
 
 
 
-	//¾Ö´Ï¸ÞÀÌ¼Ç ·Îµù
+	//ì• ë‹ˆë©”ì´ì…˜ ë¡œë”©
 	//GetAnimator()->LoadAnimation(L"animation\\playerArm_right_idle.anim");
 
 
 
-	//RIGHT ¾Ö´Ï¸ÞÀÌ¼Ç »ý¼º
+	//RIGHT ì• ë‹ˆë©”ì´ì…˜ ìƒì„±
 	GetAnimator()->CreateAnimation(L"SNB_ARM_RIGHT_IDLE", pArmTexRight,
 		Vec2(0.f, 900.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 8, 0.85f, Vec2(-20.f, 28.f));
 	GetAnimator()->CreateAnimation(L"SNB_ARM_RIGHT_RUN", pArmTexRight,
@@ -51,7 +51,7 @@ PlayerArm::PlayerArm()
 		Vec2(0.f, 2300.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.2f, 3, 0.85f, Vec2(0.f, 3.f));
 
 
-	//LEFT ¾Ö´Ï¸ÞÀÌ¼Ç »ý¼º
+	//LEFT ì• ë‹ˆë©”ì´ì…˜ ìƒì„±
 	GetAnimator()->CreateAnimation(L"SNB_ARM_LEFT_IDLE", pArmTexLeft,
 		Vec2(0.f, 900.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 8, 0.85f, Vec2(20.f, 28.f));
 	GetAnimator()->CreateAnimation(L"SNB_ARM_LEFT_RUN", pArmTexLeft,
@@ -73,7 +73,7 @@ PlayerArm::PlayerArm()
 
 
 
-	//RIGHT ¾Ö´Ï¸ÞÀÌ¼Ç ÀúÀå
+	//RIGHT ì• ë‹ˆë©”ì´ì…˜ ì €ìž¥
 	GetAnimator()->FindAnimation(L"SNB_ARM_RIGHT_IDLE")->Save(L"animation\\playerArm_right_idle.anim");
 	GetAnimator()->FindAnimation(L"SNB_ARM_RIGHT_RUN")->Save(L"animation\\playerArm_right_run.anim");
 	GetAnimator()->FindAnimation(L"SNB_ARM_RIGHT_JUMP")->Save(L"animation\\playerArm_right_jump.anim");
@@ -84,7 +84,7 @@ PlayerArm::PlayerArm()
 	GetAnimator()->FindAnimation(L"SNB_ARM_RIGHT_CLIMBSTOP")->Save(L"animation\\playerArm_right_climbstop.anim");
 	GetAnimator()->FindAnimation(L"SNB_ARM_RIGHT_SWING")->Save(L"animation\\playerArm_right_swing.anim");
 
-	//LEFT ¾Ö´Ï¸ÞÀÌ¼Ç ÀúÀå
+	//LEFT ì• ë‹ˆë©”ì´ì…˜ ì €ìž¥
 	GetAnimator()->FindAnimation(L"SNB_ARM_LEFT_IDLE")->Save(L"animation\\playerArm_left_idle.anim");
 	GetAnimator()->FindAnimation(L"SNB_ARM_LEFT_RUN")->Save(L"animation\\playerArm_left_run.anim");
 	GetAnimator()->FindAnimation(L"SNB_ARM_LEFT_JUMP")->Save(L"animation\\playerArm_left_jump.anim");
@@ -197,7 +197,7 @@ void PlayerArm::Update_Animation()
 			GetAnimator()->Play(L"SNB_ARM_RIGHT_CLIMBDOWN", true);
 		break;
 	case PLAYER_STATE::SWING:
-		//LookAt °íÃÄ¾ßÇÔ ±âÁØ¹æÇâÀ¸·ÎºÎÅÍÀÇ È¸ÀüÀ¸·Î
+		//LookAt ê³ ì³ì•¼í•¨ ê¸°ì¤€ë°©í–¥ìœ¼ë¡œë¶€í„°ì˜ íšŒì „ìœ¼ë¡œ
 		LookAt(owner->GetTargetPos());
 		if (dir == -1)
 			GetAnimator()->Play(L"SNB_ARM_LEFT_SWING", true);

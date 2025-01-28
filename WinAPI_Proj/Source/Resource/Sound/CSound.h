@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "CRes.h"
 #include "CSoundMgr.h"
 class CSound :
@@ -12,19 +12,19 @@ private:
 public:
     int Load(const wstring& _strPath);
 
-    //ÀÏ¹İ Àç»ı
+    //ì¼ë°˜ ì¬ìƒ
     void Play(bool _bLoop = false);
 
-    //BGMÀ¸·Î Àç»ı
+    //BGMìœ¼ë¡œ ì¬ìƒ
     void PlayToBGM(bool _bLoop = false);
     
     void Stop(bool _bReset = false);
 
-    //º¼·ı ¹üÀ§(0~100)
+    //ë³¼ë¥¨ ë²”ìœ„(0~100)
     void SetVolume(float _fVolume);
 
-    //À½¾ÇÆÄÀÏ(»ç¿îµåÆ®·¢) À§Ä¡ Á¶Á¤
-    void SetPosition(float _fPosition); //0~100»çÀÌ
+    //ìŒì•…íŒŒì¼(ì‚¬ìš´ë“œíŠ¸ë™) ìœ„ì¹˜ ì¡°ì •
+    void SetPosition(float _fPosition); //0~100ì‚¬ì´
 
 private:
     bool LoadWaveSound(const wstring& _strPath);

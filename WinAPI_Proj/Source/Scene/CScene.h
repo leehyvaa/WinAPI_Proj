@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "CMonPrefab.h"
 #include "CGroundPrefab.h"
 
@@ -9,14 +9,14 @@ class CTexture;
 class CScene
 {
 private:
-	//¿ÀºêÁ§Æ®¸¦ ÀúÀå ¹× °ü¸®ÇÒ º¤ÅÍ¸¦ ±×·ì °³¼ö¸¸Å­ ¼±¾ğ
+	//ì˜¤ë¸Œì íŠ¸ë¥¼ ì €ì¥ ë° ê´€ë¦¬í•  ë²¡í„°ë¥¼ ê·¸ë£¹ ê°œìˆ˜ë§Œí¼ ì„ ì–¸
 	vector<GameObject*> m_arrObj[(UINT)GROUP_TYPE::END];
-	wstring			 m_strName;//¾À ÀÌ¸§
+	wstring			 m_strName;//ì”¬ ì´ë¦„
 
 	
 
 
-	UINT m_iTileX; //Å¸ÀÏ °¡·Î °³¼ö
+	UINT m_iTileX; //íƒ€ì¼ ê°€ë¡œ ê°œìˆ˜
 	UINT m_iTileY;
 	UINT m_iGroundCount;
 
@@ -58,7 +58,7 @@ public:
 	void RegisterPlayer(GameObject* _pPlayer) { m_pPlayer = _pPlayer; }
 
 
-	//º¤ÅÍ ·¹ÆÛ·±½º¸¦ ¹İÈ¯ÇÏ¸é¼­ const·Î ¿øº»¼öÁ¤ ºÒ°¡´ÉÇÏ°Ô
+	//ë²¡í„° ë ˆí¼ëŸ°ìŠ¤ë¥¼ ë°˜í™˜í•˜ë©´ì„œ constë¡œ ì›ë³¸ìˆ˜ì • ë¶ˆê°€ëŠ¥í•˜ê²Œ
 	const vector<GameObject*>& GetGroupObject(GROUP_TYPE _eType){return m_arrObj[(UINT)_eType];}
 	void DeleteGroup(GROUP_TYPE _eTarget);
 	void DeleteAll();

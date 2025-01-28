@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "CCollider.h"
 #include "GameObject.h"
 #include "CCore.h"
@@ -17,7 +17,7 @@ CCollider::CCollider()
 	
 }
 
-//¿ÀºêÁ§Æ®¸¦ º¹»ç»ı¼ºÀÚ·Î ¸¸µé¾úÀ»¶§ÀÇ µöÄ«ÇÇ
+//ì˜¤ë¸Œì íŠ¸ë¥¼ ë³µì‚¬ìƒì„±ìë¡œ ë§Œë“¤ì—ˆì„ë•Œì˜ ë”¥ì¹´í”¼
 CCollider::CCollider(const CCollider& _origin)
 	:m_pOwner(nullptr)
 	, m_vOffsetPos(_origin.m_vOffsetPos)

@@ -1,5 +1,5 @@
-#pragma once
-//¿ÀºêÁ§Æ®¸¦ ¼³°èÇÒ ¶© Ç×»ó º¹»ç»ı¼ºÀÚ¸¦ Ä¿½ºÅÒÇØ¼­ ¸¸µé¾î¾ß ÇÏ´ÂÁö¸¦ »ı°¢ÇÒ °Í
+ï»¿#pragma once
+//ì˜¤ë¸Œì íŠ¸ë¥¼ ì„¤ê³„í•  ë• í•­ìƒ ë³µì‚¬ìƒì„±ìë¥¼ ì»¤ìŠ¤í…€í•´ì„œ ë§Œë“¤ì–´ì•¼ í•˜ëŠ”ì§€ë¥¼ ìƒê°í•  ê²ƒ
 
 
 #include "global.h"
@@ -72,7 +72,7 @@ public:
 	virtual void OnCollisionExit(CCollider* _pOther) {};
 
 
-	virtual void Start() {}; //¾À ½ÃÀÛµÇ±â Á÷Àü¿¡ È£ÃâµÇ´ÂÇÔ¼ö
+	virtual void Start() {}; //ì”¬ ì‹œì‘ë˜ê¸° ì§ì „ì— í˜¸ì¶œë˜ëŠ”í•¨ìˆ˜
 	virtual void Update() = 0;
 	virtual void FinalUpdate();
 	virtual void Render(HDC _dc);

@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "CCore.h"
 #include "CTimeMgr.h"
 #include "CKeyMgr.h"
@@ -37,7 +37,7 @@ SPlayer::SPlayer()
 	//m_pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\sigong.bmp");
 	
 
-	//67 -13ºĞ Ä³¸¯ÅÍ »óÅÂº¯È¯ÈÄ ¾Ö´Ï¸ŞÀÌ¼Ç ÀüÈ¯
+	//67 -13ë¶„ ìºë¦­í„° ìƒíƒœë³€í™˜í›„ ì• ë‹ˆë©”ì´ì…˜ ì „í™˜
 	CreateCollider();
 	GetCollider()->SetScale(Vec2(32.f, 102.f));
 	GetCollider()->SetOffsetPos(Vec2(0.f, -(GetCollider()->GetScale().y)/2.f));
@@ -48,19 +48,19 @@ SPlayer::SPlayer()
 	CreateAnimator();
 
 
-#pragma region ÇÃ·¹ÀÌ¾î ¾Ö´Ï¸ŞÀÌ¼Ç
-	//ÅØ½ºÃÄ ·Îµù
+#pragma region í”Œë ˆì´ì–´ ì• ë‹ˆë©”ì´ì…˜
+	//í…ìŠ¤ì³ ë¡œë”©
 	CTexture* pTexRight = CResMgr::GetInst()->LoadTexture(L"PlayerTex_Right", L"texture\\player\\Player_Right.bmp");
 	CTexture* pTexLeft = CResMgr::GetInst()->LoadTexture(L"PlayerTex_Left", L"texture\\player\\Player_Left.bmp");
 
 	
 
-	//¾Ö´Ï¸ŞÀÌ¼Ç ·Îµù
+	//ì• ë‹ˆë©”ì´ì…˜ ë¡œë”©
 	//GetAnimator()->LoadAnimation(L"animation\\player_right_idle.anim");
 
 
 
-	//RIGHT ¾Ö´Ï¸ŞÀÌ¼Ç »ı¼º
+	//RIGHT ì• ë‹ˆë©”ì´ì…˜ ìƒì„±
 	GetAnimator()->CreateAnimation(L"SNB_RIGHT_IDLE", pTexRight,
 		Vec2(0.f, 900.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f),0.25f, 8, 3.f,Vec2(0.f,-57.f));
 	GetAnimator()->CreateAnimation(L"SNB_RIGHT_RUN", pTexRight,
@@ -82,7 +82,7 @@ SPlayer::SPlayer()
 
 
 
-	//LEFT ¾Ö´Ï¸ŞÀÌ¼Ç »ı¼º
+	//LEFT ì• ë‹ˆë©”ì´ì…˜ ìƒì„±
 	GetAnimator()->CreateAnimation(L"SNB_LEFT_IDLE", pTexLeft,
 		Vec2(0.f, 900.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 8, 3.f, Vec2(0.f, -57.f));
 	GetAnimator()->CreateAnimation(L"SNB_LEFT_RUN", pTexLeft,
@@ -104,7 +104,7 @@ SPlayer::SPlayer()
 
 
 	
-	//RIGHT ¾Ö´Ï¸ŞÀÌ¼Ç ÀúÀå
+	//RIGHT ì• ë‹ˆë©”ì´ì…˜ ì €ì¥
 	GetAnimator()->FindAnimation(L"SNB_RIGHT_IDLE")->Save(L"animation\\player_right_idle.anim");
 	GetAnimator()->FindAnimation(L"SNB_RIGHT_RUN")->Save(L"animation\\player_right_run.anim");
 	GetAnimator()->FindAnimation(L"SNB_RIGHT_JUMP")->Save(L"animation\\player_right_jump.anim");
@@ -116,7 +116,7 @@ SPlayer::SPlayer()
 	GetAnimator()->FindAnimation(L"SNB_RIGHT_SWING")->Save(L"animation\\player_right_swing.anim");
 
 
-	//LEFT ¾Ö´Ï¸ŞÀÌ¼Ç ÀúÀå
+	//LEFT ì• ë‹ˆë©”ì´ì…˜ ì €ì¥
 	GetAnimator()->FindAnimation(L"SNB_LEFT_IDLE")->Save(L"animation\\player_left_idle.anim");
 	GetAnimator()->FindAnimation(L"SNB_LEFT_RUN")->Save(L"animation\\player_left_run.anim");
 	GetAnimator()->FindAnimation(L"SNB_LEFT_JUMP")->Save(L"animation\\player_left_jump.anim");
@@ -136,7 +136,7 @@ SPlayer::SPlayer()
 	
 
 
-	//¾Ö´Ï¸ŞÀÌ¼Ç ¿ÀÇÁ¼Â °³º°·Î ³Ö±â
+	//ì• ë‹ˆë©”ì´ì…˜ ì˜¤í”„ì…‹ ê°œë³„ë¡œ ë„£ê¸°
 	//CAnimation* pAnim = GetAnimator()->FindAnimation(L"WALK_RIGHT");
 	//for (UINT i = 0; i < pAnim->GetMaxFrame(); i++)
 	//{
@@ -235,7 +235,7 @@ void SPlayer::Render(HDC _dc)
 
 
 
-	//¾ËÆÄºí·»µå¸¦ »ç¿ëÇÑ ·£´õ¸µ
+	//ì•ŒíŒŒë¸”ë Œë“œë¥¼ ì‚¬ìš©í•œ ëœë”ë§
 	//CTexture* pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex1", L"texture\\Sail_Fish.bmp");
 
 	//Vec2 vPos = GetPos();
@@ -248,7 +248,7 @@ void SPlayer::Render(HDC _dc)
 	//bf.BlendOp = AC_SRC_OVER;
 	//bf.BlendFlags = 0;
 	//bf.AlphaFormat = AC_SRC_ALPHA;
-	//bf.SourceConstantAlpha = 127; //Àü¿ªÀûÀ¸·Î Àû¿ëµÇ´Â ¾ËÆÄ
+	//bf.SourceConstantAlpha = 127; //ì „ì—­ì ìœ¼ë¡œ ì ìš©ë˜ëŠ” ì•ŒíŒŒ
 
 	//AlphaBlend(_dc
 	//	, int(vPos.x - width / 2.f)
@@ -340,7 +340,7 @@ void SPlayer::Update_State()
 
 
 
-	//¹æÇâÀüÈ¯
+	//ë°©í–¥ì „í™˜
 	if (KEY_HOLD(KEY::A) && !isClimbing && m_eCurState != PLAYER_STATE::SWING)
 	{
 		m_iDir = -1;
@@ -356,14 +356,14 @@ void SPlayer::Update_State()
 	}
 
 
-	//Á¶ÀÛ ¾øÀ»½Ã IdleÀüÈ¯
+	//ì¡°ì‘ ì—†ì„ì‹œ Idleì „í™˜
 	if (0.f == GetRigidBody()->GetSpeed() && m_bOnGround )
 	{
 		m_eCurState = PLAYER_STATE::IDLE;
 	}
 
 
-	//Á¡ÇÁ
+	//ì í”„
 	if (KEY_TAP(KEY::SPACE) && m_bOnGround)
 	{
 		m_eCurState = PLAYER_STATE::JUMP;
@@ -376,12 +376,12 @@ void SPlayer::Update_State()
 
 
 
-	//¿ÍÀÌ¾î ÇØÁ¦
+	//ì™€ì´ì–´ í•´ì œ
 	if (KEY_AWAY(KEY::LBUTTON))
 	{
 		if(playerHook !=nullptr && playerHook->GetHookState() ==HOOK_STATE::GRAB)
 		{
-			//¹Ù·Î »èÁ¦ÇÏÁö ¾Ê°í È¸¼ö¸ğ¼ÇÀ¸·Î ÀüÈ¯ ÈÄ È¸¼öµÇ¸é »èÁ¦
+			//ë°”ë¡œ ì‚­ì œí•˜ì§€ ì•Šê³  íšŒìˆ˜ëª¨ì…˜ìœ¼ë¡œ ì „í™˜ í›„ íšŒìˆ˜ë˜ë©´ ì‚­ì œ
 			playerHook->SetHookState(HOOK_STATE::RETURN_WITH);
 			GetGravity()->SetGround(false);
 			
@@ -446,7 +446,7 @@ void SPlayer::Update_Move()
 
 
 
-	//¿ÍÀÌ¾î ¹ß»ç
+	//ì™€ì´ì–´ ë°œì‚¬
 	if (KEY_TAP(KEY::LBUTTON))
 	{
 
@@ -629,7 +629,7 @@ void SPlayer::OnCollision(CCollider* _pOther)
 
 
 		
-		//³ªÁß¿¡ Á¡ÇÁ ¸»°í ´Ù¸¥ »óÅÂ¿¡¼­µµ º®Å¸±â ÇÏ°Ô²û ¼öÁ¤ÇÒ ¿©Áö ÀÖÀ½
+		//ë‚˜ì¤‘ì— ì í”„ ë§ê³  ë‹¤ë¥¸ ìƒíƒœì—ì„œë„ ë²½íƒ€ê¸° í•˜ê²Œë” ìˆ˜ì •í•  ì—¬ì§€ ìˆìŒ
 		if (m_eCurState == PLAYER_STATE::JUMP)
 		{
 			if (vPos.y <= vGroundPos.y + 75.f &&
@@ -669,7 +669,7 @@ void SPlayer::OnCollision(CCollider* _pOther)
 
 
 
-			//¹Ø¿¡ ÄÚµå´Â ±»ÀÌ ¶¥¿¡¼­ Ã³¸®ÇØ¾ß ÇÏ³ª ½ÍÀ½
+			//ë°‘ì— ì½”ë“œëŠ” êµ³ì´ ë•…ì—ì„œ ì²˜ë¦¬í•´ì•¼ í•˜ë‚˜ ì‹¶ìŒ
 			if (m_eCurState == PLAYER_STATE::RUN && GetRigidBody()->GetSpeed() == 0.f)
 			{
 				m_eCurState = PLAYER_STATE::IDLE;
@@ -702,7 +702,7 @@ void SPlayer::OnCollisionExit(CCollider* _pOther)
 			if (pOtherObj->GetPos().y + pOtherObj->GetScale().y < GetPos().y)
 			{
 				
-				//Æú»óÅÂ·Î º¯È¯ÇØ¾ßÇÔ
+				//í´ìƒíƒœë¡œ ë³€í™˜í•´ì•¼í•¨
 
 				pRigid->SetVelocity(Vec2(0.f, -50.f));
 			}
@@ -822,13 +822,13 @@ void SPlayer::SwingMove()
 
 
 
-	//ÇÃ·¹ÀÌ¾î Æ÷Áö¼ÇÀÌ ¿ø¹üÀ§ ¾È¿¡ µé¾î¿À¸é (ÇÑ¹ø µé¾î¿À¸é ½ºÀ® µµÁß¿£ Àı´ë ¾È³ª°¡°Ô²û)
-	//ÇöÀç velocity¸¦ Æ÷¹°¼± ¹æÇâ´ë·Î º¯È¯
-	//ÇöÀç Æ÷Áö¼ÇÀÌ¶û ¹æÇâ¿¡ µû¶ó velocity ¼öÄ¡¸¦ Á¶Àı
-	//ÈûÀ» ÁÖ´Â ¹æ½ÄÀ¸·Î º¯È¯ÇÏÀÚ
+	//í”Œë ˆì´ì–´ í¬ì§€ì…˜ì´ ì›ë²”ìœ„ ì•ˆì— ë“¤ì–´ì˜¤ë©´ (í•œë²ˆ ë“¤ì–´ì˜¤ë©´ ìŠ¤ìœ™ ë„ì¤‘ì—” ì ˆëŒ€ ì•ˆë‚˜ê°€ê²Œë”)
+	//í˜„ì¬ velocityë¥¼ í¬ë¬¼ì„  ë°©í–¥ëŒ€ë¡œ ë³€í™˜
+	//í˜„ì¬ í¬ì§€ì…˜ì´ë‘ ë°©í–¥ì— ë”°ë¼ velocity ìˆ˜ì¹˜ë¥¼ ì¡°ì ˆ
+	//í˜ì„ ì£¼ëŠ” ë°©ì‹ìœ¼ë¡œ ë³€í™˜í•˜ì
 
 	float distance = (targetPos - playerArm->GetPos()).Length();
-	//ÇÃ·¹ÀÌ¾îÀÇ ÇöÀç °¢µµ ±¸ÇÏ±â
+	//í”Œë ˆì´ì–´ì˜ í˜„ì¬ ê°ë„ êµ¬í•˜ê¸°
 	Vec2 dir = playerArm->GetPos() - targetPos;
 	Vec2 up = Vec2(targetPos.x,targetPos.y-1) - targetPos;
 
@@ -962,23 +962,23 @@ void SPlayer::SwingMove()
 
 	if (distance > wireRange + 5.f)
 	{
-		// 1. ¹æÇâ º¤ÅÍ °è»ê
+		// 1. ë°©í–¥ ë²¡í„° ê³„ì‚°
 		Vec2 dir = (playerArm->GetPos() - targetPos).Normalize();
 
-		// 2. ¿øÇÏ´Â À§Ä¡ °è»ê (ÃÖ´ë ±æÀÌ ³»·Î Á¦ÇÑ)
+		// 2. ì›í•˜ëŠ” ìœ„ì¹˜ ê³„ì‚° (ìµœëŒ€ ê¸¸ì´ ë‚´ë¡œ ì œí•œ)
 		Vec2 desiredPos = targetPos + dir * wireRange;
 
-		// 3. ÇöÀç À§Ä¡¿Í ¿øÇÏ´Â À§Ä¡ÀÇ Â÷ÀÌ (º¸Á¤ º¤ÅÍ)
+		// 3. í˜„ì¬ ìœ„ì¹˜ì™€ ì›í•˜ëŠ” ìœ„ì¹˜ì˜ ì°¨ì´ (ë³´ì • ë²¡í„°)
 		Vec2 correction = desiredPos - playerArm->GetPos();
 
-		// 4. ½ºÇÁ¸µ Èû °è»ê (°­¼º °è¼ö k »ç¿ë)
-		float k = 1000.0f; // °ª Á¶Àı·Î Åº¼º Á¶Àı
+		// 4. ìŠ¤í”„ë§ í˜ ê³„ì‚° (ê°•ì„± ê³„ìˆ˜ k ì‚¬ìš©)
+		float k = 1000.0f; // ê°’ ì¡°ì ˆë¡œ íƒ„ì„± ì¡°ì ˆ
 		Vec2 springForce = correction * k;
 
-		// 5. ¸®Áöµå¹Ùµğ¿¡ Èû Àû¿ë
+		// 5. ë¦¬ì§€ë“œë°”ë””ì— í˜ ì ìš©
 		pRigid->AddForce(springForce);
 
-		// 6. Á¢¼± ¹æÇâÀ¸·Î¸¸ ¼Óµµ À¯Áö
+		// 6. ì ‘ì„  ë°©í–¥ìœ¼ë¡œë§Œ ì†ë„ ìœ ì§€
 		Vec2 tangentDir = Vec2(-dir.y, dir.x);
 		Vec2 currentVelocity = pRigid->GetVelocity();
 		float tangentSpeed = currentVelocity.Dot(tangentDir);
@@ -1007,7 +1007,7 @@ void SPlayer::CreateHook()
 	playerHook->SetOwner(playerArm);
 
 	CreateObject(playerHook, GROUP_TYPE::PROJ_PLAYER);
-	//CreateObject ÇÔ¼ö¿¡ Æ÷Áö¼Ç, ¹æÇâ, ½ºÄÉÀÏÀ» ¼³Á¤ÇØÁÖ´Â ÀÎÀÚ¸¦ ³Ö¾î¾ßÇÔ
+	//CreateObject í•¨ìˆ˜ì— í¬ì§€ì…˜, ë°©í–¥, ìŠ¤ì¼€ì¼ì„ ì„¤ì •í•´ì£¼ëŠ” ì¸ìë¥¼ ë„£ì–´ì•¼í•¨
 
 
 	if (CCamera::GetInst()->GetRealPos(MOUSE_POS).x < GetPos().x)

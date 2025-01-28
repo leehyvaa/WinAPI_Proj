@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 class CUI;
 
 class CUIMgr
@@ -17,6 +17,6 @@ public:
 
 private:
 	CUI* GetFocusedUI();
-	CUI* GetTargetedUI(CUI* _pParentUI); // ºÎ¸ğ UI ³»¿¡¼­ ½ÇÁ¦·Î Å¸°ÙµÈ UI¸¦ Ã£¾Æ¼­ ¹İÈ¯
+	CUI* GetTargetedUI(CUI* _pParentUI); // ë¶€ëª¨ UI ë‚´ì—ì„œ ì‹¤ì œë¡œ íƒ€ê²Ÿëœ UIë¥¼ ì°¾ì•„ì„œ ë°˜í™˜
 };
 

@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "func.h"
 
 #include "CEventMgr.h"
@@ -63,16 +63,16 @@ void FScanf(char* _pOutBuff, FILE* _pFIle)
 void SaveWString(const wstring& _str, FILE* _pFile)
 {
 
-	//¼¼ÀÌºêÇÒ¶§ ½ºÆ®¸µÃ¤·Î °¡Á®´Ù ³ÖÀ¸¸é ¾ÈµÇ°í wchar_t·Î ¹Ù²ã¼­ ³Ö´Â´Ù.
-	//ÀÌÀ¯´Â stringÀÌ ¾ÖÃÊ¿¡ ¹®ÀÚ¿­À» ¸â¹ö·Î ÀúÀåÇÏ´Â°Ô ¾Æ´Ñ Èü¸Þ¸ð¸®¿¡ ¹®ÀÚ¿­À» ³Ö¾î³Ö°í
-	//Æ÷ÀÎÅÍ·Î °¡Á®´Ù ¾²´Â ³à¼®ÀÌ±â ¶§¹®
-	//ÀÌ·±°É µ¥ÀÌÅÍ Á÷·ÄÈ­¶ó ÇÑ´Ù.
+	//ì„¸ì´ë¸Œí• ë•Œ ìŠ¤íŠ¸ë§ì±„ë¡œ ê°€ì ¸ë‹¤ ë„£ìœ¼ë©´ ì•ˆë˜ê³  wchar_të¡œ ë°”ê¿”ì„œ ë„£ëŠ”ë‹¤.
+	//ì´ìœ ëŠ” stringì´ ì• ì´ˆì— ë¬¸ìžì—´ì„ ë©¤ë²„ë¡œ ì €ìž¥í•˜ëŠ”ê²Œ ì•„ë‹Œ íž™ë©”ëª¨ë¦¬ì— ë¬¸ìžì—´ì„ ë„£ì–´ë„£ê³ 
+	//í¬ì¸í„°ë¡œ ê°€ì ¸ë‹¤ ì“°ëŠ” ë…€ì„ì´ê¸° ë•Œë¬¸
+	//ì´ëŸ°ê±¸ ë°ì´í„° ì§ë ¬í™”ë¼ í•œë‹¤.
 	const wchar_t* pStrName = _str.c_str();
 	size_t iLen = _str.length();
 
-	//¹®ÀÚ ±æÀÌ ÀúÀå
+	//ë¬¸ìž ê¸¸ì´ ì €ìž¥
 	fwrite(&iLen, sizeof(size_t), 1, _pFile);
-	//¹®ÀÚ¿­ ÀúÀå
+	//ë¬¸ìžì—´ ì €ìž¥
 	fwrite(pStrName, sizeof(wchar_t), iLen, _pFile);
 
 
@@ -81,7 +81,7 @@ void SaveWString(const wstring& _str, FILE* _pFile)
 void LoadWString(wstring& _str, FILE* _pFile)
 {
 
-	//¹®ÀÚ¿­ ÀÐ±â
+	//ë¬¸ìžì—´ ì½ê¸°
 	size_t iLen = 0;
 	fread(&iLen, sizeof(size_t), 1, _pFile);
 	wchar_t szBuff[256] = {};

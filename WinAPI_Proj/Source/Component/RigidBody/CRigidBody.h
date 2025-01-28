@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 class GameObject;
 
 class CRigidBody
@@ -6,14 +6,14 @@ class CRigidBody
 private:
 	GameObject* m_pOwner;
 	
-	Vec2 m_vForce; //Å©±â, ¹æÇâ
-	Vec2 m_vAccel; //°¡¼Óµµ
-	Vec2 m_vAccelA; //°¡¼Óµµ Ãß°¡
-	Vec2 m_vVelocity; //¼Óµµ(Å©±â :¼Ó·Â, ¹æÇâ)
+	Vec2 m_vForce; //í¬ê¸°, ë°©í–¥
+	Vec2 m_vAccel; //ê°€ì†ë„
+	Vec2 m_vAccelA; //ê°€ì†ë„ ì¶”ê°€
+	Vec2 m_vVelocity; //ì†ë„(í¬ê¸° :ì†ë ¥, ë°©í–¥)
 
-	Vec2 m_vMaxVelocity; //ÃÖ´ë ¼Óµµ
-	float m_fMass; //Áú·®
-	float m_fFricCoeff; //¸¶Âû °è¼ö
+	Vec2 m_vMaxVelocity; //ìµœëŒ€ ì†ë„
+	float m_fMass; //ì§ˆëŸ‰
+	float m_fFricCoeff; //ë§ˆì°° ê³„ìˆ˜
 
 					  
 	//F = M * A

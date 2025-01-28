@@ -1,11 +1,11 @@
-#pragma once
+ï»¿#pragma once
 
-//sound ¿ëµµ -Çì´õ ¼ø¼­ Áß¿ä
+//sound ìš©ë„ -í—¤ë” ìˆœì„œ ì¤‘ìš”
 #include <mmsystem.h>
 #include <dsound.h>
 #include <dinput.h>
 
-//ÄÚµå
+//ì½”ë“œ
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "dsound.lib")
 
@@ -17,8 +17,8 @@ class CSoundMgr
 	SINGLE(CSoundMgr)
 
 private:
-	LPDIRECTSOUND8 m_pSound; //»ç¿îµåÄ«µå ´ëÇ¥ °´Ã¼
-	CSound* m_pBGM; //ÇöÀç ÀúÀåµÈ BGM Sound
+	LPDIRECTSOUND8 m_pSound; //ì‚¬ìš´ë“œì¹´ë“œ ëŒ€í‘œ ê°ì²´
+	CSound* m_pBGM; //í˜„ì¬ ì €ì¥ëœ BGM Sound
 
 public:
 	int init(void);

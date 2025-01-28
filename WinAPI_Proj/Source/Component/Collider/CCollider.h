@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Vec2.h"
 
 class GameObject;
@@ -10,13 +10,13 @@ private:
 
 	GameObject* m_pOwner;
 	Vec2 m_vOffsetPos;
-	Vec2 m_vFinalPos; //finalUpdate¿¡¼­ ¸Å ÇÁ·¹ÀÓ °è»ê
+	Vec2 m_vFinalPos; //finalUpdateì—ì„œ ë§¤ í”„ë ˆì„ ê³„ì‚°
 	Vec2 m_vScale;
 
-	UINT m_iID; //Ãæµ¹Ã¼ÀÇ °íÀ¯ ID°ª
+	UINT m_iID; //ì¶©ëŒì²´ì˜ ê³ ìœ  IDê°’
 	int m_iCol;
 
-	bool m_bActive; //Ãæµ¹Ã¼ È°¼º ¿©ºÎ
+	bool m_bActive; //ì¶©ëŒì²´ í™œì„± ì—¬ë¶€
 
 public:
 	void SetOffsetPos(Vec2 _vPos) { m_vOffsetPos = _vPos; }
@@ -34,11 +34,11 @@ public:
 	void FinalUpdate();
 	void Render(HDC _dc);
 
-	void OnCollision(CCollider* _pOther);//Ãæµ¹ ÁßÀÎ °æ¿ì È£Ãâ
+	void OnCollision(CCollider* _pOther);//ì¶©ëŒ ì¤‘ì¸ ê²½ìš° í˜¸ì¶œ
 	void OnCollisionEnter(CCollider* pOther);
 	void OnCollisionExit(CCollider* pOther);
 
-	//´ëÀÔ¿¬»êÀÚ ÇÔ¼ö¸¦ ¸ø¾²°Ô delete ÇØ¹ö¸²
+	//ëŒ€ì…ì—°ì‚°ì í•¨ìˆ˜ë¥¼ ëª»ì“°ê²Œ delete í•´ë²„ë¦¼
 	CCollider& operator = (CCollider& _origin) = delete;
 
 public:

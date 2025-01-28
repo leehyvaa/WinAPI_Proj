@@ -1,11 +1,11 @@
-#pragma once
+О╩©#pragma once
 
 enum class KEY_STATE
 {
-	NONE,//╢╘╦ёаЖ ╬й╬р╟М юлюЭ©║╣╣ ╢╜╦╝аЖ ╬йю╨ ╩Себ
-	TAP, //╢╘╦╔ ╫ца║
-	HOLD,//╢╘╦ё╟М юж╢б
-	AWAY,//╦╥ ╤╘ ╫ца║
+	NONE,//К┬└К╔╢Л╖─ Л∙┼Л∙≤ЙЁ═ Л²╢Л═└Л≈░К▐└ К┬▄К╕╛Л╖─ Л∙┼Л²─ Л┐│М┐°
+	TAP, //К┬└К╔╦ Л▀°Л═░
+	HOLD,//К┬└К╔╢ЙЁ═ Л·┬К┼■
+	AWAY,//К╖┴ К∙░ Л▀°Л═░
 };
 
 enum class KEY
@@ -78,8 +78,8 @@ enum class KEY
 
 struct tKeyInfo
 {
-	KEY_STATE	eState; //е╟ ╩Себ╟╙
-	bool bPrevPush; //юлюЭ га╥╧юс©║╪╜ ╢╜╥х╢баЖ ©╘╨н
+	KEY_STATE	eState; //М┌╓ Л┐│М┐°Й╟▓
+	bool bPrevPush; //Л²╢Л═└ М■└К═┬Л·└Л≈░Л└° К┬▄К═╦К┼■Л╖─ Л≈╛К╤─
 };
 
 class CKeyMgr
