@@ -45,142 +45,154 @@
     <ClInclude Include="Source\WinAPI_Proj.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Component\Animator\Animation\CAnimation.h">
+    <ClInclude Include="Source\Component\Animator\Animation\CAnimation.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Component\Animator\CAnimator.h">
+    <ClInclude Include="Source\Component\Animator\CAnimator.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Component\Collider\CCollider.h">
+    <ClInclude Include="Source\Component\Collider\CCollider.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Component\Gravity\CGravity.h">
+    <ClInclude Include="Source\Component\Gravity\CGravity.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Component\RigidBody\CRigidBody.h">
+    <ClInclude Include="Source\Component\RigidBody\CRigidBody.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Core\CCore.h">
+    <ClInclude Include="Source\Core\CCore.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Header\define.h">
+    <ClInclude Include="Source\framework.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Header\func.h">
+    <ClInclude Include="Source\Header\define.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Header\global.h">
+    <ClInclude Include="Source\Header\func.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Header\pch.h">
+    <ClInclude Include="Source\Header\global.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Header\struct.h">
+    <ClInclude Include="Source\Header\pch.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Manager\Camera\CCamera.h">
+    <ClInclude Include="Source\Header\struct.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Manager\CollisionMgr\CCollisionMgr.h">
+    <ClInclude Include="Source\Manager\Camera\CCamera.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Manager\CSoundMgr\CSoundMgr.h">
+    <ClInclude Include="Source\Manager\CollisionMgr\CCollisionMgr.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Manager\EventMgr\CEventMgr.h">
+    <ClInclude Include="Source\Manager\CSoundMgr\CSoundMgr.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Manager\KeyMgr\CKeyMgr.h">
+    <ClInclude Include="Source\Manager\EventMgr\CEventMgr.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Manager\PathMgr\CPathMgr.h">
+    <ClInclude Include="Source\Manager\KeyMgr\CKeyMgr.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Manager\ResMgr\CResMgr.h">
+    <ClInclude Include="Source\Manager\PathMgr\CPathMgr.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Manager\SceneMgr\CSceneMgr.h">
+    <ClInclude Include="Source\Manager\ResMgr\CResMgr.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Manager\TimeMgr\CTimeMgr.h">
+    <ClInclude Include="Source\Manager\SceneMgr\CSceneMgr.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Manager\UIMgr\CUIMgr.h">
+    <ClInclude Include="Source\Manager\TimeMgr\CTimeMgr.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Module\AI\State\Idle\CIdleState.h">
+    <ClInclude Include="Source\Manager\UIMgr\CUIMgr.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Module\AI\State\Trace\CTraceState.h">
+    <ClInclude Include="Source\Module\AI\AI.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Module\AI\State\CState.h">
+    <ClInclude Include="Source\Module\AI\State\CState.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Module\AI\AI.h">
+    <ClInclude Include="Source\Module\AI\State\Idle\CIdleState.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Module\SelectGDI.h">
+    <ClInclude Include="Source\Module\AI\State\Trace\CTraceState.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Object\Ground\CGround.h">
+    <ClInclude Include="Source\Module\SelectGDI.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Object\Ground\CNormalGround.h">
+    <ClInclude Include="Source\Object\CMonster.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Object\Tile\CBackGround.h">
+    <ClInclude Include="Source\Object\GameObject.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Object\Tile\CTile.h">
+    <ClInclude Include="Source\Object\Ground\CGround.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Object\UI\BtnUI\CBtnUI.h">
+    <ClInclude Include="Source\Object\Ground\CNormalGround.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Object\UI\PanelUI\CPanelUI.h">
+    <ClInclude Include="Source\Object\Tile\CBackGround.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Object\UI\CUI.h">
+    <ClInclude Include="Source\Object\Tile\CTile.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Object\CMonster.h">
+    <ClInclude Include="Source\Object\UI\BtnUI\CBtnUI.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Object\GameObject.h">
+    <ClInclude Include="Source\Object\UI\CUI.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Prefab\CGroundPrefab.h">
+    <ClInclude Include="Source\Object\UI\PanelUI\CPanelUI.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Prefab\CMonPrefab.h">
+    <ClInclude Include="Source\Prefab\CGroundPrefab.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Resource\Sound\CSound.h">
+    <ClInclude Include="Source\Prefab\CMonPrefab.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Resource\Texture\CTexture.h">
+    <ClInclude Include="Source\resource.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Resource\CRes.h">
+    <ClInclude Include="Source\Resource\CRes.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Scene\Scene_Stage_01\Scene_Stage_01.h">
+    <ClInclude Include="Source\Resource\Sound\CSound.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Scene\Scene_Title\CScene_Title.h">
+    <ClInclude Include="Source\Resource\Texture\CTexture.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Scene\Scene_Tool\CScene_Tool.h">
+    <ClInclude Include="Source\Scene\CScene.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Scene\CScene.h">
+    <ClInclude Include="Source\Scene\Scene_Stage_01\Scene_Stage_01.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Tool\CTool.h">
+    <ClInclude Include="Source\Scene\Scene_Title\CScene_Title.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Tool\Vec2.h">
+    <ClInclude Include="Source\Scene\Scene_Tool\CScene_Tool.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\targetver.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Tool\CTool.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Tool\Vec2.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Object\UI\ChatUI\CTextUI.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -203,130 +215,133 @@
     <ClCompile Include="Source\SPlayer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Component\Animator\Animation\CAnimation.cpp">
+    <ClCompile Include="Source\Component\Animator\Animation\CAnimation.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Component\Animator\CAnimator.cpp">
+    <ClCompile Include="Source\Component\Animator\CAnimator.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Component\Collider\CCollider.cpp">
+    <ClCompile Include="Source\Component\Collider\CCollider.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Component\Gravity\CGravity.cpp">
+    <ClCompile Include="Source\Component\Gravity\CGravity.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Component\RigidBody\CRigidBody.cpp">
+    <ClCompile Include="Source\Component\RigidBody\CRigidBody.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Core\CCore.cpp">
+    <ClCompile Include="Source\Core\CCore.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Header\func.cpp">
+    <ClCompile Include="Source\Header\func.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Manager\Camera\CCamera.cpp">
+    <ClCompile Include="Source\Manager\Camera\CCamera.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Manager\CollisionMgr\CCollisionMgr.cpp">
+    <ClCompile Include="Source\Manager\CollisionMgr\CCollisionMgr.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Manager\CSoundMgr\CSoundMgr.cpp">
+    <ClCompile Include="Source\Manager\CSoundMgr\CSoundMgr.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Manager\EventMgr\CEventMgr.cpp">
+    <ClCompile Include="Source\Manager\EventMgr\CEventMgr.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Manager\KeyMgr\CKeyMgr.cpp">
+    <ClCompile Include="Source\Manager\KeyMgr\CKeyMgr.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Manager\PathMgr\CPathMgr.cpp">
+    <ClCompile Include="Source\Manager\PathMgr\CPathMgr.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Manager\ResMgr\CResMgr.cpp">
+    <ClCompile Include="Source\Manager\ResMgr\CResMgr.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Manager\SceneMgr\CSceneMgr.cpp">
+    <ClCompile Include="Source\Manager\SceneMgr\CSceneMgr.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Manager\TimeMgr\CTimeMgr.cpp">
+    <ClCompile Include="Source\Manager\TimeMgr\CTimeMgr.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Manager\UIMgr\CUIMgr.cpp">
+    <ClCompile Include="Source\Manager\UIMgr\CUIMgr.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Module\AI\State\Idle\CIdleState.cpp">
+    <ClCompile Include="Source\Module\AI\AI.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Module\AI\State\Trace\CTraceState.cpp">
+    <ClCompile Include="Source\Module\AI\State\CState.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Module\AI\State\CState.cpp">
+    <ClCompile Include="Source\Module\AI\State\Idle\CIdleState.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Module\AI\AI.cpp">
+    <ClCompile Include="Source\Module\AI\State\Trace\CTraceState.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Module\SelectGDI.cpp">
+    <ClCompile Include="Source\Module\SelectGDI.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Object\Ground\CGround.cpp">
+    <ClCompile Include="Source\Object\CMonster.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Object\Ground\CNormalGround.cpp">
+    <ClCompile Include="Source\Object\GameObject.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Object\Tile\CBackGround.cpp">
+    <ClCompile Include="Source\Object\Ground\CGround.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Object\Tile\CTile.cpp">
+    <ClCompile Include="Source\Object\Ground\CNormalGround.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Object\UI\BtnUI\CBtnUI.cpp">
+    <ClCompile Include="Source\Object\Tile\CBackGround.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Object\UI\PanelUI\CPanelUI.cpp">
+    <ClCompile Include="Source\Object\Tile\CTile.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Object\UI\CUI.cpp">
+    <ClCompile Include="Source\Object\UI\BtnUI\CBtnUI.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Object\CMonster.cpp">
+    <ClCompile Include="Source\Object\UI\CUI.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Object\GameObject.cpp">
+    <ClCompile Include="Source\Object\UI\PanelUI\CPanelUI.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Prefab\CGroundPrefab.cpp">
+    <ClCompile Include="Source\Prefab\CGroundPrefab.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Prefab\CMonPrefab.cpp">
+    <ClCompile Include="Source\Prefab\CMonPrefab.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Resource\Sound\CSound.cpp">
+    <ClCompile Include="Source\Resource\CRes.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Resource\Texture\CTexture.cpp">
+    <ClCompile Include="Source\Resource\Sound\CSound.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Resource\CRes.cpp">
+    <ClCompile Include="Source\Resource\Texture\CTexture.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Scene\Scene_Stage_01\Scene_Stage_01.cpp">
+    <ClCompile Include="Source\Scene\CScene.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Scene\Scene_Title\CScene_Title.cpp">
+    <ClCompile Include="Source\Scene\Scene_Stage_01\Scene_Stage_01.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Scene\Scene_Tool\CScene_Tool.cpp">
+    <ClCompile Include="Source\Scene\Scene_Title\CScene_Title.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Scene\CScene.cpp">
+    <ClCompile Include="Source\Scene\Scene_Tool\CScene_Tool.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Tool\CTool.cpp">
+    <ClCompile Include="Source\Tool\CTool.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Tool\Vec2.cpp">
+    <ClCompile Include="Source\Tool\Vec2.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Object\UI\ChatUI\CTextUI.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

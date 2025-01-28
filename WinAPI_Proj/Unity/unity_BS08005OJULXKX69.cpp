@@ -1,4 +1,7 @@
 
+#include "C:\WinAPIProject\WinAPI_Proj\Source\Object\UI\ChatUI\CTextUI.cpp"
+
+
 #include "C:\WinAPIProject\WinAPI_Proj\Source\CHook.cpp"
 
 
@@ -24,7 +27,4 @@
 
 
 #include "C:\WinAPIProject\WinAPI_Proj\Source\Manager\Camera\CCamera.cpp"
-
-
-#include "C:\WinAPIProject\WinAPI_Proj\Source\Manager\CollisionMgr\CCollisionMgr.cpp"
 

@@ -13,6 +13,7 @@
 #include "CBtnUI.h"
 #include "CUIMgr.h"
 #include "CTexture.h"
+#include "CTextUI.h"
 #include "CGround.h"
 #include "CBackGround.h"
 #include "resource.h"
@@ -111,7 +112,26 @@ void CScene_Tool::Enter()
 
 
 
-	
+    // 1. 기본 사용법
+    CTextUI* pChatBox = new CTextUI();
+    pChatBox->SetAlign(CTextUI::TEXT_ALIGN::LEFT);
+    pChatBox->SetLineSpace(5);
+
+    // 라인 직접 추가
+    pChatBox->AddLine(L"[시스템] 환영합니다!");
+    pChatBox->AddLine(L"> 플레이어가 입장했습니다");
+
+    // 2. 개행 문자로 분할
+    pChatBox->SetText(L"첫번째 줄\n두번째 줄\n세번째 줄");
+
+    // 3. 벡터로 일괄 추가
+    vector<wstring> tutorialText = {
+        L"조작 방법:",
+        L"WASD - 이동",
+        L"Space - 점프"
+    };
+    pChatBox->AddLines(tutorialText);
+    AddObject(pChatBox, GROUP_TYPE::UI);
 
 
 

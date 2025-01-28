@@ -135,7 +135,7 @@
       <MinFilesInUnityFile>8</MinFilesInUnityFile>
       <UnityFilesDirectory>$(ProjectDir)\Unity\</UnityFilesDirectory>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Source;$(ProjectDir)Source\Component;$(ProjectDir)Source\Core;$(ProjectDir)Source\Header;$(ProjectDir)Source\Manager;$(ProjectDir)Source\Module;$(ProjectDir)Source\Object;$(ProjectDir)Source\Prefab;$(ProjectDir)Source\Resource;$(ProjectDir)Source\Scene;$(ProjectDir)Source\Tool;$(ProjectDir)Source\Component\Animator;$(ProjectDir)Source\Component\Collider;$(ProjectDir)Source\Component\Gravity;$(ProjectDir)Source\Component\RigidBody;$(ProjectDir)Source\Component\Animator\Animation;$(ProjectDir)Source\Manager\Camera;$(ProjectDir)Source\Manager\CollisionMgr;$(ProjectDir)Source\Manager\CSoundMgr;$(ProjectDir)Source\Manager\EventMgr;$(ProjectDir)Source\Manager\KeyMgr;$(ProjectDir)Source\Manager\PathMgr;$(ProjectDir)Source\Manager\ResMgr;$(ProjectDir)Source\Manager\SceneMgr;$(ProjectDir)Source\Manager\TimeMgr;$(ProjectDir)Source\Manager\UIMgr;$(ProjectDir)Source\Module\AI;$(ProjectDir)Source\Module\AI\State;$(ProjectDir)Source\Module\AI\State\Idle;$(ProjectDir)Source\Module\AI\State\Trace;$(ProjectDir)Source\Object\Ground;$(ProjectDir)Source\Object\Tile;$(ProjectDir)Source\Object\UI;$(ProjectDir)Source\Object\UI\BtnUI;$(ProjectDir)Source\Object\UI\PanelUI;$(ProjectDir)Source\Resource\Sound;$(ProjectDir)Source\Resource\Texture;$(ProjectDir)Source\Scene\Scene_Stage_01;$(ProjectDir)Source\Scene\Scene_Title;$(ProjectDir)Source\Scene\Scene_Tool</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Source\Object\UI\ChatUI;$(ProjectDir);$(ProjectDir)Source;$(ProjectDir)Source\Component;$(ProjectDir)Source\Core;$(ProjectDir)Source\Header;$(ProjectDir)Source\Manager;$(ProjectDir)Source\Module;$(ProjectDir)Source\Object;$(ProjectDir)Source\Prefab;$(ProjectDir)Source\Resource;$(ProjectDir)Source\Scene;$(ProjectDir)Source\Tool;$(ProjectDir)Source\Component\Animator;$(ProjectDir)Source\Component\Collider;$(ProjectDir)Source\Component\Gravity;$(ProjectDir)Source\Component\RigidBody;$(ProjectDir)Source\Component\Animator\Animation;$(ProjectDir)Source\Manager\Camera;$(ProjectDir)Source\Manager\CollisionMgr;$(ProjectDir)Source\Manager\CSoundMgr;$(ProjectDir)Source\Manager\EventMgr;$(ProjectDir)Source\Manager\KeyMgr;$(ProjectDir)Source\Manager\PathMgr;$(ProjectDir)Source\Manager\ResMgr;$(ProjectDir)Source\Manager\SceneMgr;$(ProjectDir)Source\Manager\TimeMgr;$(ProjectDir)Source\Manager\UIMgr;$(ProjectDir)Source\Module\AI;$(ProjectDir)Source\Module\AI\State;$(ProjectDir)Source\Module\AI\State\Idle;$(ProjectDir)Source\Module\AI\State\Trace;$(ProjectDir)Source\Object\Ground;$(ProjectDir)Source\Object\Tile;$(ProjectDir)Source\Object\UI;$(ProjectDir)Source\Object\UI\BtnUI;$(ProjectDir)Source\Object\UI\PanelUI;$(ProjectDir)Source\Resource\Sound;$(ProjectDir)Source\Resource\Texture;$(ProjectDir)Source\Scene\Scene_Stage_01;$(ProjectDir)Source\Scene\Scene_Title;$(ProjectDir)Source\Scene\Scene_Tool</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -163,6 +163,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Object\UI\ChatUI\CTextUI.h" />
     <ClInclude Include="Source\CHook.h" />
     <ClInclude Include="Source\Component\Animator\Animation\CAnimation.h" />
     <ClInclude Include="Source\Component\Animator\CAnimator.h" />
@@ -223,6 +224,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Object\UI\ChatUI\CTextUI.cpp" />
     <ClCompile Include="Source\CHook.cpp" />
     <ClCompile Include="Source\Component\Animator\Animation\CAnimation.cpp" />
     <ClCompile Include="Source\Component\Animator\CAnimator.cpp" />
