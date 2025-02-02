@@ -39,6 +39,11 @@ private:
 	bool m_bSecondTex;
 	TOOL_MODE toolMode;
 	GROUND_TYPE groundType;
+
+    // 모드별 설명 텍스트 저장용
+    vector<wstring> m_textureHelp;
+    vector<wstring> m_groundHelp;
+    vector<wstring> m_commonHelp;
 public:
 	
 

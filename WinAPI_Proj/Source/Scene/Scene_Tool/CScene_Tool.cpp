@@ -134,32 +134,39 @@ void CScene_Tool::Enter()
     m_pHelpText->SetFontSize(20);
     
 
-    vector<wstring> helpText =
-    {
-        L"[조작법]",
-        L"",
-        L"[모드 변경]",
-        L"F1 - 텍스처 모드",
-        L"F2 - 지형 모드",
-        L"F3 - 트리거 모드", 
-        L"F4 - 프리팹 모드",
-        L"",
+
+
+    // 기존 초기화 코드...
+
+    // 모드별 설명 텍스트 초기화
+    m_textureHelp = {
         L"[텍스처 모드]",
         L"좌클릭 - 타일 배치",
-        L"우클릭 - 타일 복사",
+        L"우클릭 - 타일 복사", 
         L"BACK - 지우기",
-        L"1,2 - 전경/배경 레이어",
-        L"",
+        L"1,2 - 전경/배경 레이어"
+    };
+
+    m_groundHelp = {
         L"[지형 모드]",
         L"드래그 - 지형 생성",
         L"1~4 - 지형 타입 변경",
-        L"BACK - 마지막 지형 삭제",
-        L"",
+        L"BACK - 마지막 지형 삭제"
+    };
+
+    m_commonHelp = {
+        L"[조작법]",
+        L"F1 - 텍스처 모드",
+        L"F2 - 지형 모드",
+        L"F3 - 트리거 모드",
+        L"F4 - 프리팹 모드",
         L"F5 - 타일 테두리 표시",
         L"CTRL - 타일맵 불러오기",
         L"ESC - 시작 화면으로"
     };
-    m_pHelpText->AddLines(helpText);
+
+
+
     AddObject(m_pHelpText, GROUP_TYPE::UI);
 
 	/*CBackGround* backGround2 = new CBackGround;
@@ -195,7 +202,23 @@ void CScene_Tool::Update()
 {
 	CScene::Update();
     m_pModeText->ClearLines();
+    m_pHelpText->ClearLines();
 
+    // 공통 설명 표시
+    m_pHelpText->AddLines(m_commonHelp);
+    m_pHelpText->AddLine(L"");  // 빈 줄 추가
+
+    // 현재 모드의 설명만 표시
+    switch(toolMode)
+    {
+    case TEXTURE_MODE:
+        m_pHelpText->AddLines(m_textureHelp);
+        break;
+            
+    case GROUND_MODE:
+        m_pHelpText->AddLines(m_groundHelp);
+        break;
+    }
 
 	if (KEY_TAP(KEY::ESC))
 		ChangeScene(SCENE_TYPE::START);
@@ -402,6 +425,7 @@ void CScene_Tool::SetTileIdx()
 	}
 }
 
+// 마우스 위치의 타일을 계산하고 해당 타일의 텍스처 변경 함수를 실행하는 함수
 void CScene_Tool::DrawSelectTile()
 {
 	Vec2 vMousePos = MOUSE_POS;
@@ -419,7 +443,8 @@ void CScene_Tool::DrawSelectTile()
 
 	if (m_iImgTileIdx < 0)
 		return;
-
+    
+    // 선택된 타일의 인덱스 계산
 	UINT iIdx = iRow * iTileX + iCol;
 	
 	const vector<GameObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
@@ -429,7 +454,7 @@ void CScene_Tool::DrawSelectTile()
 	
 	
 
-
+    
 	if (!m_bErase)
 	{
 		if (m_bSecondTex)
@@ -464,6 +489,7 @@ void CScene_Tool::DrawSelectTile()
 }
 
 
+// 원본 텍스처의 선택한 위치의 idx를 기억하는 함수
 void CScene_Tool::SetTileUIIdx()
 {
 	if (m_pTexUI->GetTexture() && m_pTexUI->IsLbtnDown())
@@ -484,7 +510,7 @@ void CScene_Tool::SetTileUIIdx()
 			|| vMousePos.y < 0.f || m_iImgTileX <= iRow)
 			return;
 
-
+        // 원본텍스처에서 내가 클릭한 부분의 idx
 		m_iImgTileIdx = iRow * m_iImgTileX + iCol;
 
 		m_vImgTilePos = Vec2(iCol, iRow);
