@@ -102,10 +102,19 @@ enum class MON_STATE
 	END,
 };
 
+enum class TILE_COLLIDE_TYPE {
+    NONE,
+    SOLID,        // 완전 충돌
+    TOP_PLATFORM, // 플랫폼(위에서만 충돌)
+    BOT_PLATFORM, // 플랫폼(밑에서만 충돌)
+    SLOPE_LEFT,   // 왼쪽 경사
+    SLOPE_RIGHT   // 오른쪽 경사
+};
+
 enum class GROUND_TYPE
 {
-	GROUND,
-	NONGROUND,
+	NORMAL,
+    UNWALKABLE,
 	DAMAGEZONE,
 	DEADZONE,
 	END,

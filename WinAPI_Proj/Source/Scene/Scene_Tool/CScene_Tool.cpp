@@ -30,9 +30,11 @@ CScene_Tool::CScene_Tool()
 	, m_iImgTileIdx(-1)
 	, m_vImgTilePos(Vec2(0, 0))
 	, toolMode(TOOL_MODE::TEXTURE_MODE)
-	, groundType(GROUND_TYPE::GROUND)
+	, groundType(GROUND_TYPE::NORMAL)
 	, m_bErase(false)
 	, m_bSecondTex(false)
+	, m_pModeText(nullptr)
+    , m_pHelpText(nullptr)
 {
 }
 
@@ -114,7 +116,7 @@ void CScene_Tool::Enter()
 
     // 모드 텍스트 박스 생성
     m_pModeText = new CTextUI();
-    m_pModeText->SetPos(Vec2(1450, 0));
+    m_pModeText->SetPos(Vec2(900, 0));
     m_pModeText->SetAlign(CTextUI::TEXT_ALIGN::CENTER);
     m_pModeText->SetLineSpace(5);
     m_pModeText->SetVisibleBox(false);
@@ -143,15 +145,19 @@ void CScene_Tool::Enter()
         L"[텍스처 모드]",
         L"좌클릭 - 타일 배치",
         L"우클릭 - 타일 복사", 
+        L"1 - 배경 레이어",
+        L"2 - 전경 레이어",
         L"BACK - 지우기",
-        L"1,2 - 전경/배경 레이어"
     };
 
     m_groundHelp = {
         L"[지형 모드]",
-        L"드래그 - 지형 생성",
-        L"1~4 - 지형 타입 변경",
-        L"BACK - 마지막 지형 삭제"
+        L"좌클릭 - 지형 콜라이더 생성",
+        L"1 - 기본 지형",
+        L"2 - 벽 지형",
+        L"3 - 데미지 지형",
+        L"4 - 즉사 지형",
+        L"BACK - 지우기"
     };
 
     m_commonHelp = {
@@ -161,6 +167,8 @@ void CScene_Tool::Enter()
         L"F3 - 트리거 모드",
         L"F4 - 프리팹 모드",
         L"F5 - 타일 테두리 표시",
+        L"F6 - 콜라이더 표시",
+        L"F7 - 그라운드 타입 표시",
         L"CTRL - 타일맵 불러오기",
         L"ESC - 시작 화면으로"
     };
@@ -225,6 +233,7 @@ void CScene_Tool::Update()
 
     static wstring mode;
     static wstring subMode = L"None";
+    static wstring write = L"writing";
 
 	switch (toolMode)
 	{
@@ -235,25 +244,16 @@ void CScene_Tool::Update()
 
 		if(!m_pPanelUI->IsMouseOn())
 			SetTileIdx();
-
-
-		if (KEY_TAP(KEY::BACK))
-		{
-            subMode = L"Erase";
-			m_bErase = !m_bErase;
-		}
+	        
 		if (KEY_TAP(KEY::KEY_1))
 		{
-            subMode = L"FrontTexture";
+            subMode = L"BackTexture";
 			m_bSecondTex = false;
-			m_bErase = false;
 		}
 		if (KEY_TAP(KEY::KEY_2))
 		{
-            subMode = L"BackTexture";
+            subMode = L"FrontTexture";
 			m_bSecondTex = true;
-			m_bErase = false;
-
 		}
 
 	}
@@ -261,42 +261,51 @@ void CScene_Tool::Update()
 	case GROUND_MODE:
     {
         mode = L"GroundMode";
-        CreateGround();
-        if (KEY_TAP(KEY::BACK))
-        {
-            if (GetGroundCount() > 0)
-            {
-                DeleteObject(CSceneMgr::GetInst()->GetCurScene()->GetGroupObject(GROUP_TYPE::GROUND).back());
-                SetGroundCount(GetGroundCount() - 1);
-            }
-        }
-
-        if (KEY_TAP(KEY::P))
-        {
-            cout << "ground Count: " << GetGroundCount() << endl;
-            cout << "ground Type:" << (int)groundType << endl;
-
-        }
 
         if (KEY_TAP(KEY::KEY_1))
         {
-            groundType = GROUND_TYPE::GROUND;
+            subMode = L"NORMALGROUND";
+            groundType = GROUND_TYPE::NORMAL;
         }
-
         if (KEY_TAP(KEY::KEY_2))
         {
-            groundType = GROUND_TYPE::NONGROUND;
+            subMode = L"UNWALKABLE";
+            groundType = GROUND_TYPE::UNWALKABLE;
         }
         if (KEY_TAP(KEY::KEY_3))
         {
+            subMode = L"DAMAGEZONE";
             groundType = GROUND_TYPE::DAMAGEZONE;
         }
         if (KEY_TAP(KEY::KEY_4))
         {
+            subMode = L"DEADZONE";
             groundType = GROUND_TYPE::DEADZONE;
         }
+	        
+        if (KEY_HOLD(KEY::LBUTTON))
+        {
+            CreateGround();
+        }
+
+
+        // if (KEY_TAP(KEY::BACK))
+        // {
+        //     if (GetGroundCount() > 0)
+        //     {
+        //         DeleteObject(CSceneMgr::GetInst()->GetCurScene()->GetGroupObject(GROUP_TYPE::GROUND).back());
+        //         SetGroundCount(GetGroundCount() - 1);
+        //     }
+        // }
+
+        // if (KEY_TAP(KEY::P))
+        // {
+        //     cout << "ground Count: " << GetGroundCount() << endl;
+        //     cout << "ground Type:" << (int)groundType << endl;
+        //
+        // }
     }
-	    break;
+	break;
 	case PREFAB_MODE:
 		break;
 	case TRIGGER_MODE:
@@ -320,7 +329,14 @@ void CScene_Tool::Update()
 	{
 		LoadTileData();
 	}
-
+    if (KEY_TAP(KEY::BACK))
+    {
+        m_bErase = !m_bErase;
+        if (m_bErase)
+            write = L"Erase";
+        else
+            write = L"Write";
+    }
 
 	if (KEY_TAP(KEY::F1))
 	{
@@ -343,6 +359,7 @@ void CScene_Tool::Update()
         {
 	    mode,
 	    subMode,
+	    write,
 	    };
 
    m_pModeText->AddLines(modeText);
@@ -425,6 +442,10 @@ void CScene_Tool::SetTileIdx()
 	}
 }
 
+
+
+
+
 // 마우스 위치의 타일을 계산하고 해당 타일의 텍스처 변경 함수를 실행하는 함수
 void CScene_Tool::DrawSelectTile()
 {
@@ -487,6 +508,105 @@ void CScene_Tool::DrawSelectTile()
 
 	m_vTilePos = Vec2((float)iCol, (float)iRow);
 }
+
+void CScene_Tool::CreateGround()
+{
+    Vec2 vMousePos = MOUSE_POS;
+    vMousePos = CCamera::GetInst()->GetRealPos(vMousePos);
+
+    int iTileX = (int)GetTileX();
+    int iTileY = (int)GetTileY();
+
+    int iCol = (int)vMousePos.x / TILE_SIZE;
+    int iRow = (int)vMousePos.y / TILE_SIZE;
+
+    if (vMousePos.x < 0.f || iTileX <= iCol
+        || vMousePos.y < 0.f || iTileX <= iRow)
+        return;
+
+    if (m_iImgTileIdx < 0)
+        return;
+    
+    // 선택된 타일의 인덱스 계산
+    UINT iIdx = iRow * iTileX + iCol;
+	
+    const vector<GameObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
+
+    CTile* selectedTile = (CTile*)vecTile[iIdx];
+    
+    if (m_bErase)
+    {
+        selectedTile->SetCollideType(TILE_COLLIDE_TYPE::NONE);
+    }
+    else
+    {
+        selectedTile->SetCollideType(TILE_COLLIDE_TYPE::SOLID);
+
+        if (groundType == GROUND_TYPE::NORMAL)
+            selectedTile->SetGroundType(GROUND_TYPE::NORMAL);
+        if (groundType == GROUND_TYPE::UNWALKABLE)
+            selectedTile->SetGroundType(GROUND_TYPE::UNWALKABLE);
+        if (groundType == GROUND_TYPE::DAMAGEZONE)
+            selectedTile->SetGroundType(GROUND_TYPE::DAMAGEZONE);
+        if (groundType == GROUND_TYPE::DEADZONE)
+            selectedTile->SetGroundType(GROUND_TYPE::DEADZONE);
+    }
+    
+    
+
+	
+
+    m_vTilePos = Vec2((float)iCol, (float)iRow);
+    
+    // static Vec2 mousePos1(0, 0);
+    // static Vec2 mousePos2(0, 0);
+    //
+    //
+    // if (KEY_TAP(KEY::LBUTTON))
+    // {
+    // 	mousePos1 = MOUSE_POS;
+    // 	mousePos1 = CCamera::GetInst()->GetRealPos(mousePos1);
+    // 	cout << mousePos1.x <<endl;
+    // }
+    // if (KEY_AWAY(KEY::LBUTTON))
+    // {
+    // 	mousePos2 = MOUSE_POS;
+    // 	mousePos2 =CCamera::GetInst()->GetRealPos(mousePos2);
+    // 	cout << mousePos2.x <<endl;
+    //
+    //
+    // 	if (groundType == GROUND_TYPE::GROUND)
+    // 	{
+    // 		CGround* pGround2 = CGroundPrefab::CreateGround(GROUND_TYPE::GROUND,
+    // 			mousePos1, mousePos2);
+    // 		//AddObject((GameObject*)pGround2, GROUP_TYPE::GROUND);
+    // 		CreateObject((GameObject*)pGround2, GROUP_TYPE::GROUND);
+    // 	}
+    // 	else if (groundType == GROUND_TYPE::NONGROUND)
+    // 	{
+    // 		CGround* pGround2 = CGroundPrefab::CreateGround(GROUND_TYPE::NONGROUND,
+    // 			mousePos1, mousePos2);
+    // 		CreateObject((GameObject*)pGround2, GROUP_TYPE::GROUND);
+    // 	}
+    // 	else if (groundType == GROUND_TYPE::DAMAGEZONE)
+    // 	{
+    // 		CGround* pGround2 = CGroundPrefab::CreateGround(GROUND_TYPE::DAMAGEZONE,
+    // 			mousePos1, mousePos2);
+    // 		CreateObject((GameObject*)pGround2, GROUP_TYPE::GROUND);
+    // 	}
+    // 	else if (groundType == GROUND_TYPE::DEADZONE)
+    // 	{
+    // 		CGround* pGround2 = CGroundPrefab::CreateGround(GROUND_TYPE::DEADZONE,
+    // 			mousePos1, mousePos2);
+    // 		CreateObject((GameObject*)pGround2, GROUP_TYPE::GROUND);
+    // 	}
+    //
+    //
+    // 	SetGroundCount(GetGroundCount() + 1);
+    // }
+
+}
+
 
 
 // 원본 텍스처의 선택한 위치의 idx를 기억하는 함수
@@ -645,15 +765,15 @@ void CScene_Tool::LoadTileTexUI()
 	}
 	catch (std::runtime_error e)
 	{
-		std::cerr << e.what() << std::endl;
+		std::cerr << e.what() << "\n";
 		cout << "툴 에러";
 	}
 
 	//출력으로 확인하기 
-	std::cout << "파일리스트" << std::endl;
+	std::cout << "파일리스트" << "\n";
 	for (std::string str : m_vecTile_list)
 	{
-		std::cout << str << std::endl;
+		std::cout << str << "\n";
 	}
 
 
@@ -692,56 +812,7 @@ void CScene_Tool::ChangeTileTexUI()
 
 
 
-void CScene_Tool::CreateGround()
-{
-	static Vec2 mousePos1(0, 0);
-	static Vec2 mousePos2(0, 0);
 
-
-	if (KEY_TAP(KEY::LBUTTON))
-	{
-		mousePos1 = MOUSE_POS;
-		mousePos1 = CCamera::GetInst()->GetRealPos(mousePos1);
-		cout << mousePos1.x <<endl;
-	}
-	if (KEY_AWAY(KEY::LBUTTON))
-	{
-		mousePos2 = MOUSE_POS;
-		mousePos2 =CCamera::GetInst()->GetRealPos(mousePos2);
-		cout << mousePos2.x <<endl;
-
-
-		if (groundType == GROUND_TYPE::GROUND)
-		{
-			CGround* pGround2 = CGroundPrefab::CreateGround(GROUND_TYPE::GROUND,
-				mousePos1, mousePos2);
-			//AddObject((GameObject*)pGround2, GROUP_TYPE::GROUND);
-			CreateObject((GameObject*)pGround2, GROUP_TYPE::GROUND);
-		}
-		else if (groundType == GROUND_TYPE::NONGROUND)
-		{
-			CGround* pGround2 = CGroundPrefab::CreateGround(GROUND_TYPE::NONGROUND,
-				mousePos1, mousePos2);
-			CreateObject((GameObject*)pGround2, GROUP_TYPE::GROUND);
-		}
-		else if (groundType == GROUND_TYPE::DAMAGEZONE)
-		{
-			CGround* pGround2 = CGroundPrefab::CreateGround(GROUND_TYPE::DAMAGEZONE,
-				mousePos1, mousePos2);
-			CreateObject((GameObject*)pGround2, GROUP_TYPE::GROUND);
-		}
-		else if (groundType == GROUND_TYPE::DEADZONE)
-		{
-			CGround* pGround2 = CGroundPrefab::CreateGround(GROUND_TYPE::DEADZONE,
-				mousePos1, mousePos2);
-			CreateObject((GameObject*)pGround2, GROUP_TYPE::GROUND);
-		}
-
-
-		SetGroundCount(GetGroundCount() + 1);
-	}
-
-}
 
 void CScene_Tool::PrevTileUI()
 {

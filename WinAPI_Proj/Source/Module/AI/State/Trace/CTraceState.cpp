@@ -18,7 +18,7 @@ CTraceState::~CTraceState()
 void CTraceState::Update()
 {
 	//타겟된 Player를 쫒아간다.
-	SPlayer* pPlayer = (SPlayer*)CSceneMgr::GetInst()->GetCurScene()->GetPlayer();
+	SPlayer* pPlayer = static_cast<SPlayer*>(CSceneMgr::GetInst()->GetCurScene()->GetPlayer());
 	Vec2 vPlayerPos = pPlayer->GetPos();
 
 	Vec2 vMonPos = GetMonster()->GetPos();

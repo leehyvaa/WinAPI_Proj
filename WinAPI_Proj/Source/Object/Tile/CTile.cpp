@@ -95,7 +95,6 @@ void CTile::Render(HDC _dc)
 		if (iMaxRow <= iCurRow)
 		{
 			return;
-			assert(nullptr);
 		}
 
 		TransparentBlt(_dc
@@ -107,24 +106,25 @@ void CTile::Render(HDC _dc)
 			TILE_SIZE, TILE_SIZE, RGB(255, 0, 255));
 	}
 
-    if (CSceneMgr::GetInst()->GetCurScene()->GetDrawGroundType())
+    if (CSceneMgr::GetInst()->GetCurScene()->GetDrawGroundType() && m_eCollideType != TILE_COLLIDE_TYPE::NONE)
     {
+
         PEN_TYPE ePen = PEN_TYPE::BLUE;
 
 
-        if (GetName() == L"Ground")
+        if (m_eGroundType == GROUND_TYPE::NORMAL)
         {
-            ePen = PEN_TYPE::BLUE;
+            ePen = PEN_TYPE::GREEN;
         }
-        else if (GetName() == L"NonGround")
+        else if (m_eGroundType == GROUND_TYPE::UNWALKABLE)
         {
             ePen = PEN_TYPE::PURPLE;
         }
-        else if (GetName() == L"DamageZone")
+        else if (m_eGroundType == GROUND_TYPE::DAMAGEZONE)
         {
             ePen = PEN_TYPE::ORANGE;
         }
-        else if (GetName() == L"DeadZone")
+        else if (m_eGroundType == GROUND_TYPE::DEADZONE)
         {
             ePen = PEN_TYPE::RED;
         }

@@ -88,8 +88,8 @@ void Scene_Stage_01::Enter()
 	GameObject* playerArm = new PlayerArm();
 	playerArm->SetName(L"PlayerArm");
 	playerArm->SetPos(player->GetPos());
-	((PlayerArm*)playerArm)->SetOwner((SPlayer*)player);
-	((SPlayer*)player)->SetArm((PlayerArm*)playerArm);
+	static_cast<PlayerArm*>(playerArm)->SetOwner(static_cast<SPlayer*>(player));
+	static_cast<SPlayer*>(player)->SetArm(static_cast<PlayerArm*>(playerArm));
 
 
 	AddObject(playerArm, GROUP_TYPE::PLAYERARM);

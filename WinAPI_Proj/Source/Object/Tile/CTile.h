@@ -10,18 +10,13 @@ private:
     int m_iImgIdx;
     CTexture* m_pTileTex2;
     int m_iImgIdx2;
-    enum class COLLIDE_TYPE {
-        NONE,
-        SOLID,        // 완전 충돌
-        TOP_PLATFORM, // 플랫폼(위에서만 충돌)
-        BOT_PLATFORM, // 플랫폼(밑에서만 충돌)
-        SLOPE_LEFT,   // 왼쪽 경사
-        SLOPE_RIGHT   // 오른쪽 경사
-    };
+    
 
-    COLLIDE_TYPE m_eCollideType; // 충돌 타입 필드 추가
+    TILE_COLLIDE_TYPE m_eCollideType; // 충돌 타입 필드
+    GROUND_TYPE m_eGroundType; // 지형 타입 필드
 
 public:
+    
     virtual void Update();
     virtual void Render(HDC _dc);
 
@@ -37,7 +32,8 @@ public:
     virtual void Save(FILE* _pFile);
     virtual void Load(FILE* _pFile);
 
-    void SetCollideType(COLLIDE_TYPE _type){ m_eCollideType = _type; }
+    void SetCollideType(TILE_COLLIDE_TYPE _type){ m_eCollideType = _type; }
+    void SetGroundType(GROUND_TYPE _type){ m_eGroundType = _type; }
     virtual void OnCollisionEnter(CCollider* _pOther);
     virtual void OnCollision(CCollider* _pOther);
     virtual void OnCollisionExit(CCollider* _pOther);

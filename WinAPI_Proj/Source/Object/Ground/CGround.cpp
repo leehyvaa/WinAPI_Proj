@@ -63,10 +63,10 @@ void CGround::Render(HDC _dc)
 
 
 
-		Rectangle(_dc, (int)(vRenderPos.x)
-			, (int)(vRenderPos.y)
-			, (int)(vRenderPos.x + vScale.x)
-			, (int)(vRenderPos.y + vScale.y));
+		Rectangle(_dc, static_cast<int>(vRenderPos.x)
+			, static_cast<int>(vRenderPos.y)
+			, static_cast<int>(vRenderPos.x + vScale.x)
+			, static_cast<int>(vRenderPos.y + vScale.y));
 	}
 
 	
@@ -171,7 +171,7 @@ void CGround::OnCollisionEnter(CCollider* _pOther)
 			float fLen = abs(vObjColPos.y - vPos.y);
 			float fValue = (vObjColScale.y / 2.f + vScale.y / 2.f) - fLen;
 
-			((SPlayer*)pOtherObj)->SetOnGround(true);
+			static_cast<SPlayer*>(pOtherObj)->SetOnGround(true);
 
 			vObjPos.y -= (fValue);
 		}
@@ -238,7 +238,7 @@ void CGround::OnCollisionEnter(CCollider* _pOther)
 			float fLen = abs(vObjColPos.y - vPos.y);
 			float fValue = (vObjColScale.y / 2.f + vScale.y / 2.f) - fLen;
 
-			((SPlayer*)pOtherObj)->SetOnGround(true);
+			static_cast<SPlayer*>(pOtherObj)->SetOnGround(true);
 
 			vObjPos.y += (fValue);
 		}
@@ -279,7 +279,7 @@ void CGround::OnCollision(CCollider* _pOther)
 
 
 		if(vObjPos.y <= GetPos().y)
-			((SPlayer*)pOtherObj)->SetOnGround(true);
+			static_cast<SPlayer*>(pOtherObj)->SetOnGround(true);
 
 
 		//
@@ -340,7 +340,7 @@ void CGround::OnCollision(CCollider* _pOther)
 			float fLen = abs(vObjColPos.y - vPos.y);
 			float fValue = (vObjColScale.y / 2.f + vScale.y / 2.f) - fLen;
 
-			((SPlayer*)pOtherObj)->SetOnGround(true);
+			static_cast<SPlayer*>(pOtherObj)->SetOnGround(true);
 
 			vObjPos.y += (fValue);
 		}
@@ -357,7 +357,7 @@ void CGround::OnCollisionExit(CCollider* _pOther)
 	{
 		pOtherObj->GetGravity()->SetGround(false);
 
-		((SPlayer*)pOtherObj)->SetOnGround(false);
+		static_cast<SPlayer*>(pOtherObj)->SetOnGround(false);
 
 	}
 }
