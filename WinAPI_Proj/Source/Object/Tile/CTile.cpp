@@ -1,9 +1,13 @@
 ﻿#include "pch.h"
 #include "CTile.h"
+
+#include "CCollider.h"
 #include "CTexture.h"
 #include "SelectGDI.h"
 #include "CCore.h"
 #include "CResMgr.h"
+#include "CSceneMgr.h"
+#include "CScene.h"
 
 CTile::CTile()
 	:m_pTileTex(nullptr)
@@ -103,7 +107,47 @@ void CTile::Render(HDC _dc)
 			TILE_SIZE, TILE_SIZE, RGB(255, 0, 255));
 	}
 
+    if (CSceneMgr::GetInst()->GetCurScene()->GetDrawGroundType())
+    {
+        PEN_TYPE ePen = PEN_TYPE::BLUE;
 
+
+        if (GetName() == L"Ground")
+        {
+            ePen = PEN_TYPE::BLUE;
+        }
+        else if (GetName() == L"NonGround")
+        {
+            ePen = PEN_TYPE::PURPLE;
+        }
+        else if (GetName() == L"DamageZone")
+        {
+            ePen = PEN_TYPE::ORANGE;
+        }
+        else if (GetName() == L"DeadZone")
+        {
+            ePen = PEN_TYPE::RED;
+        }
+
+        SelectGDI b(_dc, BRUSH_TYPE::HOLLOW);
+        SelectGDI p(_dc, ePen);
+
+        Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(Vec2(GetPos().x + 2, GetPos().y + 2));
+        Vec2 vScale = Vec2(GetScale().x - 4.f, GetScale().y - 4.f);
+
+
+
+        Rectangle(_dc, (int)(vRenderPos.x)
+            , (int)(vRenderPos.y)
+            , (int)(vRenderPos.x + vScale.x)
+            , (int)(vRenderPos.y + vScale.y));
+    }
+
+	
+
+
+
+    GameObject::Component_Render(_dc);
 }
 
 void CTile::Save(FILE* _pFile)
@@ -213,3 +257,37 @@ void CTile::Load(FILE* _pFile)
 
 	FScanf(szBuff, _pFile);
 }
+
+void CTile::OnCollisionEnter(CCollider* _pOther)
+{
+    GameObject* pOtherObj = _pOther->GetObj();
+    if (pOtherObj->GetName() == L"Player")
+    {
+    }
+    
+    // if(m_eCollideType == COLLIDE_TYPE::SOLID)
+    // {
+    //     // 기본 충돌 반응
+    //     ResolveCollision(_pOther);
+    // }
+    // else if(m_eCollideType == COLLIDE_TYPE::TOP_PLATFORM)
+    // {
+    //     // 플랫폼 타입(상단에서만 충돌)
+    //     if(CheckPlatformCondition(_pOther))
+    //     {
+    //         ResolveCollision(_pOther);
+    //     }
+    // }
+    
+}
+
+void CTile::OnCollision(CCollider* _pOther)
+{
+    GameObject::OnCollision(_pOther);
+}
+
+void CTile::OnCollisionExit(CCollider* _pOther)
+{
+    GameObject::OnCollisionExit(_pOther);
+}
+
