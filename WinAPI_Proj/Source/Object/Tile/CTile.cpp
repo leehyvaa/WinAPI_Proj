@@ -196,6 +196,29 @@ void CTile::Save(FILE* _pFile)
 		fprintf(_pFile, "[Texture_Path]\n");
 		fprintf(_pFile, "-1\n");
 	}
+
+    fprintf(_pFile, "[CollideType]\n");
+    if (m_eCollideType == TILE_COLLIDE_TYPE::SOLID)
+    {
+        fprintf(_pFile, "1\n");
+    }
+    else
+    {
+        fprintf(_pFile, "-1\n");
+    }
+    
+    fprintf(_pFile, "[GroundType]\n");
+    if (m_eGroundType == GROUND_TYPE::NORMAL)
+        fprintf(_pFile, "0\n");
+    else if (m_eGroundType == GROUND_TYPE::UNWALKABLE)
+        fprintf(_pFile, "1\n");
+    else if (m_eGroundType == GROUND_TYPE::DAMAGEZONE)
+        fprintf(_pFile, "2\n");
+    else if (m_eGroundType == GROUND_TYPE::DEADZONE)
+        fprintf(_pFile, "3\n");
+    
+    
+    
 	fprintf(_pFile, "\n");
 }
 
@@ -255,6 +278,30 @@ void CTile::Load(FILE* _pFile)
 		FScanf(szBuff, _pFile);
 	}
 
+    FScanf(szBuff, _pFile); // [CollideType] 섹션
+    int iCollideType;
+    fscanf_s(_pFile, "%d", &iCollideType);
+
+    // CollideType 설정
+    if (iCollideType == 1) {
+        m_eCollideType = TILE_COLLIDE_TYPE::SOLID;
+    } else {
+        m_eCollideType = TILE_COLLIDE_TYPE::NONE;
+    }
+
+    FScanf(szBuff, _pFile); // [GroundType] 섹션
+    int iGroundType;
+    fscanf_s(_pFile, "%d", &iGroundType);
+
+    // GroundType 설정
+    switch (iGroundType) {
+    case 0: m_eGroundType = GROUND_TYPE::NORMAL; break;
+    case 1: m_eGroundType = GROUND_TYPE::UNWALKABLE; break;
+    case 2: m_eGroundType = GROUND_TYPE::DAMAGEZONE; break;
+    case 3: m_eGroundType = GROUND_TYPE::DEADZONE; break;
+    default: m_eGroundType = GROUND_TYPE::NORMAL; break;
+    }
+    
 	FScanf(szBuff, _pFile);
 }
 

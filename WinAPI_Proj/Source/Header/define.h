@@ -108,7 +108,8 @@ enum class TILE_COLLIDE_TYPE {
     TOP_PLATFORM, // 플랫폼(위에서만 충돌)
     BOT_PLATFORM, // 플랫폼(밑에서만 충돌)
     SLOPE_LEFT,   // 왼쪽 경사
-    SLOPE_RIGHT   // 오른쪽 경사
+    SLOPE_RIGHT,   // 오른쪽 경사
+    END,
 };
 
 enum class GROUND_TYPE

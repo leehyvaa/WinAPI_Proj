@@ -218,7 +218,7 @@ void CScene::CreateTile(UINT _iXCount, UINT _iYCount)
 }
 
 
-
+// 타일 정보들을 읽어오는 함수
 void CScene::LoadTile(const wstring& _strRelativePath)
 {
 	wstring strFilePath = CPathMgr::GetInst()->GetContentPath();
@@ -245,11 +245,11 @@ void CScene::LoadTile(const wstring& _strRelativePath)
 	FScanf(szBuff, pFile);
 
 
-	//불러온 개수에 맞게 EmptyTile 들 만들어두기
+	// 불러온 개수에 맞게 EmptyTile 들 만들어두기
 	CreateTile(xCount, yCount);
 
 
-	//만들어진 타일 개별로필요한 정보를 불러옴
+	// 만들어진 타일 개별로 필요한 정보를 불러옴
 	const vector<GameObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
 
 	for (size_t i = 0; i < vecTile.size(); i++)
@@ -259,19 +259,19 @@ void CScene::LoadTile(const wstring& _strRelativePath)
 
 
 
-
-	const vector<GameObject*>& vecGround = GetGroupObject(GROUP_TYPE::GROUND);
-	FScanf(szBuff, pFile); //[GroundCount]
-	fscanf_s(pFile, "%d", &m_iGroundCount);
-	FScanf(szBuff, pFile); //[GroundCount]
-
-	//불러온 개수에 맞게 Ground생성
-	CreateEmptyGround(m_iGroundCount);
-
-	for (size_t i = 0; i < vecGround.size(); i++)
-	{
-		((CGround*)vecGround[i])->Load(pFile);
-	}
+    // Ground 불러오기
+	// const vector<GameObject*>& vecGround = GetGroupObject(GROUP_TYPE::GROUND);
+	// FScanf(szBuff, pFile); //[GroundCount]
+	// fscanf_s(pFile, "%d", &m_iGroundCount);
+	// FScanf(szBuff, pFile); //[GroundCount]
+	//
+	// //불러온 개수에 맞게 Ground생성
+	// CreateEmptyGround(m_iGroundCount);
+	//
+	// for (size_t i = 0; i < vecGround.size(); i++)
+	// {
+	// 	((CGround*)vecGround[i])->Load(pFile);
+	// }
 
 
 	fclose(pFile);

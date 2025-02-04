@@ -365,6 +365,7 @@ void CScene_Tool::Update()
    m_pModeText->AddLines(modeText);
 }
 
+// 클릭 시 현재 마우스 위치를 계산하여 해당 타일에 지정된 텍스처를 입히도록 요청하는 함수
 void CScene_Tool::SetTileIdx()
 {
 	if (KEY_HOLD(KEY::RBUTTON))
@@ -705,6 +706,8 @@ void CScene_Tool::SaveTileData()
 
 }
 
+
+// 파일입력 기능으로 타일 정보가 저장된 메모장 파일을 불러오는 함수, 그 후에 LoadTile함수로 타일 정보를 각각 가져온다.
 void CScene_Tool::LoadTileData()
 {
 	wchar_t szName[256] = {};
@@ -735,6 +738,7 @@ void CScene_Tool::LoadTileData()
 	}
 }
 
+// 폴더에서 타일 텍스처 파일들을 불러와서 저장하고 첫 번째 텍스처를 UI에 띄우는 함수
 void CScene_Tool::LoadTileTexUI()
 {
 	WIN32_FIND_DATAA  data;
@@ -746,7 +750,8 @@ void CScene_Tool::LoadTileTexUI()
 
 
 	string path2 = string().assign(path.begin(), path.end());
-
+    
+    //m_vecTile_list에 텍스처파일들의 이름을 전부 넣기
 	try {
 		HANDLE hFind = FindFirstFileA(path2.c_str(), &data); //첫번째 파일 찾아 핸들 리턴
 		if (hFind == INVALID_HANDLE_VALUE)
@@ -792,6 +797,7 @@ void CScene_Tool::LoadTileTexUI()
 
 }
 
+// 현재 인덱스에 해당하는 텍스처 파일을 UI에 띄우도록 요청하는 함수
 void CScene_Tool::ChangeTileTexUI()
 {
 	wstring path = CPathMgr::GetInst()->GetContentPath();
