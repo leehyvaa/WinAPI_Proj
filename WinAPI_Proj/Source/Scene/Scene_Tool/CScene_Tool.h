@@ -46,6 +46,10 @@ private:
     vector<wstring> m_textureHelp;
     vector<wstring> m_groundHelp;
     vector<wstring> m_commonHelp;
+
+    // 마우스 위치 타일 인덱스 계산 함수
+    bool CalculateTileIndex(int& iCol, int& iRow);
+    
 public:
 	
 

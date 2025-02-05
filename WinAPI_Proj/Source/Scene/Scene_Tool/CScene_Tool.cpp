@@ -371,18 +371,10 @@ void CScene_Tool::SetTileIdx()
 {
 	if (KEY_HOLD(KEY::RBUTTON))
 	{
-		Vec2 vMousePos = MOUSE_POS;
-		vMousePos = CCamera::GetInst()->GetRealPos(vMousePos);
-
-		int iTileX = (int)GetTileX();
-		int iTileY = (int)GetTileY();
-
-		int iCol = (int)vMousePos.x / TILE_SIZE;
-		int iRow = (int)vMousePos.y / TILE_SIZE;
-
-		if (vMousePos.x < 0.f || iTileX <= iCol
-			|| vMousePos.y < 0.f || iTileX <= iRow)
-			return;
+        int iCol = 0;
+        int iRow = 0;
+        if (!CalculateTileIndex(iCol, iRow))
+            return;
 
 		if (m_iImgTileIdx < 0)
 			return;
@@ -447,18 +439,10 @@ void CScene_Tool::SetTileIdx()
 // 마우스 위치의 타일을 계산하고 해당 타일의 텍스처 변경 함수를 실행하는 함수
 void CScene_Tool::DrawSelectTile()
 {
-	Vec2 vMousePos = MOUSE_POS;
-	vMousePos = CCamera::GetInst()->GetRealPos(vMousePos);
-
-	int iTileX = (int)GetTileX();
-	int iTileY = (int)GetTileY();
-
-	int iCol = (int)vMousePos.x / TILE_SIZE;
-	int iRow = (int)vMousePos.y / TILE_SIZE;
-
-	if (vMousePos.x < 0.f || iTileX <= iCol
-		|| vMousePos.y < 0.f || iTileX <= iRow)
-		return;
+    int iCol = 0;
+    int iRow = 0;
+    if (!CalculateTileIndex(iCol, iRow))
+        return;
 
 	if (m_iImgTileIdx < 0)
 		return;
@@ -509,17 +493,9 @@ void CScene_Tool::DrawSelectTile()
 
 void CScene_Tool::SettingTopLeftGround()
 {
-    Vec2 vMousePos = MOUSE_POS;
-    vMousePos = CCamera::GetInst()->GetRealPos(vMousePos);
-
-    int iTileX = (int)GetTileX();
-    int iTileY = (int)GetTileY();
-
-    int iCol = (int)vMousePos.x / TILE_SIZE;
-    int iRow = (int)vMousePos.y / TILE_SIZE;
-
-    if (vMousePos.x < 0.f || iTileX <= iCol
-        || vMousePos.y < 0.f || iTileX <= iRow)
+    int iCol = 0;
+    int iRow = 0;
+    if (!CalculateTileIndex(iCol, iRow))
         return;
 
     if (m_iImgTileIdx < 0)
@@ -858,13 +834,29 @@ void CScene_Tool::SaveBmp()
 	ReleaseDC(NULL, hdcScreen);
  }
 
+bool CScene_Tool::CalculateTileIndex(int& iCol, int& iRow)
+{
+    Vec2 vMousePos = MOUSE_POS;
+    vMousePos = CCamera::GetInst()->GetRealPos(vMousePos);
+
+    const int iTileX = static_cast<int>(GetTileX());
+    const int iTileY = static_cast<int>(GetTileY());
+
+    iCol = static_cast<int>(vMousePos.x) / TILE_SIZE;
+    iRow = static_cast<int>(vMousePos.y) / TILE_SIZE;
+
+    if (vMousePos.x < 0.f || iTileX <= iCol
+        || vMousePos.y < 0.f || iTileY <= iRow)
+    {
+        return false;
+    }
+
+    return true;
+}
+
 void CScene_Tool::UpdateTextBox()
 {
     m_pModeText->ClearLines();
-
- 
-
-    
     
 
 
