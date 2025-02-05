@@ -28,9 +28,10 @@ CScene_Tool::CScene_Tool()
 	, m_iImgTileX(-1)
 	, m_iImgTileY(-1)
 	, m_iImgTileIdx(-1)
+    , m_iLastBotRightTileIdx(-1)
 	, m_vImgTilePos(Vec2(0, 0))
-	, toolMode(TOOL_MODE::TEXTURE_MODE)
-	, groundType(GROUND_TYPE::NORMAL)
+	, m_eToolMode(TOOL_MODE::TEXTURE_MODE)
+	, m_eGroundType(GROUND_TYPE::NORMAL)
 	, m_bErase(false)
 	, m_bSecondTex(false)
 	, m_pModeText(nullptr)
@@ -153,8 +154,8 @@ void CScene_Tool::Enter()
     m_groundHelp = {
         L"[지형 모드]",
         L"좌클릭 - 지형 콜라이더 생성",
-        L"1 - 기본 지형",
-        L"2 - 벽 지형",
+        L"1 - 이동 가능 지형",
+        L"2 - 이동 불가 지형",
         L"3 - 데미지 지형",
         L"4 - 즉사 지형",
         L"BACK - 지우기"
@@ -217,7 +218,7 @@ void CScene_Tool::Update()
     m_pHelpText->AddLine(L"");  // 빈 줄 추가
 
     // 현재 모드의 설명만 표시
-    switch(toolMode)
+    switch(m_eToolMode)
     {
     case TEXTURE_MODE:
         m_pHelpText->AddLines(m_textureHelp);
@@ -235,7 +236,7 @@ void CScene_Tool::Update()
     static wstring subMode = L"None";
     static wstring write = L"writing";
 
-	switch (toolMode)
+	switch (m_eToolMode)
 	{
 	case TEXTURE_MODE:
 	{
@@ -265,27 +266,27 @@ void CScene_Tool::Update()
         if (KEY_TAP(KEY::KEY_1))
         {
             subMode = L"NORMALGROUND";
-            groundType = GROUND_TYPE::NORMAL;
+            m_eGroundType = GROUND_TYPE::NORMAL;
         }
         if (KEY_TAP(KEY::KEY_2))
         {
             subMode = L"UNWALKABLE";
-            groundType = GROUND_TYPE::UNWALKABLE;
+            m_eGroundType = GROUND_TYPE::UNWALKABLE;
         }
         if (KEY_TAP(KEY::KEY_3))
         {
             subMode = L"DAMAGEZONE";
-            groundType = GROUND_TYPE::DAMAGEZONE;
+            m_eGroundType = GROUND_TYPE::DAMAGEZONE;
         }
         if (KEY_TAP(KEY::KEY_4))
         {
             subMode = L"DEADZONE";
-            groundType = GROUND_TYPE::DEADZONE;
+            m_eGroundType = GROUND_TYPE::DEADZONE;
         }
 	        
         if (KEY_HOLD(KEY::LBUTTON))
         {
-            CreateGround();
+            SettingTopLeftGround();
         }
 
 
@@ -340,19 +341,19 @@ void CScene_Tool::Update()
 
 	if (KEY_TAP(KEY::F1))
 	{
-		toolMode = TOOL_MODE::TEXTURE_MODE;
+		m_eToolMode = TOOL_MODE::TEXTURE_MODE;
 	}
 	if (KEY_TAP(KEY::F2))
 	{
-		toolMode = TOOL_MODE::GROUND_MODE;
+		m_eToolMode = TOOL_MODE::GROUND_MODE;
 	}
 	if (KEY_TAP(KEY::F3))
 	{
-		toolMode = TOOL_MODE::TRIGGER_MODE;
+		m_eToolMode = TOOL_MODE::TRIGGER_MODE;
 	}
 	if (KEY_TAP(KEY::F4))
 	{
-		toolMode = TOOL_MODE::PREFAB_MODE;
+		m_eToolMode = TOOL_MODE::PREFAB_MODE;
     }
 
     vector<wstring> modeText =
@@ -436,11 +437,7 @@ void CScene_Tool::SetTileIdx()
 	{
 		DrawSelectTile();
 	}
-
-	if (KEY_TAP(KEY::RBUTTON))
-	{
-		//DrawSelectTile();
-	}
+    
 }
 
 
@@ -510,7 +507,7 @@ void CScene_Tool::DrawSelectTile()
 	m_vTilePos = Vec2((float)iCol, (float)iRow);
 }
 
-void CScene_Tool::CreateGround()
+void CScene_Tool::SettingTopLeftGround()
 {
     Vec2 vMousePos = MOUSE_POS;
     vMousePos = CCamera::GetInst()->GetRealPos(vMousePos);
@@ -537,75 +534,26 @@ void CScene_Tool::CreateGround()
     
     if (m_bErase)
     {
-        selectedTile->SetCollideType(TILE_COLLIDE_TYPE::NONE);
+        selectedTile->SetGroundType(GROUND_TYPE::NONE);
+        selectedTile->SetVertexPosition(VertexPosition::NONE);
+        selectedTile->SetBotRightTileIdx(-1);
     }
     else
     {
-        selectedTile->SetCollideType(TILE_COLLIDE_TYPE::SOLID);
+        selectedTile->SetVertexPosition(VertexPosition::TOP_LEFT);
 
-        if (groundType == GROUND_TYPE::NORMAL)
+        if (m_eGroundType == GROUND_TYPE::NORMAL)
             selectedTile->SetGroundType(GROUND_TYPE::NORMAL);
-        if (groundType == GROUND_TYPE::UNWALKABLE)
+        if (m_eGroundType == GROUND_TYPE::UNWALKABLE)
             selectedTile->SetGroundType(GROUND_TYPE::UNWALKABLE);
-        if (groundType == GROUND_TYPE::DAMAGEZONE)
+        if (m_eGroundType == GROUND_TYPE::DAMAGEZONE)
             selectedTile->SetGroundType(GROUND_TYPE::DAMAGEZONE);
-        if (groundType == GROUND_TYPE::DEADZONE)
+        if (m_eGroundType == GROUND_TYPE::DEADZONE)
             selectedTile->SetGroundType(GROUND_TYPE::DEADZONE);
     }
-    
-    
-
 	
 
-    m_vTilePos = Vec2((float)iCol, (float)iRow);
-    
-    // static Vec2 mousePos1(0, 0);
-    // static Vec2 mousePos2(0, 0);
-    //
-    //
-    // if (KEY_TAP(KEY::LBUTTON))
-    // {
-    // 	mousePos1 = MOUSE_POS;
-    // 	mousePos1 = CCamera::GetInst()->GetRealPos(mousePos1);
-    // 	cout << mousePos1.x <<endl;
-    // }
-    // if (KEY_AWAY(KEY::LBUTTON))
-    // {
-    // 	mousePos2 = MOUSE_POS;
-    // 	mousePos2 =CCamera::GetInst()->GetRealPos(mousePos2);
-    // 	cout << mousePos2.x <<endl;
-    //
-    //
-    // 	if (groundType == GROUND_TYPE::GROUND)
-    // 	{
-    // 		CGround* pGround2 = CGroundPrefab::CreateGround(GROUND_TYPE::GROUND,
-    // 			mousePos1, mousePos2);
-    // 		//AddObject((GameObject*)pGround2, GROUP_TYPE::GROUND);
-    // 		CreateObject((GameObject*)pGround2, GROUP_TYPE::GROUND);
-    // 	}
-    // 	else if (groundType == GROUND_TYPE::NONGROUND)
-    // 	{
-    // 		CGround* pGround2 = CGroundPrefab::CreateGround(GROUND_TYPE::NONGROUND,
-    // 			mousePos1, mousePos2);
-    // 		CreateObject((GameObject*)pGround2, GROUP_TYPE::GROUND);
-    // 	}
-    // 	else if (groundType == GROUND_TYPE::DAMAGEZONE)
-    // 	{
-    // 		CGround* pGround2 = CGroundPrefab::CreateGround(GROUND_TYPE::DAMAGEZONE,
-    // 			mousePos1, mousePos2);
-    // 		CreateObject((GameObject*)pGround2, GROUP_TYPE::GROUND);
-    // 	}
-    // 	else if (groundType == GROUND_TYPE::DEADZONE)
-    // 	{
-    // 		CGround* pGround2 = CGroundPrefab::CreateGround(GROUND_TYPE::DEADZONE,
-    // 			mousePos1, mousePos2);
-    // 		CreateObject((GameObject*)pGround2, GROUP_TYPE::GROUND);
-    // 	}
-    //
-    //
-    // 	SetGroundCount(GetGroundCount() + 1);
-    // }
-
+    //m_vTilePos = Vec2((float)iCol, (float)iRow);
 }
 
 
@@ -637,7 +585,13 @@ void CScene_Tool::SetTileUIIdx()
 		m_vImgTilePos = Vec2(iCol, iRow);
 	}
 }
-
+/*
+    SaveTile(파일경로)
+    파일을 만들고, 씬의 타일개수를 가져와
+    그 개수를 파일 앞부분에 적는다
+    그리고 그 밑에다 그룹타입 Tile인 벡터의 사이즈만큼
+    반복문을 돌면서 타일cpp의 Save함수를 실행
+ */
 void CScene_Tool::SaveTile(const wstring& _strFilePath)
 {
 
@@ -676,6 +630,13 @@ void CScene_Tool::SaveTile(const wstring& _strFilePath)
 	fclose(pFile);
 }
 
+/*
+    SaveTileDate()
+    윈api ui를 사용한 파일저장 함수로
+    저장시의 확장자 선택과 저장경로 등을 다룸
+    만약GetSaveFileName(&ofn)) 이면 SaveTile(상대경로)	
+    함수를 실행한다.
+ */
 void CScene_Tool::SaveTileData()
 {
 	wchar_t szName[256] = {};
@@ -707,7 +668,9 @@ void CScene_Tool::SaveTileData()
 }
 
 
-// 파일입력 기능으로 타일 정보가 저장된 메모장 파일을 불러오는 함수, 그 후에 LoadTile함수로 타일 정보를 각각 가져온다.
+// winAPI ui를 사용한 파일 불러오기 기능으로
+// 타일 정보가 저장된 메모장 파일을 불러오는 함수
+// 그 후에 GetOpenFileName(&ofn)) 이면 LoadTile함수로 타일 정보를 각각 가져온다.
 void CScene_Tool::LoadTileData()
 {
 	wchar_t szName[256] = {};
@@ -926,7 +889,13 @@ void CScene_Tool::UpdateTextBox()
 
 
 
-
+/*
+    TileCountProc(윈도우핸들, message, wParam, lParam)
+    맵의 타일 갯수를 지정해주는 Dialog메뉴를 열었을때
+    여기에 입력한 param값들을 클래스 멤버변수인
+    타일 x,y카운트에다 넣어준다.
+    그리고 x,y로 이중반복을 돌려 createTile 함수까지 실행
+ */
 //Tile Count Window Proc
 INT_PTR CALLBACK TileCountProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {

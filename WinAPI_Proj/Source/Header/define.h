@@ -102,6 +102,13 @@ enum class MON_STATE
 	END,
 };
 
+enum class VertexPosition
+{
+    NONE,
+    TOP_LEFT,
+    BOT_RIGHT,
+};
+
 enum class TILE_COLLIDE_TYPE {
     NONE,
     SOLID,        // 완전 충돌
@@ -114,6 +121,7 @@ enum class TILE_COLLIDE_TYPE {
 
 enum class GROUND_TYPE
 {
+    NONE,
 	NORMAL,
     UNWALKABLE,
 	DAMAGEZONE,

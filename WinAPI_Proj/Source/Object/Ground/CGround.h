@@ -5,13 +5,18 @@
 class CGround : public GameObject
 {
 private:
-
+    TILE_COLLIDE_TYPE m_eCollideType; // 충돌 타입 필드
+    
 public:
-	virtual void OnCollisionEnter(CCollider* _pOther);
-	virtual void OnCollision(CCollider* _pOther);
-	virtual void OnCollisionExit(CCollider* _pOther);
+
+    TILE_COLLIDE_TYPE GetCollideType() { return m_eCollideType; }
+    void SetCollideType(TILE_COLLIDE_TYPE _type){ m_eCollideType = _type; }
 
 
+    virtual void OnCollisionEnter(CCollider* _pOther);
+    virtual void OnCollision(CCollider* _pOther);
+    virtual void OnCollisionExit(CCollider* _pOther);
+    
 	virtual void Start();
 	virtual void Update();
 	virtual void Render(HDC _dc);

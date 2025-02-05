@@ -17,8 +17,8 @@ CScene::CScene()
 	,bDrawGrid(false)
 	,bDrawCollider(false)
 	,bDrawGroundType(false)
-	, bDrawOutWindow(false)
-	, backGround(nullptr)
+	,bDrawOutWindow(false)
+	,backGround(nullptr)
 {
 }
 
@@ -116,6 +116,7 @@ void CScene::Render(HDC _dc)
 
 }
 
+// 해당 씬에서 그룹타입이 TILE인 모든 오브젝트를 그리는 함수
 void CScene::Render_Tile(HDC _dc)
 {
 	const vector<GameObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
@@ -189,36 +190,16 @@ void CScene::DeleteAll()
 	}
 }
 
-void CScene::CreateTile(UINT _iXCount, UINT _iYCount)
-{
-	DeleteGroup(GROUP_TYPE::TILE);
 
 
-	m_iTileX = _iXCount;
-	m_iTileY = _iYCount;
 
 
-	//CTexture* pTileTex = CResMgr::GetInst()->LoadTexture(L"Tile", L"texture\\tile\\Prologue_Tileset32.bmp");
-
-
-	for (UINT i = 0; i < _iYCount; i++)
-	{
-		for (UINT j = 0; j < _iXCount; j++)
-		{
-			CTile* pTile = new CTile();
-
-			pTile->SetPos(Vec2((float)(j * TILE_SIZE), (float)(i * TILE_SIZE)));
-			//pTile->SetTexture(pTileTex);
-
-			AddObject(pTile, GROUP_TYPE::TILE);
-		}
-	}
-
-
-}
-
-
-// 타일 정보들을 읽어오는 함수
+/*
+    파일에서 타일 정보들을 읽어오는 함수
+    파일 첫부분에 x,y 타일 카운트를 읽은 후
+    그 만큼 CreateTile을 해서 타일을 만들어 둔다.
+    만든 모든 타일에 개별로 Load함수를 사용한다
+ */
 void CScene::LoadTile(const wstring& _strRelativePath)
 {
 	wstring strFilePath = CPathMgr::GetInst()->GetContentPath();
@@ -278,23 +259,69 @@ void CScene::LoadTile(const wstring& _strRelativePath)
 
 }
 
-void CScene::CreateEmptyGround(UINT _count)
+/*
+    Tile 그룹을 전부 지우고
+    매개변수로 해당 씬의 x 타일 개수,y타일 개수를 받아
+    타일 개수에 맞게 타일을 생성한다.
+ */
+void CScene::CreateTile(UINT _iXCount, UINT _iYCount)
+{
+    DeleteGroup(GROUP_TYPE::TILE);
+
+    m_iTileX = _iXCount;
+    m_iTileY = _iYCount;
+
+    //CTexture* pTileTex = CResMgr::GetInst()->LoadTexture(L"Tile", L"texture\\tile\\Prologue_Tileset32.bmp");
+
+    for (UINT i = 0; i < _iYCount; i++)
+    {
+        for (UINT j = 0; j < _iXCount; j++)
+        {
+            CTile* pTile = new CTile();
+
+            pTile->SetPos(Vec2((float)(j * TILE_SIZE), (float)(i * TILE_SIZE)));
+            //pTile->SetTexture(pTileTex);
+            AddObject(pTile, GROUP_TYPE::TILE);
+        }
+    }
+}
+
+/*
+    각각의 지형(ex.이동가능지형)마다 맨 왼쪽 위 꼭짓점과 오른쪽 아래 꼭짓점을 지정하여 vector에 넣어둔다.
+    지형들을 돌면서 이미 저장된 범위 내의 지형들은 빠르게 패스하고 다 돌고 나면 양쪽 꼭짓점을 기준으로
+    사각형 지형 하나당 상하좌우 4개의 지형을 생성한다.
+ */
+void CScene::CreateGround()
 {
 
 	DeleteGroup(GROUP_TYPE::GROUND);
+    const vector<GameObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
 
+    vector<pair<Vec2, Vec2>> vNormalGround;
+    
+    for (size_t i = 0; i < vecTile.size(); i++)
+    {
+        CTile* pTile = ((CTile*)vecTile[i]);
+        Vec2 vPos = pTile->GetPos();
+        if (pTile->GetGroundType() == ::GROUND_TYPE::NORMAL)
+        {
+            
+        }
+    }
 
-
-	for (UINT j = 0; j < _count; j++)
-	{
-		CGround* ground = new CGround();
-
-		ground->SetPos(Vec2(0,0));
-	
-
-		AddObject(ground, GROUP_TYPE::GROUND);
-	}
-	
+    
+ //    int _count;
+	// for (UINT j = 0; j < _count; j++)
+	// {
+	// 	CGround* ground = new CGround();
+ //
+	// 	ground->SetPos(Vec2(0,0));
+	//
+ //
+	// 	AddObject(ground, GROUP_TYPE::GROUND);
+	// }
 }
+
+
 
 

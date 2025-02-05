@@ -9,6 +9,7 @@
 #include "SPlayer.h"
 #include "CRigidBody.h"
 CGround::CGround()
+    :m_eCollideType(TILE_COLLIDE_TYPE::NONE)
 {
 	CreateCollider();
 

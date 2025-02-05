@@ -28,18 +28,20 @@ private:
 	vector<std::string> m_vecTile_list;
 
 	Vec2 m_vTilePos;
-
 	UINT m_iImgIndex;
 
 	int m_iImgTileX;
 	int m_iImgTileY;
 	UINT m_iImgTileIdx;
 	Vec2 m_vImgTilePos;
+    
 	bool m_bErase;
 	bool m_bSecondTex;
-	TOOL_MODE toolMode;
-	GROUND_TYPE groundType;
+	TOOL_MODE m_eToolMode;
+	GROUND_TYPE m_eGroundType;
 
+    int m_iLastBotRightTileIdx;
+    
     // 모드별 설명 텍스트 저장용
     vector<wstring> m_textureHelp;
     vector<wstring> m_groundHelp;
@@ -67,7 +69,7 @@ public:
 	void PrevTileUI();
 
 
-	void CreateGround();
+	void SettingTopLeftGround();
 	void SaveBmp();
     void UpdateTextBox();
 

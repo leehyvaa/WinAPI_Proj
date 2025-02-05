@@ -13,7 +13,9 @@ CTile::CTile()
 	:m_pTileTex(nullptr)
 	,m_pTileTex2(nullptr)
 	,m_iImgIdx2(0)
-	, m_iImgIdx(0)
+	,m_iImgIdx(0)
+    ,m_eGroundType(GROUND_TYPE::END)
+    ,m_iBotRightTileIdx(-1)
 {
 	SetScale(Vec2(TILE_SIZE, TILE_SIZE));
 }
@@ -106,7 +108,7 @@ void CTile::Render(HDC _dc)
 			TILE_SIZE, TILE_SIZE, RGB(255, 0, 255));
 	}
 
-    if (CSceneMgr::GetInst()->GetCurScene()->GetDrawGroundType() && m_eCollideType != TILE_COLLIDE_TYPE::NONE)
+    if (CSceneMgr::GetInst()->GetCurScene()->GetDrawGroundType() && m_eVertexPosition != VertexPosition::NONE)
     {
 
         PEN_TYPE ePen = PEN_TYPE::BLUE;
@@ -197,15 +199,13 @@ void CTile::Save(FILE* _pFile)
 		fprintf(_pFile, "-1\n");
 	}
 
-    fprintf(_pFile, "[CollideType]\n");
-    if (m_eCollideType == TILE_COLLIDE_TYPE::SOLID)
-    {
+    fprintf(_pFile, "[VertexPosition]\n");
+    if (m_eVertexPosition == VertexPosition::NONE)
+        fprintf(_pFile, "0\n");
+    else if (m_eVertexPosition == VertexPosition::TOP_LEFT)
         fprintf(_pFile, "1\n");
-    }
-    else
-    {
-        fprintf(_pFile, "-1\n");
-    }
+    else if (m_eVertexPosition == VertexPosition::BOT_RIGHT)
+        fprintf(_pFile, "2\n");
     
     fprintf(_pFile, "[GroundType]\n");
     if (m_eGroundType == GROUND_TYPE::NORMAL)
@@ -278,20 +278,24 @@ void CTile::Load(FILE* _pFile)
 		FScanf(szBuff, _pFile);
 	}
 
-    FScanf(szBuff, _pFile); // [CollideType] 섹션
-    int iCollideType;
-    fscanf_s(_pFile, "%d", &iCollideType);
+    FScanf(szBuff, _pFile); // [VertexPosition] 섹션
+    int iVertexType;
+    fscanf_s(_pFile, "%d", &iVertexType);
+    FScanf(szBuff, _pFile);
 
-    // CollideType 설정
-    if (iCollideType == 1) {
-        m_eCollideType = TILE_COLLIDE_TYPE::SOLID;
-    } else {
-        m_eCollideType = TILE_COLLIDE_TYPE::NONE;
+    // VertexType 설정
+    switch (iVertexType)
+    {
+        case 0: m_eVertexPosition = VertexPosition::NONE; break;
+        case 1: m_eVertexPosition = VertexPosition::TOP_LEFT; break;
+        case 2: m_eVertexPosition = VertexPosition::BOT_RIGHT; break;
     }
+    
 
     FScanf(szBuff, _pFile); // [GroundType] 섹션
     int iGroundType;
     fscanf_s(_pFile, "%d", &iGroundType);
+    FScanf(szBuff, _pFile);
 
     // GroundType 설정
     switch (iGroundType) {
@@ -328,13 +332,4 @@ void CTile::OnCollisionEnter(CCollider* _pOther)
     
 }
 
-void CTile::OnCollision(CCollider* _pOther)
-{
-    GameObject::OnCollision(_pOther);
-}
-
-void CTile::OnCollisionExit(CCollider* _pOther)
-{
-    GameObject::OnCollisionExit(_pOther);
-}
 

@@ -10,11 +10,11 @@ private:
     int m_iImgIdx;
     CTexture* m_pTileTex2;
     int m_iImgIdx2;
-    
+    int m_iBotRightTileIdx;
 
-    TILE_COLLIDE_TYPE m_eCollideType; // 충돌 타입 필드
+    VertexPosition m_eVertexPosition;
     GROUND_TYPE m_eGroundType; // 지형 타입 필드
-
+    
 public:
     
     virtual void Update();
@@ -32,11 +32,17 @@ public:
     virtual void Save(FILE* _pFile);
     virtual void Load(FILE* _pFile);
 
-    void SetCollideType(TILE_COLLIDE_TYPE _type){ m_eCollideType = _type; }
+    
+    GROUND_TYPE GetGroundType() { return m_eGroundType; }
     void SetGroundType(GROUND_TYPE _type){ m_eGroundType = _type; }
+    VertexPosition GetVertexPosition() { return m_eVertexPosition; }
+    void SetVertexPosition(VertexPosition _pos) { m_eVertexPosition = _pos; }
+
+    
+    int GetBotRightTileIdx() { return m_iBotRightTileIdx; }
+    void SetBotRightTileIdx(int _idx) { m_iBotRightTileIdx = _idx; }
+    
     virtual void OnCollisionEnter(CCollider* _pOther);
-    virtual void OnCollision(CCollider* _pOther);
-    virtual void OnCollisionExit(CCollider* _pOther);
 
     
     CLONE(CTile)
