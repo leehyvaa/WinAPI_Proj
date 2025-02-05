@@ -24,7 +24,7 @@ CScene::CScene()
 
 CScene::~CScene()
 {
-	for (UINT i = 0; i < (UINT)GROUP_TYPE::END; i++)
+	for (UINT i = 0; i < static_cast<UINT>(GROUP_TYPE::END); i++)
 	{
 		for (UINT j = 0; j < m_arrObj[i].size(); j++)
 		{
@@ -36,7 +36,7 @@ CScene::~CScene()
 
 void CScene::Start()
 {
-	for (UINT i = 0; i < (UINT)GROUP_TYPE::END; i++)
+	for (UINT i = 0; i < static_cast<UINT>(GROUP_TYPE::END); i++)
 	{
 		for (size_t j = 0; j < m_arrObj[i].size(); j++)
 		{
@@ -47,7 +47,7 @@ void CScene::Start()
 
 void CScene::Update()
 {
-	for (UINT i = 0; i < (UINT)GROUP_TYPE::END; i++)
+	for (UINT i = 0; i < static_cast<UINT>(GROUP_TYPE::END); i++)
 	{
 		for (size_t j = 0; j < m_arrObj[i].size(); j++)
 		{
@@ -77,7 +77,7 @@ void CScene::Update()
 
 void CScene::FinalUpdate()
 {
-	for (UINT i = 0; i < (UINT)GROUP_TYPE::END; i++)
+	for (UINT i = 0; i < static_cast<UINT>(GROUP_TYPE::END); i++)
 	{
 		for (size_t j = 0; j < m_arrObj[i].size(); j++)
 		{
@@ -88,9 +88,9 @@ void CScene::FinalUpdate()
 
 void CScene::Render(HDC _dc)
 {
-	for (UINT i = 0; i < (UINT)GROUP_TYPE::END; i++)
+	for (UINT i = 0; i < static_cast<UINT>(GROUP_TYPE::END); i++)
 	{
-		if ((UINT)GROUP_TYPE::TILE == i && !bDrawOutWindow)
+		if (static_cast<UINT>(GROUP_TYPE::TILE) == i && !bDrawOutWindow)
 		{
 			Render_Tile(_dc);
 			continue;
@@ -128,8 +128,8 @@ void CScene::Render_Tile(HDC _dc)
 	
 	int iTileSize = TILE_SIZE;
 
-	int iLTCol = (int)vLeftTop.x / iTileSize;
-	int iLTRow = (int)vLeftTop.y / iTileSize;
+	int iLTCol = static_cast<int>(vLeftTop.x) / iTileSize;
+	int iLTRow = static_cast<int>(vLeftTop.y) / iTileSize;
 
 
 
@@ -137,15 +137,15 @@ void CScene::Render_Tile(HDC _dc)
 
 	int iLTIdx = m_iTileX * iLTRow + iLTCol;
 
-	int iClientWidth = ((int)vResolution.x / iTileSize) +2;
-	int iClientHeight = ((int)vResolution.y / iTileSize)+2;
+	int iClientWidth = (static_cast<int>(vResolution.x) / iTileSize) +2;
+	int iClientHeight = (static_cast<int>(vResolution.y) / iTileSize)+2;
 
 	for (int iCurRow = iLTRow; iCurRow < (iLTRow +iClientHeight); iCurRow++)
 	{
 		for (int iCurCol = iLTCol; iCurCol < (iLTCol + iClientWidth); iCurCol++)
 		{
-			if (iCurCol < 0 || m_iTileX <= (UINT)iCurCol ||
-				iCurRow < 0 || m_iTileY <= (UINT)iCurRow)
+			if (iCurCol < 0 || m_iTileX <= static_cast<UINT>(iCurCol) ||
+				iCurRow < 0 || m_iTileY <= static_cast<UINT>(iCurRow))
 			{
 				continue;
 			}
@@ -160,12 +160,23 @@ void CScene::Render_Tile(HDC _dc)
 				SelectGDI brush(_dc, BRUSH_TYPE::HOLLOW);
 
 
-				Rectangle(_dc, (int)(vRenderPos.x)
-					, (int)(vRenderPos.y)
-					, (int)(vRenderPos.x + vScale.x)
-					, (int)(vRenderPos.y + vScale.y));
-			}
+				Rectangle(_dc, static_cast<int>(vRenderPos.x)
+					, static_cast<int>(vRenderPos.y)
+					, static_cast<int>(vRenderPos.x + vScale.x)
+					, static_cast<int>(vRenderPos.y + vScale.y));
 
+                // 현재 타일의 위치부터 BotRightTile까지 선 그리기
+			    if (static_cast<CTile*>(vecTile[iIdx])->GetGroundType() != GROUND_TYPE::NONE)
+			    {
+			        int botIdx = static_cast<CTile*>(vecTile[iIdx])->GetBotRightTileIdx();
+			        if (botIdx != -1)
+			        {
+			            vecTile[iIdx]->GetPos();
+			            vecTile[botIdx]->GetPos();
+			        }
+			    }
+			}
+            
 
 			vecTile[iIdx]->Render(_dc);
 
@@ -179,14 +190,14 @@ void CScene::Render_Tile(HDC _dc)
 //지정된 그룹의 벡터를 지우는 함수
 void CScene::DeleteGroup(GROUP_TYPE _eTarget)
 {
-	Safe_Delete_Vec<GameObject*>(m_arrObj[(UINT)_eTarget]);
+	Safe_Delete_Vec<GameObject*>(m_arrObj[static_cast<UINT>(_eTarget)]);
 }
 
 void CScene::DeleteAll()
 {
-	for (UINT i = 0; i < (UINT)GROUP_TYPE::END; i++)
+	for (UINT i = 0; i < static_cast<UINT>(GROUP_TYPE::END); i++)
 	{
-		DeleteGroup((GROUP_TYPE)i);
+		DeleteGroup(static_cast<GROUP_TYPE>(i));
 	}
 }
 
@@ -235,7 +246,7 @@ void CScene::LoadTile(const wstring& _strRelativePath)
 
 	for (size_t i = 0; i < vecTile.size(); i++)
 	{
-		((CTile*)vecTile[i])->Load(pFile);
+		static_cast<CTile*>(vecTile[i])->Load(pFile);
 	}
 
 
@@ -279,7 +290,7 @@ void CScene::CreateTile(UINT _iXCount, UINT _iYCount)
         {
             CTile* pTile = new CTile();
 
-            pTile->SetPos(Vec2((float)(j * TILE_SIZE), (float)(i * TILE_SIZE)));
+            pTile->SetPos(Vec2(static_cast<float>(j * TILE_SIZE), static_cast<float>(i * TILE_SIZE)));
             //pTile->SetTexture(pTileTex);
             AddObject(pTile, GROUP_TYPE::TILE);
         }
@@ -301,7 +312,7 @@ void CScene::CreateGround()
     
     for (size_t i = 0; i < vecTile.size(); i++)
     {
-        CTile* pTile = ((CTile*)vecTile[i]);
+        CTile* pTile = static_cast<CTile*>(vecTile[i]);
         Vec2 vPos = pTile->GetPos();
         if (pTile->GetGroundType() == ::GROUND_TYPE::NORMAL)
         {
