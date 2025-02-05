@@ -77,6 +77,7 @@ enum class PEN_TYPE
 	BLUE,
 	PURPLE,
 	ORANGE,
+    BIGGREEN,
     HOLLOW,
 	END,
 };
@@ -102,7 +103,7 @@ enum class MON_STATE
 	END,
 };
 
-enum class VertexPosition
+enum class VERTEX_POSITION
 {
     NONE,
     TOP_LEFT,

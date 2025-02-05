@@ -18,6 +18,7 @@ CScene::CScene()
 	,bDrawCollider(false)
 	,bDrawGroundType(false)
 	,bDrawOutWindow(false)
+    ,bDrawCompleteGround(false)
 	,backGround(nullptr)
 {
 }
@@ -68,7 +69,11 @@ void CScene::Update()
 	{
 		bDrawGroundType = !bDrawGroundType;
 	}
-	if (KEY_TAP(KEY::F8))
+    if (KEY_TAP(KEY::F8))
+    {
+        bDrawCompleteGround = !bDrawCompleteGround;
+    }
+	if (KEY_TAP(KEY::F12))
 	{
 		bDrawOutWindow = !bDrawOutWindow;
 	}
@@ -164,28 +169,29 @@ void CScene::Render_Tile(HDC _dc)
 					, static_cast<int>(vRenderPos.y)
 					, static_cast<int>(vRenderPos.x + vScale.x)
 					, static_cast<int>(vRenderPos.y + vScale.y));
-
-                // 현재 타일의 위치부터 BotRightTile까지 선 그리기
-			    // 현재 타일의 위치부터 BotRightTile까지 선 그리기
-			    if (static_cast<CTile*>(vecTile[iIdx])->GetGroundType() != GROUND_TYPE::NONE)
-			    {
-			        int botIdx = static_cast<CTile*>(vecTile[iIdx])->GetBotRightTileIdx();
-			        if (botIdx != -1 && botIdx < static_cast<int>(vecTile.size()))
-			        {
-			            Vec2 vStartPos = CCamera::GetInst()->GetRenderPos(vecTile[iIdx]->GetPos());
-			            Vec2 vEndPos = CCamera::GetInst()->GetRenderPos(vecTile[botIdx]->GetPos());
-			            
-			            // 화면에 선 그리기
-			            MoveToEx(_dc, (int)vStartPos.x, (int)vStartPos.y, nullptr);
-			            LineTo(_dc, (int)vEndPos.x, (int)vEndPos.y);
-			        }
-			    }
+			    
+			    
 			}
             
 
 			vecTile[iIdx]->Render(_dc);
 
-			
+		    // 현재 타일의 위치부터 BotRightTile까지 선 그리기
+		    if (bDrawCompleteGround &&
+                static_cast<CTile*>(vecTile[iIdx])->GetGroundType() != GROUND_TYPE::NONE)
+		    {
+		        int botIdx = static_cast<CTile*>(vecTile[iIdx])->GetBotRightTileIdx();
+		        if (botIdx != -1 && botIdx < static_cast<int>(vecTile.size()))
+		        {
+		            Vec2 vStartPos = CCamera::GetInst()->GetRenderPos(vecTile[iIdx]->GetPos());
+		            Vec2 vEndPos = CCamera::GetInst()->GetRenderPos(vecTile[botIdx]->GetPos());
+		            SelectGDI brush(_dc, PEN_TYPE::BIGGREEN);
+
+		            // 화면에 선 그리기
+		            MoveToEx(_dc, (int)vStartPos.x, (int)vStartPos.y, nullptr);
+		            LineTo(_dc, (int)vEndPos.x, (int)vEndPos.y);
+		        }
+		    }
 		}
 	}
 

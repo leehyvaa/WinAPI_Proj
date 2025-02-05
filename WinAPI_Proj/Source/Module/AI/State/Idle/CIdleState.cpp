@@ -17,7 +17,7 @@ CIdleState::~CIdleState()
 void CIdleState::Update()
 {
 	//Player의 위치 체크
-	SPlayer*  pPlayer = (SPlayer*)CSceneMgr::GetInst()->GetCurScene()->GetPlayer();
+	SPlayer*  pPlayer = static_cast<SPlayer*>(CSceneMgr::GetInst()->GetCurScene()->GetPlayer());
 	Vec2 vPlayerPos = pPlayer->GetPos();
 
 	//일정 범위 안에 들어오면 추적상태로 전환

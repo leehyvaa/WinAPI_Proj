@@ -92,9 +92,9 @@ bool CSound::LoadWaveSound(const wstring& _strPath)
 		&pWrite2, &dwlength2, 0L);
 
 	if (pWrite1 != nullptr)
-		mmioRead(hFile, (char*)pWrite1, dwlength1);
+		mmioRead(hFile, static_cast<char*>(pWrite1), dwlength1);
 	if(pWrite2 != nullptr)
-		mmioRead(hFile, (char*)pWrite2, dwlength2);
+		mmioRead(hFile, static_cast<char*>(pWrite2), dwlength2);
 
 	m_pSoundBuffer->Unlock(pWrite1, dwlength1, pWrite2, dwlength2);
 
@@ -154,7 +154,7 @@ void CSound::SetPosition(float _fPosition)
 {
 	Stop(true);
 
-	DWORD dwBytes = (DWORD)((_fPosition / 100.f) * (float)m_tBuffInfo.dwBufferBytes);
+	DWORD dwBytes = static_cast<DWORD>((_fPosition / 100.f) * (float)m_tBuffInfo.dwBufferBytes);
 	m_pSoundBuffer->SetCurrentPosition(dwBytes);
 
 	Play();
@@ -167,7 +167,7 @@ int CSound::GetDecibel(float _fVolume)
 		_fVolume = 0.00001f;
 
 	//1~100 사이값을 데시벨 단위로 변경
-	int iVolume = (LONG)(-2000.0 * log10(100.f / _fVolume));
+	int iVolume = static_cast<LONG>(-2000.0 * log10(100.f / _fVolume));
 
 	if (iVolume < -10000)
 		iVolume = -10000;

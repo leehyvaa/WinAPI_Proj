@@ -21,8 +21,8 @@ private:
 	CBtnUI* m_pTexUI;
 	CPanelUI* m_pPanelUI;
 	CTextUI* m_pModeText;  // 모드 표시용 텍스트 UI
-	CTextUI* m_pHelpText;  // 설명서용 텍스트 UI
-    
+	CTextUI* m_pHelpText;  // 설명서 텍스트 UI
+    CTextUI* m_pHelpSubText; // 세부 설명서 텍스트 UI
 
 
 	vector<std::string> m_vecTile_list;
@@ -41,6 +41,7 @@ private:
 	GROUND_TYPE m_eGroundType;
 
     int m_iLastBotRightTileIdx;
+    int m_iLastTopLeftTileIdx;
     
     // 모드별 설명 텍스트 저장용
     vector<wstring> m_textureHelp;
@@ -74,6 +75,9 @@ public:
 
 
 	void SettingTopLeftGround();
+    void SettingBotRightGround();
+
+    
 	void SaveBmp();
     void UpdateTextBox();
 

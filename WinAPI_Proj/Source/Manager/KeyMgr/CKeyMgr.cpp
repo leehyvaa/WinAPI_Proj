@@ -2,7 +2,7 @@
 #include "CKeyMgr.h"
 #include "CCore.h"
 
-int g_arrVK[(int)KEY::LAST] =
+int g_arrVK[static_cast<int>(KEY::LAST)] =
 {
 	VK_LEFT,//LEFT,
 	VK_RIGHT,//RIGHT,
@@ -52,6 +52,10 @@ int g_arrVK[(int)KEY::LAST] =
 	VK_F6,
 	VK_F7,
 	VK_F8,
+    VK_F9,
+    VK_F10,
+    VK_F11,
+    VK_F12,
 	'1',
 	'2',
 	'3',
@@ -76,7 +80,7 @@ CKeyMgr::~CKeyMgr()
 
 void CKeyMgr::init()
 {
-	for (int i = 0; i < (int)KEY::LAST; i++)
+	for (int i = 0; i < static_cast<int>(KEY::LAST); i++)
 	{
 		m_vecKey.push_back(tKeyInfo{ KEY_STATE::NONE,false });
 	}
@@ -89,7 +93,7 @@ void CKeyMgr::Update()
 
 	if (nullptr != hWnd)
 	{
-		for (int i = 0; i < (int)KEY::LAST; i++)
+		for (int i = 0; i < static_cast<int>(KEY::LAST); i++)
 		{
 			//키가 눌려있다.
 			if (GetAsyncKeyState(g_arrVK[i]) * 0x8000)
@@ -131,11 +135,11 @@ void CKeyMgr::Update()
 		GetCursorPos(&ptPos);
 		ScreenToClient(CCore::GetInst()->GetMainHwnd(), &ptPos);
 
-		m_vCurMousePos = Vec2((float)ptPos.x, (float)ptPos.y);
+		m_vCurMousePos = Vec2(static_cast<float>(ptPos.x), static_cast<float>(ptPos.y));
 	}
 	else
 	{
-		for (int i = 0; i < (int)KEY::LAST; i++)
+		for (int i = 0; i < static_cast<int>(KEY::LAST); i++)
 		{
 			m_vecKey[i].bPrevPush = false;
 

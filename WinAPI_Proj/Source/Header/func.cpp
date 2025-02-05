@@ -8,7 +8,7 @@ void CreateObject(GameObject* _pObj, GROUP_TYPE _eGroup)
 	tEvent evn = {};
 	evn.eEvent = EVENT_TYPE::CREATE_OBJECT;
 	evn.lParam = (DWORD_PTR)_pObj;
-	evn.wParam = (DWORD_PTR)_eGroup;
+	evn.wParam = static_cast<DWORD_PTR>(_eGroup);
 
 
 	CEventMgr::GetInst()->AddEvent(evn);
@@ -28,7 +28,7 @@ void ChangeScene(SCENE_TYPE _eNext)
 {
 	tEvent evn = {};
 	evn.eEvent = EVENT_TYPE::SCENE_CHANGE;
-	evn.lParam = (DWORD_PTR)_eNext;
+	evn.lParam = static_cast<DWORD_PTR>(_eNext);
 
 
 	CEventMgr::GetInst()->AddEvent(evn);
@@ -39,7 +39,7 @@ void ChangeAIState(AI* _pAI, MON_STATE _eNextState)
 	tEvent evn = {};
 	evn.eEvent = EVENT_TYPE::CHANGE_AI_STATE;
 	evn.lParam = (DWORD_PTR)_pAI;
-	evn.wParam = (DWORD_PTR)_eNextState;
+	evn.wParam = static_cast<DWORD_PTR>(_eNextState);
 
 
 	CEventMgr::GetInst()->AddEvent(evn);
@@ -50,7 +50,7 @@ void FScanf(char* _pOutBuff, FILE* _pFIle)
 	int i = 0;
 	while (true)
 	{
-		char c = (char)getc(_pFIle);
+		char c = static_cast<char>(getc(_pFIle));
 		if (c == '\n')
 		{
 			_pOutBuff[i++] = '\0';

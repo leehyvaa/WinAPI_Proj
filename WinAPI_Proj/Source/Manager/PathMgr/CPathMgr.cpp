@@ -17,7 +17,7 @@ void CPathMgr::init()
 {
 	GetCurrentDirectory(255,m_szContentPath);
 	
-	int iLen = (int)wcslen(m_szContentPath);
+	int iLen = static_cast<int>(wcslen(m_szContentPath));
 
 	for (int i = iLen-1 ; 0 <= i ; i--)
 	{

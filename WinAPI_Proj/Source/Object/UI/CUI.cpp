@@ -88,8 +88,8 @@ void CUI::Render(HDC _dc)
 
 
 		TransparentBlt(_dc
-			, (int)(vPos.x)
-			, (int)(vPos.y)
+			, static_cast<int>(vPos.x)
+			, static_cast<int>(vPos.y)
 			, iWidth, iHeight
 			, m_pTex->GetDC()
 			, 0, 0, iWidth, iHeight, RGB(0, 0, 0));
@@ -105,11 +105,11 @@ void CUI::Render(HDC _dc)
 		if (m_bLbtnDown)
 		{
             SelectGDI select(_dc, PEN_TYPE::GREEN);
-			Rectangle(_dc, (int)vPos.x, (int)vPos.y, (int)(vPos.x + vScale.x), (int)(vPos.y + vScale.y));
+			Rectangle(_dc, static_cast<int>(vPos.x), static_cast<int>(vPos.y), static_cast<int>(vPos.x + vScale.x), static_cast<int>(vPos.y + vScale.y));
 		}
 		else
 		{
-			Rectangle(_dc, (int)vPos.x, (int)vPos.y, (int)(vPos.x + vScale.x), (int)(vPos.y + vScale.y));
+			Rectangle(_dc, static_cast<int>(vPos.x), static_cast<int>(vPos.y), static_cast<int>(vPos.x + vScale.x), static_cast<int>(vPos.y + vScale.y));
 		}
 	}
 

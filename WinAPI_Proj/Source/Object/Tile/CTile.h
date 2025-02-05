@@ -12,7 +12,7 @@ private:
     int m_iImgIdx2;
     int m_iBotRightTileIdx;
 
-    VertexPosition m_eVertexPosition;
+    VERTEX_POSITION m_eVertexPosition;
     GROUND_TYPE m_eGroundType; // 지형 타입 필드
     
 public:
@@ -35,8 +35,8 @@ public:
     
     GROUND_TYPE GetGroundType() { return m_eGroundType; }
     void SetGroundType(GROUND_TYPE _type){ m_eGroundType = _type; }
-    VertexPosition GetVertexPosition() { return m_eVertexPosition; }
-    void SetVertexPosition(VertexPosition _pos) { m_eVertexPosition = _pos; }
+    VERTEX_POSITION GetVertexPosition() { return m_eVertexPosition; }
+    void SetVertexPosition(VERTEX_POSITION _pos) { m_eVertexPosition = _pos; }
 
     
     int GetBotRightTileIdx() { return m_iBotRightTileIdx; }

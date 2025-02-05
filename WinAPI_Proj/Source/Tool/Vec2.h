@@ -18,13 +18,13 @@ public :
 	{}
 
 	Vec2(int _x, int _y)
-		:x((float)_x)
-		, y((float)_y)
+		:x(static_cast<float>(_x))
+		, y(static_cast<float>(_y))
 	{}
 
 	Vec2(const POINT& _pt)
-		:x((float)_pt.x)
-		, y((float)_pt.y)
+		:x(static_cast<float>(_pt.x))
+		, y(static_cast<float>(_pt.y))
 	{}
 
 	Vec2 operator-(const Vec2& v) const;
@@ -63,8 +63,8 @@ public :
 
 	Vec2& operator = (POINT _pt)
 	{
-		x = (float)_pt.x;
-		y = (float)_pt.y;
+		x = static_cast<float>(_pt.x);
+		y = static_cast<float>(_pt.y);
 		return *this;
 	}
 

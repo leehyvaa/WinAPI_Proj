@@ -33,7 +33,7 @@ void CTimeMgr::Update()
 	QueryPerformanceCounter(&m_CurCount);
 
 	//이전 프레임의 카운팅과, 현재 프레임 카운팅 값의 차이를 구한다.
-	m_dDT = (double)(m_CurCount.QuadPart - m_PrevCount.QuadPart) /(double)m_FreQuency.QuadPart;
+	m_dDT = static_cast<double>(m_CurCount.QuadPart - m_PrevCount.QuadPart) /static_cast<double>(m_FreQuency.QuadPart);
 	
 	//이전 카운트 값을 현재값으로 갱신(다음 계산을 위해서)
 	m_PrevCount = m_CurCount;

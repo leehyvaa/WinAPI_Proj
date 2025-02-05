@@ -135,10 +135,10 @@ void GameObject::Render(HDC _dc)
 
 	Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(m_vPos);
 
-	Rectangle(_dc, (int)(vRenderPos.x - m_vScale.x / 2.f)
-		, (int)(vRenderPos.y - m_vScale.y / 2.f)
-		, (int)(vRenderPos.x + m_vScale.x / 2.f)
-		, (int)(vRenderPos.y + m_vScale.y / 2.f));
+	Rectangle(_dc, static_cast<int>(vRenderPos.x - m_vScale.x / 2.f)
+		, static_cast<int>(vRenderPos.y - m_vScale.y / 2.f)
+		, static_cast<int>(vRenderPos.x + m_vScale.x / 2.f)
+		, static_cast<int>(vRenderPos.y + m_vScale.y / 2.f));
 
 
 	Component_Render(_dc);

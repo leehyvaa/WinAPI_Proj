@@ -117,7 +117,7 @@ void CScene_Title::Exit()
 
 void ChangeScene(DWORD_PTR a, DWORD_PTR b)
 {
-	ChangeScene((SCENE_TYPE)a);
+	ChangeScene(static_cast<SCENE_TYPE>(a));
 }
 
 void GameOver(DWORD_PTR a, DWORD_PTR b)

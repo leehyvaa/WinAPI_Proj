@@ -89,9 +89,9 @@ void CAnimation::Render(HDC _dc)
 
 
 
-		rotPos[0] = {(int)(150 + 141 * cos(radian1)),(int)(150 + 141 * sin(radian1)) };
-		rotPos[1] = { (int)(150 + 141 * cos(radian2)),(int)(150 + 141 * sin(radian2)) };
-		rotPos[2] = { (int)(150 + 141 * cos(radian3)),(int)(150 + 141 * sin(radian3)) };
+		rotPos[0] = {static_cast<int>(150 + 141 * cos(radian1)),static_cast<int>(150 + 141 * sin(radian1)) };
+		rotPos[1] = { static_cast<int>(150 + 141 * cos(radian2)),static_cast<int>(150 + 141 * sin(radian2)) };
+		rotPos[2] = { static_cast<int>(150 + 141 * cos(radian3)),static_cast<int>(150 + 141 * sin(radian3)) };
 
 
 		POINT a = rotPos[0];
@@ -106,40 +106,40 @@ void CAnimation::Render(HDC _dc)
 
 
 		PlgBlt(tempDC, rotPos, m_pTex->GetDC()
-			, (int)(m_vecFrm[m_iCurFrm].vLT.x)
-			, (int)(m_vecFrm[m_iCurFrm].vLT.y)
-			, (int)(m_vecFrm[m_iCurFrm].vSlice.x)
-			, (int)(m_vecFrm[m_iCurFrm].vSlice.y)
+			, static_cast<int>(m_vecFrm[m_iCurFrm].vLT.x)
+			, static_cast<int>(m_vecFrm[m_iCurFrm].vLT.y)
+			, static_cast<int>(m_vecFrm[m_iCurFrm].vSlice.x)
+			, static_cast<int>(m_vecFrm[m_iCurFrm].vSlice.y)
 			, NULL, NULL, NULL);
 
 
 
 		TransparentBlt(_dc
-			, (int)(vPos.x - m_vecFrm[m_iCurFrm].vSlice.x * m_fSizeMulti / 2.f)
-			, (int)(vPos.y - m_vecFrm[m_iCurFrm].vSlice.y * m_fSizeMulti / 2.f)
-			, (int)(m_vecFrm[m_iCurFrm].vSlice.x * m_fSizeMulti)
-			, (int)(m_vecFrm[m_iCurFrm].vSlice.y * m_fSizeMulti)
+			, static_cast<int>(vPos.x - m_vecFrm[m_iCurFrm].vSlice.x * m_fSizeMulti / 2.f)
+			, static_cast<int>(vPos.y - m_vecFrm[m_iCurFrm].vSlice.y * m_fSizeMulti / 2.f)
+			, static_cast<int>(m_vecFrm[m_iCurFrm].vSlice.x * m_fSizeMulti)
+			, static_cast<int>(m_vecFrm[m_iCurFrm].vSlice.y * m_fSizeMulti)
 			, tempDC
 			, 0
 			, 0
 			, 300
 			, 300
-			, (int)(RGB(255, 0, 255))
+			, static_cast<int>((RGB(255, 0, 255)))
 		);
 	}
 	else
 	{
 		TransparentBlt(_dc
-			, (int)(vPos.x - m_vecFrm[m_iCurFrm].vSlice.x * m_fSizeMulti / 2.f)
-			, (int)(vPos.y - m_vecFrm[m_iCurFrm].vSlice.y * m_fSizeMulti / 2.f)
-			, (int)(m_vecFrm[m_iCurFrm].vSlice.x * m_fSizeMulti)
-			, (int)(m_vecFrm[m_iCurFrm].vSlice.y * m_fSizeMulti)
+			, static_cast<int>(vPos.x - m_vecFrm[m_iCurFrm].vSlice.x * m_fSizeMulti / 2.f)
+			, static_cast<int>(vPos.y - m_vecFrm[m_iCurFrm].vSlice.y * m_fSizeMulti / 2.f)
+			, static_cast<int>(m_vecFrm[m_iCurFrm].vSlice.x * m_fSizeMulti)
+			, static_cast<int>(m_vecFrm[m_iCurFrm].vSlice.y * m_fSizeMulti)
 			, m_pTex->GetDC()
-			, (int)(m_vecFrm[m_iCurFrm].vLT.x)
-			, (int)(m_vecFrm[m_iCurFrm].vLT.y)
-			, (int)(m_vecFrm[m_iCurFrm].vSlice.x)
-			, (int)(m_vecFrm[m_iCurFrm].vSlice.y)
-			, (int)(RGB(255, 0, 255))
+			, static_cast<int>(m_vecFrm[m_iCurFrm].vLT.x)
+			, static_cast<int>(m_vecFrm[m_iCurFrm].vLT.y)
+			, static_cast<int>(m_vecFrm[m_iCurFrm].vSlice.x)
+			, static_cast<int>(m_vecFrm[m_iCurFrm].vSlice.y)
+			, static_cast<int>((RGB(255, 0, 255)))
 		);
 	}
 
@@ -167,7 +167,7 @@ void CAnimation::Create(CTexture* _pTex, Vec2 _vLT, Vec2 _vSliceSize,
 	{
 		frm.fDuration = _fDuration;
 		frm.vSlice = _vSliceSize;
-		frm.vLT = _vLT + _vStep * (float)i;
+		frm.vLT = _vLT + _vStep * static_cast<float>(i);
 		frm.vOffset = _vOffset;
 
 		m_vecFrm.push_back(frm);
@@ -213,7 +213,7 @@ void CAnimation::Save(const wstring& _strRelativePath)
 	//size_t iFrameCount = m_vecFrm.size();
 	//fwrite(&iFrameCount, sizeof(size_t), 1, pFile);
 	fprintf(pFile, "[Frame_Count]\n");
-	fprintf(pFile, "%d\n", (int)m_vecFrm.size());
+	fprintf(pFile, "%d\n", static_cast<int>(m_vecFrm.size()));
 
 
 	fprintf(pFile, "[Animation_Size_Multiply]\n");
@@ -225,16 +225,16 @@ void CAnimation::Save(const wstring& _strRelativePath)
 	for (size_t i = 0; i < m_vecFrm.size(); i++)
 	{
 		fprintf(pFile, "[Frame Index]\n");
-		fprintf(pFile, "%d\n", (int)i);
+		fprintf(pFile, "%d\n", static_cast<int>(i));
 
 		fprintf(pFile, "[Left Top]\n");
-		fprintf(pFile, "%d %d\n", (int)m_vecFrm[i].vLT.x, (int)m_vecFrm[i].vLT.y);
+		fprintf(pFile, "%d %d\n", static_cast<int>(m_vecFrm[i].vLT.x), static_cast<int>(m_vecFrm[i].vLT.y));
 
 		fprintf(pFile, "[Slice Size]\n");
-		fprintf(pFile, "%d %d\n", (int)m_vecFrm[i].vSlice.x, (int)m_vecFrm[i].vSlice.y);
+		fprintf(pFile, "%d %d\n", static_cast<int>(m_vecFrm[i].vSlice.x), static_cast<int>(m_vecFrm[i].vSlice.y));
 
 		fprintf(pFile, "[Offset]\n");
-		fprintf(pFile, "%d %d\n", (int)m_vecFrm[i].vOffset.x, (int)m_vecFrm[i].vOffset.y);
+		fprintf(pFile, "%d %d\n", static_cast<int>(m_vecFrm[i].vOffset.x), static_cast<int>(m_vecFrm[i].vOffset.y));
 
 		fprintf(pFile, "[Duration]\n");
 		fprintf(pFile, "%f\n", m_vecFrm[i].fDuration);

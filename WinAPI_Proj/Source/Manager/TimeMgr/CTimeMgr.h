@@ -20,6 +20,6 @@ public:
 	void Render();
 
 	double GetDT() { return m_dDT; }
-	float GetfDT() { return (float)m_dDT; }
+	float GetfDT() { return static_cast<float>(m_dDT); }
 };
 

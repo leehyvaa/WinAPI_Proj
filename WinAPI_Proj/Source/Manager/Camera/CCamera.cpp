@@ -77,11 +77,11 @@ void CCamera::Render(HDC _dc)
 
 	if (CAM_EFFECT::FADE_OUT == effect.eEffect)
 	{
-		iAlpha = (int)(255.f * fRatio);
+		iAlpha = static_cast<int>(255.f * fRatio);
 	}
 	else if (CAM_EFFECT::FADE_IN == effect.eEffect)
 	{
-		iAlpha = (int)(255.f * (1.f-fRatio));
+		iAlpha = static_cast<int>(255.f * (1.f - fRatio));
 	}
 
 
@@ -94,9 +94,9 @@ void CCamera::Render(HDC _dc)
 	AlphaBlend(_dc
 		, 0
 		, 0
-		, (int)m_pVeilTex->Width(), (int)m_pVeilTex->Height()
+		, static_cast<int>(m_pVeilTex->Width()), static_cast<int>(m_pVeilTex->Height())
 		, m_pVeilTex->GetDC()
-		, 0, 0, (int)m_pVeilTex->Width(), (int)m_pVeilTex->Height()
+		, 0, 0, static_cast<int>(m_pVeilTex->Width()), static_cast<int>(m_pVeilTex->Height())
 		, bf);
 
 
@@ -111,7 +111,7 @@ void CCamera::init()
 {
 	Vec2 vResolution = CCore::GetInst()->GetResolution();
 
-	m_pVeilTex = CResMgr::GetInst()->CreateTexture(L"CameraVeil", (UINT)vResolution.x, (UINT)vResolution.y);
+	m_pVeilTex = CResMgr::GetInst()->CreateTexture(L"CameraVeil", static_cast<UINT>(vResolution.x), static_cast<UINT>(vResolution.y));
 
 }
 

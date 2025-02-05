@@ -37,7 +37,7 @@ public:
 	}
 
 	tAnimFrm& GetFrame(int _iIdx) { return m_vecFrm[_iIdx]; }
-	int GetMaxFrame() { return (UINT)m_vecFrm.size(); }
+	int GetMaxFrame() { return static_cast<UINT>(m_vecFrm.size()); }
 
 
 

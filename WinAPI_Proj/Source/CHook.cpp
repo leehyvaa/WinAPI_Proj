@@ -185,7 +185,7 @@ void CHook::Update_Move()
 		if ((GetPos() - owner->GetPos()).Length() < 30.f)
 		{
 			DeleteObject(this);
-			((PlayerArm*)owner)->GetOwner()->SetHookRemove(nullptr);
+			static_cast<PlayerArm*>(owner)->GetOwner()->SetHookRemove(nullptr);
 
 		}
 	}
@@ -206,7 +206,7 @@ void CHook::Update_Move()
 
 
 			DeleteObject(this);
-			((PlayerArm*)owner)->GetOwner()->SetHookRemove(nullptr);
+			static_cast<PlayerArm*>(owner)->GetOwner()->SetHookRemove(nullptr);
 
 		}
 	}

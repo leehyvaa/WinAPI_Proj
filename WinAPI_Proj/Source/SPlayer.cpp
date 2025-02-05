@@ -186,7 +186,7 @@ void SPlayer::Update()
 		cout << GetRigidBody()->GetSpeed() << endl;
 		cout << GetRigidBody()->GetVelocity().x << endl;
 		cout << GetRigidBody()->GetVelocity().y << endl;
-		cout << (int)m_eCurState <<endl;
+		cout << static_cast<int>(m_eCurState) <<endl;
 		cout << targetPos.x << " " << targetPos.y << endl;
 		cout << onCollisionRay << endl;
 		cout << playerArm->GetPos().x << " " << playerArm->GetPos().y << endl;
@@ -1003,7 +1003,7 @@ void SPlayer::CreateHook()
 	playerHook->SetName(L"Hook");
 	playerHook->SetPos(vHookPos);
 	playerHook->SetScale(Vec2(11.f, 11.f));
-	((GameObject*)playerHook)->SetDir(Vec2(0.f, -1.f));
+	static_cast<GameObject*>(playerHook)->SetDir(Vec2(0.f, -1.f));
 	playerHook->SetOwner(playerArm);
 
 	CreateObject(playerHook, GROUP_TYPE::PROJ_PLAYER);

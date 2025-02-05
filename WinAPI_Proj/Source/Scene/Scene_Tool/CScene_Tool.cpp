@@ -62,13 +62,13 @@ void CScene_Tool::Enter()
 	pPanelUI->SetScale(Vec2(320.f,350.f));
 	pPanelUI->SetPos(Vec2(vResolution.x - pPanelUI->GetScale().x,0.f));
 	AddObject(pPanelUI, GROUP_TYPE::UI);
-	m_pPanelUI = (CPanelUI*)pPanelUI;
+	m_pPanelUI = static_cast<CPanelUI*>(pPanelUI);
 
 	CBtnUI* pBtnTileTex = new CBtnUI;
 	pBtnTileTex->SetName(L"ChildUI");
 	pBtnTileTex->SetScale(Vec2(320.f, 288.f));
 	pBtnTileTex->SetPos(Vec2(0.f, 30.f));
-	((CBtnUI*)pBtnTileTex)->SetClickedCallBack(this, (SCENE_MEMFUNC)&CScene_Tool::SetTileUIIdx);
+	((CBtnUI*)pBtnTileTex)->SetClickedCallBack(this, static_cast<SCENE_MEMFUNC>(&CScene_Tool::SetTileUIIdx));
 	
 	pPanelUI->AddChild(pBtnTileTex);
 
@@ -80,7 +80,7 @@ void CScene_Tool::Enter()
 	pBtnPrev->SetScale(Vec2(32.f, 31.f));
 	pBtnPrev->SetPos(Vec2(1.f,288.f));
 	//pBtnUI->SetClickedCallBack(&ChangeScene,0,0);
-	((CBtnUI*)pBtnPrev)->SetClickedCallBack(this,(SCENE_MEMFUNC) & CScene_Tool::PrevTileUI);
+	((CBtnUI*)pBtnPrev)->SetClickedCallBack(this,static_cast<SCENE_MEMFUNC>(&CScene_Tool::PrevTileUI));
 	CTexture* pBtnTexPrev = CResMgr::GetInst()->LoadTexture(L"UI_LEFT", L"Texture\\UI\\UI_LEFT.bmp");
 	pBtnPrev->SetTexture(pBtnTexPrev);
 	pBtnTileTex->AddChild(pBtnPrev);
@@ -89,7 +89,7 @@ void CScene_Tool::Enter()
 
 	CBtnUI* pBtnNext = pBtnPrev->Clone();
 	pBtnNext->SetPos(Vec2(283.f, 288.f));
-	((CBtnUI*)pBtnNext)->SetClickedCallBack(this, (SCENE_MEMFUNC)&CScene_Tool::NextTileUI);
+	((CBtnUI*)pBtnNext)->SetClickedCallBack(this, static_cast<SCENE_MEMFUNC>(&CScene_Tool::NextTileUI));
 	CTexture* pBtnTexNext = CResMgr::GetInst()->LoadTexture(L"UI_RIGHT", L"Texture\\UI\\UI_RIGHT.bmp");
 	pBtnNext->SetTexture(pBtnTexNext);
 	pBtnTileTex->AddChild(pBtnNext);
@@ -97,7 +97,7 @@ void CScene_Tool::Enter()
 
 	CBtnUI* pBtnSave = pBtnPrev->Clone();
 	pBtnSave->SetPos(Vec2(140.f, 288.f));
-	((CBtnUI*)pBtnSave)->SetClickedCallBack(this, (SCENE_MEMFUNC)&CScene_Tool::SaveTileData);
+	((CBtnUI*)pBtnSave)->SetClickedCallBack(this, static_cast<SCENE_MEMFUNC>(&CScene_Tool::SaveTileData));
 	//CTexture* pBtnTexNext = CResMgr::GetInst()->LoadTexture(L"UI_RIGHT", L"Tool\\Button\\UI_RIGHT.bmp");
 	//pBtnNext->SetTexture(pBtnTexNext);
 	pBtnTileTex->AddChild(pBtnSave);
@@ -133,10 +133,18 @@ void CScene_Tool::Enter()
     m_pHelpText->SetLineSpace(5);
     m_pHelpText->SetVisibleBox(false);
     m_pHelpText->SetFontColor(RGB(137,0,255));
-
     m_pHelpText->SetFontSize(20);
-    
+    AddObject(m_pHelpText, GROUP_TYPE::UI);
 
+
+    m_pHelpSubText = new CTextUI();
+    m_pHelpSubText->SetPos(Vec2(400, 0));
+    m_pHelpSubText->SetAlign(CTextUI::TEXT_ALIGN::LEFT);
+    m_pHelpSubText->SetLineSpace(5);
+    m_pHelpSubText->SetVisibleBox(false);
+    m_pHelpSubText->SetFontColor(RGB(137,0,255));
+    m_pHelpSubText->SetFontSize(20);
+    AddObject(m_pHelpSubText, GROUP_TYPE::UI);
 
 
     // 기존 초기화 코드...
@@ -144,21 +152,23 @@ void CScene_Tool::Enter()
     // 모드별 설명 텍스트 초기화
     m_textureHelp = {
         L"[텍스처 모드]",
-        L"좌클릭 - 타일 배치",
-        L"우클릭 - 타일 복사", 
         L"1 - 배경 레이어",
         L"2 - 전경 레이어",
         L"BACK - 지우기",
+        L"좌클릭 - 타일 배치",
+        L"우클릭 - 타일 복사", 
     };
 
     m_groundHelp = {
         L"[지형 모드]",
-        L"좌클릭 - 지형 콜라이더 생성",
         L"1 - 이동 가능 지형",
         L"2 - 이동 불가 지형",
         L"3 - 데미지 지형",
         L"4 - 즉사 지형",
-        L"BACK - 지우기"
+        L"BACK - 지우기",
+        L"좌클릭 - 지형 콜라이더 위치 지정(지형의 왼쪽 위 지점에 클릭)",
+        L"우클릭 - 지형 콜라이더 위치 지정(지형의 오른쪽 아래 지점에 클릭),",
+        L"ENTER - 좌우 클릭으로 지정한 지형을 완성시키기",
     };
 
     m_commonHelp = {
@@ -167,16 +177,20 @@ void CScene_Tool::Enter()
         L"F2 - 지형 모드",
         L"F3 - 트리거 모드",
         L"F4 - 프리팹 모드",
+        L"",
         L"F5 - 타일 테두리 표시",
         L"F6 - 콜라이더 표시",
         L"F7 - 그라운드 타입 표시",
+        L"F8 - 그라운드 완성 라인 표시",
+        L"",
         L"CTRL - 타일맵 불러오기",
         L"ESC - 시작 화면으로"
     };
+    
+    // 공통 설명 표시
+    m_pHelpText->AddLines(m_commonHelp);
 
 
-
-    AddObject(m_pHelpText, GROUP_TYPE::UI);
 
 	/*CBackGround* backGround2 = new CBackGround;
 	backGround2->SetPos(Vec2(0, 0));
@@ -211,21 +225,19 @@ void CScene_Tool::Update()
 {
 	CScene::Update();
     m_pModeText->ClearLines();
-    m_pHelpText->ClearLines();
+    m_pHelpSubText->ClearLines();
 
-    // 공통 설명 표시
-    m_pHelpText->AddLines(m_commonHelp);
-    m_pHelpText->AddLine(L"");  // 빈 줄 추가
+
 
     // 현재 모드의 설명만 표시
     switch(m_eToolMode)
     {
     case TEXTURE_MODE:
-        m_pHelpText->AddLines(m_textureHelp);
+        m_pHelpSubText->AddLines(m_textureHelp);
         break;
             
     case GROUND_MODE:
-        m_pHelpText->AddLines(m_groundHelp);
+        m_pHelpSubText->AddLines(m_groundHelp);
         break;
     }
 
@@ -288,23 +300,17 @@ void CScene_Tool::Update()
         {
             SettingTopLeftGround();
         }
+        if (KEY_TAP(KEY::RBUTTON))
+        {
+            SettingBotRightGround();
+        }
+	    if (KEY_TAP(KEY::ENTER))
+	    {
+	        const vector<GameObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
+            static_cast<CTile*>(vecTile[m_iLastTopLeftTileIdx])->SetBotRightTileIdx(m_iLastBotRightTileIdx);
+	    }
 
-
-        // if (KEY_TAP(KEY::BACK))
-        // {
-        //     if (GetGroundCount() > 0)
-        //     {
-        //         DeleteObject(CSceneMgr::GetInst()->GetCurScene()->GetGroupObject(GROUP_TYPE::GROUND).back());
-        //         SetGroundCount(GetGroundCount() - 1);
-        //     }
-        // }
-
-        // if (KEY_TAP(KEY::P))
-        // {
-        //     cout << "ground Count: " << GetGroundCount() << endl;
-        //     cout << "ground Type:" << (int)groundType << endl;
-        //
-        // }
+ 
     }
 	break;
 	case PREFAB_MODE:
@@ -340,21 +346,13 @@ void CScene_Tool::Update()
     }
 
 	if (KEY_TAP(KEY::F1))
-	{
 		m_eToolMode = TOOL_MODE::TEXTURE_MODE;
-	}
 	if (KEY_TAP(KEY::F2))
-	{
 		m_eToolMode = TOOL_MODE::GROUND_MODE;
-	}
 	if (KEY_TAP(KEY::F3))
-	{
 		m_eToolMode = TOOL_MODE::TRIGGER_MODE;
-	}
 	if (KEY_TAP(KEY::F4))
-	{
 		m_eToolMode = TOOL_MODE::PREFAB_MODE;
-    }
 
     vector<wstring> modeText =
         {
@@ -383,7 +381,7 @@ void CScene_Tool::SetTileIdx()
 		UINT iIdx = iRow * iTileX + iCol;
 
 
-		Vec2 tilePos = Vec2((float)iCol, (float)iRow);
+		Vec2 tilePos = Vec2(static_cast<float>(iCol), static_cast<float>(iRow));
 
 		if (tilePos == m_vTilePos)
 			return;
@@ -394,28 +392,28 @@ void CScene_Tool::SetTileIdx()
 
 
 			CTexture* tex = m_pTexUI->GetTexture();
-			m_iImgTileX = (int)tex->Width() / TILE_SIZE;
-			m_iImgTileY = (int)tex->Height() / TILE_SIZE;
+			m_iImgTileX = static_cast<int>(tex->Width()) / TILE_SIZE;
+			m_iImgTileY = static_cast<int>(tex->Height()) / TILE_SIZE;
 
 
 			if (diff.x < 0.f || diff.y < 0.f ||
 				diff.x >= m_iImgTileX || diff.y >= m_iImgTileY)
 				return;
 
-			int newTileIdx = (int)diff.y * m_iImgTileX + (int)diff.x;
+			int newTileIdx = static_cast<int>(diff.y) * m_iImgTileX + static_cast<int>(diff.x);
 
 
 			const vector<GameObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
 
 			if (m_bSecondTex)
 			{
-				((CTile*)vecTile[iIdx])->SetTextureTwo(m_pTexUI->GetTexture());
-				((CTile*)vecTile[iIdx])->SetImgIdxTwo(newTileIdx);
+				static_cast<CTile*>(vecTile[iIdx])->SetTextureTwo(m_pTexUI->GetTexture());
+				static_cast<CTile*>(vecTile[iIdx])->SetImgIdxTwo(newTileIdx);
 			}
 			else
 			{
-				((CTile*)vecTile[iIdx])->SetTexture(m_pTexUI->GetTexture());
-				((CTile*)vecTile[iIdx])->SetImgIdx(newTileIdx);
+				static_cast<CTile*>(vecTile[iIdx])->SetTexture(m_pTexUI->GetTexture());
+				static_cast<CTile*>(vecTile[iIdx])->SetImgIdx(newTileIdx);
 			}
 
 		}
@@ -443,11 +441,8 @@ void CScene_Tool::DrawSelectTile()
     int iCol = 0;
     int iRow = 0;
     int iTileX =0;
-    if (!CalculateTileIndex(iCol, iRow,iTileX))
-        return;
-
-	if (m_iImgTileIdx < 0)
-		return;
+    if (!CalculateTileIndex(iCol, iRow,iTileX)) return;
+	if (m_iImgTileIdx < 0) return;
     
     // 선택된 타일의 인덱스 계산
 	UINT iIdx = iRow * iTileX + iCol;
@@ -459,63 +454,60 @@ void CScene_Tool::DrawSelectTile()
 	{
 		if (m_bSecondTex)
 		{
-			((CTile*)vecTile[iIdx])->SetTextureTwo(m_pTexUI->GetTexture());
-			((CTile*)vecTile[iIdx])->SetImgIdxTwo(m_iImgTileIdx);
+			static_cast<CTile*>(vecTile[iIdx])->SetTextureTwo(m_pTexUI->GetTexture());
+			static_cast<CTile*>(vecTile[iIdx])->SetImgIdxTwo(m_iImgTileIdx);
 		}
 		else
 		{
-			((CTile*)vecTile[iIdx])->SetTexture(m_pTexUI->GetTexture());
-			((CTile*)vecTile[iIdx])->SetImgIdx(m_iImgTileIdx);
+			static_cast<CTile*>(vecTile[iIdx])->SetTexture(m_pTexUI->GetTexture());
+			static_cast<CTile*>(vecTile[iIdx])->SetImgIdx(m_iImgTileIdx);
 		}
-
 	}
 	else
 	{
 		if (m_bSecondTex)
 		{
-			((CTile*)vecTile[iIdx])->SetTextureTwo(nullptr);
-			((CTile*)vecTile[iIdx])->SetImgIdxTwo(-1);
+			static_cast<CTile*>(vecTile[iIdx])->SetTextureTwo(nullptr);
+			static_cast<CTile*>(vecTile[iIdx])->SetImgIdxTwo(-1);
 		}
 		else
 		{
-			((CTile*)vecTile[iIdx])->SetTexture(nullptr);
-			((CTile*)vecTile[iIdx])->SetImgIdx(-1);
+			static_cast<CTile*>(vecTile[iIdx])->SetTexture(nullptr);
+			static_cast<CTile*>(vecTile[iIdx])->SetImgIdx(-1);
 		}
 	}
 
-	
-
-	m_vTilePos = Vec2((float)iCol, (float)iRow);
+	m_vTilePos = Vec2(static_cast<float>(iCol), static_cast<float>(iRow));
 }
 
+
+// 지형의 왼쪽위 지점을 설정하는 함수
 void CScene_Tool::SettingTopLeftGround()
 {
     int iCol = 0;
     int iRow = 0;
     int iTileX = 0;
-    if (!CalculateTileIndex(iCol, iRow,iTileX))
-        return;
-
-    if (m_iImgTileIdx < 0)
-        return;
+    if (!CalculateTileIndex(iCol, iRow,iTileX)) return;
+    if (m_iImgTileIdx < 0) return;
     
     // 선택된 타일의 인덱스 계산
     UINT iIdx = iRow * iTileX + iCol;
 	
     const vector<GameObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
 
-    CTile* selectedTile = (CTile*)vecTile[iIdx];
+    CTile* selectedTile = static_cast<CTile*>(vecTile[iIdx]);
     
     if (m_bErase)
     {
         selectedTile->SetGroundType(GROUND_TYPE::NONE);
-        selectedTile->SetVertexPosition(VertexPosition::NONE);
+        selectedTile->SetVertexPosition(VERTEX_POSITION::NONE);
         selectedTile->SetBotRightTileIdx(-1);
     }
     else
     {
-        selectedTile->SetVertexPosition(VertexPosition::TOP_LEFT);
-
+        selectedTile->SetVertexPosition(VERTEX_POSITION::TOP_LEFT);
+        m_iLastTopLeftTileIdx =iIdx;
+        
         if (m_eGroundType == GROUND_TYPE::NORMAL)
             selectedTile->SetGroundType(GROUND_TYPE::NORMAL);
         if (m_eGroundType == GROUND_TYPE::UNWALKABLE)
@@ -525,11 +517,32 @@ void CScene_Tool::SettingTopLeftGround()
         if (m_eGroundType == GROUND_TYPE::DEADZONE)
             selectedTile->SetGroundType(GROUND_TYPE::DEADZONE);
     }
-	
-
-    //m_vTilePos = Vec2((float)iCol, (float)iRow);
 }
 
+// 지형의 오른쪽 아래를 설정하는 함수
+void CScene_Tool::SettingBotRightGround()
+{
+    int iCol = 0;
+    int iRow = 0;
+    int iTileX = 0;
+    if (!CalculateTileIndex(iCol, iRow,iTileX)) return;
+    if (m_iImgTileIdx < 0) return;
+    
+    UINT iIdx = iRow * iTileX + iCol;
+    const vector<GameObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
+    CTile* selectedTile = static_cast<CTile*>(vecTile[iIdx]);
+
+    if (m_bErase)
+    {
+        selectedTile->SetVertexPosition(VERTEX_POSITION::NONE);
+    }
+    else
+    {
+        selectedTile->SetVertexPosition(VERTEX_POSITION::BOT_RIGHT);
+        m_iLastBotRightTileIdx = iIdx;
+    }
+    
+}
 
 
 // 원본 텍스처의 선택한 위치의 idx를 기억하는 함수
@@ -543,11 +556,11 @@ void CScene_Tool::SetTileUIIdx()
 		vMousePos =vMousePos- m_pTexUI->GetFinalPos();
 		vMousePos = CCamera::GetInst()->GetRenderPos(vMousePos);
 
-		m_iImgTileX = (int)tex->Width()/ TILE_SIZE;
-		m_iImgTileY = (int)tex->Height()/ TILE_SIZE;
+		m_iImgTileX = static_cast<int>(tex->Width())/ TILE_SIZE;
+		m_iImgTileY = static_cast<int>(tex->Height())/ TILE_SIZE;
 
-		int iCol = (int)vMousePos.x / TILE_SIZE;
-		int iRow = (int)vMousePos.y / TILE_SIZE;
+		int iCol = static_cast<int>(vMousePos.x) / TILE_SIZE;
+		int iRow = static_cast<int>(vMousePos.y) / TILE_SIZE;
 
 		if (vMousePos.x < 0.f || m_iImgTileX <= iCol
 			|| vMousePos.y < 0.f || m_iImgTileX <= iRow)
@@ -559,6 +572,9 @@ void CScene_Tool::SetTileUIIdx()
 		m_vImgTilePos = Vec2(iCol, iRow);
 	}
 }
+
+
+
 /*
     SaveTile(파일경로)
     파일을 만들고, 씬의 타일개수를 가져와
@@ -578,31 +594,31 @@ void CScene_Tool::SaveTile(const wstring& _strFilePath)
 	UINT yCount = GetTileY();
 
 	fprintf(pFile, "[TileCount]\n");
-	fprintf(pFile, "%d\n", (int)xCount);
-	fprintf(pFile, "%d\n", (int)yCount);
+	fprintf(pFile, "%d\n", static_cast<int>(xCount));
+	fprintf(pFile, "%d\n", static_cast<int>(yCount));
 
 	fprintf(pFile,"\n");
 
 	//모든 타일들을 개별적으로 저장할 데이터를 저장하게 함
 	const vector<GameObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
-	const vector<GameObject*>& vecGround = GetGroupObject(GROUP_TYPE::GROUND);
+	//const vector<GameObject*>& vecGround = GetGroupObject(GROUP_TYPE::GROUND);
 
 	for (size_t i = 0; i < vecTile.size(); i++)
 	{
-		((CTile*)vecTile[i])->Save(pFile);
+		static_cast<CTile*>(vecTile[i])->Save(pFile);
 	}
 
-	fprintf(pFile, "[GroundCount]\n");
-	fprintf(pFile, "%d\n", (int)GetGroundCount());
-	for (size_t i = 0; i < vecGround.size(); i++)
-	{
-		((CGround*)vecGround[i])->Save(pFile);
-	}
-
-
+	// fprintf(pFile, "[GroundCount]\n");
+	// fprintf(pFile, "%d\n", static_cast<int>(GetGroundCount()));
+	// for (size_t i = 0; i < vecGround.size(); i++)
+	// {
+	// 	static_cast<CGround*>(vecGround[i])->Save(pFile);
+	// }
 
 	fclose(pFile);
 }
+
+
 
 /*
     SaveTileDate()
@@ -674,6 +690,7 @@ void CScene_Tool::LoadTileData()
 		LoadTile(strRelativePath);
 	}
 }
+
 
 // 폴더에서 타일 텍스처 파일들을 불러와서 저장하고 첫 번째 텍스처를 UI에 띄우는 함수
 void CScene_Tool::LoadTileTexUI()
@@ -761,7 +778,7 @@ void CScene_Tool::PrevTileUI()
 {
 	m_iImgIndex--;
 	if (0 > m_iImgIndex || m_vecTile_list.size() <= m_iImgIndex)
-		m_iImgIndex = (UINT)m_vecTile_list.size() - 1;
+		m_iImgIndex = static_cast<UINT>(m_vecTile_list.size()) - 1;
 
 	ChangeTileTexUI();
 
@@ -821,7 +838,7 @@ void CScene_Tool::SaveBmp()
 	WriteFile(hFile, (LPSTR)&bmfHeader, sizeof(BITMAPFILEHEADER), &dwWritten, NULL);
 	WriteFile(hFile, (LPSTR)&bi, sizeof(BITMAPINFOHEADER), &dwWritten, NULL);
 	LPSTR lpBits = new char[dwSizeofDIB];
-	GetDIBits(hdcScreen, hBitmap, 0, (UINT)screenY, lpBits, (BITMAPINFO*)&bi, DIB_RGB_COLORS);
+	GetDIBits(hdcScreen, hBitmap, 0, static_cast<UINT>(screenY), lpBits, (BITMAPINFO*)&bi, DIB_RGB_COLORS);
 	WriteFile(hFile, lpBits, dwSizeofDIB, &dwWritten, NULL);
 
 
@@ -851,30 +868,6 @@ bool CScene_Tool::CalculateTileIndex(int& iCol, int& iRow,int& iTileX)
 
     return true;
 }
-
-void CScene_Tool::UpdateTextBox()
-{
-    m_pModeText->ClearLines();
-    
-
-
-    // 라인 직접 추가
-    //pChatBox->AddLine(L"[시스템] 환영합니다!");
-    //pChatBox->AddLine(L"> 플레이어가 입장했습니다");
-
-    //// 2. 개행 문자로 분할
-    //pChatBox->SetText(L"첫번째 줄\n두번째 줄\n세번째 줄");
-
-    // 3. 벡터로 일괄 추가
-    /*vector<wstring> tutorialText = {
-        mode,
-        L"WASD - 이동",
-        L"Space - 점프"
-    };
-    m_pModeText->AddLines(tutorialText);*/
-}
-
-
 
 
 

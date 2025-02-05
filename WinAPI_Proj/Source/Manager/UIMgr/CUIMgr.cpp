@@ -118,7 +118,7 @@ CUI* CUIMgr::GetFocusedUI()
 
 	for (; iter != vecUI.end(); iter++)
 	{
-		if (((CUI*)*iter)->IsMouseOn())
+		if (static_cast<CUI*>(*iter)->IsMouseOn())
 		{
 			targetiter = iter;
 		}
@@ -131,7 +131,7 @@ CUI* CUIMgr::GetFocusedUI()
 		return nullptr;
 	}
 
-	pFocusedUI = (CUI*)*targetiter;
+	pFocusedUI = static_cast<CUI*>(*targetiter);
 
 	//벡터 내에서 맨 뒤로 순번 교체
 	vecUI.erase(targetiter);

@@ -61,6 +61,11 @@ enum class KEY
 	F7,
 	F8,
 
+    F9,
+    F10,
+    F11,
+    F12,
+    
 	KEY_1,
 	KEY_2,
 	KEY_3,
@@ -92,7 +97,7 @@ private:
 public:
 	void init();
 	void Update();
-	KEY_STATE GetKeyState(KEY _eKey){return m_vecKey[(int)_eKey].eState;}
+	KEY_STATE GetKeyState(KEY _eKey){return m_vecKey[static_cast<int>(_eKey)].eState;}
 	Vec2 GetMousePos() { return m_vCurMousePos; }
 };
 

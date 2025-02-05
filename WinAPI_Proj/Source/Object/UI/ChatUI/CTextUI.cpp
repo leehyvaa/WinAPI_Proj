@@ -85,7 +85,7 @@ void CTextUI::Render(HDC _dc)
         vPos = CCamera::GetInst()->GetRenderPos(vPos);
 
     // 폰트/색상 설정
-    HFONT oldFont = (HFONT)SelectObject(_dc, m_hFont);
+    HFONT oldFont = static_cast<HFONT>(SelectObject(_dc, m_hFont));
     COLORREF oldColor = SetTextColor(_dc, m_TextColor);
 
     // 라인별 렌더링
@@ -95,10 +95,10 @@ void CTextUI::Render(HDC _dc)
         const std::wstring& line = m_vecLines[i];
 
         // 텍스트 크기 측정
-        GetTextExtentPoint32(_dc, line.c_str(), (int)line.length(), &txtSize);
+        GetTextExtentPoint32(_dc, line.c_str(), static_cast<int>(line.length()), &txtSize);
 
         // 정렬 계산
-        int x = (int)vPos.x;
+        int x = static_cast<int>(vPos.x);
         switch (m_Align)
         {
         case TEXT_ALIGN::CENTER:
@@ -110,9 +110,9 @@ void CTextUI::Render(HDC _dc)
         }
 
         // Y 위치 계산 (라인 간격 적용)
-        int y = (int)vPos.y + (txtSize.cy + m_iLineSpace) * (int)i;
+        int y = static_cast<int>(vPos.y) + (txtSize.cy + m_iLineSpace) * static_cast<int>(i);
 
-        TextOutW(_dc, x, y, line.c_str(), (int)line.length());
+        TextOutW(_dc, x, y, line.c_str(), static_cast<int>(line.length()));
     }
 
     // GDI 객체 복원

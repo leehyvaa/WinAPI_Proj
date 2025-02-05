@@ -98,7 +98,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     }
 
-    return (int)msg.wParam;
+    return static_cast<int>(msg.wParam);
 }
 
 
@@ -181,8 +181,8 @@ const int circleRadius = 50;
 double LengthPts(POINT pt1, POINT pt2)
 {
     return (sqrt(
-        ((float)(pt2.x - pt1.x) * (pt2.x - pt1.x)) +
-        ((float)(pt2.y - pt1.y) * (pt2.y - pt1.y))
+        (static_cast<float>(pt2.x - pt1.x) * (pt2.x - pt1.x)) +
+        (static_cast<float>(pt2.y - pt1.y) * (pt2.y - pt1.y))
     ));
 }
 BOOL InCircle(POINT pt1, POINT pt2)

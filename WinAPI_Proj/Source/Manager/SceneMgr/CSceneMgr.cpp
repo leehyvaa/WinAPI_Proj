@@ -13,7 +13,7 @@ CSceneMgr::CSceneMgr()
 CSceneMgr::~CSceneMgr()
 {
 	//씬 전부 삭제
-	for (UINT i = 0; i < (UINT)SCENE_TYPE::END; ++i)
+	for (UINT i = 0; i < static_cast<UINT>(SCENE_TYPE::END); ++i)
 	{
 		if (nullptr != m_arrScene[i])
 			delete m_arrScene[i];
@@ -23,14 +23,14 @@ CSceneMgr::~CSceneMgr()
 void CSceneMgr::init()
 {
 	//Scene생성
-	m_arrScene[(UINT)SCENE_TYPE::START] = new CScene_Title;
-	m_arrScene[(UINT)SCENE_TYPE::START]->SetName(L"Title Scene");
+	m_arrScene[static_cast<UINT>(SCENE_TYPE::START)] = new CScene_Title;
+	m_arrScene[static_cast<UINT>(SCENE_TYPE::START)]->SetName(L"Title Scene");
 
-	m_arrScene[(UINT)SCENE_TYPE::TOOL] = new CScene_Tool;
-	m_arrScene[(UINT)SCENE_TYPE::TOOL]->SetName(L"Tool Scene");
+	m_arrScene[static_cast<UINT>(SCENE_TYPE::TOOL)] = new CScene_Tool;
+	m_arrScene[static_cast<UINT>(SCENE_TYPE::TOOL)]->SetName(L"Tool Scene");
 
-	m_arrScene[(UINT)SCENE_TYPE::STAGE_01] = new Scene_Stage_01;
-	m_arrScene[(UINT)SCENE_TYPE::STAGE_01]->SetName(L"Stage_01");
+	m_arrScene[static_cast<UINT>(SCENE_TYPE::STAGE_01)] = new Scene_Stage_01;
+	m_arrScene[static_cast<UINT>(SCENE_TYPE::STAGE_01)]->SetName(L"Stage_01");
 
 
 	
@@ -40,7 +40,7 @@ void CSceneMgr::init()
 
 
 	//현재 씬 지정
-	m_pCurScene = m_arrScene[(UINT)SCENE_TYPE::START];
+	m_pCurScene = m_arrScene[static_cast<UINT>(SCENE_TYPE::START)];
 	m_pCurScene->Enter();
 }
 
@@ -59,6 +59,6 @@ void CSceneMgr::ChangeScene(SCENE_TYPE _eNext)
 {
 	m_pCurScene->Exit();
 	
-	m_pCurScene = m_arrScene[(UINT)_eNext];
+	m_pCurScene = m_arrScene[static_cast<UINT>(_eNext)];
 	m_pCurScene->Enter();
 }

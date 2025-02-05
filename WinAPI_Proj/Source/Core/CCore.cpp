@@ -33,12 +33,12 @@ CCore::~CCore()
 {
 	ReleaseDC(m_hWnd,m_hDC); //GetDC로 만든 Dc는 릴리즈로 해제
 
-	for (int i = 0; i < (UINT)PEN_TYPE::END; i++)
+	for (int i = 0; i < static_cast<UINT>(PEN_TYPE::END); i++)
 	{
 		DeleteObject(m_arrPen[i]);
 	}
 
-	for (int i = 0; i < (UINT)BRUSH_TYPE::END; i++)
+	for (int i = 0; i < static_cast<UINT>(BRUSH_TYPE::END); i++)
 	{
 		DeleteObject(m_arrBrush[i]);
 	}
@@ -68,7 +68,7 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 	m_hDC = GetDC(m_hWnd);
 
 	//더블버퍼링 용도의 텍스쳐 한장을 만든다.
-	m_pMemTex = CResMgr::GetInst()->CreateTexture(L"BackBuffer",(UINT)m_ptResolution.x, (UINT)m_ptResolution.y);
+	m_pMemTex = CResMgr::GetInst()->CreateTexture(L"BackBuffer",static_cast<UINT>(m_ptResolution.x), static_cast<UINT>(m_ptResolution.y));
 
 	
 	CreateBrushPen();
@@ -138,19 +138,20 @@ void CCore::Progress()
 
 void CCore::CreateBrushPen()
 {
-	m_arrBrush[(UINT)BRUSH_TYPE::HOLLOW] = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
-	m_arrBrush[(UINT)BRUSH_TYPE::BLACK] = (HBRUSH)GetStockObject(BLACK_BRUSH);
-	m_arrBrush[(UINT)BRUSH_TYPE::RED] = CreateSolidBrush(RGB(255, 0, 0));
-	m_arrBrush[(UINT)BRUSH_TYPE::MAGENTA] = CreateSolidBrush(RGB(255, 0, 255));
+	m_arrBrush[static_cast<UINT>(BRUSH_TYPE::HOLLOW)] = static_cast<HBRUSH>(GetStockObject(HOLLOW_BRUSH));
+	m_arrBrush[static_cast<UINT>(BRUSH_TYPE::BLACK)] = static_cast<HBRUSH>(GetStockObject(BLACK_BRUSH));
+	m_arrBrush[static_cast<UINT>(BRUSH_TYPE::RED)] = CreateSolidBrush(RGB(255, 0, 0));
+	m_arrBrush[static_cast<UINT>(BRUSH_TYPE::MAGENTA)] = CreateSolidBrush(RGB(255, 0, 255));
 
 
 
-	m_arrPen[(UINT)PEN_TYPE::RED] = CreatePen(PS_SOLID, 1, RGB(255, 0, 0));
-	m_arrPen[(UINT)PEN_TYPE::GREEN] = CreatePen(PS_SOLID, 1, RGB(0, 255, 0));
-	m_arrPen[(UINT)PEN_TYPE::BLUE] = CreatePen(PS_SOLID, 1, RGB(80, 183, 220));
-	m_arrPen[(UINT)PEN_TYPE::PURPLE] = CreatePen(PS_SOLID, 1, RGB(102, 0, 153));
-	m_arrPen[(UINT)PEN_TYPE::ORANGE] = CreatePen(PS_SOLID, 1, RGB(255, 165, 0));
-    m_arrPen[(UINT)PEN_TYPE::HOLLOW] = CreatePen(PS_NULL, 1, 0);
+	m_arrPen[static_cast<UINT>(PEN_TYPE::RED)] = CreatePen(PS_SOLID, 1, RGB(255, 0, 0));
+	m_arrPen[static_cast<UINT>(PEN_TYPE::GREEN)] = CreatePen(PS_SOLID, 1, RGB(0, 255, 0));
+	m_arrPen[static_cast<UINT>(PEN_TYPE::BLUE)] = CreatePen(PS_SOLID, 1, RGB(80, 183, 220));
+	m_arrPen[static_cast<UINT>(PEN_TYPE::PURPLE)] = CreatePen(PS_SOLID, 1, RGB(102, 0, 153));
+	m_arrPen[static_cast<UINT>(PEN_TYPE::ORANGE)] = CreatePen(PS_SOLID, 1, RGB(255, 165, 0));
+	m_arrPen[static_cast<UINT>(PEN_TYPE::BIGGREEN)] = CreatePen(PS_SOLID, 5, RGB(0, 255, 0));
+    m_arrPen[static_cast<UINT>(PEN_TYPE::HOLLOW)] = CreatePen(PS_NULL, 1, 0);
 
 
     
@@ -176,9 +177,9 @@ void CCore::Clear(HDC _dc)
 
 
 	TransparentBlt(_dc
-		, int(vRenderPos.x)
-		, int(vRenderPos.y)
-		, (int)vScale.x, (int)vScale.y
+		, static_cast<int>(vRenderPos.x)
+		, static_cast<int>(vRenderPos.y)
+		, static_cast<int>(vScale.x), static_cast<int>(vScale.y)
 		, backGround->GetTexture()->GetDC()
 		, 0, 0,
 		iWidth, iHeight, RGB(255, 0, 255));
@@ -203,7 +204,7 @@ void CCore::DivideMenu()
 
 void CCore::ChangeWindowSize(Vec2 _vResolution, bool _bMenu)
 {
-	RECT rect = { 0,0, (long)_vResolution.x, (long)_vResolution.y};
+	RECT rect = { 0,0, static_cast<long>(_vResolution.x), static_cast<long>(_vResolution.y)};
 	AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, false);
 	SetWindowPos(m_hWnd, nullptr, 0, 0, rect.right - rect.left, rect.bottom - rect.top, 0);
 

@@ -58,8 +58,8 @@ float Vec2::Cross(Vec2& _vec, POINT p)
 	v1.y = (float)_vec.y - y;
 
 	Vec2 v2;
-	v2.x = (float)p.x - x;
-	v2.y = (float)p.y - y;
+	v2.x = static_cast<float>(p.x) - x;
+	v2.y = static_cast<float>(p.y) - y;
 
 	float ans = v1.x * v2.y - v1.y * v2.x;
 	return ans;

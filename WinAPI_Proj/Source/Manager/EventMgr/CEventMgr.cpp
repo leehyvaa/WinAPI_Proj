@@ -41,7 +41,7 @@ void CEventMgr::Excute(const tEvent& _eve)
 		//lParam : Objcet Adress
 		//wParam : Group Type
 		GameObject* pNewObj = (GameObject*)_eve.lParam;
-		GROUP_TYPE eType = (GROUP_TYPE)_eve.wParam;
+		GROUP_TYPE eType = static_cast<GROUP_TYPE>(_eve.wParam);
 		CSceneMgr::GetInst()->GetCurScene()->AddObject(pNewObj, eType);
 	}	
 	break;
@@ -58,7 +58,7 @@ void CEventMgr::Excute(const tEvent& _eve)
 	case EVENT_TYPE::SCENE_CHANGE:
 	{
 		// lParam : Next Cene Type
-		CSceneMgr::GetInst()->ChangeScene((SCENE_TYPE)_eve.lParam);
+		CSceneMgr::GetInst()->ChangeScene(static_cast<SCENE_TYPE>(_eve.lParam));
 
 		//포커스 UI 해제(이전 Scene의 UI를 가리키고 있기 때문
 		CUIMgr::GetInst()->SetFocusedUI(nullptr);
@@ -68,7 +68,7 @@ void CEventMgr::Excute(const tEvent& _eve)
 	{
 		//lParam AI  , wParam NextType
 		AI* pAI = (AI*)_eve.lParam;
-		MON_STATE eNextState = (MON_STATE)_eve.wParam;
+		MON_STATE eNextState = static_cast<MON_STATE>(_eve.wParam);
 		pAI->ChangeState(eNextState);
 
 

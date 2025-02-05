@@ -16,8 +16,8 @@ private:
 
 
 	//GDI Object
-	HBRUSH m_arrBrush[(UINT)BRUSH_TYPE::END];
-	HPEN m_arrPen[(UINT)PEN_TYPE::END];
+	HBRUSH m_arrBrush[static_cast<UINT>(BRUSH_TYPE::END)];
+	HPEN m_arrPen[static_cast<UINT>(PEN_TYPE::END)];
 
 	//메뉴
 	HMENU m_hMenu; //Tool씬에서 사용
@@ -38,8 +38,8 @@ public:
 	HDC GetMainDC() { return m_hDC; }
 	HWND GetMainHwnd() { return m_hWnd; }
 	POINT GetResolution() { return m_ptResolution; }
-	HBRUSH GetBrush(BRUSH_TYPE _eType) { return m_arrBrush[(UINT)_eType]; }
-	HPEN GetPen(PEN_TYPE _eType) { return m_arrPen[(UINT)_eType]; }
+	HBRUSH GetBrush(BRUSH_TYPE _eType) { return m_arrBrush[static_cast<UINT>(_eType)]; }
+	HPEN GetPen(PEN_TYPE _eType) { return m_arrPen[static_cast<UINT>(_eType)]; }
 	
 
 private:

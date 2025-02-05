@@ -7,7 +7,7 @@ class CSceneMgr
 	SINGLE(CSceneMgr)
 
 private:
-	CScene* m_arrScene[(UINT)SCENE_TYPE::END]; //모든 씬 목록
+	CScene* m_arrScene[static_cast<UINT>(SCENE_TYPE::END)]; //모든 씬 목록
 	CScene* m_pCurScene; // 현재 씬
 
 public:

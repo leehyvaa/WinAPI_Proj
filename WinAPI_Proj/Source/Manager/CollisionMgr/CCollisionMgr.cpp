@@ -16,14 +16,14 @@ CCollisionMgr::~CCollisionMgr()
 
 void CCollisionMgr::Update()
 {
-	for (UINT iRow = 0; iRow < (UINT)GROUP_TYPE::END; iRow++)
+	for (UINT iRow = 0; iRow < static_cast<UINT>(GROUP_TYPE::END); iRow++)
 	{
 		m_arrCheck[iRow];
-		for (UINT iCol = iRow; iCol < (UINT)GROUP_TYPE::END; iCol++)
+		for (UINT iCol = iRow; iCol < static_cast<UINT>(GROUP_TYPE::END); iCol++)
 		{
 			if (m_arrCheck[iRow] & (1 << iCol))
 			{
-				CollisionGroupUpdate((GROUP_TYPE)iRow, (GROUP_TYPE)iCol);
+				CollisionGroupUpdate(static_cast<GROUP_TYPE>(iRow), static_cast<GROUP_TYPE>(iCol));
 			}
 		}
 	}
@@ -145,13 +145,13 @@ bool CCollisionMgr::IsCollision(CCollider* _pLeftCol, CCollider* _pRightCol)
 void CCollisionMgr::CheckGroup(GROUP_TYPE _eLeft, GROUP_TYPE _eRight)
 {
 	//더 작은 값의 그룹 타입을 행으로 큰 값을 열(비트)로 사용
-	UINT iRow = (UINT)_eLeft;
-	UINT iCol = (UINT)_eRight;
+	UINT iRow = static_cast<UINT>(_eLeft);
+	UINT iCol = static_cast<UINT>(_eRight);
 
 	if (iCol < iRow)
 	{
-		iRow = (UINT)_eRight;
-		iCol = (UINT)_eLeft;
+		iRow = static_cast<UINT>(_eRight);
+		iCol = static_cast<UINT>(_eLeft);
 	}
 
 	if (m_arrCheck[iRow] & (1 << iCol))

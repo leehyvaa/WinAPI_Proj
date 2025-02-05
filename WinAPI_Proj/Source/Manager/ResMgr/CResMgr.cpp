@@ -70,7 +70,7 @@ CTexture* CResMgr::FindTexture(const wstring& _strKey)
     if (iter == m_mapTex.end())
         return nullptr;
 
-    return (CTexture*)iter->second;
+    return static_cast<CTexture*>(iter->second);
 }
 
 CSound* CResMgr::LoadSound(const wstring& _strKey, const wstring& _strRelativePath)
@@ -99,5 +99,5 @@ CSound* CResMgr::FindSound(const wstring& _strKey)
     if (iter == m_mapSound.end())
         return nullptr;
 
-    return (CSound*)iter->second;
+    return static_cast<CSound*>(iter->second);
 }

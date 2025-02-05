@@ -14,7 +14,8 @@ CTile::CTile()
 	,m_pTileTex2(nullptr)
 	,m_iImgIdx2(0)
 	,m_iImgIdx(0)
-    ,m_eGroundType(GROUND_TYPE::END)
+    ,m_eGroundType(GROUND_TYPE::NONE)
+    ,m_eVertexPosition(VERTEX_POSITION::NONE)
     ,m_iBotRightTileIdx(-1)
 {
 	SetScale(Vec2(TILE_SIZE, TILE_SIZE));
@@ -43,8 +44,8 @@ void CTile::Render(HDC _dc)
 		UINT iMaxCol = iWidth / TILE_SIZE;
 		UINT iMaxRow = iHeight / TILE_SIZE;
 
-		UINT iCurRow = (UINT)m_iImgIdx / iMaxCol;
-		UINT iCurCol = (UINT)m_iImgIdx % iMaxCol;
+		UINT iCurRow = static_cast<UINT>(m_iImgIdx) / iMaxCol;
+		UINT iCurCol = static_cast<UINT>(m_iImgIdx) % iMaxCol;
 
 		// 이미지 범위를 벗어난 인덱스 체크
 		if (iMaxRow <= iCurRow)
@@ -67,9 +68,9 @@ void CTile::Render(HDC _dc)
 
 
 		TransparentBlt(_dc
-			, int(vRenderPos.x)
-			, int(vRenderPos.y)
-			, (int)vScale.x, (int)vScale.y
+			, static_cast<int>(vRenderPos.x)
+			, static_cast<int>(vRenderPos.y)
+			, static_cast<int>(vScale.x), static_cast<int>(vScale.y)
 			, m_pTileTex->GetDC()
 			, iCurCol * TILE_SIZE, iCurRow * TILE_SIZE,
 			TILE_SIZE, TILE_SIZE, RGB(255, 0, 255));
@@ -90,8 +91,8 @@ void CTile::Render(HDC _dc)
 		UINT iMaxCol = iWidth / TILE_SIZE;
 		UINT iMaxRow = iHeight / TILE_SIZE;
 
-		UINT iCurRow = (UINT)m_iImgIdx2 / iMaxCol;
-		UINT iCurCol = (UINT)m_iImgIdx2 % iMaxCol;
+		UINT iCurRow = static_cast<UINT>(m_iImgIdx2) / iMaxCol;
+		UINT iCurCol = static_cast<UINT>(m_iImgIdx2) % iMaxCol;
 
 		// 이미지 범위를 벗어난 인덱스 체크
 		if (iMaxRow <= iCurRow)
@@ -100,15 +101,15 @@ void CTile::Render(HDC _dc)
 		}
 
 		TransparentBlt(_dc
-			, int(vRenderPos.x)
-			, int(vRenderPos.y)
-			, (int)vScale.x, (int)vScale.y
+			, static_cast<int>(vRenderPos.x)
+			, static_cast<int>(vRenderPos.y)
+			, static_cast<int>(vScale.x), static_cast<int>(vScale.y)
 			, m_pTileTex2->GetDC()
 			, iCurCol * TILE_SIZE, iCurRow * TILE_SIZE,
 			TILE_SIZE, TILE_SIZE, RGB(255, 0, 255));
 	}
 
-    if (CSceneMgr::GetInst()->GetCurScene()->GetDrawGroundType() && m_eVertexPosition != VertexPosition::NONE)
+    if (CSceneMgr::GetInst()->GetCurScene()->GetDrawGroundType() && m_eVertexPosition != VERTEX_POSITION::NONE)
     {
 
         PEN_TYPE ePen = PEN_TYPE::BLUE;
@@ -139,14 +140,13 @@ void CTile::Render(HDC _dc)
 
 
 
-        Rectangle(_dc, (int)(vRenderPos.x)
-            , (int)(vRenderPos.y)
-            , (int)(vRenderPos.x + vScale.x)
-            , (int)(vRenderPos.y + vScale.y));
+        Rectangle(_dc, static_cast<int>(vRenderPos.x)
+            , static_cast<int>(vRenderPos.y)
+            , static_cast<int>(vRenderPos.x + vScale.x)
+            , static_cast<int>(vRenderPos.y + vScale.y));
     }
 
 	
-
 
 
     GameObject::Component_Render(_dc);
@@ -200,24 +200,27 @@ void CTile::Save(FILE* _pFile)
 	}
 
     fprintf(_pFile, "[VertexPosition]\n");
-    if (m_eVertexPosition == VertexPosition::NONE)
+    if (m_eVertexPosition == VERTEX_POSITION::NONE)
         fprintf(_pFile, "0\n");
-    else if (m_eVertexPosition == VertexPosition::TOP_LEFT)
+    else if (m_eVertexPosition == VERTEX_POSITION::TOP_LEFT)
         fprintf(_pFile, "1\n");
-    else if (m_eVertexPosition == VertexPosition::BOT_RIGHT)
+    else if (m_eVertexPosition == VERTEX_POSITION::BOT_RIGHT)
         fprintf(_pFile, "2\n");
     
     fprintf(_pFile, "[GroundType]\n");
-    if (m_eGroundType == GROUND_TYPE::NORMAL)
+    if (m_eGroundType == GROUND_TYPE::NONE)
         fprintf(_pFile, "0\n");
-    else if (m_eGroundType == GROUND_TYPE::UNWALKABLE)
+    else if (m_eGroundType == GROUND_TYPE::NORMAL)
         fprintf(_pFile, "1\n");
-    else if (m_eGroundType == GROUND_TYPE::DAMAGEZONE)
+    else if (m_eGroundType == GROUND_TYPE::UNWALKABLE)
         fprintf(_pFile, "2\n");
-    else if (m_eGroundType == GROUND_TYPE::DEADZONE)
+    else if (m_eGroundType == GROUND_TYPE::DAMAGEZONE)
         fprintf(_pFile, "3\n");
-    
-    
+    else if (m_eGroundType == GROUND_TYPE::DEADZONE)
+        fprintf(_pFile, "4\n");
+
+    fprintf(_pFile, "[BotRightTileIdx]\n");
+    fprintf(_pFile, "%d\n", m_iBotRightTileIdx);
     
 	fprintf(_pFile, "\n");
 }
@@ -286,9 +289,9 @@ void CTile::Load(FILE* _pFile)
     // VertexType 설정
     switch (iVertexType)
     {
-        case 0: m_eVertexPosition = VertexPosition::NONE; break;
-        case 1: m_eVertexPosition = VertexPosition::TOP_LEFT; break;
-        case 2: m_eVertexPosition = VertexPosition::BOT_RIGHT; break;
+        case 0: m_eVertexPosition = VERTEX_POSITION::NONE; break;
+        case 1: m_eVertexPosition = VERTEX_POSITION::TOP_LEFT; break;
+        case 2: m_eVertexPosition = VERTEX_POSITION::BOT_RIGHT; break;
     }
     
 
@@ -299,13 +302,18 @@ void CTile::Load(FILE* _pFile)
 
     // GroundType 설정
     switch (iGroundType) {
-    case 0: m_eGroundType = GROUND_TYPE::NORMAL; break;
-    case 1: m_eGroundType = GROUND_TYPE::UNWALKABLE; break;
-    case 2: m_eGroundType = GROUND_TYPE::DAMAGEZONE; break;
-    case 3: m_eGroundType = GROUND_TYPE::DEADZONE; break;
-    default: m_eGroundType = GROUND_TYPE::NORMAL; break;
+    case 0: m_eGroundType = GROUND_TYPE::NONE; break;
+    case 1: m_eGroundType = GROUND_TYPE::NORMAL; break;
+    case 2: m_eGroundType = GROUND_TYPE::UNWALKABLE; break;
+    case 3: m_eGroundType = GROUND_TYPE::DAMAGEZONE; break;
+    case 4: m_eGroundType = GROUND_TYPE::DEADZONE; break;
+    default: m_eGroundType = GROUND_TYPE::NONE; break;
     }
-    
+
+    FScanf(szBuff, _pFile); // [BotRightTileIdx] 섹션
+    fscanf_s(_pFile, "%d", &m_iBotRightTileIdx);
+    FScanf(szBuff, _pFile);
+
 	FScanf(szBuff, _pFile);
 }
 
