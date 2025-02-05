@@ -373,7 +373,8 @@ void CScene_Tool::SetTileIdx()
 	{
         int iCol = 0;
         int iRow = 0;
-        if (!CalculateTileIndex(iCol, iRow))
+	    int iTileX = 0;
+        if (!CalculateTileIndex(iCol, iRow,iTileX))
             return;
 
 		if (m_iImgTileIdx < 0)
@@ -441,7 +442,8 @@ void CScene_Tool::DrawSelectTile()
 {
     int iCol = 0;
     int iRow = 0;
-    if (!CalculateTileIndex(iCol, iRow))
+    int iTileX =0;
+    if (!CalculateTileIndex(iCol, iRow,iTileX))
         return;
 
 	if (m_iImgTileIdx < 0)
@@ -451,11 +453,6 @@ void CScene_Tool::DrawSelectTile()
 	UINT iIdx = iRow * iTileX + iCol;
 	
 	const vector<GameObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
-
-
-
-	
-	
 
     
 	if (!m_bErase)
@@ -495,7 +492,8 @@ void CScene_Tool::SettingTopLeftGround()
 {
     int iCol = 0;
     int iRow = 0;
-    if (!CalculateTileIndex(iCol, iRow))
+    int iTileX = 0;
+    if (!CalculateTileIndex(iCol, iRow,iTileX))
         return;
 
     if (m_iImgTileIdx < 0)
@@ -834,13 +832,13 @@ void CScene_Tool::SaveBmp()
 	ReleaseDC(NULL, hdcScreen);
  }
 
-bool CScene_Tool::CalculateTileIndex(int& iCol, int& iRow)
+bool CScene_Tool::CalculateTileIndex(int& iCol, int& iRow,int& iTileX)
 {
     Vec2 vMousePos = MOUSE_POS;
     vMousePos = CCamera::GetInst()->GetRealPos(vMousePos);
 
-    const int iTileX = static_cast<int>(GetTileX());
-    const int iTileY = static_cast<int>(GetTileY());
+    iTileX = static_cast<int>(GetTileX());
+    int iTileY = static_cast<int>(GetTileY());
 
     iCol = static_cast<int>(vMousePos.x) / TILE_SIZE;
     iRow = static_cast<int>(vMousePos.y) / TILE_SIZE;
