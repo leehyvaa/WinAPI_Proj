@@ -166,13 +166,18 @@ void CScene::Render_Tile(HDC _dc)
 					, static_cast<int>(vRenderPos.y + vScale.y));
 
                 // 현재 타일의 위치부터 BotRightTile까지 선 그리기
+			    // 현재 타일의 위치부터 BotRightTile까지 선 그리기
 			    if (static_cast<CTile*>(vecTile[iIdx])->GetGroundType() != GROUND_TYPE::NONE)
 			    {
 			        int botIdx = static_cast<CTile*>(vecTile[iIdx])->GetBotRightTileIdx();
-			        if (botIdx != -1)
+			        if (botIdx != -1 && botIdx < static_cast<int>(vecTile.size()))
 			        {
-			            vecTile[iIdx]->GetPos();
-			            vecTile[botIdx]->GetPos();
+			            Vec2 vStartPos = CCamera::GetInst()->GetRenderPos(vecTile[iIdx]->GetPos());
+			            Vec2 vEndPos = CCamera::GetInst()->GetRenderPos(vecTile[botIdx]->GetPos());
+			            
+			            // 화면에 선 그리기
+			            MoveToEx(_dc, (int)vStartPos.x, (int)vStartPos.y, nullptr);
+			            LineTo(_dc, (int)vEndPos.x, (int)vEndPos.y);
 			        }
 			    }
 			}
