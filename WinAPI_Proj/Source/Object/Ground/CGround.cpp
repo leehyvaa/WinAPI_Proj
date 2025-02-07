@@ -10,6 +10,7 @@
 #include "CRigidBody.h"
 CGround::CGround()
     :m_eCollideType(TILE_COLLIDE_TYPE::NONE)
+    ,m_eGroundType(GROUND_TYPE::NORMAL)
 {
 	CreateCollider();
 

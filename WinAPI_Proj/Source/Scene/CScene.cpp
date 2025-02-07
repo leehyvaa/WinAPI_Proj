@@ -309,9 +309,8 @@ void CScene::CreateTile(UINT _iXCount, UINT _iYCount)
 }
 
 /*
-    각각의 지형(ex.이동가능지형)마다 맨 왼쪽 위 꼭짓점과 오른쪽 아래 꼭짓점을 지정하여 vector에 넣어둔다.
-    지형들을 돌면서 이미 저장된 범위 내의 지형들은 빠르게 패스하고 다 돌고 나면 양쪽 꼭짓점을 기준으로
-    사각형 지형 하나당 상하좌우 4개의 지형을 생성한다.
+    지형의 맨 왼쪽 위 꼭짓점과 오른쪽 아래 꼭짓점의 위치를 받아와서
+    해당 사각형 지형 하나당 상하좌우 4개의 콜라이더 지형을 생성한다.
  */
 void CScene::CreateGround()
 {
@@ -324,24 +323,62 @@ void CScene::CreateGround()
     for (size_t i = 0; i < vecTile.size(); i++)
     {
         CTile* pTile = static_cast<CTile*>(vecTile[i]);
-        Vec2 vPos = pTile->GetPos();
-        if (pTile->GetGroundType() == ::GROUND_TYPE::NORMAL)
-        {
-            
-        }
-    }
+        
+        if (pTile->GetVertexPosition() == VERTEX_POSITION::TOP_LEFT)
+         {
+             Vec2 vPos1 = pTile->GetPos();
+             int iBotRightIdx = pTile->GetBotRightTileIdx();
+             if (iBotRightIdx < 0 || iBotRightIdx >= (int)vecTile.size()) continue;
 
-    
- //    int _count;
-	// for (UINT j = 0; j < _count; j++)
-	// {
-	// 	CGround* ground = new CGround();
- //
-	// 	ground->SetPos(Vec2(0,0));
-	//
- //
-	// 	AddObject(ground, GROUP_TYPE::GROUND);
-	// }
+             Vec2 vPos2 = vecTile[iBotRightIdx]->GetPos() + vecTile[iBotRightIdx]->GetScale();
+             GROUND_TYPE groundType = pTile->GetGroundType();
+             Vec2 vTileScale = pTile->GetScale();
+            
+             if (groundType == GROUND_TYPE::NORMAL)
+             {
+                 // 1. 상단 지형 (평지)
+                 CGround* pTop = new CGround();
+                 pTop->SetPos(vPos1);
+                 pTop->SetGroundType(groundType);
+                 pTop->SetScale(Vec2(vPos2.x - vPos1.x, vTileScale.y));
+                 pTop->SetCollideType(TILE_COLLIDE_TYPE::TOP_PLATFORM);
+                 AddObject(pTop, GROUP_TYPE::GROUND);
+
+                 // 2. 좌측 빗면
+                 CGround* pLeft = new CGround();
+                 pLeft->SetPos(vPos1);
+                 pLeft->SetGroundType(groundType);
+                 pLeft->SetScale(Vec2(vTileScale.x, vPos2.y - vPos1.y));
+                 pLeft->SetCollideType(TILE_COLLIDE_TYPE::SLOPE_LEFT);
+                 AddObject(pLeft, GROUP_TYPE::GROUND);
+
+                 // 3. 우측 빗면
+                 CGround* pRight = new CGround();
+                 pRight->SetPos(Vec2(vPos2.x - vTileScale.x, vPos1.y));
+                 pRight->SetGroundType(groundType);
+                 pRight->SetScale(Vec2(vTileScale.x, vPos2.y - vPos1.y));
+                 pRight->SetCollideType(TILE_COLLIDE_TYPE::SLOPE_RIGHT);
+                 AddObject(pRight, GROUP_TYPE::GROUND);
+
+                 // 4. 하단 지형
+                 CGround* pBottom = new CGround();
+                 pBottom->SetPos(Vec2(vPos1.x+vTileScale.x, vPos2.y - vTileScale.y));
+                 pBottom->SetGroundType(groundType);
+                 pBottom->SetScale(Vec2(vPos2.x - vPos1.x-(vTileScale.x*2), vTileScale.y));
+                 pBottom->SetCollideType(TILE_COLLIDE_TYPE::BOT_PLATFORM);
+                 AddObject(pBottom, GROUP_TYPE::GROUND);
+             }
+             else // 이동불가/데미지/즉사 지형
+             {
+                 CGround* pGround = new CGround();
+                 pGround->SetPos(vPos1);
+                 pGround->SetGroundType(groundType);
+                 pGround->SetScale(vPos2 - vPos1);
+                 pGround->SetCollideType(TILE_COLLIDE_TYPE::SOLID);
+                 AddObject(pGround, GROUP_TYPE::GROUND);
+             }
+         }
+    }
 }
 
 

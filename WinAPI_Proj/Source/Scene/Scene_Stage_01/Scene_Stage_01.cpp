@@ -78,7 +78,7 @@ void Scene_Stage_01::Enter()
 	
 	GameObject* player = new SPlayer();
 	player->SetName(L"Player");
-	player->SetPos(Vec2(700.f,3000.f));
+	player->SetPos(Vec2(0.f,0.f)); //700,3000
 	//player->SetScale(Vec2(100.f, 100.f));
 	AddObject(player, GROUP_TYPE::PLAYER);
 	RegisterPlayer(player);
@@ -163,7 +163,7 @@ void Scene_Stage_01::Enter()
 	//AddObject((GameObject*)pGround2, GROUP_TYPE::GROUND);
 
 	//타일 로딩
-	LoadTile(L"Tile\\test11");
+	LoadTile(L"Tile\\NewTest6");
 
 
 	//그룹간 충돌 체크
