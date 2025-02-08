@@ -92,7 +92,7 @@ void Scene_Stage_01::Enter()
 	static_cast<SPlayer*>(player)->SetArm(static_cast<PlayerArm*>(playerArm));
 
 
-	AddObject(playerArm, GROUP_TYPE::PLAYERARM);
+	AddObject(playerArm, GROUP_TYPE::PLAYER_ARM);
 
 
 
@@ -162,15 +162,16 @@ void Scene_Stage_01::Enter()
 	//CGround* pGround2 = CGroundPrefab::CreateGround(GROUND_TYPE::GROUND, Vec2(400.f, 500.f), Vec2(600.f, 600.f));
 	//AddObject((GameObject*)pGround2, GROUP_TYPE::GROUND);
 
-	//타일 로딩
+	// 타일 로딩
 	LoadTile(L"Tile\\NewTest6");
-
+    // 불러온 타일 정보를 바탕으로 땅 생성
+    CreateGround();
 
 	//그룹간 충돌 체크
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::MONSTER);
-	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::MONSTER, GROUP_TYPE::PROJ_PLAYER);
+	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::MONSTER, GROUP_TYPE::HOOK);
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::GROUND);
-	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::GROUND, GROUP_TYPE::PROJ_PLAYER);
+	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::GROUND, GROUP_TYPE::HOOK);
 
 
 	//카메라 위치 지정

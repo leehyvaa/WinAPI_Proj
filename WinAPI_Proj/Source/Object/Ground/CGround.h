@@ -23,8 +23,20 @@ public:
 	virtual void Render(HDC _dc);
 	
 
-	virtual void Save(FILE* _file);
-	virtual void Load(FILE* _file);
+	//virtual void Save(FILE* _file);
+	//virtual void Load(FILE* _file);
+
+    void NormalTopCollisionEnter(CCollider* _pOther);
+    void NormalBotCollisionEnter(CCollider* _pOther);
+    void NormalRightCollisionEnter(CCollider* _pOther);
+    void NormalLeftCollisionEnter(CCollider* _pOther);
+
+    void NormalTopCollision(CCollider* _pOther);
+    void NormalBotCollision(CCollider* _pOther);
+    void NormalRightCollision(CCollider* _pOther);
+    void NormalLeftCollision(CCollider* _pOther);
+
+    
 
 public:
 	CGround();
@@ -36,4 +48,6 @@ public:
 	friend class CGroundPrefab;
 
 };
+
+
 

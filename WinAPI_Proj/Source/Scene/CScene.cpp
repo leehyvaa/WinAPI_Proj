@@ -338,9 +338,9 @@ void CScene::CreateGround()
              {
                  // 1. 상단 지형 (평지)
                  CGround* pTop = new CGround();
-                 pTop->SetPos(vPos1);
+                 pTop->SetPos(Vec2(vPos1.x + vTileScale.x,vPos1.y));
                  pTop->SetGroundType(groundType);
-                 pTop->SetScale(Vec2(vPos2.x - vPos1.x, vTileScale.y));
+                 pTop->SetScale(Vec2(vPos2.x - vPos1.x - vTileScale.x, vTileScale.y));
                  pTop->SetCollideType(TILE_COLLIDE_TYPE::TOP_PLATFORM);
                  AddObject(pTop, GROUP_TYPE::GROUND);
 

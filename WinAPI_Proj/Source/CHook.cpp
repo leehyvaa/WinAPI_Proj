@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "CHook.h"
 #include "CTimeMgr.h"
+#include "CGround.h"
 #include "CCollider.h"
 #include "CAnimator.h"
 #include "CResMgr.h"
@@ -15,7 +16,7 @@ CHook::CHook()
 
 	, hookState(HOOK_STATE::FLYING)
 {
-
+    SetGroup(GROUP_TYPE::HOOK);
 	CreateCollider();
 	GetCollider()->SetOffsetPos(Vec2());
 	GetCollider()->SetScale(Vec2(20.f, 20.f));
@@ -257,12 +258,16 @@ void CHook::OnCollisionEnter(CCollider* _pOther)
 {
 	GameObject* pOtherObj = _pOther->GetObj();
 
-	if (pOtherObj->GetName() == L"Ground" && hookState == HOOK_STATE::FLYING)
+	if (pOtherObj->GetGroup() == GROUP_TYPE::GROUND
+	    && static_cast<CGround*>(pOtherObj)->GetGroundType() == GROUND_TYPE::NORMAL 
+	    && hookState == HOOK_STATE::FLYING)
 	{
 		hookState = HOOK_STATE::GRAB;
 		//DeleteObject(this);
 	}
-	else if (pOtherObj->GetName() == L"NonGround" && hookState == HOOK_STATE::FLYING)
+	else if (pOtherObj->GetGroup() == GROUP_TYPE::GROUND
+	    && static_cast<CGround*>(pOtherObj)->GetGroundType() == GROUND_TYPE::UNWALKABLE 
+	    && hookState == HOOK_STATE::FLYING)
 	{
 		hookState = HOOK_STATE::RETURN_WITHOUT;
 

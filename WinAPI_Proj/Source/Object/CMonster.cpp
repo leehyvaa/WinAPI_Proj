@@ -9,6 +9,7 @@ CMonster::CMonster()
 {
 	CreateCollider();
 	GetCollider()->SetScale(Vec2(100.f, 100.f));
+    SetGroup(GROUP_TYPE::MONSTER);
 }
 
 CMonster::~CMonster()

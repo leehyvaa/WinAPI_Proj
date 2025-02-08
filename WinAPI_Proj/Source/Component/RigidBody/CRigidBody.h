@@ -34,6 +34,8 @@ public:
 	void SetMaxSpeed(Vec2 _v) { m_vMaxVelocity = _v; }
 	void SetAccelAlpha(Vec2 _v) { m_vAccelA = _v; }
 
+    void SetVelocityY(float _f) { m_vVelocity.y = _f; }
+    void SetVelocityX(float _f) { m_vVelocity.x = _f; }
 
 private:
 	void Move();

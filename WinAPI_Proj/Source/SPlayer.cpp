@@ -35,7 +35,7 @@ SPlayer::SPlayer()
 	, canBooster(false)
 {
 	//m_pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\sigong.bmp");
-	
+    SetGroup(GROUP_TYPE::PLAYER);
 
 	//67 -13분 캐릭터 상태변환후 애니메이션 전환
 	CreateCollider();
@@ -532,7 +532,7 @@ void SPlayer::OnCollisionEnter(CCollider* _pOther)
 {
 	GameObject* pOtherObj = _pOther->GetObj();
 
-	if (_pOther->GetObj()->GetName() == L"Ground")
+	if (_pOther->GetObj()->GetGroup() == GROUP_TYPE::GROUND)
 	{
 		if (m_eCurState == PLAYER_STATE::SWING)
 			return;
@@ -593,8 +593,8 @@ void SPlayer::OnCollisionEnter(CCollider* _pOther)
 void SPlayer::OnCollision(CCollider* _pOther)
 {
 	GameObject* pOtherObj = _pOther->GetObj();
-
-	if (_pOther->GetObj()->GetName() == L"Ground")
+    
+	if (_pOther->GetObj()->GetGroup() == GROUP_TYPE::GROUND)
 	{
 		if (m_eCurState == PLAYER_STATE::SWING)
 			return;
@@ -691,7 +691,7 @@ void SPlayer::OnCollisionExit(CCollider* _pOther)
 {
 	GameObject* pOtherObj = _pOther->GetObj();
 
-	if (_pOther->GetObj()->GetName() == L"Ground")
+	if (_pOther->GetObj()->GetGroup() == GROUP_TYPE::GROUND)
 	{
 		if (isClimbing)
 		{
@@ -1006,7 +1006,7 @@ void SPlayer::CreateHook()
 	static_cast<GameObject*>(playerHook)->SetDir(Vec2(0.f, -1.f));
 	playerHook->SetOwner(playerArm);
 
-	CreateObject(playerHook, GROUP_TYPE::PROJ_PLAYER);
+	CreateObject(playerHook, GROUP_TYPE::HOOK);
 	//CreateObject 함수에 포지션, 방향, 스케일을 설정해주는 인자를 넣어야함
 
 
@@ -1024,7 +1024,7 @@ void SPlayer::CreateHook()
 		playerHook->LookAt(targetPos);
 
 		
-		if (onCollisionRay->GetObj()->GetName() == L"Ground")
+		if (onCollisionRay->GetObj()->GetGroup() == GROUP_TYPE::GROUND)
 		{
 			m_eCurState = PLAYER_STATE::SWING;
 			Vec2 dir = targetPos - playerArm->GetPos();
@@ -1054,7 +1054,7 @@ void SPlayer::CreateHook()
 
 
 		}
-		else if (playerRay->GetCollisionRay()->GetObj()->GetName() == L"Monster")
+		else if (playerRay->GetCollisionRay()->GetObj()->GetGroup() == GROUP_TYPE::MONSTER)
 		{
 
 		}

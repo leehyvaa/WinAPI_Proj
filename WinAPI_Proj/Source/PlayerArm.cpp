@@ -11,6 +11,7 @@ PlayerArm::PlayerArm()
 	,owner(nullptr)
 	,m_rotation(0.f)
 {
+    SetGroup(GROUP_TYPE::PLAYER_ARM);
 	CreateAnimator();
 	CreateCollider();
 	GetCollider()->SetOffsetPos(Vec2(0.f, 5.f));

@@ -28,9 +28,11 @@ private:
 	CRigidBody* m_pRigidBody;
 	CGravity* m_pGravity;
 
-	bool m_bAlive;
-public:
 
+	bool m_bAlive;
+
+protected:
+    GROUP_TYPE m_eGroup;
 
 public:
 	GameObject();
@@ -43,12 +45,14 @@ public:
 	void SetPos(Vec2 _vPos) { m_vPos = _vPos; }
 	void SetScale(Vec2 _vScale) { m_vScale = _vScale; }
 	void SetStdDir(Vec2 _dir) { standartDir = _dir; }
-
+    void SetGroup(GROUP_TYPE _type) { m_eGroup = _type; }
+    
 	Vec2 GetPos() { return m_vPos; }
 	Vec2 GetScale() { return m_vScale; }
 	Vec2 GetDir() { return m_vDir; }
 	Vec2 GetStdDir() { return standartDir; }
-
+    GROUP_TYPE GetGroup() { return m_eGroup; }
+    
 	float GetRotation() { return m_rotation; }
 
 	void SetName(const wstring& _strName) { m_strName = _strName; }
