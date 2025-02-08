@@ -5,14 +5,14 @@
 class GameObject;
 class CBackGround;
 class CTexture;
-
+class CTextUI;
 class CScene
 {
 private:
 	//오브젝트를 저장 및 관리할 벡터를 그룹 개수만큼 선언
 	vector<GameObject*> m_arrObj[static_cast<UINT>(GROUP_TYPE::END)];
 	wstring			 m_strName;//씬 이름
-
+    CTextUI* m_pPlayerText;
 	
 
 
@@ -25,7 +25,8 @@ private:
 	bool bDrawGroundType;
     bool bDrawCompleteGround;
 	bool bDrawOutWindow;
-
+    bool bDrawPlayerState;
+    
 	GameObject* m_pPlayer;
 	CBackGround* backGround;
 

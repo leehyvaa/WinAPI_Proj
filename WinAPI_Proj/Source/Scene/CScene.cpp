@@ -9,6 +9,9 @@
 #include "SelectGDI.h"
 #include "CKeyMgr.h"
 #include "CGround.h"
+#include "CTextUI.h"
+#include "SPlayer.h"
+
 CScene::CScene()
 	:m_iTileX(0)
 	,m_iTileY(0)
@@ -20,7 +23,18 @@ CScene::CScene()
 	,bDrawOutWindow(false)
     ,bDrawCompleteGround(false)
 	,backGround(nullptr)
+    ,m_pPlayerText(nullptr)
+    ,bDrawPlayerState(true)
 {
+
+    m_pPlayerText = new CTextUI();
+    m_pPlayerText->SetPos(Vec2(900, 0));
+    m_pPlayerText->SetAlign(CTextUI::TEXT_ALIGN::CENTER);
+    m_pPlayerText->SetLineSpace(5);
+    m_pPlayerText->SetVisibleBox(false);
+    m_pPlayerText->SetFontSize(20);
+    m_pPlayerText->SetFontColor(RGB(0,0,255));
+    AddObject(m_pPlayerText, GROUP_TYPE::UI);
 }
 
 CScene::~CScene()
@@ -77,7 +91,82 @@ void CScene::Update()
 	{
 		bDrawOutWindow = !bDrawOutWindow;
 	}
+    if (KEY_TAP(KEY::C))
+    {
+        bDrawPlayerState = !bDrawPlayerState;
+    }
 
+    if (bDrawPlayerState)
+    {
+        m_pPlayerText->ClearLines();
+        const vector<GameObject*>& vecPlayer = GetGroupObject(GROUP_TYPE::PLAYER);
+        SPlayer* player;
+        if (vecPlayer.size() > 0)
+        {
+            player = static_cast<SPlayer*>(vecPlayer[0]);
+            static wstring state;
+            static wstring ground;
+            static wstring climb;
+            if (player->IsOnGround())
+                ground = L"GROUND";
+            else
+                ground = L"Not GROUND";
+            
+            if (player->IsWallClimbing())
+                climb = L"Climb";
+            else
+                climb = L"Not Climb";
+
+            player->GetState();
+            switch (player->GetState())
+            {
+            case PLAYER_STATE::IDLE:
+                state = L"IDLE";
+                break;
+            case PLAYER_STATE::RUN:
+                state = L"RUN";
+                break;
+            case PLAYER_STATE::JUMP:
+                state = L"JUMP";
+                break;
+            case PLAYER_STATE::SWING:
+                state = L"SWING";
+                break;
+            case PLAYER_STATE::FALL:
+                state = L"FALL";
+                break;
+            case PLAYER_STATE::CLIMB:
+                state = L"CLIMB";
+                break;
+            case PLAYER_STATE::CLIMBUP:
+                state = L"CLIMBUP";
+                break;
+            case PLAYER_STATE::CLIMBDOWN:
+                state = L"CLIMBDOWN";
+                break;
+            case PLAYER_STATE::SHOT:
+                state = L"SHOT";
+                break;
+            case PLAYER_STATE::ATTACK:
+                state = L"ATTACK";
+                break;
+            case PLAYER_STATE::DAMAGED:
+                state = L"DAMAGED";
+                break;
+            case PLAYER_STATE::DEAD:
+                state = L"DEAD";
+                break;
+            }
+            vector<wstring> Texts =
+            {
+                state,
+                ground,
+                climb,
+            };
+
+            m_pPlayerText->AddLines(Texts);
+        }
+    }
 }
 
 void CScene::FinalUpdate()

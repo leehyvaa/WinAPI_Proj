@@ -11,6 +11,7 @@
 #include "CAnimation.h"
 #include "CRigidBody.h"
 #include "CGravity.h"
+#include "CGround.h"
 #include "PlayerArm.h"
 #include "Raycast.h"
 #include "CHook.h"
@@ -151,7 +152,7 @@ SPlayer::SPlayer()
 	pRay->SetPos(GetPos());
 	CreateObject(pRay, GROUP_TYPE::Ray);
 	playerRay = pRay;
-
+    Enter_State(m_eCurState);
 }
 
 
@@ -166,7 +167,6 @@ void SPlayer::Update()
 	RayCasting();
 
 	Update_State();
-	Update_Move();
 
 	Update_Animation();
 
@@ -203,7 +203,6 @@ void SPlayer::Update()
 	}
 	playerArm->SetDir(m_iDir);
 	playerArm->SetState(m_eCurState);
-	m_ePrevState = m_eCurState;
 	m_iPrevDir = m_iDir;
 }
 
@@ -211,8 +210,7 @@ void SPlayer::Render(HDC _dc)
 {
 	//Vec2 vPos(GetPos().x, GetPos().y);
 	//Vec2 vScale(GetScale().x, GetScale().y);
-
-
+    
 	/*
 	int iWidth = (int)m_pTex->Width();
 	int iHeight = (int)m_pTex->Height();*/
@@ -229,11 +227,7 @@ void SPlayer::Render(HDC _dc)
 
 
 
-
-
-
-
-
+    
 
 	//알파블렌드를 사용한 랜더링
 	//CTexture* pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex1", L"texture\\Sail_Fish.bmp");
@@ -257,204 +251,185 @@ void SPlayer::Render(HDC _dc)
 	//	, pTex->GetDC()
 	//	, 0, 0, int(width), int(height)
 	//	, bf);
-
-
-
-
+    
 	Component_Render(_dc);
 }
 
+void SPlayer::Enter_State(PLAYER_STATE _eState)
+{
+    switch (m_eCurState)
+    {
+    case PLAYER_STATE::IDLE:
+        GetRigidBody()->SetVelocity(Vec2(0.f, 0.f));
+        break;
+    case PLAYER_STATE::RUN:
+        break;
+    case PLAYER_STATE::ATTACK:
+        break;
+    case PLAYER_STATE::JUMP:
+        GetRigidBody()->SetVelocity(Vec2(GetRigidBody()->GetVelocity().x, -750.f));
+        break;
+    case PLAYER_STATE::CLIMB:
+        break;
+    case PLAYER_STATE::CLIMBUP:
+        break;
+    case PLAYER_STATE::CLIMBDOWN:
+        break;
+    case PLAYER_STATE::SHOT:
+        break;
+    case PLAYER_STATE::SWING:
+        break;
+    case PLAYER_STATE::DAMAGED:
+        break;
+    case PLAYER_STATE::DEAD:
+        break;
+    default:
+        break;
+    }
+}
 
 
 void SPlayer::Update_State()
 {
-
+    PLAYER_STATE eNextState = m_eCurState;
 
 	switch (m_eCurState)
 	{
 	case PLAYER_STATE::IDLE:
+	    HorizontalMove();
+	    if (KEY_TAP(KEY::SPACE) && m_bOnGround)
+	        eNextState = PLAYER_STATE::JUMP;
+	    else if (KEY_TAP(KEY::A) || KEY_TAP(KEY::D))
+	        eNextState = PLAYER_STATE::RUN;
 
+	    // 정지 상태에서의 방향전환
+	    if (KEY_HOLD(KEY::A) && !isClimbing && m_eCurState != PLAYER_STATE::SWING)
+	    {
+	    }
+	    if (KEY_HOLD(KEY::D) && !isClimbing && m_eCurState != PLAYER_STATE::SWING)
+	    {
+	    }
 		break;
 	case PLAYER_STATE::RUN:
-
+	    HorizontalMove();
+	    if (KEY_TAP(KEY::SPACE) && m_bOnGround)
+	        eNextState = PLAYER_STATE::JUMP;
+	    if (KEY_HOLD(KEY::A))
+	        m_iDir = -1;
+	    if (KEY_HOLD(KEY::D))
+	        m_iDir = 1;
 		break;
 	case PLAYER_STATE::ATTACK:
-
 		break;
-
 	case PLAYER_STATE::JUMP:
+	    HorizontalMove();
+	    if (m_bOnGround)
+	        eNextState = PLAYER_STATE::IDLE;
 		break;
-
 	case PLAYER_STATE::CLIMB:
-
 		if (KEY_HOLD(KEY::W))
-			m_eCurState = PLAYER_STATE::CLIMBUP;
+			eNextState = PLAYER_STATE::CLIMBUP;
 		if (KEY_HOLD(KEY::S))
-			m_eCurState = PLAYER_STATE::CLIMBDOWN;
-
-		ClimbJump();
-
+			eNextState = PLAYER_STATE::CLIMBDOWN;
 		break;
-
 	case PLAYER_STATE::CLIMBUP:
-
+	    VirticalMove();
 		if(KEY_AWAY(KEY::W))
-			m_eCurState = PLAYER_STATE::CLIMB;
+			eNextState = PLAYER_STATE::CLIMB;
 		if (KEY_HOLD(KEY::S))
-			m_eCurState = PLAYER_STATE::CLIMBDOWN;
-
-			ClimbJump();
-
+			eNextState = PLAYER_STATE::CLIMBDOWN;
 		break;
-
 	case PLAYER_STATE::CLIMBDOWN:
+	    VirticalMove();
 		if (KEY_AWAY(KEY::S))
-			m_eCurState = PLAYER_STATE::CLIMB;
+			eNextState = PLAYER_STATE::CLIMB;
 		if (KEY_HOLD(KEY::W))
-			m_eCurState = PLAYER_STATE::CLIMBUP;
-		ClimbJump();
-
+			eNextState = PLAYER_STATE::CLIMBUP;
 		break;
+	case PLAYER_STATE::FALL:
+	    HorizontalMove();
+	    if (m_bOnGround)
+	        eNextState = PLAYER_STATE::IDLE;
+	    break;
 	case PLAYER_STATE::SHOT:
-
 		break;
 	case PLAYER_STATE::SWING:
+	    SwingMove();
 		if (KEY_AWAY(KEY::LBUTTON))
-		{
-			
-
-			m_eCurState = PLAYER_STATE::IDLE;
-
-		}
-
+			eNextState = PLAYER_STATE::IDLE;
 		break;
 	case PLAYER_STATE::DAMAGED:
-
 	break;
 	case PLAYER_STATE::DEAD:
-
 		break;
 	default:
 		break;
 	}
 
 
-
-	//방향전환
-	if (KEY_HOLD(KEY::A) && !isClimbing && m_eCurState != PLAYER_STATE::SWING)
-	{
-		m_iDir = -1;
-
-		if(PLAYER_STATE::IDLE == m_eCurState)
-			m_eCurState = PLAYER_STATE::RUN;
-	}
-	if (KEY_HOLD(KEY::D) && !isClimbing && m_eCurState != PLAYER_STATE::SWING)
-	{
-		m_iDir = 1;
-		if (PLAYER_STATE::IDLE == m_eCurState)
-			m_eCurState = PLAYER_STATE::RUN;
-	}
-
-
+    
 	//조작 없을시 Idle전환
 	if (0.f == GetRigidBody()->GetSpeed() && m_bOnGround )
-	{
-		m_eCurState = PLAYER_STATE::IDLE;
-	}
+		eNextState = PLAYER_STATE::IDLE;
+    
+    // 와이어 발사
+    if (KEY_TAP(KEY::LBUTTON))
+        CreateHook();
+    
 
-
-	//점프
-	if (KEY_TAP(KEY::SPACE) && m_bOnGround)
-	{
-		m_eCurState = PLAYER_STATE::JUMP;
-
-		if (GetRigidBody())
-		{
-			GetRigidBody()->SetVelocity(Vec2(GetRigidBody()->GetVelocity().x, -750.f));
-		}
-	}
-
-
-
-	//와이어 해제
+	// 와이어 해제
 	if (KEY_AWAY(KEY::LBUTTON))
 	{
 		if(playerHook !=nullptr && playerHook->GetHookState() ==HOOK_STATE::GRAB)
 		{
-			//바로 삭제하지 않고 회수모션으로 전환 후 회수되면 삭제
+			// 바로 삭제하지 않고 회수모션으로 전환 후 회수되면 삭제
 			playerHook->SetHookState(HOOK_STATE::RETURN_WITH);
+		    // 체크 용도
 			GetGravity()->SetGround(false);
-			
 		}
-		
 	}
+
+    if(eNextState != m_eCurState)
+    {
+        Exit_State(m_eCurState); // 기존 상태 정리
+        Enter_State(eNextState); // 새 상태 초기화
+        m_ePrevState = m_eCurState;
+        m_eCurState = eNextState;
+    }
 }
 
-void SPlayer::Update_Move()
+void SPlayer::Exit_State(PLAYER_STATE _eState)
 {
-	CRigidBody* pRigid = GetRigidBody();
-
-	switch (m_eCurState)
-	{
-	case PLAYER_STATE::IDLE:
-	{
-		HorizontalMove();
-	}
-		break;
-	case PLAYER_STATE::RUN:
-	{
-		HorizontalMove();
-	}
-		break;
-	case PLAYER_STATE::ATTACK:
-
-		break;
-
-	case PLAYER_STATE::JUMP:
-		HorizontalMove();
-
-		break;
-
-	case PLAYER_STATE::CLIMB:
-		break;
-	case PLAYER_STATE::CLIMBUP:
-		VirticalMove();
-		break;
-	case PLAYER_STATE::CLIMBDOWN:
-		VirticalMove();
-		break;
-	case PLAYER_STATE::SHOT:
-
-		break;
-	case PLAYER_STATE::SWING:
-
-
-
-		SwingMove();
-		break;
-
-	case PLAYER_STATE::DAMAGED:
-
-		break;
-	case PLAYER_STATE::DEAD:
-
-		break;
-	default:
-		break;
-	}
-	
-
-
-
-	//와이어 발사
-	if (KEY_TAP(KEY::LBUTTON))
-	{
-
-		CreateHook();
-	}
-
-
+    switch (m_eCurState)
+    {
+    case PLAYER_STATE::IDLE:
+        break;
+    case PLAYER_STATE::RUN:
+        break;
+    case PLAYER_STATE::ATTACK:
+        break;
+    case PLAYER_STATE::JUMP:
+        break;
+    case PLAYER_STATE::CLIMB:
+        break;
+    case PLAYER_STATE::CLIMBUP:
+        break;
+    case PLAYER_STATE::CLIMBDOWN:
+        break;
+    case PLAYER_STATE::SHOT:
+        break;
+    case PLAYER_STATE::SWING:
+        break;
+    case PLAYER_STATE::DAMAGED:
+        break;
+    case PLAYER_STATE::DEAD:
+        break;
+    default:
+        break;
+    }
 }
+
+
 
 void SPlayer::Update_Animation()
 {
@@ -481,7 +456,10 @@ void SPlayer::Update_Animation()
 		break;
 
 	case PLAYER_STATE::JUMP:
-		Jump();
+	        if (m_iDir == -1)
+	            GetAnimator()->Play(L"SNB_LEFT_JUMP", true);
+	        else
+	            GetAnimator()->Play(L"SNB_RIGHT_JUMP", true);
 		break;
 
 	case PLAYER_STATE::CLIMB:
@@ -531,9 +509,12 @@ void SPlayer::Update_Gravity()
 void SPlayer::OnCollisionEnter(CCollider* _pOther)
 {
 	GameObject* pOtherObj = _pOther->GetObj();
+    
 
+    
 	if (_pOther->GetObj()->GetGroup() == GROUP_TYPE::GROUND)
 	{
+	    CGround* pGround = static_cast<CGround*>(pOtherObj);
 		if (m_eCurState == PLAYER_STATE::SWING)
 			return;
 
@@ -541,49 +522,56 @@ void SPlayer::OnCollisionEnter(CCollider* _pOther)
 		Vec2 vGroundPos = pOtherObj->GetPos();
 		Vec2 vGroundScale = pOtherObj->GetScale();
 
+        if (pGround->GetCollideType() == TILE_COLLIDE_TYPE::TOP_PLATFORM)
+        {
+            if (vPos.y <= vGroundPos.y
+                && vPos.x >= vGroundPos.x
+                && vPos.x <= vGroundPos.x + vGroundScale.x)
+            {
+                m_eCurState = PLAYER_STATE::IDLE;
+            }
+        }
 
-		if (vPos.y <= vGroundPos.y &&
-			vPos.x >= vGroundPos.x &&
-			vPos.x <= vGroundPos.x + vGroundScale.x)
-		{
-			m_eCurState = PLAYER_STATE::IDLE;
-		}
+	    if (pGround->GetCollideType() == TILE_COLLIDE_TYPE::SLOPE_LEFT)
+	    {
+	        if (vPos.y <= vGroundPos.y + 75.f &&
+            vPos.x <= vGroundPos.x)
+	        {
+	            m_eCurState = PLAYER_STATE::JUMP;
+	            m_iDir = 1;
+	            SetPos(Vec2(GetPos().x, GetPos().y + 2.f));
+	        }
 
-		if (vPos.y <= vGroundPos.y + 75.f &&
-			vPos.x <= vGroundPos.x + 2.f)
-		{
-			m_eCurState = PLAYER_STATE::JUMP;
-			m_iDir = 1;
-			SetPos(Vec2(GetPos().x, GetPos().y + 2.f));
-		}
-		if (vPos.y <= vGroundPos.y + 75.f &&
-			vPos.x >= vGroundPos.x + vGroundScale.x -2.f)
-		{
-			m_eCurState = PLAYER_STATE::JUMP;
-			m_iDir = -1;
-			SetPos(Vec2(GetPos().x, GetPos().y + 2.f));
-		}
+	        if (vPos.y > vGroundPos.y + 75.f &&
+                        vPos.x <= vGroundPos.x)
+	        {
+	            m_eCurState = PLAYER_STATE::CLIMB;
+	            isClimbing = true;
+	        }
+	        
+	    }
 
 
-		if (vPos.y > vGroundPos.y + 75.f &&
-			vPos.x <= vGroundPos.x)
-		{
-			m_eCurState = PLAYER_STATE::CLIMB;
-			isClimbing = true;
-		}
+	    if (pGround->GetCollideType() == TILE_COLLIDE_TYPE::SLOPE_RIGHT)
+	    {
+	        if (vPos.y <= vGroundPos.y + 75.f &&
+            vPos.x >= vGroundPos.x + vGroundScale.x -2.f)
+	        {
+	            m_eCurState = PLAYER_STATE::JUMP;
+	            m_iDir = -1;
+	            SetPos(Vec2(GetPos().x, GetPos().y + 2.f));
+	        }
 
-		if (vPos.y > vGroundPos.y + 75.f &&
-			vPos.x >= vGroundPos.x + vGroundScale.x)
-		{
-			m_eCurState = PLAYER_STATE::CLIMB;
-			isClimbing = true;
+	        if (vPos.y > vGroundPos.y + 75.f &&
+                vPos.x >= vGroundPos.x + vGroundScale.x)
+	        {
+	            m_eCurState = PLAYER_STATE::CLIMB;
+	            isClimbing = true;
 
-		}
+	        }
+	    }
 		
-		if (m_eCurState == PLAYER_STATE::IDLE)
-		{
-			GetRigidBody()->SetVelocity(Vec2(0.f, 0.f));
-		}
+	    
 
 	}
 
@@ -593,6 +581,31 @@ void SPlayer::OnCollisionEnter(CCollider* _pOther)
 void SPlayer::OnCollision(CCollider* _pOther)
 {
 	GameObject* pOtherObj = _pOther->GetObj();
+    
+    // if (_pOther->GetObj()->GetGroup() == GROUP_TYPE::GROUND)
+    // {
+    //     CGround* pGround = static_cast<CGround*>(pOtherObj);
+    //     if (m_eCurState == PLAYER_STATE::SWING)
+    //         return;
+    //
+    //     // CGround에서 이미 충돌 처리를 수행하므로, 상태를 확인하고 업데이트
+    //     if (IsOnGround())
+    //     {
+    //         // 착지 상태인 경우
+    //         m_eCurState = PLAYER_STATE::IDLE;
+    //     }
+    //     else if (IsWallClimbing())
+    //     {
+    //         // 벽타기 상태인 경우
+    //         m_eCurState = PLAYER_STATE::CLIMB;
+    //     }
+    //     else if (m_eCurState == PLAYER_STATE::JUMP)
+    //     {
+    //         // 점프 상태 유지
+    //         // 필요 시 추가 로직 구현
+    //     }
+    // }
+
     
 	if (_pOther->GetObj()->GetGroup() == GROUP_TYPE::GROUND)
 	{
@@ -664,25 +677,10 @@ void SPlayer::OnCollision(CCollider* _pOther)
 				m_iDir = -1;
 				m_eCurState = PLAYER_STATE::CLIMB;
 			}
-
-
-
-
-
-			//밑에 코드는 굳이 땅에서 처리해야 하나 싶음
-			if (m_eCurState == PLAYER_STATE::RUN && GetRigidBody()->GetSpeed() == 0.f)
-			{
-				m_eCurState = PLAYER_STATE::IDLE;
-			}
-
-			if(GetRigidBody()->GetSpeed() == 0.f)
-				m_eCurState = PLAYER_STATE::IDLE;
-
+		    
+			
 		}
-
-
 	}
-
 
 
 }
@@ -701,7 +699,6 @@ void SPlayer::OnCollisionExit(CCollider* _pOther)
 
 			if (pOtherObj->GetPos().y + pOtherObj->GetScale().y < GetPos().y)
 			{
-				
 				//폴상태로 변환해야함
 
 				pRigid->SetVelocity(Vec2(0.f, -50.f));
@@ -721,20 +718,12 @@ void SPlayer::OnCollisionExit(CCollider* _pOther)
 	}
 }
 
-void SPlayer::Jump()
-{
-	if (m_iDir == -1)
-		GetAnimator()->Play(L"SNB_LEFT_JUMP", true);
-	else
-		GetAnimator()->Play(L"SNB_RIGHT_JUMP", true);
-}
 
 
 
+// 매달린 상태에서 점프 (반대방향으로 점프함)
 void SPlayer::ClimbJump()
 {
-	if (m_bOnGround)
-		m_eCurState = PLAYER_STATE::IDLE;
 	if (KEY_TAP(KEY::SPACE))
 	{
 		m_eCurState = PLAYER_STATE::JUMP;
@@ -742,71 +731,50 @@ void SPlayer::ClimbJump()
 		{
 			m_iDir = -1;
 			GetRigidBody()->SetVelocity(Vec2(-400.f, -950.f));
-			return;
 		}
 		else
 		{
 			m_iDir = 1;
 			GetRigidBody()->SetVelocity(Vec2(400.f, -950.f));
-			return;
 		}
-
 	}
 }
 
+// 좌우 달리기
 void SPlayer::HorizontalMove()
 {
 	CRigidBody* pRigid = GetRigidBody();
 
-
 	if (KEY_HOLD(KEY::A))
-	{
 		pRigid->SetVelocity(Vec2(-600.f, pRigid->GetVelocity().y));
-	}
 	if (KEY_HOLD(KEY::D))
-	{
 		pRigid->SetVelocity(Vec2(600.f, pRigid->GetVelocity().y));
-	}
-
-
 
 	if (KEY_AWAY(KEY::A))
-	{
 		pRigid->SetVelocity(Vec2(0.f, pRigid->GetVelocity().y));
-	}
 	if (KEY_AWAY(KEY::D))
-	{
 		pRigid->SetVelocity(Vec2(0.f, pRigid->GetVelocity().y));
-	}
-
 }
 
+// 매달린 상태에서 수직이동
 void SPlayer::VirticalMove()
 {
 	CRigidBody* pRigid = GetRigidBody();
 
-
 	if (KEY_HOLD(KEY::W))
-	{
 		pRigid->SetVelocity(Vec2(0.f, -500.f));
-	}
 	if (KEY_HOLD(KEY::S))
-	{
 		pRigid->SetVelocity(Vec2(0.f, 700.f));
-	}
-
-
 
 	if (KEY_AWAY(KEY::W))
-	{
 		pRigid->SetVelocity(Vec2(pRigid->GetVelocity().x, 0.f));
-	}
 	if (KEY_AWAY(KEY::S))
-	{
 		pRigid->SetVelocity(Vec2(pRigid->GetVelocity().x,0.f));
-	}
+
+    ClimbJump();
 }
 
+// 와이어 이동
 void SPlayer::SwingMove()
 {
 	if (playerHook == nullptr)

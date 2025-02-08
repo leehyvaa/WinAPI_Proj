@@ -67,20 +67,27 @@ public:
 	int GetPrevDir() { return m_iPrevDir; }
 	Vec2 GetTargetPos() { return targetPos; }
 	void SetOnGround(bool _onGround) { m_bOnGround = _onGround; }
+    bool IsOnGround() { return m_bOnGround; }
+    bool IsWallClimbing() { return isClimbing; }
 	void SetArm(PlayerArm* _arm) { playerArm = _arm; }
 	void SetHookRemove(CHook* _hook) { playerHook = _hook; }
 
 	PLAYER_STATE GetState() { return m_eCurState; }
 	PLAYER_STATE GetPrevState() { return m_ePrevState; }
 
+    void SetPlayerState(PLAYER_STATE _eState){m_eCurState = _eState;}
+    
+    void SetWallClimbing(bool _isClimbing) { isClimbing = _isClimbing; }
 
 
 	virtual void Update() override;
 	virtual void Render(HDC _dc)  override;
 
 private:
+    void Enter_State(PLAYER_STATE _eState);
 	void Update_State();
-	void Update_Move();
+    void Exit_State(PLAYER_STATE _eState);
+ 
 	void Update_Animation();
 	void Update_Gravity();
 
@@ -88,8 +95,7 @@ private:
 	virtual void OnCollision(CCollider* _pOther);
 	virtual void OnCollisionExit(CCollider* _pOther);
 
-
-	void Jump();
+  
 	void ClimbJump();
 	void HorizontalMove();
 	void VirticalMove();

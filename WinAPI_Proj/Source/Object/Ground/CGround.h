@@ -37,7 +37,9 @@ public:
     void NormalLeftCollision(CCollider* _pOther);
 
     
-
+    float CalculateCollisionOffset(const Vec2& vObjColPos, const Vec2& vObjColScale,
+                                        const Vec2& vGroundColPos, const Vec2& vGroundColScale,
+                                        bool isHorizontal);
 public:
 	CGround();
 	virtual ~CGround();
