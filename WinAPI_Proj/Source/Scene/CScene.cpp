@@ -106,6 +106,7 @@ void CScene::Update()
             player = static_cast<SPlayer*>(vecPlayer[0]);
             static wstring state;
             static wstring ground;
+            static wstring climbMove;
             static wstring climb;
             if (player->IsOnGround())
                 ground = L"GROUND";
@@ -116,6 +117,14 @@ void CScene::Update()
                 climb = L"Climb";
             else
                 climb = L"Not Climb";
+
+            if (player->GetClimbState() == PLAYER_CLIMB_STATE::NONE)
+                climbMove = L"Climb None";
+            else if (player->GetClimbState() == PLAYER_CLIMB_STATE::UP)
+                climbMove = L"Climb Up";
+            else if (player->GetClimbState() == PLAYER_CLIMB_STATE::DOWN)
+                climbMove = L"Climb Down";
+
 
             player->GetState();
             switch (player->GetState())
@@ -138,12 +147,6 @@ void CScene::Update()
             case PLAYER_STATE::CLIMB:
                 state = L"CLIMB";
                 break;
-            case PLAYER_STATE::CLIMBUP:
-                state = L"CLIMBUP";
-                break;
-            case PLAYER_STATE::CLIMBDOWN:
-                state = L"CLIMBDOWN";
-                break;
             case PLAYER_STATE::SHOT:
                 state = L"SHOT";
                 break;
@@ -162,6 +165,7 @@ void CScene::Update()
                 state,
                 ground,
                 climb,
+                climbMove,
             };
 
             m_pPlayerText->AddLines(Texts);
@@ -427,17 +431,17 @@ void CScene::CreateGround()
              {
                  // 1. 상단 지형 (평지)
                  CGround* pTop = new CGround();
-                 pTop->SetPos(Vec2(vPos1.x + vTileScale.x,vPos1.y));
+                 pTop->SetPos(Vec2(vPos1.x,vPos1.y));
                  pTop->SetGroundType(groundType);
-                 pTop->SetScale(Vec2(vPos2.x - vPos1.x - vTileScale.x, vTileScale.y));
+                 pTop->SetScale(Vec2(vPos2.x - vPos1.x, vTileScale.y*2));
                  pTop->SetCollideType(TILE_COLLIDE_TYPE::TOP_PLATFORM);
                  AddObject(pTop, GROUP_TYPE::GROUND);
 
                  // 2. 좌측 빗면
                  CGround* pLeft = new CGround();
-                 pLeft->SetPos(vPos1);
+                 pLeft->SetPos(Vec2(vPos1.x, vPos1.y));
                  pLeft->SetGroundType(groundType);
-                 pLeft->SetScale(Vec2(vTileScale.x, vPos2.y - vPos1.y));
+                 pLeft->SetScale(Vec2(vTileScale.x*2, vPos2.y - vPos1.y));
                  pLeft->SetCollideType(TILE_COLLIDE_TYPE::SLOPE_LEFT);
                  AddObject(pLeft, GROUP_TYPE::GROUND);
 
@@ -445,15 +449,15 @@ void CScene::CreateGround()
                  CGround* pRight = new CGround();
                  pRight->SetPos(Vec2(vPos2.x - vTileScale.x, vPos1.y));
                  pRight->SetGroundType(groundType);
-                 pRight->SetScale(Vec2(vTileScale.x, vPos2.y - vPos1.y));
+                 pRight->SetScale(Vec2(vTileScale.x*2, vPos2.y - vPos1.y));
                  pRight->SetCollideType(TILE_COLLIDE_TYPE::SLOPE_RIGHT);
                  AddObject(pRight, GROUP_TYPE::GROUND);
 
                  // 4. 하단 지형
                  CGround* pBottom = new CGround();
-                 pBottom->SetPos(Vec2(vPos1.x+vTileScale.x, vPos2.y - vTileScale.y));
+                 pBottom->SetPos(Vec2(vPos1.x, vPos2.y - vTileScale.y));
                  pBottom->SetGroundType(groundType);
-                 pBottom->SetScale(Vec2(vPos2.x - vPos1.x-(vTileScale.x*2), vTileScale.y));
+                 pBottom->SetScale(Vec2(vPos2.x - vPos1.x, vTileScale.y*2));
                  pBottom->SetCollideType(TILE_COLLIDE_TYPE::BOT_PLATFORM);
                  AddObject(pBottom, GROUP_TYPE::GROUND);
              }

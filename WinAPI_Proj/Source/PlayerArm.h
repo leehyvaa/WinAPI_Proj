@@ -3,38 +3,34 @@
 
 class SPlayer;
 
-
-
-
-class PlayerArm :
-    public GameObject
+class PlayerArm : public GameObject
 {
 
 private:
     float m_fSpeed;
     float m_rotation;
-    SPlayer* owner;
-    int dir;
-    int prevDir;
-    PLAYER_STATE curState;
-    PLAYER_STATE prevState;
+    SPlayer *m_pOwner;
+    int m_iDir;
+    int m_iPrevDir;
+    PLAYER_STATE m_eCurState;
+    PLAYER_STATE m_ePrevState;
+    PLAYER_CLIMB_STATE m_ePrevClimbState;
 
     virtual void Update() override;
     virtual void Render(HDC _dc) override;
 
 public:
-
-
     void Update_Animation();
-    void SetOwner(SPlayer* _owner) { owner = _owner; }
+    void Update_ClimbAnimation();
+    void SetOwner(SPlayer *_owner) { m_pOwner = _owner; }
 
-    void SetPrevDir(int _dir) { prevDir = _dir; }
-    void SetDir(int _dir) { dir = _dir; }
+    void SetPrevDir(int _dir) { m_iPrevDir = _dir; }
+    void SetDir(int _dir) { m_iDir = _dir; }
 
-    void SetState(PLAYER_STATE _state) { curState=_state ; }
-    void SetPrevState(PLAYER_STATE _state) {prevState = _state; }
+    void SetState(PLAYER_STATE _state) { m_eCurState = _state; }
+    void SetPrevState(PLAYER_STATE _state) { m_ePrevState = _state; }
 
-    SPlayer* GetOwner() { return owner; }
+    SPlayer *GetOwner() { return m_pOwner; }
 
 public:
     PlayerArm();
@@ -42,4 +38,3 @@ public:
 
     CLONE(PlayerArm)
 };
-

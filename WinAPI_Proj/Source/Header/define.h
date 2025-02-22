@@ -139,11 +139,17 @@ enum class PLAYER_STATE
 	JUMP,
 	FALL,
 	CLIMB,
-	CLIMBUP,
-	CLIMBDOWN,
 	SHOT,
 	SWING,
 	DAMAGED,
 	DEAD,
 
+};
+
+enum class PLAYER_CLIMB_STATE
+{
+    NONE,
+    UP,
+    DOWN,
+    END,
 };
