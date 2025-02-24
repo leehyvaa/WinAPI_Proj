@@ -18,22 +18,23 @@ private:
 	int m_iDir;
 	int m_iPrevDir;
 	float m_fSpeed;
-	float wireRange;
-	float wireMaxRange;
+	float m_fWireRange;
+	float m_fWireMaxRange;
 	bool m_bOnGround;
-	bool isClimbing;
-	bool canBooster;
+	bool m_bClimbing;
+	bool m_bRidingWire;
+	bool m_bCanBooster;
 	PLAYER_STATE m_eCurState;
 	PLAYER_STATE m_ePrevState;
 	PLAYER_CLIMB_STATE m_eClimbState;
 	PLAYER_CLIMB_STATE m_ePrevClimbState;
-	CHook *playerHook;
-	PlayerArm *playerArm;
-	Raycast *playerRay;
-	CCollider *onCollisionRay;
-	Vec2 targetPos;
-	float moveEnergy;
-	float posEnergy;
+	CHook* m_pPlayerHook;
+	PlayerArm* m_pPlayerArm;
+	Raycast* m_pPlayerRay;
+	CCollider* m_pRayHitCollider;
+	Vec2 m_vRayHitPos;
+	float m_fMoveEnergy;
+	float m_fPosEnergy;
 
 public:
 	SPlayer();
@@ -43,7 +44,7 @@ public:
 	// 복사생성자가 문제가 되는 경우는 콜라이더처럼 자신의 owner를 가지고 있거나
 	// 고유한 id값을 가지고 있을때 얕은복사를 하면 문제가 됨
 	SPlayer(const SPlayer &_origin)
-		: GameObject(_origin), m_iDir(_origin.m_iDir), m_fSpeed(_origin.m_fSpeed), m_eCurState(_origin.m_eCurState), m_ePrevState(_origin.m_ePrevState), m_iPrevDir(_origin.m_iPrevDir), playerArm(_origin.playerArm), playerRay(_origin.playerRay), m_bOnGround(false), isClimbing(false), targetPos(_origin.targetPos), onCollisionRay(nullptr), m_eClimbState(PLAYER_CLIMB_STATE::NONE)
+		: GameObject(_origin), m_iDir(_origin.m_iDir), m_fSpeed(_origin.m_fSpeed), m_eCurState(_origin.m_eCurState), m_ePrevState(_origin.m_ePrevState), m_iPrevDir(_origin.m_iPrevDir), m_pPlayerArm(_origin.m_pPlayerArm), m_pPlayerRay(_origin.m_pPlayerRay), m_bOnGround(false), m_bClimbing(false), m_vRayHitPos(_origin.m_vRayHitPos), m_pRayHitCollider(nullptr), m_eClimbState(PLAYER_CLIMB_STATE::NONE)
 	{
 	}
 	virtual ~SPlayer();
@@ -51,12 +52,14 @@ public:
 	void SetDir(int _dir) { m_iDir = _dir; }
 	int GetDir() { return m_iDir; }
 	int GetPrevDir() { return m_iPrevDir; }
-	Vec2 GetTargetPos() { return targetPos; }
+	Vec2 GetTargetPos() { return m_vRayHitPos; }
 	void SetOnGround(bool _onGround) { m_bOnGround = _onGround; }
+    void SetRidingWire(bool _ridingWire) { m_bRidingWire = _ridingWire; }
 	bool IsOnGround() { return m_bOnGround; }
-	bool IsWallClimbing() { return isClimbing; }
-	void SetArm(PlayerArm *_arm) { playerArm = _arm; }
-	void SetHookRemove(CHook *_hook) { playerHook = _hook; }
+	bool IsWallClimbing() { return m_bClimbing; }
+    bool IsRidingWire() { return m_bRidingWire; }
+	void SetArm(PlayerArm *_arm) { m_pPlayerArm = _arm; }
+	void SetHookRemove(CHook *_hook) { m_pPlayerHook = _hook; }
 
 	PLAYER_STATE GetState() { return m_eCurState; }
 	PLAYER_STATE GetPrevState() { return m_ePrevState; }
@@ -64,7 +67,7 @@ public:
 
 	void SetPlayerState(PLAYER_STATE _eState) { m_eCurState = _eState; }
 
-	void SetWallClimbing(bool _isClimbing) { isClimbing = _isClimbing; }
+	void SetWallClimbing(bool _isClimbing) { m_bClimbing = _isClimbing; }
 
 	virtual void Update() override;
 	virtual void Render(HDC _dc) override;

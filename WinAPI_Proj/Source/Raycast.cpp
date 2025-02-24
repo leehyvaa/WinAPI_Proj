@@ -43,7 +43,6 @@ void Raycast::CollisionCheck()
 
 	Vec2 dir = mousePos - GetPos();
 	dir.Normalize();
-	Vec2 checkPos = GetPos();
 
 
 	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
@@ -62,7 +61,7 @@ void Raycast::CollisionCheck()
 		offsetPos += dir * i*3;
 		GetCollider()->SetOffsetPos(offsetPos);
 
-
+	    // Ground중 현재 Ray에 충돌한 지형이 있는지 체크
 		for (size_t j = 0; j < vecGround.size(); j++)
 		{
 			if (nullptr == vecGround[j]->GetCollider())
@@ -72,11 +71,13 @@ void Raycast::CollisionCheck()
 
 			if (IsCollision(GetCollider(), collider))
 			{
+			    // Ray에 부딪힌 물체의 충돌체를 저장
 				onCollisionRay = collider;
 				break;
 			}
 		}
 
+	    // Monster중 현재 Ray에 충돌한 몬스터가 있는지 체크
 		for (size_t j = 0; j < vecMonster.size(); j++)
 		{
 			if (nullptr == vecMonster[j]->GetCollider())
@@ -86,38 +87,35 @@ void Raycast::CollisionCheck()
 
 			if (IsCollision(GetCollider(), collider))
 			{
+			    // Ray에 부딪힌 물체의 충돌체를 저장
 				onCollisionRay = collider;
 				break;
 			}
 		}
 
-
+        // Ray에 부딪힌 물체가 있으면 while문 탈출
 		if (onCollisionRay != nullptr)
 		{
 			Vec2 pos = GetPos();
 			Vec2 ColPos = GetCollider()->GetOffsetPos();
 			//targetpos가 플레이어와 가장 가까운 곳으로 찍히게 수정할 여지 있음
-			
+
+		    // 타겟과 Ray가 충돌한 지점의 위치를 저장
 			targetPos = GetPos() + GetCollider()->GetOffsetPos();
 			break;
 		}
 
 		Vec2 curPos = GetCollider()->GetOffsetPos() +GetPos();
 
-		//레이 최대거리
+		//레이 최대거리에 도달시 while문 탈출
 		if ((curPos - GetPos()).Length() >= 800.f)
-		{
-
 			break;
-		}
+		
 		
 		i++;
 	}
 
-
-
-
-
+    // 충돌 검사가 끝났으면 Ray의 충돌체 Offset을 시작 위치로 초기화
 	GetCollider()->SetOffsetPos(Vec2(0.f,0.f));
 }
 

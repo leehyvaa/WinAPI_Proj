@@ -17,7 +17,7 @@
 #include "CHook.h"
 
 SPlayer::SPlayer()
-	: m_fSpeed(1000), m_iDir(1), m_iPrevDir(1), m_eCurState(PLAYER_STATE::IDLE), m_ePrevState(PLAYER_STATE::RUN), m_bOnGround(false), playerArm(nullptr), playerHook(nullptr), isClimbing(false), onCollisionRay(nullptr), targetPos(Vec2(0.f, 0.f)), wireRange(-1.f), wireMaxRange(600.f), moveEnergy(0.f), posEnergy(0.f), canBooster(false), m_eClimbState(PLAYER_CLIMB_STATE::NONE)
+	: m_fSpeed(1000), m_iDir(1), m_iPrevDir(1), m_eCurState(PLAYER_STATE::IDLE), m_ePrevState(PLAYER_STATE::RUN), m_bOnGround(false), m_pPlayerArm(nullptr), m_pPlayerHook(nullptr), m_bClimbing(false), m_pRayHitCollider(nullptr), m_vRayHitPos(Vec2(0.f, 0.f)), m_fWireRange(-1.f), m_fWireMaxRange(600.f), m_fMoveEnergy(0.f), m_fPosEnergy(0.f), m_bCanBooster(false), m_eClimbState(PLAYER_CLIMB_STATE::NONE)
 {
 	// m_pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\sigong.bmp");
 	SetGroup(GROUP_TYPE::PLAYER);
@@ -116,7 +116,7 @@ SPlayer::SPlayer()
 	pRay->SetName(L"PlayerRay");
 	pRay->SetPos(GetPos());
 	CreateObject(pRay, GROUP_TYPE::Ray);
-	playerRay = pRay;
+	m_pPlayerRay = pRay;
 	Enter_State(m_eCurState);
 }
 
@@ -146,20 +146,20 @@ void SPlayer::Update()
 		cout << GetRigidBody()->GetVelocity().x << endl;
 		cout << GetRigidBody()->GetVelocity().y << endl;
 		cout << static_cast<int>(m_eCurState) << endl;
-		cout << targetPos.x << " " << targetPos.y << endl;
-		cout << onCollisionRay << endl;
-		cout << playerArm->GetPos().x << " " << playerArm->GetPos().y << endl;
+		cout << m_vRayHitPos.x << " " << m_vRayHitPos.y << endl;
+		cout << m_pRayHitCollider << endl;
+		cout << m_pPlayerArm->GetPos().x << " " << m_pPlayerArm->GetPos().y << endl;
 	}
 
 	GetAnimator()->Update();
 
-	if (playerHook != nullptr)
+	if (m_pPlayerHook != nullptr)
 	{
-		playerHook->SetDir(m_iDir);
-		playerHook->SetState(m_eCurState);
+		m_pPlayerHook->SetDir(m_iDir);
+		m_pPlayerHook->SetState(m_eCurState);
 	}
-	playerArm->SetDir(m_iDir);
-	playerArm->SetState(m_eCurState);
+	m_pPlayerArm->SetDir(m_iDir);
+	m_pPlayerArm->SetState(m_eCurState);
 	m_iPrevDir = m_iDir;
 }
 
@@ -211,19 +211,26 @@ void SPlayer::Enter_State(PLAYER_STATE _eState)
 	switch (_eState)
 	{
 	case PLAYER_STATE::IDLE:
+	    // 이거 지워야 자연스러울지도
 		GetRigidBody()->SetVelocity(Vec2(0.f, 0.f));
 		break;
 	case PLAYER_STATE::RUN:
+	    GetRigidBody()->SetMaxSpeed(Vec2(850.f, 1000.f));
 		break;
 	case PLAYER_STATE::ATTACK:
 		break;
 	case PLAYER_STATE::JUMP:
-	    GetRigidBody()->SetVelocity(Vec2(GetRigidBody()->GetVelocity().x, -750.f));
-		SetPos(Vec2(GetPos().x, GetPos().y - 5.f));
+	    GetRigidBody()->SetMaxSpeed(Vec2(780.f, 1000.f));
+	    if (m_bOnGround)
+	        GetRigidBody()->AddForce(Vec2(0.f, -10000.f));
+        else
+            GetRigidBody()->AddForce(Vec2(0.f, -5000.f));
+		SetPos(Vec2(GetPos().x, GetPos().y - 20.f));
 		GetGravity()->SetGround(false);
 		SetOnGround(false);
 		break;
 	case PLAYER_STATE::FALL:
+	    GetRigidBody()->SetMaxSpeed(Vec2(780.f, 1000.f));
 	    break;
 	case PLAYER_STATE::CLIMB:
 		GetRigidBody()->SetVelocity(Vec2(0.f, 0.f));
@@ -232,6 +239,9 @@ void SPlayer::Enter_State(PLAYER_STATE _eState)
 	case PLAYER_STATE::SHOT:
 		break;
 	case PLAYER_STATE::SWING:
+	    GetGravity()->SetGround(true);
+	    GetRigidBody()->SetMaxSpeed(Vec2(1000.f, 1000.f));
+
 		break;
 	case PLAYER_STATE::DAMAGED:
 		break;
@@ -257,10 +267,10 @@ void SPlayer::Update_State()
 	    if (!m_bOnGround && GetRigidBody()->GetVelocity().y > 0.f)
 	        eNextState = PLAYER_STATE::FALL;
 		// 정지 상태에서의 방향전환
-		if (KEY_HOLD(KEY::A) && !isClimbing && m_eCurState != PLAYER_STATE::SWING)
+		if (KEY_HOLD(KEY::A) && !m_bClimbing && m_eCurState != PLAYER_STATE::SWING)
 		{
 		}
-		if (KEY_HOLD(KEY::D) && !isClimbing && m_eCurState != PLAYER_STATE::SWING)
+		if (KEY_HOLD(KEY::D) && !m_bClimbing && m_eCurState != PLAYER_STATE::SWING)
 		{
 		}
 		break;
@@ -294,9 +304,12 @@ void SPlayer::Update_State()
 	    break;
 	case PLAYER_STATE::CLIMB:
 		VirticalMove();
-	    if (!isClimbing)
+	    if (!m_bClimbing)
 	    {
-	        eNextState = PLAYER_STATE::JUMP;
+	        if (m_eClimbState == PLAYER_CLIMB_STATE::UP)
+	            eNextState = PLAYER_STATE::JUMP;
+	        else
+	            eNextState = PLAYER_STATE::FALL;
 	    }
 		if (KEY_TAP(KEY::SPACE))
 		{
@@ -305,6 +318,8 @@ void SPlayer::Update_State()
 		}
 		break;
 	case PLAYER_STATE::SHOT:
+	    if (m_pRayHitCollider != nullptr && m_pRayHitCollider->GetObj()->GetGroup() == GROUP_TYPE::GROUND)
+	        eNextState = PLAYER_STATE::SWING;
 		break;
 	case PLAYER_STATE::SWING:
 		SwingMove();
@@ -329,12 +344,10 @@ void SPlayer::Update_State()
 	// 와이어 해제
 	if (KEY_AWAY(KEY::LBUTTON))
 	{
-		if (playerHook != nullptr && playerHook->GetHookState() == HOOK_STATE::GRAB)
+		if (m_pPlayerHook != nullptr && m_pPlayerHook->GetHookState() == HOOK_STATE::GRAB)
 		{
 			// 바로 삭제하지 않고 회수모션으로 전환 후 회수되면 삭제
-			playerHook->SetHookState(HOOK_STATE::RETURN_WITH);
-			// 체크 용도
-			GetGravity()->SetGround(false);
+			m_pPlayerHook->SetHookState(HOOK_STATE::RETURN_WITH);
 		}
 	}
 
@@ -367,6 +380,8 @@ void SPlayer::Exit_State(PLAYER_STATE _eState)
 	case PLAYER_STATE::SHOT:
 		break;
 	case PLAYER_STATE::SWING:
+	    GetGravity()->SetGround(false);
+
 		break;
 	case PLAYER_STATE::DAMAGED:
 		break;
@@ -406,7 +421,12 @@ void SPlayer::Update_Animation()
 		else
 			GetAnimator()->Play(L"SNB_RIGHT_JUMP", true);
 		break;
-
+	case PLAYER_STATE::FALL:
+	    if (m_iDir == -1)
+	        GetAnimator()->Play(L"SNB_LEFT_JUMP", true);
+	    else
+	        GetAnimator()->Play(L"SNB_RIGHT_JUMP", true);
+	    break;
 	case PLAYER_STATE::CLIMB:
 		if (m_iDir == -1)
 			GetAnimator()->Play(L"SNB_LEFT_CLIMBSTOP", true);
@@ -432,7 +452,7 @@ void SPlayer::Update_Animation()
 
 void SPlayer::Update_Gravity()
 {
-	GetRigidBody()->AddForce(Vec2(0.f, 500.f));
+	GetRigidBody()->AddForce(Vec2(0.f, 600.f));
 }
 
 void SPlayer::OnCollisionEnter(CCollider *_pOther)
@@ -507,34 +527,57 @@ void SPlayer::ClimbAnimationUpdate()
 	}
 }
 
-// 매달린 상태에서 점프 (반대방향으로 점프함)
+// 매달린 상태에서 점프 (반대방향으로 점프 혹은 위로 뛰어서 다시 위의 벽 잡기)
 void SPlayer::WallKickJump()
 {
 	if (m_iDir == 1)
 	{
-		m_iDir = -1;
-		GetRigidBody()->SetVelocity(Vec2(-400.f, -950.f));
+	    if (KEY_HOLD(KEY::D))
+	    {
+	        // 이 부분을 매끄럽게 처리하려면 점프 후에 일정 시간동안 climb로 안넘어가게 하거나 점프를 Addforce로 수정
+	        //GetRigidBody()->SetVelocity(Vec2(-1000.f, -2000.f));
+	        SetPos(Vec2(GetPos().x-20.f, GetPos().y-50.f));
+	    }
+        else
+        {
+            m_iDir = -1;
+            GetRigidBody()->AddForce(Vec2(-4000.f, -9500.f));
+            //GetRigidBody()->SetVelocity(Vec2(-400.f, -950.f));
+        }
 	}
 	else
 	{
-		m_iDir = 1;
-		GetRigidBody()->SetVelocity(Vec2(400.f, -950.f));
+	    if (KEY_HOLD(KEY::A))
+	    {
+	        SetPos(Vec2(GetPos().x+20.f, GetPos().y-50.f));
+	    }
+	    else
+	    {
+	        m_iDir = -1;
+	        GetRigidBody()->AddForce(Vec2(-4000.f, -9500.f));
+	        //GetRigidBody()->SetVelocity(Vec2(400.f, -950.f));
+	    }
 	}
 }
 
 // 좌우 달리기
 void SPlayer::HorizontalMove()
 {
+    const float MOVE_FORCE = 1000.f;
 	CRigidBody *pRigid = GetRigidBody();
 
 	if (KEY_HOLD(KEY::A))
+	{
 		m_iDir = -1;
+	    //pRigid->SetVelocity(Vec2(-600.f, pRigid->GetVelocity().y));
+	    pRigid->AddForce(Vec2(-MOVE_FORCE,0.f));
+	}
 	if (KEY_HOLD(KEY::D))
+	{
 		m_iDir = 1;
-	if (KEY_HOLD(KEY::A))
-		pRigid->SetVelocity(Vec2(-600.f, pRigid->GetVelocity().y));
-	if (KEY_HOLD(KEY::D))
-		pRigid->SetVelocity(Vec2(600.f, pRigid->GetVelocity().y));
+	    //pRigid->SetVelocity(Vec2(600.f, pRigid->GetVelocity().y));
+	    pRigid->AddForce(Vec2(MOVE_FORCE,0.f));
+	}
 
 	if (KEY_AWAY(KEY::A))
 		pRigid->SetVelocity(Vec2(0.f, pRigid->GetVelocity().y));
@@ -542,7 +585,7 @@ void SPlayer::HorizontalMove()
 		pRigid->SetVelocity(Vec2(0.f, pRigid->GetVelocity().y));
 }
 
-// 매달린 상태에서 수직이동
+// 벽에 매달린 상태에서 수직이동
 void SPlayer::VirticalMove()
 {
 	CRigidBody *pRigid = GetRigidBody();
@@ -571,13 +614,13 @@ void SPlayer::VirticalMove()
 // 와이어 이동
 void SPlayer::SwingMove()
 {
-	if (playerHook == nullptr)
+	if (m_pPlayerHook == nullptr)
 		return;
 
 	CRigidBody *pRigid = GetRigidBody();
-	targetPos = playerHook->GetPos();
+	m_vRayHitPos = m_pPlayerHook->GetPos();
 
-	if (playerHook->GetPos().y < playerArm->GetPos().y)
+	if (m_pPlayerHook->GetPos().y < m_pPlayerArm->GetPos().y)
 		GetGravity()->SetGround(true);
 	else
 		GetGravity()->SetGround(false);
@@ -587,13 +630,13 @@ void SPlayer::SwingMove()
 	// 현재 포지션이랑 방향에 따라 velocity 수치를 조절
 	// 힘을 주는 방식으로 변환하자
 
-	float distance = (targetPos - playerArm->GetPos()).Length();
+	float distance = (m_vRayHitPos - m_pPlayerArm->GetPos()).Length();
 	// 플레이어의 현재 각도 구하기
-	Vec2 dir = playerArm->GetPos() - targetPos;
-	Vec2 up = Vec2(targetPos.x, targetPos.y - 1) - targetPos;
+	Vec2 dir = m_pPlayerArm->GetPos() - m_vRayHitPos;
+	Vec2 up = Vec2(m_vRayHitPos.x, m_vRayHitPos.y - 1) - m_vRayHitPos;
 
 	float angle;
-	if (targetPos.x < playerArm->GetPos().x)
+	if (m_vRayHitPos.x < m_pPlayerArm->GetPos().x)
 	{
 		angle = dir.Angle(up);
 	}
@@ -611,100 +654,100 @@ void SPlayer::SwingMove()
 
 	if (KEY_HOLD(KEY::A))
 	{
-		moveEnergy -= 25.f;
+		m_fMoveEnergy -= 25.f;
 	}
 	if (KEY_HOLD(KEY::D))
 	{
-		moveEnergy += 25.f;
+		m_fMoveEnergy += 25.f;
 	}
 
-	if (canBooster)
+	if (m_bCanBooster)
 	{
 		if (KEY_HOLD(KEY::A) && KEY_HOLD(KEY::LSHIFT))
 		{
-			moveEnergy -= 3000.f;
-			canBooster = false;
+			m_fMoveEnergy -= 3000.f;
+			m_bCanBooster = false;
 		}
 		if (KEY_HOLD(KEY::D) && KEY_HOLD(KEY::LSHIFT))
 		{
-			moveEnergy += 3000.f;
-			canBooster = false;
+			m_fMoveEnergy += 3000.f;
+			m_bCanBooster = false;
 		}
 	}
 
 	if (angle > 180.f && angle < 360.f)
 	{
-		posEnergy = -abs(angle - 180.f);
+		m_fPosEnergy = -abs(angle - 180.f);
 
-		if (abs(posEnergy) > 90.f)
-			posEnergy = -90.f;
+		if (abs(m_fPosEnergy) > 90.f)
+			m_fPosEnergy = -90.f;
 	}
 	else if (angle > 0.f && angle < 180.f)
 	{
-		posEnergy = abs(180.f - angle);
+		m_fPosEnergy = abs(180.f - angle);
 
-		if (abs(posEnergy) > 90.f)
-			posEnergy = 90.f;
+		if (abs(m_fPosEnergy) > 90.f)
+			m_fPosEnergy = 90.f;
 	}
 
-	if (moveEnergy > 0.f)
+	if (m_fMoveEnergy > 0.f)
 	{
-		if (abs(moveEnergy) > 600.f)
-			moveEnergy -= fDT * 800;
-		else if (abs(moveEnergy) > 300.f)
-			moveEnergy -= fDT * 150;
+		if (abs(m_fMoveEnergy) > 600.f)
+			m_fMoveEnergy -= fDT * 800;
+		else if (abs(m_fMoveEnergy) > 300.f)
+			m_fMoveEnergy -= fDT * 150;
 		else
-			moveEnergy -= fDT * 20;
+			m_fMoveEnergy -= fDT * 20;
 	}
 	else
 	{
-		if (abs(moveEnergy) > 600.f)
-			moveEnergy += fDT * 800;
-		else if (abs(moveEnergy) > 300.f)
-			moveEnergy += fDT * 150;
+		if (abs(m_fMoveEnergy) > 600.f)
+			m_fMoveEnergy += fDT * 800;
+		else if (abs(m_fMoveEnergy) > 300.f)
+			m_fMoveEnergy += fDT * 150;
 		else
-			moveEnergy += fDT * 20;
+			m_fMoveEnergy += fDT * 20;
 	}
 
-	if (posEnergy > 0.f)
+	if (m_fPosEnergy > 0.f)
 	{
 		// posEnergy -= fDT * 50;
-		moveEnergy -= fDT * posEnergy * 30;
+		m_fMoveEnergy -= fDT * m_fPosEnergy * 30;
 	}
 	else
 	{
 		// posEnergy += fDT * 50;
-		moveEnergy -= fDT * posEnergy * 30;
+		m_fMoveEnergy -= fDT * m_fPosEnergy * 30;
 	}
 
-	if (moveEnergy > 0.f)
+	if (m_fMoveEnergy > 0.f)
 	{
 		radian *= -1.2f;
 	}
-	nextPos.x = (playerArm->GetPos().x - targetPos.x) * cos(radian) - (playerArm->GetPos().y - targetPos.y) * sin(radian) + targetPos.x;
-	nextPos.y = (playerArm->GetPos().x - targetPos.x) * sin(radian) + (playerArm->GetPos().y - targetPos.y) * cos(radian) + targetPos.y;
+	nextPos.x = (m_pPlayerArm->GetPos().x - m_vRayHitPos.x) * cos(radian) - (m_pPlayerArm->GetPos().y - m_vRayHitPos.y) * sin(radian) + m_vRayHitPos.x;
+	nextPos.y = (m_pPlayerArm->GetPos().x - m_vRayHitPos.x) * sin(radian) + (m_pPlayerArm->GetPos().y - m_vRayHitPos.y) * cos(radian) + m_vRayHitPos.y;
 
-	nextDir = nextPos - playerArm->GetPos();
+	nextDir = nextPos - m_pPlayerArm->GetPos();
 	nextDir.Normalize();
 
 	if (KEY_TAP(KEY::R))
 	{
-		cout << posEnergy << endl;
-		cout << moveEnergy << endl;
+		cout << m_fPosEnergy << endl;
+		cout << m_fMoveEnergy << endl;
 	}
 
-	pRigid->SetVelocity(nextDir * abs(moveEnergy));
+	pRigid->SetVelocity(nextDir * abs(m_fMoveEnergy));
 
-	if (distance > wireRange + 5.f)
+	if (distance > m_fWireRange + 5.f)
 	{
 		// 1. 방향 벡터 계산
-		Vec2 dir = (playerArm->GetPos() - targetPos).Normalize();
+		Vec2 dir = (m_pPlayerArm->GetPos() - m_vRayHitPos).Normalize();
 
 		// 2. 원하는 위치 계산 (최대 길이 내로 제한)
-		Vec2 desiredPos = targetPos + dir * wireRange;
+		Vec2 desiredPos = m_vRayHitPos + dir * m_fWireRange;
 
 		// 3. 현재 위치와 원하는 위치의 차이 (보정 벡터)
-		Vec2 correction = desiredPos - playerArm->GetPos();
+		Vec2 correction = desiredPos - m_pPlayerArm->GetPos();
 
 		// 4. 스프링 힘 계산 (강성 계수 k 사용)
 		float k = 1000.0f; // 값 조절로 탄성 조절
@@ -721,76 +764,79 @@ void SPlayer::SwingMove()
 	}
 }
 
+
+// 마우스 방향으로 와이어 발사
 void SPlayer::CreateHook()
 {
-	if (playerHook != nullptr)
+	if (m_pPlayerHook != nullptr)
 		return;
 
-	m_eCurState = PLAYER_STATE::SHOT;
+	m_bCanBooster = true;
 
-	canBooster = true;
-
-	Vec2 vHookPos = playerArm->GetPos();
+	Vec2 vHookPos = m_pPlayerArm->GetPos();
 	// vHookPos.y -= GetScale().y / 2.f;
 
-	playerHook = new CHook;
-	playerHook->SetName(L"Hook");
-	playerHook->SetPos(vHookPos);
-	playerHook->SetScale(Vec2(11.f, 11.f));
-	static_cast<GameObject *>(playerHook)->SetDir(Vec2(0.f, -1.f));
-	playerHook->SetOwner(playerArm);
+    // 와이어 생성
+	m_pPlayerHook = new CHook;
+	m_pPlayerHook->SetName(L"Hook");
+	m_pPlayerHook->SetPos(vHookPos);
+	m_pPlayerHook->SetScale(Vec2(11.f, 11.f));
+	static_cast<GameObject *>(m_pPlayerHook)->SetDir(Vec2(0.f, -1.f));
+	m_pPlayerHook->SetOwner(m_pPlayerArm);
 
-	CreateObject(playerHook, GROUP_TYPE::HOOK);
+	CreateObject(m_pPlayerHook, GROUP_TYPE::HOOK);
 	// CreateObject 함수에 포지션, 방향, 스케일을 설정해주는 인자를 넣어야함
 
+    // 와이어 발사 방향으로 플레이어 바라보기
 	if (CCamera::GetInst()->GetRealPos(MOUSE_POS).x < GetPos().x)
 		m_iDir = -1;
 	else
 		m_iDir = 1;
 
-	if (targetPos.IsZero())
-	{
-		playerHook->LookAt(CCamera::GetInst()->GetRealPos(MOUSE_POS));
-	}
-	else
-	{
-		playerHook->LookAt(targetPos);
 
-		if (onCollisionRay->GetObj()->GetGroup() == GROUP_TYPE::GROUND)
+    // 와이어가 아무것도 맞추지 못했을 경우
+	if (m_vRayHitPos.IsZero())
+	{
+		m_pPlayerHook->LookAt(CCamera::GetInst()->GetRealPos(MOUSE_POS));
+	}
+	else // 와이어가 오브젝트에 닿았을 경우
+	{
+		m_pPlayerHook->LookAt(m_vRayHitPos);
+
+	    // Ray에 충돌한 물체가 GROUND일 경우
+		if (m_pRayHitCollider->GetObj()->GetGroup() == GROUP_TYPE::GROUND)
 		{
-			m_eCurState = PLAYER_STATE::SWING;
-			Vec2 dir = targetPos - playerArm->GetPos();
+			Vec2 dir = m_vRayHitPos - m_pPlayerArm->GetPos();
 			dir.Normalize();
 
-			float distance = (targetPos - playerArm->GetPos()).Length();
+			float distance = (m_vRayHitPos - m_pPlayerArm->GetPos()).Length();
 
-			if (distance > wireMaxRange)
+			if (distance > m_fWireMaxRange)
 			{
-
 				GetRigidBody()->SetVelocity(dir * 500);
-				wireRange = wireMaxRange;
+				m_fWireRange = m_fWireMaxRange;
 			}
 			else
 			{
-
 				GetRigidBody()->SetVelocity(dir * 150);
-				wireRange = distance;
+				m_fWireRange = distance;
 			}
 
-			if (targetPos.x < playerArm->GetPos().x)
-				moveEnergy = -distance * 1.5;
+			if (m_vRayHitPos.x < m_pPlayerArm->GetPos().x)
+				m_fMoveEnergy = -distance * 1.5;
 			else
-				moveEnergy = distance * 1.5;
+				m_fMoveEnergy = distance * 1.5;
 		}
-		else if (playerRay->GetCollisionRay()->GetObj()->GetGroup() == GROUP_TYPE::MONSTER)
+		else if (m_pPlayerRay->GetCollisionRay()->GetObj()->GetGroup() == GROUP_TYPE::MONSTER)
 		{
 		}
 	}
 }
 
+// RayCast를 진행 후 Ray와 충돌한 충돌체를 onCollisionRay에 저장하고 충돌 지점을 targetPos에 저장 
 void SPlayer::RayCasting()
 {
-	playerRay->SetPos(playerArm->GetPos());
-	onCollisionRay = playerRay->GetCollisionRay();
-	targetPos = playerRay->GetTargetPos();
+	m_pPlayerRay->SetPos(m_pPlayerArm->GetPos());
+	m_pRayHitCollider = m_pPlayerRay->GetCollisionRay();
+	m_vRayHitPos = m_pPlayerRay->GetTargetPos();
 }

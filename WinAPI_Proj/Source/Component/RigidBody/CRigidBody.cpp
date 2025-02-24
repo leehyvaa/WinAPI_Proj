@@ -4,8 +4,8 @@
 #include "GameObject.h"
 CRigidBody::CRigidBody()
 	:m_pOwner(nullptr)
-	,m_fMass(1)
-	,m_fFricCoeff(100.f)
+	,m_fMass(0.15f)
+	,m_fFricCoeff(35.f)
 	, m_vMaxVelocity(Vec2(1000.f,1000.f))
 {
 }
@@ -16,6 +16,7 @@ CRigidBody::~CRigidBody()
 
 void CRigidBody::FinalUpdate()
 {
+    // m_vForce: 외부에서 가해진 힘
 	float fForce = m_vForce.Length(); //힘의 크기
 	
 
@@ -100,9 +101,4 @@ void CRigidBody::Move()
 
 		m_pOwner->SetPos(vPos);
 	}
-
-	
-	
-
-	
 }

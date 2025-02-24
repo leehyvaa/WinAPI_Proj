@@ -149,6 +149,12 @@ void PlayerArm::Update_Animation()
 		else
 			GetAnimator()->Play(L"SNB_ARM_RIGHT_JUMP", true);
 		break;
+	case PLAYER_STATE::FALL:
+	    if (m_iDir == -1)
+	        GetAnimator()->Play(L"SNB_ARM_LEFT_JUMP", true);
+	    else
+	        GetAnimator()->Play(L"SNB_ARM_RIGHT_JUMP", true);
+	    break;
 	case PLAYER_STATE::CLIMB:
 		if (m_iDir == -1)
 			GetAnimator()->Play(L"SNB_ARM_LEFT_CLIMBSTOP", true);

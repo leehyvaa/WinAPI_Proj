@@ -1,6 +1,14 @@
 ﻿#pragma once
 #include "GameObject.h"
 
+enum class COLLISION_SIDE {
+    NONE,
+    TOP,
+    BOTTOM,
+    LEFT,
+    RIGHT
+};
+
 
 class CGround : public GameObject
 {
@@ -36,6 +44,9 @@ public:
     void NormalRightCollision(CCollider* _pOther);
     void NormalLeftCollision(CCollider* _pOther);
 
+    void NormalCollisionEnter(CCollider* _pOther);
+    void NormalCollision(CCollider* _pOther);
+    COLLISION_SIDE DetectCollisionSide(CCollider* _pOther);
     
     float CalculateCollisionOffset(const Vec2& vObjColPos, const Vec2& vObjColScale,
                                         const Vec2& vGroundColPos, const Vec2& vGroundColScale,
