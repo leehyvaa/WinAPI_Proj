@@ -20,7 +20,8 @@ void CGravity::SetGround(bool _b)
 	if (m_bGround)
 	{
 		Vec2 vV = m_pOwner->GetRigidBody()->GetVelocity();
-		m_pOwner->GetRigidBody()->SetVelocity(Vec2(vV.x, 0.f));
+	    if (m_pOwner->GetRigidBody()->GetVelocity().y <= 0.f)
+		    m_pOwner->GetRigidBody()->SetVelocity(Vec2(vV.x, 0.f));
 	}
 }
 

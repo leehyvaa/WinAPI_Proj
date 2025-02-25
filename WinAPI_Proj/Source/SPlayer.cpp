@@ -324,7 +324,7 @@ void SPlayer::Update_State()
 	case PLAYER_STATE::SWING:
 		SwingMove();
 		if (KEY_AWAY(KEY::LBUTTON))
-			eNextState = PLAYER_STATE::IDLE;
+			eNextState = PLAYER_STATE::FALL;
 		break;
 	case PLAYER_STATE::DAMAGED:
 		break;
@@ -452,7 +452,7 @@ void SPlayer::Update_Animation()
 
 void SPlayer::Update_Gravity()
 {
-	GetRigidBody()->AddForce(Vec2(0.f, 600.f));
+	GetRigidBody()->AddForce(Vec2(0.f, 500.f));
 }
 
 void SPlayer::OnCollisionEnter(CCollider *_pOther)
