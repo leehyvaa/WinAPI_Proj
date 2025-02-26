@@ -176,6 +176,7 @@ void CGround::NormalCollisionEnter(CCollider* _pOther)
         vObjPos.y += fValue;
 
         //static_cast<SPlayer *>(pOtherObj)->SetOnGround(true);
+        pPlayer->SetMoveEnergy(0.f);
         pOtherObj->GetRigidBody()->SetVelocityY(0.f);
 
     }
@@ -260,8 +261,8 @@ void CGround::NormalCollision(CCollider* _pOther)
         float fLen = abs(vObjColPos.y - vGroundColPos.y);
         float fValue = (vObjColScale.y / 2.f + vGroundColScale.y / 2.f) - fLen;
         vObjPos.y += (fValue);
-
         //static_cast<SPlayer *>(pOtherObj)->SetOnGround(true); //이 부분 고려해봐야함
+        pPlayer->SetMoveEnergy(0.f);
         pOtherObj->GetRigidBody()->SetVelocityY(0.f);
     }
 

@@ -53,22 +53,24 @@ public:
 	int GetDir() { return m_iDir; }
 	int GetPrevDir() { return m_iPrevDir; }
 	Vec2 GetTargetPos() { return m_vRayHitPos; }
+    
+    bool IsOnGround() { return m_bOnGround; }
+    bool IsWallClimbing() { return m_bClimbing; }
+    bool IsRidingWire() { return m_bRidingWire; }
+
+    PLAYER_STATE GetState() { return m_eCurState; }
+    PLAYER_STATE GetPrevState() { return m_ePrevState; }
+    PLAYER_CLIMB_STATE GetClimbState() { return m_eClimbState; }
+    
 	void SetOnGround(bool _onGround) { m_bOnGround = _onGround; }
     void SetRidingWire(bool _ridingWire) { m_bRidingWire = _ridingWire; }
-	bool IsOnGround() { return m_bOnGround; }
-	bool IsWallClimbing() { return m_bClimbing; }
-    bool IsRidingWire() { return m_bRidingWire; }
-	void SetArm(PlayerArm *_arm) { m_pPlayerArm = _arm; }
-	void SetHookRemove(CHook *_hook) { m_pPlayerHook = _hook; }
-
-	PLAYER_STATE GetState() { return m_eCurState; }
-	PLAYER_STATE GetPrevState() { return m_ePrevState; }
-	PLAYER_CLIMB_STATE GetClimbState() { return m_eClimbState; }
-
+    void SetWallClimbing(bool _isClimbing) { m_bClimbing = _isClimbing; }
+    void SetArm(PlayerArm *_arm) { m_pPlayerArm = _arm; }
+    void SetHookRemove(CHook *_hook) { m_pPlayerHook = _hook; }
 	void SetPlayerState(PLAYER_STATE _eState) { m_eCurState = _eState; }
-
-	void SetWallClimbing(bool _isClimbing) { m_bClimbing = _isClimbing; }
-
+    void SetMoveEnergy(float _energy) { m_fMoveEnergy = _energy; }
+    void SetPosEnergy(float _energy) { m_fPosEnergy = _energy; }
+    
 	virtual void Update() override;
 	virtual void Render(HDC _dc) override;
 

@@ -614,63 +614,53 @@ void SPlayer::VirticalMove()
 // 와이어 이동
 void SPlayer::SwingMove()
 {
+    // 갈고리가 생성되지 않았으면 리턴
 	if (m_pPlayerHook == nullptr)
 		return;
 
-	CRigidBody *pRigid = GetRigidBody();
-	m_vRayHitPos = m_pPlayerHook->GetPos();
 
+    // 갈고리의 위치가 플레이어보다 높으면 중력 적용, 낮으면 중력 미적용
 	if (m_pPlayerHook->GetPos().y < m_pPlayerArm->GetPos().y)
 		GetGravity()->SetGround(true);
 	else
 		GetGravity()->SetGround(false);
 
-	// 플레이어 포지션이 원범위 안에 들어오면 (한번 들어오면 스윙 도중엔 절대 안나가게끔)
-	// 현재 velocity를 포물선 방향대로 변환
-	// 현재 포지션이랑 방향에 따라 velocity 수치를 조절
-	// 힘을 주는 방식으로 변환하자
 
-	float distance = (m_vRayHitPos - m_pPlayerArm->GetPos()).Length();
-	// 플레이어의 현재 각도 구하기
+    // 갈고리 위치 받아오기
+    m_vRayHitPos = m_pPlayerHook->GetPos();
+    
+	// 갈고리와 플레이어의 현재 각도 구하기
 	Vec2 dir = m_pPlayerArm->GetPos() - m_vRayHitPos;
 	Vec2 up = Vec2(m_vRayHitPos.x, m_vRayHitPos.y - 1) - m_vRayHitPos;
-
 	float angle;
+    // 갈고리가 플레이어의 좌우 중 어디에 있냐에 따라 각도 offset 조절
 	if (m_vRayHitPos.x < m_pPlayerArm->GetPos().x)
-	{
 		angle = dir.Angle(up);
-	}
 	else
 	{
 		float offset = 180.f - dir.Angle(up);
-
 		angle = offset + 180.f;
 	}
 
-	Vec2 nextPos;
-	Vec2 nextDir;
 
-	double radian = (1.2f) * (3.14159 / 180.f);
 
+    // 스윙 상태에서 좌우 진자 이동을 위한 힘 추가
 	if (KEY_HOLD(KEY::A))
-	{
-		m_fMoveEnergy -= 25.f;
-	}
+		m_fMoveEnergy -= 15.f;
 	if (KEY_HOLD(KEY::D))
-	{
-		m_fMoveEnergy += 25.f;
-	}
+		m_fMoveEnergy += 15.f;
 
+    // 부스터
 	if (m_bCanBooster)
 	{
 		if (KEY_HOLD(KEY::A) && KEY_HOLD(KEY::LSHIFT))
 		{
-			m_fMoveEnergy -= 3000.f;
+			m_fMoveEnergy -= 2600.f;
 			m_bCanBooster = false;
 		}
 		if (KEY_HOLD(KEY::D) && KEY_HOLD(KEY::LSHIFT))
 		{
-			m_fMoveEnergy += 3000.f;
+			m_fMoveEnergy += 2600.f;
 			m_bCanBooster = false;
 		}
 	}
@@ -709,54 +699,73 @@ void SPlayer::SwingMove()
 			m_fMoveEnergy += fDT * 20;
 	}
 
+    // 위치 에너지를 운동 에너지로 변환
 	if (m_fPosEnergy > 0.f)
 	{
 		// posEnergy -= fDT * 50;
-		m_fMoveEnergy -= fDT * m_fPosEnergy * 30;
+		m_fMoveEnergy -= fDT * m_fPosEnergy * 40;
 	}
 	else
 	{
 		// posEnergy += fDT * 50;
-		m_fMoveEnergy -= fDT * m_fPosEnergy * 30;
+		m_fMoveEnergy -= fDT * m_fPosEnergy * 40;
 	}
 
+    
+    double radian = (1.2f) * (3.14159 / 180.f);
 	if (m_fMoveEnergy > 0.f)
 	{
 		radian *= -1.2f;
 	}
+    
+    // 플레이어 포지션이 원범위 안에 들어오면 (한번 들어오면 스윙 도중엔 절대 안나가게끔)
+    // 현재 velocity를 포물선 방향대로 변환
+    // 현재 포지션이랑 방향에 따라 velocity 수치를 조절
+    // 힘을 주는 방식으로 변환하자
+
+    // 플레이어와 갈고리 사이의 각도와 현재 받는 힘에 따라 플레이어가 이동할 다음 위치 계산
+    Vec2 nextPos;
 	nextPos.x = (m_pPlayerArm->GetPos().x - m_vRayHitPos.x) * cos(radian) - (m_pPlayerArm->GetPos().y - m_vRayHitPos.y) * sin(radian) + m_vRayHitPos.x;
 	nextPos.y = (m_pPlayerArm->GetPos().x - m_vRayHitPos.x) * sin(radian) + (m_pPlayerArm->GetPos().y - m_vRayHitPos.y) * cos(radian) + m_vRayHitPos.y;
 
+    // 플레이어가 이동할 방향
+    Vec2 nextDir;
 	nextDir = nextPos - m_pPlayerArm->GetPos();
 	nextDir.Normalize();
-
+    
 	if (KEY_TAP(KEY::R))
 	{
 		cout << m_fPosEnergy << endl;
 		cout << m_fMoveEnergy << endl;
 	}
-
+    
+    // 계산한 방향 대로 플레이어의 속도 바꾸기
+    CRigidBody *pRigid = GetRigidBody();
 	pRigid->SetVelocity(nextDir * abs(m_fMoveEnergy));
 
-	if (distance > m_fWireRange + 5.f)
+    // 갈고리 위치와 플레이어 사이의 거리 저장
+    float distance = (m_vRayHitPos - m_pPlayerArm->GetPos()).Length();
+
+    // 갈고리와 플레이어 사이의 거리가 와이어 거리를 넘어가지 않도록 제한
+	if (distance > m_fWireRange)
 	{
-		// 1. 방향 벡터 계산
+		// 방향 벡터 계산
 		Vec2 dir = (m_pPlayerArm->GetPos() - m_vRayHitPos).Normalize();
 
-		// 2. 원하는 위치 계산 (최대 길이 내로 제한)
+		// 원하는 위치 계산 (최대 길이 내로 제한)
 		Vec2 desiredPos = m_vRayHitPos + dir * m_fWireRange;
 
-		// 3. 현재 위치와 원하는 위치의 차이 (보정 벡터)
+		// 현재 위치와 원하는 위치의 차이 (보정 벡터)
 		Vec2 correction = desiredPos - m_pPlayerArm->GetPos();
 
-		// 4. 스프링 힘 계산 (강성 계수 k 사용)
+		// 스프링 힘 계산 (강성 계수 k 사용)
 		float k = 1000.0f; // 값 조절로 탄성 조절
 		Vec2 springForce = correction * k;
 
-		// 5. 리지드바디에 힘 적용
+		// 리지드바디에 힘 적용
 		pRigid->AddForce(springForce);
 
-		// 6. 접선 방향으로만 속도 유지
+		// 접선 방향으로만 속도 유지
 		Vec2 tangentDir = Vec2(-dir.y, dir.x);
 		Vec2 currentVelocity = pRigid->GetVelocity();
 		float tangentSpeed = currentVelocity.Dot(tangentDir);
