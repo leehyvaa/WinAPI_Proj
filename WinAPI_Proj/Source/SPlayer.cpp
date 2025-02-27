@@ -619,7 +619,7 @@ void SPlayer::SwingMove()
 		return;
 
 
-    // 갈고리의 위치가 플레이어보다 높으면 중력 적용, 낮으면 중력 미적용
+    // 갈고리의 위치가 플레이어보다 높으면 중력 미적용, 낮으면 중력 적용
 	if (m_pPlayerHook->GetPos().y < m_pPlayerArm->GetPos().y)
 		GetGravity()->SetGround(true);
 	else
@@ -630,19 +630,19 @@ void SPlayer::SwingMove()
     m_vRayHitPos = m_pPlayerHook->GetPos();
     
 	// 갈고리와 플레이어의 현재 각도 구하기
-	Vec2 dir = m_pPlayerArm->GetPos() - m_vRayHitPos;
+	Vec2 wireDir = m_pPlayerArm->GetPos() - m_vRayHitPos;
 	Vec2 up = Vec2(m_vRayHitPos.x, m_vRayHitPos.y - 1) - m_vRayHitPos;
 	float angle;
     // 갈고리가 플레이어의 좌우 중 어디에 있냐에 따라 각도 offset 조절
 	if (m_vRayHitPos.x < m_pPlayerArm->GetPos().x)
-		angle = dir.Angle(up);
+		angle = wireDir.Angle(up);
 	else
 	{
-		float offset = 180.f - dir.Angle(up);
+		float offset = 180.f - wireDir.Angle(up);
 		angle = offset + 180.f;
 	}
 
-
+    // AD 키를 누르면 좌우로 AddForce 이때 방향은? 이동 방향으로 힘을 주면 되나? dir을 구해서 원 둘레를 돌도록 줘야 하나
 
     // 스윙 상태에서 좌우 진자 이동을 위한 힘 추가
 	if (KEY_HOLD(KEY::A))
@@ -665,14 +665,15 @@ void SPlayer::SwingMove()
 		}
 	}
 
+    // 플레이어가 갈고리 기준 왼쪽에 있을 때
 	if (angle > 180.f && angle < 360.f)
 	{
 		m_fPosEnergy = -abs(angle - 180.f);
-
+        // 위치 에너지가 90보다 크면 90으로 적용
 		if (abs(m_fPosEnergy) > 90.f)
 			m_fPosEnergy = -90.f;
 	}
-	else if (angle > 0.f && angle < 180.f)
+	else if (angle > 0.f && angle < 180.f) // 플레이어가 갈고리 기준 오른쪽에 있을 때
 	{
 		m_fPosEnergy = abs(180.f - angle);
 
@@ -680,6 +681,7 @@ void SPlayer::SwingMove()
 			m_fPosEnergy = 90.f;
 	}
 
+    // 운동 에너지가 양수면 오른쪽에서 좌로 이동
 	if (m_fMoveEnergy > 0.f)
 	{
 		if (abs(m_fMoveEnergy) > 600.f)
@@ -711,11 +713,12 @@ void SPlayer::SwingMove()
 		m_fMoveEnergy -= fDT * m_fPosEnergy * 40;
 	}
 
-    
+    // (3.14159 / 180.f)는 degree를 radian으로 변환하는 공식
+    // 매 프레임마다 갈고리를 중심으로 1.2도씩 회전하겠다는 의미
     double radian = (1.2f) * (3.14159 / 180.f);
 	if (m_fMoveEnergy > 0.f)
 	{
-		radian *= -1.2f;
+		radian *= -1.f;
 	}
     
     // 플레이어 포지션이 원범위 안에 들어오면 (한번 들어오면 스윙 도중엔 절대 안나가게끔)
@@ -741,6 +744,7 @@ void SPlayer::SwingMove()
     
     // 계산한 방향 대로 플레이어의 속도 바꾸기
     CRigidBody *pRigid = GetRigidBody();
+    //pRigid->AddForce(nextDir * abs(m_fMoveEnergy) * 10.f);
 	pRigid->SetVelocity(nextDir * abs(m_fMoveEnergy));
 
     // 갈고리 위치와 플레이어 사이의 거리 저장
