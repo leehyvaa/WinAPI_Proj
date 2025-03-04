@@ -11,6 +11,7 @@ Raycast::Raycast()
 {
 	CreateCollider();
 	GetCollider()->SetScale(Vec2(10.f, 10.f));
+    m_bRender=false; // 현재 충돌지점 미출력으로 설정
 }
 
 Raycast::~Raycast()
@@ -19,16 +20,14 @@ Raycast::~Raycast()
 
 void Raycast::Update()
 {
-
-
 	CollisionCheck();
 	
-
 }
 
 void Raycast::Render(HDC _hdc)
 {
-	if (!targetPos.IsZero())
+    // RayCast 충돌 위치 출력
+	if (!targetPos.IsZero() && m_bRender)
 	{
 		Vec2 renderPos = CCamera::GetInst()->GetRenderPos(targetPos);
 		Rectangle(_hdc, renderPos.x - 5, renderPos.y - 5, renderPos.x +5, renderPos.y + 5);
@@ -108,7 +107,7 @@ void Raycast::CollisionCheck()
 		Vec2 curPos = GetCollider()->GetOffsetPos() +GetPos();
 
 		//레이 최대거리에 도달시 while문 탈출
-		if ((curPos - GetPos()).Length() >= 800.f)
+		if ((curPos - GetPos()).Length() >= m_fMaxWireRange + 50.f)
 			break;
 		
 		

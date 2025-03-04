@@ -19,8 +19,9 @@ class CHook :
     public GameObject
 {
 private:
-    float m_fSpeed;
     GameObject* owner;
+    float m_fSpeed;
+    float m_fMaxRange;
     int dir;
     int prevDir;
     PLAYER_STATE curState;

@@ -20,8 +20,8 @@ CHook::CHook()
 	CreateCollider();
 	GetCollider()->SetOffsetPos(Vec2());
 	GetCollider()->SetScale(Vec2(20.f, 20.f));
-
 	CreateAnimator();
+    
 #pragma region 후크 애니메이션
 	//텍스쳐 로딩
 	CTexture* pTexRight = CResMgr::GetInst()->LoadTexture(L"GrabTex_Right", L"texture\\player\\Grab_Right.bmp");
@@ -157,9 +157,9 @@ void CHook::Update_Move()
 	{
 		vPos.x = vPos.x + m_fSpeed * GetDir().x * fDT * 2;
 		vPos.y = vPos.y + m_fSpeed * GetDir().y * fDT * 2;
-
+        m_fMaxRange = static_cast<PlayerArm*>(owner)->GetOwner()->GetWireMaxRange();
 		//거리가 제한거리이상 벗어나면 without리턴으로 변환
-		if ((GetPos() - owner->GetPos()).Length() > 600.f)
+		if ((GetPos() - owner->GetPos()).Length() > m_fMaxRange)
 		{
 			hookState = HOOK_STATE::RETURN_WITHOUT;
 		}
@@ -204,11 +204,8 @@ void CHook::Update_Move()
 		//플레이어한테 도달하면 삭제
 		if ((GetPos() - owner->GetPos()).Length() < 30.f)
 		{
-
-
 			DeleteObject(this);
 			static_cast<PlayerArm*>(owner)->GetOwner()->SetHookRemove(nullptr);
-
 		}
 	}
 	break;

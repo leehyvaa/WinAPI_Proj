@@ -17,7 +17,7 @@
 #include "CHook.h"
 
 SPlayer::SPlayer()
-	: m_fSpeed(1000), m_iDir(1), m_iPrevDir(1), m_eCurState(PLAYER_STATE::IDLE), m_ePrevState(PLAYER_STATE::RUN), m_bOnGround(false), m_pPlayerArm(nullptr), m_pPlayerHook(nullptr), m_bClimbing(false), m_pRayHitCollider(nullptr), m_vRayHitPos(Vec2(0.f, 0.f)), m_fWireRange(-1.f), m_fWireMaxRange(600.f), m_fMoveEnergy(0.f), m_fPosEnergy(0.f), m_bCanBooster(false), m_eClimbState(PLAYER_CLIMB_STATE::NONE)
+	: m_fSpeed(1000), m_iDir(1), m_iPrevDir(1), m_eCurState(PLAYER_STATE::IDLE), m_ePrevState(PLAYER_STATE::RUN), m_bOnGround(false), m_pPlayerArm(nullptr), m_pPlayerHook(nullptr), m_bClimbing(false), m_pRayHitCollider(nullptr), m_vRayHitPos(Vec2(0.f, 0.f)), m_fWireRange(-1.f), m_fWireMaxRange(700.f), m_fMoveEnergy(0.f), m_fPosEnergy(0.f), m_bCanBooster(false), m_eClimbState(PLAYER_CLIMB_STATE::NONE)
 {
 	// m_pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\sigong.bmp");
 	SetGroup(GROUP_TYPE::PLAYER);
@@ -117,6 +117,10 @@ SPlayer::SPlayer()
 	pRay->SetPos(GetPos());
 	CreateObject(pRay, GROUP_TYPE::Ray);
 	m_pPlayerRay = pRay;
+    pRay->SetOwner(this);
+	pRay->SetMaxWireRange(m_fWireMaxRange);
+    pRay->SetMaxMonsterSearchRange(m_fWireMaxRange);
+    
 	Enter_State(m_eCurState);
 }
 
@@ -226,7 +230,7 @@ void SPlayer::Enter_State(PLAYER_STATE _eState)
         else
             GetRigidBody()->AddForce(Vec2(0.f, -5000.f));
 		SetPos(Vec2(GetPos().x, GetPos().y - 20.f));
-		GetGravity()->SetGround(false);
+		GetGravity()->SetApplyGravity(true);
 		SetOnGround(false);
 		break;
 	case PLAYER_STATE::FALL:
@@ -234,12 +238,12 @@ void SPlayer::Enter_State(PLAYER_STATE _eState)
 	    break;
 	case PLAYER_STATE::CLIMB:
 		GetRigidBody()->SetVelocity(Vec2(0.f, 0.f));
-		GetGravity()->SetGround(true);
+		GetGravity()->SetApplyGravity(false);
 		break;
 	case PLAYER_STATE::SHOT:
 		break;
 	case PLAYER_STATE::SWING:
-	    GetGravity()->SetGround(true);
+	    GetGravity()->SetApplyGravity(false);
 	    GetRigidBody()->SetMaxSpeed(Vec2(1000.f, 1000.f));
 
 		break;
@@ -380,7 +384,7 @@ void SPlayer::Exit_State(PLAYER_STATE _eState)
 	case PLAYER_STATE::SHOT:
 		break;
 	case PLAYER_STATE::SWING:
-	    GetGravity()->SetGround(false);
+	    GetGravity()->SetApplyGravity(true);
 
 		break;
 	case PLAYER_STATE::DAMAGED:
@@ -611,170 +615,262 @@ void SPlayer::VirticalMove()
 		pRigid->SetVelocity(Vec2(pRigid->GetVelocity().x, 0.f));
 }
 
-// 와이어 이동
+// 와이어가 팽팽한 상태인지 판별
+bool SPlayer::IsWireTaut()
+{
+    Vec2 hookPos = m_pPlayerHook->GetPos();
+    
+    // 거리 기반 판별
+    float currentDistance = (hookPos - m_pPlayerArm->GetPos()).Length();
+    float distanceRatio = currentDistance / m_fWireRange;
+    bool isNearPerimeter = (distanceRatio > 0.95f); // 95% 이상이면 최외각 근처로 간주
+
+    // 다음 위치 예측
+    Vec2 currentVelocity = GetRigidBody()->GetVelocity();
+    Vec2 nextPredictedPos = m_pPlayerArm->GetPos() + currentVelocity * fDT;
+    float nextPredictedDistance = (hookPos - nextPredictedPos).Length();
+
+    // 다음 위치가 와이어 범위를 초과할 것으로 예상되는지 확인
+    bool willExceedRange = (nextPredictedDistance > m_fWireRange);
+
+    // 진행 방향과 갈고리 방향의 관계 확인 (갈고리 바깥쪽으로 향하는지)
+    Vec2 wireDir = m_pPlayerArm->GetPos() - hookPos;
+    wireDir.Normalize();
+    Vec2 velocityDir = currentVelocity;
+    velocityDir.Normalize();
+    float outwardMovement = wireDir.Dot(velocityDir); // 양수면 바깥쪽으로 움직임
+
+    // 와이어가 팽팽한 상태인지 최종 판별
+    bool isWireTaut = (isNearPerimeter && (willExceedRange || outwardMovement > 0));
+
+    // 상태 유지를 위한 wasWireTaut 사용
+    static bool wasWireTaut = false;
+    if (!isWireTaut && wasWireTaut && distanceRatio > 0.9f)
+    {
+        // 아직 90% 이상 거리면 팽팽한 상태 유지 (경계 부근 떨림 방지)
+        isWireTaut = true;
+    }
+    wasWireTaut = isWireTaut;
+    return isWireTaut;
+}
+
+
+// Swing 상태에서 플레이어의 속도를 적용
+void SPlayer::ApplySwingVelocity()
+{
+    Vec2 hookPos = m_pPlayerHook->GetPos();
+
+    // 원심력이 존재해서 플레이어 이동
+    // (3.14159 / 180.f)는 degree를 radian으로 변환하는 공식
+    // 매 프레임마다 갈고리를 중심으로 1.2도 회전한 위치를 목표 방향으로 설정
+    double radian = (0.6f) * (3.14159 / 180.f);
+    if (m_fMoveEnergy > 0.f)
+        radian *= -1.f;
+
+    // 갈고리에서 플레이어 방향 계산
+    Vec2 dirToPlayer = m_pPlayerArm->GetPos() - hookPos;
+    dirToPlayer.Normalize();
+
+    // m_fWireRange 거리에 있는 점 계산,이 위치는 부스터 쓸때만 써야할듯?
+    Vec2 curMaxPos = hookPos + dirToPlayer * m_fWireRange;
+
+    // 이 점을 회전시켜 다음 위치 계산
+    Vec2 nextPos;
+    // 이 위치는 부스터 쓸때만 써야할듯?, 갈고리 박고 4초간 덜덜 떨리는 현상 발생
+    //nextPos.x = (curMaxPos.x - hookPos.x) * cos(radian) - (curMaxPos.y - hookPos.y) * sin(radian) + hookPos.x;
+    //nextPos.y = (curMaxPos.x - hookPos.x) * sin(radian) + (curMaxPos.y - hookPos.y) * cos(radian) + hookPos.y;
+    nextPos.x = (m_pPlayerArm->GetPos().x - hookPos.x) * cos(radian) - (m_pPlayerArm->GetPos().y - hookPos.y) *
+        sin(radian) + hookPos.x;
+    nextPos.y = (m_pPlayerArm->GetPos().x - hookPos.x) * sin(radian) + (m_pPlayerArm->GetPos().y - hookPos.y) *
+        cos(radian) + hookPos.y;
+
+    // 플레이어와 갈고리 사이의 각도와 현재 받는 힘에 따라 플레이어가 이동할 다음 위치 계산
+    Vec2 nextDir = nextPos - m_pPlayerArm->GetPos();
+    nextDir.Normalize();
+
+
+    // 계산한 방향 대로 플레이어의 속도 바꾸기
+    CRigidBody* pRigid = GetRigidBody();
+    //pRigid->AddForce(nextDir * abs(m_fMoveEnergy) * 10.f);
+    pRigid->SetVelocity(nextDir * abs(m_fMoveEnergy));
+
+
+    //갈고리와 플레이어 사이의 거리가 와이어 거리를 넘어가지 않도록 제한
+    if (m_fHookDistance > m_fWireRange)
+    {
+        // 현재 위치와 원하는 위치의 차이 (보정 벡터)
+        Vec2 correction = curMaxPos - m_pPlayerArm->GetPos();
+
+        // 스프링 힘 계산 (강성 계수 k 사용)
+        float k = 1000.0f; // 값 조절로 탄성 조절
+        Vec2 springForce = correction * k;
+
+        // 리지드바디에 힘 적용
+        pRigid->AddForce(springForce);
+
+        // 접선 방향으로만 속도 유지
+        Vec2 tangentDir = Vec2(-dirToPlayer.y, dirToPlayer.x);
+        Vec2 currentVelocity = pRigid->GetVelocity();
+        float tangentSpeed = currentVelocity.Dot(tangentDir);
+        pRigid->SetVelocity(tangentDir * tangentSpeed * 0.7f );
+    }
+}
+
+
+
+// Swing 상태에서 적절한 물리 효과를 세팅
+void SPlayer::UpdateSwingEnergy()
+{
+    // 갈고리 위치와 플레이어 사이의 거리 저장
+    Vec2 hookPos = m_pPlayerHook->GetPos();
+    m_fHookDistance = (hookPos - m_pPlayerArm->GetPos()).Length();
+
+    // 갈고리와 플레이어의 현재 각도 구하기
+    Vec2 wireDir = m_pPlayerArm->GetPos() - hookPos;
+    Vec2 up = Vec2(hookPos.x, hookPos.y - 1) - hookPos;
+    float angle;
+    
+    // 갈고리가 플레이어의 좌우 중 어디에 있냐에 따라 각도 offset 조절
+    if (hookPos.x < m_pPlayerArm->GetPos().x)
+        angle = wireDir.Angle(up);
+    else
+    {
+        float offset = 180.f - wireDir.Angle(up);
+        angle = offset + 180.f;
+    }
+
+    
+    // m_fPosEnergy 생성
+    m_fPosEnergy = 0.f;
+    if (angle > 180.f && angle < 360.f) // 플레이어가 갈고리 기준 왼쪽에 있을 때
+    {
+        m_fPosEnergy = -abs(angle - 180.f);
+        // 위치 에너지가 75보다 크면 75으로 적용
+        if (abs(m_fPosEnergy) > 75.f)
+            m_fPosEnergy = -75.f;
+    }
+    else if (angle > 0.f && angle < 180.f) // 플레이어가 갈고리 기준 오른쪽에 있을 때
+    {
+        m_fPosEnergy = abs(180.f - angle);
+        if (abs(m_fPosEnergy) > 75.f)
+            m_fPosEnergy = 75.f;
+    }
+        
+    if (hookPos.y > m_pPlayerArm->GetPos().y) // 플레이어가 갈고리보다 위에 있으면 m_fPosEnergy = 0
+        m_fPosEnergy = 0.f;
+	
+
+    // MoveEnergy 소모, 운동 에너지가 양수면 오른쪽에서 좌로 이동
+    if (m_fMoveEnergy > 0.f)
+    {
+        // if (abs(m_fMoveEnergy) > 600.f)
+        //     m_fMoveEnergy -= fDT * 800;
+        // else if (abs(m_fMoveEnergy) > 300.f)
+        //     m_fMoveEnergy -= fDT * 150;
+        // else
+            m_fMoveEnergy -= fDT * 65;
+
+    }
+    else
+    {
+        // if (abs(m_fMoveEnergy) > 600.f)
+        //     m_fMoveEnergy += fDT * 800;
+        // else if (abs(m_fMoveEnergy) > 300.f)
+        //     m_fMoveEnergy += fDT * 150;
+        // else
+            m_fMoveEnergy += fDT * 65;
+ 
+    }
+
+    // 위치 에너지를 운동 에너지로 변환
+    if (m_fPosEnergy > 0.f)
+        m_fMoveEnergy -= fDT * m_fPosEnergy * 47;
+    else
+        m_fMoveEnergy -= fDT * m_fPosEnergy * 47;
+}
+
+
+//
+/* 플레이어가 와이어에 매달린 상태에서 와이어 이동
+ * 플레이어의 위치가 원 내부에 있을 경우엔 자유낙하 하고
+ * 원의 최외각 지역에 있으면 와이어 이동
+ */
 void SPlayer::SwingMove()
 {
     // 갈고리가 생성되지 않았으면 리턴
-	if (m_pPlayerHook == nullptr)
-		return;
-
-
-    // 갈고리의 위치가 플레이어보다 높으면 중력 미적용, 낮으면 중력 적용
-	if (m_pPlayerHook->GetPos().y < m_pPlayerArm->GetPos().y)
-		GetGravity()->SetGround(true);
-	else
-		GetGravity()->SetGround(false);
-
-
-    // 갈고리 위치 받아오기
-    m_vRayHitPos = m_pPlayerHook->GetPos();
+    if (m_pPlayerHook == nullptr)
+        return;
     
-	// 갈고리와 플레이어의 현재 각도 구하기
-	Vec2 wireDir = m_pPlayerArm->GetPos() - m_vRayHitPos;
-	Vec2 up = Vec2(m_vRayHitPos.x, m_vRayHitPos.y - 1) - m_vRayHitPos;
-	float angle;
-    // 갈고리가 플레이어의 좌우 중 어디에 있냐에 따라 각도 offset 조절
-	if (m_vRayHitPos.x < m_pPlayerArm->GetPos().x)
-		angle = wireDir.Angle(up);
-	else
-	{
-		float offset = 180.f - wireDir.Angle(up);
-		angle = offset + 180.f;
-	}
-
-    // AD 키를 누르면 좌우로 AddForce 이때 방향은? 이동 방향으로 힘을 주면 되나? dir을 구해서 원 둘레를 돌도록 줘야 하나
-
-    // 스윙 상태에서 좌우 진자 이동을 위한 힘 추가
-	if (KEY_HOLD(KEY::A))
-		m_fMoveEnergy -= 15.f;
-	if (KEY_HOLD(KEY::D))
-		m_fMoveEnergy += 15.f;
+    // 이전 에너지 상태 저장
+    float prevMoveEnergy = m_fMoveEnergy;
+    Vec2 hookPos = m_pPlayerHook->GetPos();
+    
+    // MoveEnergy와 PosEnergy 계산
+    UpdateSwingEnergy();
 
     // 부스터
-	if (m_bCanBooster)
-	{
-		if (KEY_HOLD(KEY::A) && KEY_HOLD(KEY::LSHIFT))
-		{
-			m_fMoveEnergy -= 2600.f;
-			m_bCanBooster = false;
-		}
-		if (KEY_HOLD(KEY::D) && KEY_HOLD(KEY::LSHIFT))
-		{
-			m_fMoveEnergy += 2600.f;
-			m_bCanBooster = false;
-		}
-	}
+    if (m_bCanBooster)
+    {
+        if (KEY_HOLD(KEY::A) && KEY_HOLD(KEY::LSHIFT))
+        {
+            m_fMoveEnergy -= 2600.f;
+            m_bCanBooster = false;
+        }
+        if (KEY_HOLD(KEY::D) && KEY_HOLD(KEY::LSHIFT))
+        {
+            m_fMoveEnergy += 2600.f;
+            m_bCanBooster = false;
+        }
+    }
 
-    // 플레이어가 갈고리 기준 왼쪽에 있을 때
-	if (angle > 180.f && angle < 360.f)
-	{
-		m_fPosEnergy = -abs(angle - 180.f);
-        // 위치 에너지가 90보다 크면 90으로 적용
-		if (abs(m_fPosEnergy) > 90.f)
-			m_fPosEnergy = -90.f;
-	}
-	else if (angle > 0.f && angle < 180.f) // 플레이어가 갈고리 기준 오른쪽에 있을 때
-	{
-		m_fPosEnergy = abs(180.f - angle);
-
-		if (abs(m_fPosEnergy) > 90.f)
-			m_fPosEnergy = 90.f;
-	}
-
-    // 운동 에너지가 양수면 오른쪽에서 좌로 이동
-	if (m_fMoveEnergy > 0.f)
-	{
-		if (abs(m_fMoveEnergy) > 600.f)
-			m_fMoveEnergy -= fDT * 800;
-		else if (abs(m_fMoveEnergy) > 300.f)
-			m_fMoveEnergy -= fDT * 150;
-		else
-			m_fMoveEnergy -= fDT * 20;
-	}
-	else
-	{
-		if (abs(m_fMoveEnergy) > 600.f)
-			m_fMoveEnergy += fDT * 800;
-		else if (abs(m_fMoveEnergy) > 300.f)
-			m_fMoveEnergy += fDT * 150;
-		else
-			m_fMoveEnergy += fDT * 20;
-	}
-
-    // 위치 에너지를 운동 에너지로 변환
-	if (m_fPosEnergy > 0.f)
-	{
-		// posEnergy -= fDT * 50;
-		m_fMoveEnergy -= fDT * m_fPosEnergy * 40;
-	}
-	else
-	{
-		// posEnergy += fDT * 50;
-		m_fMoveEnergy -= fDT * m_fPosEnergy * 40;
-	}
-
-    // (3.14159 / 180.f)는 degree를 radian으로 변환하는 공식
-    // 매 프레임마다 갈고리를 중심으로 1.2도씩 회전하겠다는 의미
-    double radian = (1.2f) * (3.14159 / 180.f);
-	if (m_fMoveEnergy > 0.f)
-	{
-		radian *= -1.f;
-	}
     
-    // 플레이어 포지션이 원범위 안에 들어오면 (한번 들어오면 스윙 도중엔 절대 안나가게끔)
-    // 현재 velocity를 포물선 방향대로 변환
-    // 현재 포지션이랑 방향에 따라 velocity 수치를 조절
-    // 힘을 주는 방식으로 변환하자
+    // 와이어가 팽팽한 상태(플레이어가 원의 최외곽에 있는지)
+    if (IsWireTaut())
+    {
+        // 기본적으로 중력 미적용
+        GetGravity()->SetApplyGravity(false);
 
-    // 플레이어와 갈고리 사이의 각도와 현재 받는 힘에 따라 플레이어가 이동할 다음 위치 계산
-    Vec2 nextPos;
-	nextPos.x = (m_pPlayerArm->GetPos().x - m_vRayHitPos.x) * cos(radian) - (m_pPlayerArm->GetPos().y - m_vRayHitPos.y) * sin(radian) + m_vRayHitPos.x;
-	nextPos.y = (m_pPlayerArm->GetPos().x - m_vRayHitPos.x) * sin(radian) + (m_pPlayerArm->GetPos().y - m_vRayHitPos.y) * cos(radian) + m_vRayHitPos.y;
+        // 플레이어가 갈고리보다 위에 있는 경우
+        if (hookPos.y > m_pPlayerArm->GetPos().y)
+        {
+            // MoveEnergy가 0이 되는 순간 감지 (부호 변경 또는 값이 0에 매우 가까움)
+            if ((prevMoveEnergy > 0 && m_fMoveEnergy <= 0) || 
+                (prevMoveEnergy < 0 && m_fMoveEnergy >= 0) ||
+                (abs(m_fMoveEnergy) < 0.1f)) // 작은 허용 오차 추가
+            {
+                // 중력 적용
+                GetGravity()->SetApplyGravity(true);
+            }
 
-    // 플레이어가 이동할 방향
-    Vec2 nextDir;
-	nextDir = nextPos - m_pPlayerArm->GetPos();
-	nextDir.Normalize();
-    
-	if (KEY_TAP(KEY::R))
-	{
-		cout << m_fPosEnergy << endl;
-		cout << m_fMoveEnergy << endl;
-	}
-    
-    // 계산한 방향 대로 플레이어의 속도 바꾸기
-    CRigidBody *pRigid = GetRigidBody();
-    //pRigid->AddForce(nextDir * abs(m_fMoveEnergy) * 10.f);
-	pRigid->SetVelocity(nextDir * abs(m_fMoveEnergy));
+            // 좌우 벽에 부딪힌 상황
+            if (GetRigidBody()->GetVelocity().x ==0.f)
+            {
+                GetGravity()->SetApplyGravity(true);
+                m_fMoveEnergy = 0.f;
+                if (GetRigidBody()->GetVelocity().y < 0.f)
+                    GetRigidBody()->SetVelocityY(0.f);
+            }
+        }
+        else // 플레이어가 갈고리보다 아래에 있어서 힘을 줄 수 있는 경우
+        {
+            // 스윙 상태에서 좌우 진자 이동을 위한 힘 추가
+            if (KEY_HOLD(KEY::A))
+                m_fMoveEnergy -= 20.f;
+            if (KEY_HOLD(KEY::D))
+                m_fMoveEnergy += 20.f;
+        }
 
-    // 갈고리 위치와 플레이어 사이의 거리 저장
-    float distance = (m_vRayHitPos - m_pPlayerArm->GetPos()).Length();
-
-    // 갈고리와 플레이어 사이의 거리가 와이어 거리를 넘어가지 않도록 제한
-	if (distance > m_fWireRange)
-	{
-		// 방향 벡터 계산
-		Vec2 dir = (m_pPlayerArm->GetPos() - m_vRayHitPos).Normalize();
-
-		// 원하는 위치 계산 (최대 길이 내로 제한)
-		Vec2 desiredPos = m_vRayHitPos + dir * m_fWireRange;
-
-		// 현재 위치와 원하는 위치의 차이 (보정 벡터)
-		Vec2 correction = desiredPos - m_pPlayerArm->GetPos();
-
-		// 스프링 힘 계산 (강성 계수 k 사용)
-		float k = 1000.0f; // 값 조절로 탄성 조절
-		Vec2 springForce = correction * k;
-
-		// 리지드바디에 힘 적용
-		pRigid->AddForce(springForce);
-
-		// 접선 방향으로만 속도 유지
-		Vec2 tangentDir = Vec2(-dir.y, dir.x);
-		Vec2 currentVelocity = pRigid->GetVelocity();
-		float tangentSpeed = currentVelocity.Dot(tangentDir);
-		pRigid->SetVelocity(tangentDir * tangentSpeed * 0.7f);
-	}
+        // 중력이 미적용 중이면 스윙 속도 적용
+        if (!GetGravity()->IsApplyGravity())
+        {
+            ApplySwingVelocity();
+        }
+    }
+    else // 와이어가 다 늘어나지 않았으면 자유낙하
+    {
+        // 중력 적용
+        GetGravity()->SetApplyGravity(true);
+    }
 }
 
 
@@ -831,7 +927,6 @@ void SPlayer::CreateHook()
 			}
 			else
 			{
-				GetRigidBody()->SetVelocity(dir * 150);
 				m_fWireRange = distance;
 			}
 

@@ -210,7 +210,7 @@ void CGround::NormalCollision(CCollider* _pOther)
         // 플레이어가 하강중이고 벽타기 중이 아니면 착지 처리
         if (pOtherObj->GetRigidBody()->GetVelocity().y > 0.f && !pPlayer->IsWallClimbing())
         {
-            pOtherObj->GetGravity()->SetGround(true);
+            pOtherObj->GetGravity()->SetApplyGravity(false);
             pOtherObj->GetRigidBody()->SetVelocityY(0.f);
         }
     }
@@ -327,7 +327,7 @@ void CGround::OnCollisionExit(CCollider *_pOther)
     if (pOtherObj->GetGroup() == GROUP_TYPE::PLAYER)
     {
         COLLISION_SIDE side = DetectCollisionSide(_pOther);
-        pOtherObj->GetGravity()->SetGround(false);
+        pOtherObj->GetGravity()->SetApplyGravity(true);
         static_cast<SPlayer *>(pOtherObj)->SetOnGround(false);
         static_cast<SPlayer *>(pOtherObj)->SetWallClimbing(false);
         

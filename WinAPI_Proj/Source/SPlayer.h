@@ -35,7 +35,7 @@ private:
 	Vec2 m_vRayHitPos;
 	float m_fMoveEnergy;
 	float m_fPosEnergy;
-
+    float m_fHookDistance;
 public:
 	SPlayer();
 
@@ -53,11 +53,18 @@ public:
 	int GetDir() { return m_iDir; }
 	int GetPrevDir() { return m_iPrevDir; }
 	Vec2 GetTargetPos() { return m_vRayHitPos; }
+	float GetMoveEnergy() { return m_fMoveEnergy; }
+    float GetPosEnergy() { return m_fPosEnergy; }
+    float GetWireRange() { return m_fWireRange; }
+    float GetWireMaxRange() { return m_fWireMaxRange; }
+    float GetHookDistance() {return m_fHookDistance;}
+
     
+    bool IsWireTaut();
     bool IsOnGround() { return m_bOnGround; }
     bool IsWallClimbing() { return m_bClimbing; }
     bool IsRidingWire() { return m_bRidingWire; }
-
+    
     PLAYER_STATE GetState() { return m_eCurState; }
     PLAYER_STATE GetPrevState() { return m_ePrevState; }
     PLAYER_CLIMB_STATE GetClimbState() { return m_eClimbState; }
@@ -91,6 +98,8 @@ private:
 	void HorizontalMove();
 	void VirticalMove();
 	void SwingMove();
+    void ApplySwingVelocity();
+    void UpdateSwingEnergy();
 
 	void CreateHook();
 	void RayCasting();

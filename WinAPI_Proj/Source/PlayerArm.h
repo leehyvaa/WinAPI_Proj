@@ -23,14 +23,12 @@ public:
     void Update_Animation();
     void Update_ClimbAnimation();
     void SetOwner(SPlayer *_owner) { m_pOwner = _owner; }
-
     void SetPrevDir(int _dir) { m_iPrevDir = _dir; }
     void SetDir(int _dir) { m_iDir = _dir; }
-
     void SetState(PLAYER_STATE _state) { m_eCurState = _state; }
     void SetPrevState(PLAYER_STATE _state) { m_ePrevState = _state; }
 
-    SPlayer *GetOwner() { return m_pOwner; }
+    SPlayer* GetOwner() { return m_pOwner; }
 
 public:
     PlayerArm();

@@ -5,11 +5,11 @@ class CGravity
 {
 private:
 	GameObject* m_pOwner;
-	bool m_bGround;
+	bool m_bApplyGravity;
 
 public:
-	void SetGround(bool _b);
-
+	void SetApplyGravity(bool _b);
+    bool IsApplyGravity() {return m_bApplyGravity; }
 
 	void FinalUpdate();
 public:

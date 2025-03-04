@@ -6,6 +6,7 @@
 #include "CPathMgr.h"
 #include "CCamera.h"
 #include "CCore.h"
+#include "CGravity.h"
 #include "SelectGDI.h"
 #include "CKeyMgr.h"
 #include "CGround.h"
@@ -107,21 +108,27 @@ void CScene::Update()
             player = static_cast<SPlayer*>(vecPlayer[0]);
             static wstring state;
             static wstring animation;
-            static wstring ground;
+            static wstring ongravity;
             static wstring climbMove;
             static wstring climb;
             static wstring velocityX;
             static wstring velocityY;
+            static wstring MoveEnergy;
+            static wstring PosEnergy;
+            static wstring wireDistance;
+            static wstring maxDistance;
             
-            if (player->IsOnGround())
-                ground = L"GROUND";
+            if (player->GetGravity()->IsApplyGravity())
+                ongravity = L"On Gravity";
             else
-                ground = L"Not GROUND";
+                ongravity = L"Off Gravity";
             
             if (player->IsWallClimbing())
                 climb = L"Climb";
             else
                 climb = L"Not Climb";
+
+    
 
             if (player->GetClimbState() == PLAYER_CLIMB_STATE::NONE)
                 climbMove = L"Climb None";
@@ -165,18 +172,29 @@ void CScene::Update()
                 state = L"DEAD";
                 break;
             }
-
             velocityX = to_wstring(player->GetRigidBody()->GetVelocity().x);
             velocityY = to_wstring(player->GetRigidBody()->GetVelocity().y);
+            MoveEnergy=L"MoveEnergy : ";
+            MoveEnergy += to_wstring(player->GetMoveEnergy());
+            PosEnergy=L"PosEnergy : ";
+            PosEnergy += to_wstring(player->GetPosEnergy());
+            wireDistance = L"Wire Range : ";
+            wireDistance += to_wstring(player->GetWireRange());
+            maxDistance = L"Wire Distance : ";
+            maxDistance += to_wstring(player->GetHookDistance());
             
             vector<wstring> Texts =
             {
                 state,
-                ground,
+                ongravity,
                 climb,
                 climbMove,
                 velocityX,
-                velocityY
+                velocityY,
+                MoveEnergy,
+                PosEnergy,
+                wireDistance,
+                maxDistance
             };
 
             m_pPlayerText->AddLines(Texts);
