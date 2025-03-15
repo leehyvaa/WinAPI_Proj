@@ -17,12 +17,13 @@ class GameObject
 private:
 	wstring m_strName;
 	Vec2 m_vDir;
-	Vec2 standartDir;
-	float m_rotation;
+	Vec2 m_vStandardDir;
+	float m_fLocalRotation;
 
 	Vec2 m_vPos;
 	Vec2 m_vScale;
-
+    
+    GameObject* m_pParent;
 	CCollider* m_pCollider;
 	CAnimator* m_pAnimator;
 	CRigidBody* m_pRigidBody;
@@ -40,21 +41,33 @@ public:
 	virtual ~GameObject();
 
 	void LookAt(Vec2 _target);
-
 	void SetDir(Vec2 _dir) { m_vDir = _dir; }
 	void SetPos(Vec2 _vPos) { m_vPos = _vPos; }
 	void SetScale(Vec2 _vScale) { m_vScale = _vScale; }
-	void SetStdDir(Vec2 _dir) { standartDir = _dir; }
+	void SetStdDir(Vec2 _dir) { m_vStandardDir = _dir; }
     void SetGroup(GROUP_TYPE _type) { m_eGroup = _type; }
     
 	Vec2 GetPos() { return m_vPos; }
 	Vec2 GetScale() { return m_vScale; }
 	Vec2 GetDir() { return m_vDir; }
-	Vec2 GetStdDir() { return standartDir; }
+	Vec2 GetStdDir() { return m_vStandardDir; }
     GROUP_TYPE GetGroup() { return m_eGroup; }
-    
-	float GetRotation() { return m_rotation; }
 
+    void SetLocalRotation(float _fRot) { m_fLocalRotation = _fRot; }
+    float GetLocalRotation() {return m_fLocalRotation; }
+    float GetWorldRotation() const
+	{
+	    float finalRotation = m_fLocalRotation;
+	    GameObject* currentParent = m_pParent;
+
+	    while (currentParent != nullptr)
+	    {
+	        finalRotation += currentParent->GetWorldRotation(); // 부모의 최종 Rotation 값을 더함
+	        currentParent = currentParent->GetParent();
+	    }
+	    return finalRotation;
+	}
+    
 	void SetName(const wstring& _strName) { m_strName = _strName; }
 	const wstring& GetName() { return m_strName; }
 
@@ -69,7 +82,8 @@ public:
 	CRigidBody* GetRigidBody() { return m_pRigidBody; }
 	void CreateGravity();
 	CGravity* GetGravity() { return m_pGravity; }
-
+    void SetParent(GameObject* _pParent) { m_pParent = _pParent; }
+    GameObject* GetParent() { return m_pParent; }
 
 	virtual void OnCollision(CCollider* _pOther) {};
 	virtual void OnCollisionEnter(CCollider* _pOther) {};

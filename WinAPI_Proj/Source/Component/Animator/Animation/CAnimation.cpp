@@ -52,108 +52,113 @@ void CAnimation::Update()
 
 void CAnimation::Render(HDC _dc)
 {
-	if (m_bFinish)
-		return;
+	// 애니메이션이 완료되었으면 렌더링하지 않고 함수를 종료
+    if (m_bFinish)
+       return;
 
-	GameObject* pObj = m_pAnimator->GetObj();
-	Vec2 vPos = pObj->GetPos();
+    // 현재 애니메이션이 속한 게임 오브젝트와 현재 위치 가져오기
+    GameObject* pObj = m_pAnimator->GetObj();
+    Vec2 vPos = pObj->GetPos();
 
-	
-	vPos += m_vecFrm[m_iCurFrm].vOffset; //object 위치에 offset 만큼 추가 이동위치
-	
+    
+    // 현재 프레임의 오프셋을 게임 오브젝트의 위치에 더하기
+    vPos += m_vecFrm[m_iCurFrm].vOffset;
+    
 
-	//렌더링 좌표로 변환
-	vPos = CCamera::GetInst()->GetRenderPos(vPos);
-
-
-
-	if (m_pAnimator->GetRotation() != 0.f)
-	{
-		HDC tempDC = m_pAnimator->GetTempTex()->GetDC();
-
-		float rot = m_pAnimator->GetRotation();
-
-		
-	
-
-		double degree[3];
-		degree[0] = rot + 315.f - 90.f;
-		degree[1] = rot + 45.f - 90.f;
-		degree[2] = rot + 225.f - 90.f;
-
-		
-
-		double radian1 = degree[0] * (3.14159 / 180.f);
-		double radian2 = degree[1] * (3.14159 / 180.f);
-		double radian3 = degree[2] * (3.14159 / 180.f);
+    // 현재 위치를 실제 렌더링 좌표로 변환
+    vPos = CCamera::GetInst()->GetRenderPos(vPos);
 
 
 
-		rotPos[0] = {static_cast<int>(150 + 141 * cos(radian1)),static_cast<int>(150 + 141 * sin(radian1)) };
-		rotPos[1] = { static_cast<int>(150 + 141 * cos(radian2)),static_cast<int>(150 + 141 * sin(radian2)) };
-		rotPos[2] = { static_cast<int>(150 + 141 * cos(radian3)),static_cast<int>(150 + 141 * sin(radian3)) };
+    // 회전값이 0 이 아니면 이미지를 회전해서 렌더링
+    if (m_pAnimator->GetRotation() != 0.f)
+    {
+       // 임시 hdc와 현재 roation 가져오기
+       HDC tempDC = m_pAnimator->GetTempTex()->GetDC();
+       float rot = m_pAnimator->GetRotation();
+        
+
+       // 회전 각도를 사용하여 세 개의 기준 각도를 계산
+       // 315도, 45도, 225도는 이미지의 세 모서리를 회전시키기 위한 기준 값
+       // -90도는 초기 회전 방향에 대한 보정 값?
+       double degree[3];
+       degree[0] = rot + 315.f - 90.f;
+       degree[1] = rot + 45.f - 90.f;
+       degree[2] = rot + 225.f - 90.f;
+
+       
+
+       // 계산된 각도들을 라디안 값으로 변환, 삼각 함수들이 라디안 값을 입력으로 받기 때문
+       double radian1 = degree[0] * (3.14159 / 180.f);
+       double radian2 = degree[1] * (3.14159 / 180.f);
+       double radian3 = degree[2] * (3.14159 / 180.f);
 
 
-		POINT a = rotPos[0];
-		POINT d = rotPos[1];
-		POINT e = rotPos[2];
+
+       // 계산된 라디안 값을 사용하여 회전된 세 점의 좌표를 계산
+       // 150은 아마도 임시 텍스처의 중심 좌표일 것이고, 141은 특정 반지름 값으로 보입니다.
+       // cos과 sin 함수를 사용하여 원형 궤적 상의 점을 계산
+       POINT rotPos[3];
+       rotPos[0] = {static_cast<int>(150 + 141 * cos(radian1)),static_cast<int>(150 + 141 * sin(radian1)) };
+       rotPos[1] = { static_cast<int>(150 + 141 * cos(radian2)),static_cast<int>(150 + 141 * sin(radian2)) };
+       rotPos[2] = { static_cast<int>(150 + 141 * cos(radian3)),static_cast<int>(150 + 141 * sin(radian3)) };
+        
 
 
+       SelectGDI b(tempDC, BRUSH_TYPE::MAGENTA);
+       // 임시 HDC를 마젠타 색상으로 채우기, 마젠타는 투명처리
+       PatBlt(tempDC, 0, 0, 300, 300, PATCOPY);
 
 
-		SelectGDI b(tempDC, BRUSH_TYPE::MAGENTA);
-		PatBlt(tempDC, 0, 0, 300, 300, PATCOPY);
+        
+       // PlgBlt 함수를 사용하여 원본 텍스처의 일부를 임시 HDC에 복사하면서 perspective 변환을 적용
+       // rotPos는 목적지 삼각형의 세 점을 정의
+       // m_pTex->GetDC()는 원본 텍스처의 HDC입니다.
+       // 네 개의 인자는 원본 텍스처에서 복사할 영역의 좌상단 좌표와 크기
+       PlgBlt(tempDC, rotPos, m_pTex->GetDC()
+          , static_cast<int>(m_vecFrm[m_iCurFrm].vLT.x)
+          , static_cast<int>(m_vecFrm[m_iCurFrm].vLT.y)
+          , static_cast<int>(m_vecFrm[m_iCurFrm].vSlice.x)
+          , static_cast<int>(m_vecFrm[m_iCurFrm].vSlice.y)
+          , NULL, NULL, NULL);
 
-
-		PlgBlt(tempDC, rotPos, m_pTex->GetDC()
-			, static_cast<int>(m_vecFrm[m_iCurFrm].vLT.x)
-			, static_cast<int>(m_vecFrm[m_iCurFrm].vLT.y)
-			, static_cast<int>(m_vecFrm[m_iCurFrm].vSlice.x)
-			, static_cast<int>(m_vecFrm[m_iCurFrm].vSlice.y)
-			, NULL, NULL, NULL);
-
-
-
-		TransparentBlt(_dc
-			, static_cast<int>(vPos.x - m_vecFrm[m_iCurFrm].vSlice.x * m_fSizeMulti / 2.f)
-			, static_cast<int>(vPos.y - m_vecFrm[m_iCurFrm].vSlice.y * m_fSizeMulti / 2.f)
-			, static_cast<int>(m_vecFrm[m_iCurFrm].vSlice.x * m_fSizeMulti)
-			, static_cast<int>(m_vecFrm[m_iCurFrm].vSlice.y * m_fSizeMulti)
-			, tempDC
-			, 0
-			, 0
-			, 300
-			, 300
-			, static_cast<int>((RGB(255, 0, 255)))
-		);
-	}
-	else
-	{
-		TransparentBlt(_dc
-			, static_cast<int>(vPos.x - m_vecFrm[m_iCurFrm].vSlice.x * m_fSizeMulti / 2.f)
-			, static_cast<int>(vPos.y - m_vecFrm[m_iCurFrm].vSlice.y * m_fSizeMulti / 2.f)
-			, static_cast<int>(m_vecFrm[m_iCurFrm].vSlice.x * m_fSizeMulti)
-			, static_cast<int>(m_vecFrm[m_iCurFrm].vSlice.y * m_fSizeMulti)
-			, m_pTex->GetDC()
-			, static_cast<int>(m_vecFrm[m_iCurFrm].vLT.x)
-			, static_cast<int>(m_vecFrm[m_iCurFrm].vLT.y)
-			, static_cast<int>(m_vecFrm[m_iCurFrm].vSlice.x)
-			, static_cast<int>(m_vecFrm[m_iCurFrm].vSlice.y)
-			, static_cast<int>((RGB(255, 0, 255)))
-		);
-	}
-
-
-	
-
-	
-	
-	
-	//PlgBlt()
-
-	
-	//PlgBlt(_dc,)
-
+        // 마젠타 색상은 투명하게 처리
+       TransparentBlt(_dc
+          , static_cast<int>(vPos.x - m_vecFrm[m_iCurFrm].vSlice.x * m_fSizeMulti / 2.f)
+          , static_cast<int>(vPos.y - m_vecFrm[m_iCurFrm].vSlice.y * m_fSizeMulti / 2.f)
+          , static_cast<int>(m_vecFrm[m_iCurFrm].vSlice.x * m_fSizeMulti)
+          , static_cast<int>(m_vecFrm[m_iCurFrm].vSlice.y * m_fSizeMulti)
+          , tempDC
+          , 0
+          , 0
+          , 300
+          , 300
+          , static_cast<int>((RGB(255, 0, 255)))
+       );
+    }
+    // 회전 값이 0이면 회전 없이 원본 이미지를 바로 렌더링
+    else
+    {
+       // 마젠타 색상은 투명하게 처리
+       TransparentBlt(_dc
+          , static_cast<int>(vPos.x - m_vecFrm[m_iCurFrm].vSlice.x * m_fSizeMulti / 2.f)
+          , static_cast<int>(vPos.y - m_vecFrm[m_iCurFrm].vSlice.y * m_fSizeMulti / 2.f)
+          , static_cast<int>(m_vecFrm[m_iCurFrm].vSlice.x * m_fSizeMulti)
+          , static_cast<int>(m_vecFrm[m_iCurFrm].vSlice.y * m_fSizeMulti)
+          , m_pTex->GetDC()
+          , static_cast<int>(m_vecFrm[m_iCurFrm].vLT.x)
+          , static_cast<int>(m_vecFrm[m_iCurFrm].vLT.y)
+          , static_cast<int>(m_vecFrm[m_iCurFrm].vSlice.x)
+          , static_cast<int>(m_vecFrm[m_iCurFrm].vSlice.y)
+          , static_cast<int>((RGB(255, 0, 255)))
+       );
+    }
+    
+    
+    
+    //PlgBlt()
+    
+    //PlgBlt(_dc,)
 }
 
 

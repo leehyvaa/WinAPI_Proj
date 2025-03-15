@@ -149,17 +149,18 @@ void CHook::Update_Move()
 {
 	Vec2 vPos = GetPos();
 
-
-
+    PlayerArm* pArm = static_cast<PlayerArm*>(GetParent());
+    SPlayer* player = static_cast<SPlayer*>(pArm->GetParent());
+    
 	switch (hookState)
 	{
 	case HOOK_STATE::FLYING:
 	{
 		vPos.x = vPos.x + m_fSpeed * GetDir().x * fDT * 2;
 		vPos.y = vPos.y + m_fSpeed * GetDir().y * fDT * 2;
-        m_fMaxRange = static_cast<PlayerArm*>(owner)->GetOwner()->GetWireMaxRange();
+        m_fMaxRange = player->GetWireMaxRange();
 		//거리가 제한거리이상 벗어나면 without리턴으로 변환
-		if ((GetPos() - owner->GetPos()).Length() > m_fMaxRange)
+		if ((GetPos() - pArm->GetPos()).Length() > m_fMaxRange)
 		{
 			hookState = HOOK_STATE::RETURN_WITHOUT;
 		}
@@ -176,17 +177,17 @@ void CHook::Update_Move()
 		break;
 	case HOOK_STATE::RETURN_WITH:
 	{
-		Vec2 newDir = owner->GetPos() - GetPos();
+		Vec2 newDir = pArm->GetPos() - GetPos();
 		newDir.Normalize();
 
 		vPos.x = vPos.x + m_fSpeed * newDir.x * fDT * 3;
 		vPos.y = vPos.y + m_fSpeed * newDir.y * fDT * 3;
 
 		//플레이어한테 도달하면 삭제
-		if ((GetPos() - owner->GetPos()).Length() < 30.f)
+		if ((GetPos() - pArm->GetPos()).Length() < 30.f)
 		{
 			DeleteObject(this);
-			static_cast<PlayerArm*>(owner)->GetOwner()->SetHookRemove(nullptr);
+			player->SetHookRemove(nullptr);
 
 		}
 	}
@@ -195,17 +196,17 @@ void CHook::Update_Move()
 	break;
 	case HOOK_STATE::RETURN_WITHOUT:
 	{
-		Vec2 newDir = owner->GetPos() - GetPos();
+		Vec2 newDir = pArm->GetPos() - GetPos();
 		newDir.Normalize();
 
 		vPos.x = vPos.x + m_fSpeed * newDir.x * fDT * 3;
 		vPos.y = vPos.y + m_fSpeed * newDir.y * fDT * 3;
 
 		//플레이어한테 도달하면 삭제
-		if ((GetPos() - owner->GetPos()).Length() < 30.f)
+		if ((GetPos() - pArm->GetPos()).Length() < 30.f)
 		{
 			DeleteObject(this);
-			static_cast<PlayerArm*>(owner)->GetOwner()->SetHookRemove(nullptr);
+			player->SetHookRemove(nullptr);
 		}
 	}
 	break;
@@ -242,7 +243,7 @@ void CHook::Render(HDC _dc)
 
 
 	Vec2 pos1 = CCamera::GetInst()->GetRenderPos(GetPos());
-	Vec2 pos2 = CCamera::GetInst()->GetRenderPos(owner->GetPos());
+	Vec2 pos2 = CCamera::GetInst()->GetRenderPos(GetParent()->GetPos());
 
 	SelectGDI p(_dc, PEN_TYPE::BLUE);
 

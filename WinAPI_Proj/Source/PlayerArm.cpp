@@ -7,7 +7,7 @@
 #include "CCollider.h"
 
 PlayerArm::PlayerArm()
-	: m_fSpeed(1000), m_pOwner(nullptr), m_rotation(0.f), m_ePrevClimbState(PLAYER_CLIMB_STATE::NONE)
+	: m_fSpeed(1000), m_ePrevClimbState(PLAYER_CLIMB_STATE::NONE)
 {
 	SetGroup(GROUP_TYPE::PLAYER_ARM);
 	CreateAnimator();
@@ -95,14 +95,16 @@ PlayerArm::~PlayerArm()
 
 void PlayerArm::Update()
 {
+    SPlayer* player = static_cast<SPlayer*>(GetParent());
+    
 	Vec2 vPos(GetPos());
-	if (m_pOwner->GetDir() == 1)
+	if (player->GetDir() == 1)
 	{
-		vPos = Vec2(m_pOwner->GetPos().x, m_pOwner->GetPos().y - 80);
+		vPos = Vec2(player->GetPos().x, player->GetPos().y - 80);
 	}
 	else
 	{
-		vPos = Vec2(m_pOwner->GetPos().x, m_pOwner->GetPos().y - 80);
+		vPos = Vec2(player->GetPos().x, player->GetPos().y - 80);
 	}
 	SetPos(vPos);
 
@@ -124,6 +126,7 @@ void PlayerArm::Update_Animation()
 {
 	if (m_ePrevState == m_eCurState && m_iPrevDir == m_iDir)
 		return;
+    SPlayer* player = static_cast<SPlayer*>(GetParent());
 
 	switch (m_eCurState)
 	{
@@ -163,7 +166,7 @@ void PlayerArm::Update_Animation()
 		break;
 	case PLAYER_STATE::SWING:
 		// LookAt 고쳐야함 기준방향으로부터의 회전으로
-		LookAt(m_pOwner->GetTargetPos());
+		LookAt(player->GetTargetPos());
 		if (m_iDir == -1)
 			GetAnimator()->Play(L"SNB_ARM_LEFT_SWING", true);
 		else
@@ -182,8 +185,10 @@ void PlayerArm::Update_Animation()
 
 void PlayerArm::Update_ClimbAnimation()
 {
+    SPlayer* player = static_cast<SPlayer*>(GetParent());
+
 	// 플레이어 오너로부터 현재 클라임 상태를 가져옴
-	PLAYER_CLIMB_STATE currentClimbState = GetOwner()->GetClimbState();
+	PLAYER_CLIMB_STATE currentClimbState = player->GetClimbState();
 
 	// 이전 클라임 상태와 다르면 애니메이션 전환
 	if (m_ePrevClimbState != currentClimbState)

@@ -19,7 +19,6 @@ class CHook :
     public GameObject
 {
 private:
-    GameObject* owner;
     float m_fSpeed;
     float m_fMaxRange;
     int dir;
@@ -35,7 +34,6 @@ public:
     virtual void Update();
     virtual void Render(HDC _dc);
 
-    void SetOwner(GameObject* _owner) { owner = _owner; }
 
     void Update_Animation();
     void Update_State();

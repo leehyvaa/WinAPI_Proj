@@ -701,8 +701,8 @@ void SPlayer::ApplySwingVelocity()
         // 현재 위치와 원하는 위치의 차이 (보정 벡터)
         Vec2 correction = curMaxPos - m_pPlayerArm->GetPos();
 
-        // 스프링 힘 계산 (강성 계수 k 사용)
-        float k = 1000.0f; // 값 조절로 탄성 조절
+        // 스프링 힘 계산 (강성계수 k 값 조절로 탄성 조절)
+        float k = 1000.0f; 
         Vec2 springForce = correction * k;
 
         // 리지드바디에 힘 적용
@@ -790,11 +790,10 @@ void SPlayer::UpdateSwingEnergy()
 }
 
 
-//
+
 /* 플레이어가 와이어에 매달린 상태에서 와이어 이동
  * 플레이어의 위치가 원 내부에 있을 경우엔 자유낙하 하고
- * 원의 최외각 지역에 있으면 와이어 이동
- */
+ * 원의 최외각 지역에 있으면 와이어 이동 */
 void SPlayer::SwingMove()
 {
     // 갈고리가 생성되지 않았으면 리턴
@@ -833,16 +832,16 @@ void SPlayer::SwingMove()
         // 플레이어가 갈고리보다 위에 있는 경우
         if (hookPos.y > m_pPlayerArm->GetPos().y)
         {
-            // MoveEnergy가 0이 되는 순간 감지 (부호 변경 또는 값이 0에 매우 가까움)
-            if ((prevMoveEnergy > 0 && m_fMoveEnergy <= 0) || 
-                (prevMoveEnergy < 0 && m_fMoveEnergy >= 0) ||
-                (abs(m_fMoveEnergy) < 0.1f)) // 작은 허용 오차 추가
+            // MoveEnergy의 힘이 500보다 작으면 원심력이 부족하다 판단하고 중력 적용
+            if ((prevMoveEnergy > 500 && m_fMoveEnergy <= 500) || 
+                (prevMoveEnergy < -500 && m_fMoveEnergy >= -500) ||
+                (abs(m_fMoveEnergy) < 500.f)) // 작은 허용 오차 추가
             {
                 // 중력 적용
                 GetGravity()->SetApplyGravity(true);
             }
 
-            // 좌우 벽에 부딪힌 상황
+            // 스윙 도중에 벽 옆면에 부딪힌 상황
             if (GetRigidBody()->GetVelocity().x ==0.f)
             {
                 GetGravity()->SetApplyGravity(true);
@@ -891,7 +890,7 @@ void SPlayer::CreateHook()
 	m_pPlayerHook->SetPos(vHookPos);
 	m_pPlayerHook->SetScale(Vec2(11.f, 11.f));
 	static_cast<GameObject *>(m_pPlayerHook)->SetDir(Vec2(0.f, -1.f));
-	m_pPlayerHook->SetOwner(m_pPlayerArm);
+	m_pPlayerHook->SetParent(m_pPlayerArm);
 
 	CreateObject(m_pPlayerHook, GROUP_TYPE::HOOK);
 	// CreateObject 함수에 포지션, 방향, 스케일을 설정해주는 인자를 넣어야함
