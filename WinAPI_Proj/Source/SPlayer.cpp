@@ -385,7 +385,8 @@ void SPlayer::Exit_State(PLAYER_STATE _eState)
 		break;
 	case PLAYER_STATE::SWING:
 	    GetGravity()->SetApplyGravity(true);
-
+        SetLocalRotation(0.f);
+	    m_pPlayerArm->SetLocalRotation(0.f);
 		break;
 	case PLAYER_STATE::DAMAGED:
 		break;
@@ -438,6 +439,10 @@ void SPlayer::Update_Animation()
 			GetAnimator()->Play(L"SNB_RIGHT_CLIMBSTOP", true);
 		break;
 	case PLAYER_STATE::SWING:
+	    if (m_pPlayerHook != nullptr)
+	    {
+	        LookAt(m_pPlayerHook->GetPos());
+	    }
 		if (m_iDir == -1)
 			GetAnimator()->Play(L"SNB_LEFT_SWING", true);
 		else
@@ -800,9 +805,12 @@ void SPlayer::SwingMove()
     if (m_pPlayerHook == nullptr)
         return;
     
+    
     // 이전 에너지 상태 저장
     float prevMoveEnergy = m_fMoveEnergy;
     Vec2 hookPos = m_pPlayerHook->GetPos();
+
+    
     
     // MoveEnergy와 PosEnergy 계산
     UpdateSwingEnergy();

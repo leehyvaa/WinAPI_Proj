@@ -12,10 +12,12 @@ public:
     void Load(const wstring& _strFilePath);
     void Create(UINT _iWidth, UINT _iHeight);
 
+    HBITMAP GetHBITMAP() { return m_hBit; }
+    BITMAP GetBitMapInfo() {return m_bitInfo;}
     UINT Width() { return m_bitInfo.bmWidth; }
     UINT Height() { return m_bitInfo.bmHeight; }
     HDC GetDC() { return m_dc; }
-    
+    void Release();
 
 private:
     CTexture();

@@ -11,8 +11,7 @@ CTexture::CTexture()
 
 CTexture::~CTexture()
 {
-	DeleteDC(m_dc);
-	DeleteObject(m_hBit);
+    Release();
 } 
 
 void CTexture::Load(const wstring& _strFilePath)
@@ -49,4 +48,18 @@ void CTexture::Create(UINT _iWidth, UINT _iHeight)
 
 	GetObject(m_hBit, sizeof(BITMAP), &m_bitInfo);
 
+}
+
+void CTexture::Release()
+{
+    if (m_dc)
+    {
+        DeleteDC(m_dc);
+        m_dc = nullptr;
+    }
+    if (m_hBit)
+    {
+        DeleteObject(m_hBit);
+        m_hBit = nullptr;
+    }
 }

@@ -1,7 +1,4 @@
 
-#include "C:\WinAPIProject\WinAPI_Proj\Source\Object\UI\BtnUI\CBtnUI.cpp"
-
-
 #include "C:\WinAPIProject\WinAPI_Proj\Source\Object\UI\CUI.cpp"
 
 
@@ -24,7 +21,4 @@
 
 
 #include "C:\WinAPIProject\WinAPI_Proj\Source\Scene\CScene.cpp"
-
-
-#include "C:\WinAPIProject\WinAPI_Proj\Source\Scene\Scene_Stage_01\Scene_Stage_01.cpp"
 

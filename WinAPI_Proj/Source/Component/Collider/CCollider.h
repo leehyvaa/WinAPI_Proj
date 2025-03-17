@@ -34,13 +34,24 @@ public:
 	void FinalUpdate();
 	void Render(HDC _dc);
 
-	void OnCollision(CCollider* _pOther);//충돌 중인 경우 호출
+	void OnCollision(CCollider* _pOther);// 충돌 중인 경우 호출
 	void OnCollisionEnter(CCollider* pOther);
 	void OnCollisionExit(CCollider* pOther);
 
-	//대입연산자 함수를 못쓰게 delete 해버림
+	// 대입연산자 함수를 못쓰게 delete 해버림
 	CCollider& operator = (CCollider& _origin) = delete;
 
+    
+    bool IsActive() const { return m_bActive; }
+    void SetActive(bool _bActive) { m_bActive = _bActive; }
+    
+    // 충돌체 초기화 함수
+    void Reset() 
+    {
+        m_iCol = 0;
+        m_bActive = true;
+        // 위치는 소유자 오브젝트에 따라 결정되므로 리셋 불필요
+    }
 public:
 	CCollider();
 	CCollider(const CCollider& _origin);

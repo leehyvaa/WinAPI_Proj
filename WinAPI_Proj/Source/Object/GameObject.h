@@ -15,6 +15,8 @@ class CGravity;
 class GameObject
 {
 private:
+    bool m_bAlive;
+    bool m_bActive; // 활성화 상태 (풀링에서 사용)
 	wstring m_strName;
 	Vec2 m_vDir;
 	Vec2 m_vStandardDir;
@@ -29,8 +31,6 @@ private:
 	CRigidBody* m_pRigidBody;
 	CGravity* m_pGravity;
 
-
-	bool m_bAlive;
 
 protected:
     GROUP_TYPE m_eGroup;
@@ -52,7 +52,10 @@ public:
 	Vec2 GetDir() { return m_vDir; }
 	Vec2 GetStdDir() { return m_vStandardDir; }
     GROUP_TYPE GetGroup() { return m_eGroup; }
+    
+    
 
+    
     void SetLocalRotation(float _fRot) { m_fLocalRotation = _fRot; }
     float GetLocalRotation() {return m_fLocalRotation; }
     float GetWorldRotation() const
@@ -71,6 +74,10 @@ public:
 	void SetName(const wstring& _strName) { m_strName = _strName; }
 	const wstring& GetName() { return m_strName; }
 
+    // 오브젝트 초기화 (풀에서 재사용시 호출)
+    virtual void Reset();
+    bool IsActive() const { return m_bActive; }
+    void SetActive(bool _bActive);
 	bool IsDead() { return !m_bAlive; }
 
 

@@ -25,6 +25,12 @@ void CGravity::SetApplyGravity(bool _b)
 	// }
 }
 
+void CGravity::Reset()
+{
+    // 중력 적용 상태를 기본값(true)으로 초기화
+    m_bApplyGravity = true;
+}
+
 void CGravity::FinalUpdate()
 {
 	if (m_bApplyGravity)

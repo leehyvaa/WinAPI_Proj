@@ -37,6 +37,7 @@ public:
     void SetVelocityY(float _f) { m_vVelocity.y = _f; }
     void SetVelocityX(float _f) { m_vVelocity.x = _f; }
 
+    void Reset();
 private:
 	void Move();
 

@@ -86,6 +86,15 @@ void CRigidBody::FinalUpdate()
 	m_vAccelA = Vec2(0.f, 0.f);
 }
 
+void CRigidBody::Reset()
+{
+    // 모든 물리 관련 벡터 초기화
+    m_vForce = Vec2(0.f, 0.f);
+    m_vAccel = Vec2(0.f, 0.f);
+    m_vAccelA = Vec2(0.f, 0.f);
+    m_vVelocity = Vec2(0.f, 0.f);
+}
+
 void CRigidBody::Move()
 {
 	//힘과 방향 분해

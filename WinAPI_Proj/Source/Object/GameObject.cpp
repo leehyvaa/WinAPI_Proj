@@ -7,16 +7,17 @@
 #include "CScene.h"
 #include "CSceneMgr.h"
 GameObject::GameObject()
-	: m_vPos{}
-	, m_vScale{}
-	, m_pCollider(nullptr)
-	, m_pAnimator(nullptr)
-	, m_pRigidBody(nullptr)
-	, m_pGravity(nullptr)
-	, m_bAlive(true)
-	, m_vDir(Vec2(0.f, 0.f))
-	, m_fLocalRotation(0.f)
-	, m_vStandardDir(0.f,-1.f)
+    : m_vPos{}
+    , m_vScale{}
+    , m_pCollider(nullptr)
+    , m_pAnimator(nullptr)
+    , m_pRigidBody(nullptr)
+    , m_pGravity(nullptr)
+    , m_bAlive(true)
+    , m_bActive(true)
+    , m_vDir(Vec2(0.f, 0.f))
+    , m_fLocalRotation(0.f)
+    , m_vStandardDir(0.f,-1.f)
     , m_eGroup(GROUP_TYPE::END)
     , m_pParent(nullptr)
 {
@@ -65,29 +66,40 @@ GameObject::~GameObject()
 		delete m_pGravity;
 }
 
+void GameObject::SetActive(bool _bActive)
+{
+    m_bActive = _bActive;
+    
+    // 비활성화 시 충돌체도 비활성화
+    if (m_pCollider)
+        m_pCollider->SetActive(_bActive);
+}
+
+void GameObject::Reset()
+{
+    // 오브젝트의 기본 속성 초기화
+    m_bActive = true;
+    m_bAlive = true;
+    m_vDir = Vec2(0.f, 0.f);
+    m_fLocalRotation = 0.f;
+    
+    // 컴포넌트들 초기화
+    if (m_pCollider)
+        m_pCollider->Reset();
+    if (m_pAnimator)
+        m_pAnimator->Reset();
+    if (m_pRigidBody)
+        {
+            m_pRigidBody->Reset();
+            m_pRigidBody->SetVelocity(Vec2(0.f, 0.f));
+        }
+    if (m_pGravity)
+        m_pGravity->Reset();
+}
+
+
 void GameObject::LookAt(Vec2 _target)
 {
-	//고칠여지 많음 player swingMove 참조
-	// Vec2 dir = _target - GetPos();
-	// Vec2 up = Vec2(0.f, -1.f);
-	//
-	// if (_target.x > GetPos().x)
-	// {
-	// 	m_rotation = dir.Angle(up);
-	// }
-	// else
-	// {
-	// 	float offset = 180.f - dir.Angle(up);
-	//
-	// 	m_rotation = offset + 180.f;
-	//
-	// }
-    //    
-	// dir.Normalize();
-	// m_vDir = dir;
-	// GetAnimator()->SetRotation(m_rotation);
-
-
     Vec2 dir = _target - GetPos();
     dir.Normalize(); // 정규화는 한 번만 수행
 
@@ -96,8 +108,6 @@ void GameObject::LookAt(Vec2 _target)
     m_fLocalRotation = angle * (180.f / 3.14159f) + 90.f;
     // m_vDir에는 이미 정규화 된 방향 벡터 저장
     m_vDir = dir;
-    if (m_pAnimator)
-        GetAnimator()->SetRotation(m_fLocalRotation);
 }
 
 
@@ -128,11 +138,14 @@ void GameObject::CreateGravity()
 
 void GameObject::Update()
 {
-	
+    if (!m_bActive)
+        return;
 }
 
 void GameObject::FinalUpdate()
 {
+    if (!m_bActive)
+        return;
 	if (m_pAnimator)
 		m_pAnimator->FinalUpdate();
 
@@ -148,6 +161,8 @@ void GameObject::FinalUpdate()
 
 void GameObject::Render(HDC _dc)
 {
+    if (!m_bActive)
+        return;
     // 이미지가 없어서 박스 렌더해야 할때 주석 풀고 사용
 	// Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(m_vPos);
 	//

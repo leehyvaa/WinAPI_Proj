@@ -8,7 +8,6 @@ CAnimator::CAnimator()
 	:m_pOwner(nullptr)
 	,m_pCurAnim(nullptr)
 	,m_bRepeat(false)
-	,rotation(0.f)
 	,tempTex(nullptr)
 {
 	tempTex = CResMgr::GetInst()->LoadTexture(L"AnimatorTemp", L"texture\\player\\Grab_Right.bmp");
@@ -51,9 +50,25 @@ void CAnimator::Render(HDC _dc)
 		m_pCurAnim->Render(_dc);
 }
 
+void CAnimator::Reset()
+{
+    m_pCurAnim = nullptr;
+    m_bRepeat = false;
+        
+    // 각 애니메이션 초기화
+    for (auto& pair : m_mapAnim)
+    {
+        if (pair.second)
+        {
+            pair.second->SetFrame(0);
+            pair.second->SetFinish(false);
+        }
+    }
+}
+
 
 void CAnimator::CreateAnimation(const wstring& _strName, CTexture* _pTex, Vec2 _vLT,
-					Vec2 _vSliceSize, Vec2 _vStep, float _fDuration, UINT _iFrameCount, float _fSizeMulti, Vec2 _vOffset)
+                                Vec2 _vSliceSize, Vec2 _vStep, float _fDuration, UINT _iFrameCount, float _fSizeMulti, Vec2 _vOffset)
 {
 	CAnimation* pAnim = FindAnimation(_strName);
 	assert(nullptr == pAnim);

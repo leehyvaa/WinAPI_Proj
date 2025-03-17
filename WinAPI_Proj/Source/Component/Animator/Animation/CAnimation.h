@@ -1,5 +1,10 @@
 ﻿#pragma once
 
+namespace Gdiplus
+{
+    class Bitmap;
+}
+
 class CAnimator;
 class CTexture;
 
@@ -25,10 +30,14 @@ private:
 	float m_fSizeMulti;
 	POINT* rotPos;
 
+    vector<Gdiplus::Bitmap*> m_vecFrameBitmaps; // 미리 처리된 프레임 비트맵들
+    bool m_bCached; // 캐싱 여부
 
+    
 public:
 	const wstring& GetName() { return m_strName; }
 	bool IsFinish() { return m_bFinish; }
+    void SetFinish(bool _bFinish) { m_bFinish = _bFinish; }
 	void SetFrame(int _iFrameIdx)
 	{
 		m_bFinish = false;
@@ -43,7 +52,7 @@ public:
 
 private:
 	void SetName(const wstring& _strName) { m_strName = _strName; }
-
+    void CacheFrames();
 public:
 	void Update();
 	void Render(HDC _dc);

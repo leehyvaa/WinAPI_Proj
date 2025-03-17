@@ -10,7 +10,7 @@ private:
 public:
 	void SetApplyGravity(bool _b);
     bool IsApplyGravity() {return m_bApplyGravity; }
-
+    void Reset();
 	void FinalUpdate();
 public:
 	CGravity();

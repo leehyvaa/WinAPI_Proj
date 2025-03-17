@@ -9,6 +9,9 @@
 #include "CResMgr.h"
 #include "CCore.h"
 #include "SelectGDI.h"
+#include <gdiplus.h>
+using namespace Gdiplus;
+#pragma comment (lib,"Gdiplus.lib")
 
 CAnimation::CAnimation()
 	:m_pAnimator(nullptr)
@@ -18,6 +21,7 @@ CAnimation::CAnimation()
 	,m_bFinish(false)
 	,m_fSizeMulti(1)
 	,rotPos(nullptr)
+    ,m_bCached(false)
 {
 	rotPos = new POINT[4];
 }
@@ -25,6 +29,12 @@ CAnimation::CAnimation()
 CAnimation::~CAnimation()
 {
 	delete[] rotPos;
+    // 캐싱된 비트맵들 해제
+    for (auto& bitmap : m_vecFrameBitmaps)
+    {
+        delete bitmap;
+    }
+    m_vecFrameBitmaps.clear();
 }
 void CAnimation::Update()
 {
@@ -52,115 +62,122 @@ void CAnimation::Update()
 
 void CAnimation::Render(HDC _dc)
 {
-	// 애니메이션이 완료되었으면 렌더링하지 않고 함수를 종료
-    if (m_bFinish)
-       return;
+    if (m_bFinish || m_iCurFrm < 0 || m_iCurFrm >= m_vecFrameBitmaps.size())
+        return;
+        
+    // 캐싱되지 않은 경우 캐싱 수행
+    if (!m_bCached)
+    {
+        CacheFrames();
+    }
 
-    // 현재 애니메이션이 속한 게임 오브젝트와 현재 위치 가져오기
     GameObject* pObj = m_pAnimator->GetObj();
     Vec2 vPos = pObj->GetPos();
-
-    
-    // 현재 프레임의 오프셋을 게임 오브젝트의 위치에 더하기
     vPos += m_vecFrm[m_iCurFrm].vOffset;
-    
-
-    // 현재 위치를 실제 렌더링 좌표로 변환
     vPos = CCamera::GetInst()->GetRenderPos(vPos);
 
+    float rotationAngle = m_pAnimator->GetObj()->GetWorldRotation();
+    float minRotationThreshold = 3.0f;
 
-
-    // 회전값이 0 이 아니면 이미지를 회전해서 렌더링
-    if (m_pAnimator->GetRotation() != 0.f)
+    // GDI+ Graphics 객체 생성
+    Graphics graphics(_dc);
+    graphics.SetInterpolationMode(InterpolationModeNearestNeighbor);
+    graphics.SetPixelOffsetMode(PixelOffsetModeHalf);
+    
+    // 현재 프레임의 캐싱된 비트맵 가져오기
+    Bitmap* frameBitmap = m_vecFrameBitmaps[m_iCurFrm];
+    
+    // 프레임 정보
+    int srcWidth = frameBitmap->GetWidth();
+    int srcHeight = frameBitmap->GetHeight();
+    
+    // 렌더링 위치 계산
+    int destX = static_cast<INT>(vPos.x - srcWidth * m_fSizeMulti / 2.0f + 0.5f);
+    int destY = static_cast<INT>(vPos.y - srcHeight * m_fSizeMulti / 2.0f + 0.5f);
+    int destWidth = static_cast<INT>(srcWidth * m_fSizeMulti + 0.5f);
+    int destHeight = static_cast<INT>(srcHeight * m_fSizeMulti + 0.5f);
+    
+    if (abs(rotationAngle) > minRotationThreshold)
     {
-       // 임시 hdc와 현재 roation 가져오기
-       HDC tempDC = m_pAnimator->GetTempTex()->GetDC();
-       float rot = m_pAnimator->GetRotation();
+        // 회전 중심점 설정
+        float centerX = static_cast<float>(destX + destWidth / 2);
+        float centerY = static_cast<float>(destY + destHeight / 2);
         
-
-       // 회전 각도를 사용하여 세 개의 기준 각도를 계산
-       // 315도, 45도, 225도는 이미지의 세 모서리를 회전시키기 위한 기준 값
-       // -90도는 초기 회전 방향에 대한 보정 값?
-       double degree[3];
-       degree[0] = rot + 315.f - 90.f;
-       degree[1] = rot + 45.f - 90.f;
-       degree[2] = rot + 225.f - 90.f;
-
-       
-
-       // 계산된 각도들을 라디안 값으로 변환, 삼각 함수들이 라디안 값을 입력으로 받기 때문
-       double radian1 = degree[0] * (3.14159 / 180.f);
-       double radian2 = degree[1] * (3.14159 / 180.f);
-       double radian3 = degree[2] * (3.14159 / 180.f);
-
-
-
-       // 계산된 라디안 값을 사용하여 회전된 세 점의 좌표를 계산
-       // 150은 아마도 임시 텍스처의 중심 좌표일 것이고, 141은 특정 반지름 값으로 보입니다.
-       // cos과 sin 함수를 사용하여 원형 궤적 상의 점을 계산
-       POINT rotPos[3];
-       rotPos[0] = {static_cast<int>(150 + 141 * cos(radian1)),static_cast<int>(150 + 141 * sin(radian1)) };
-       rotPos[1] = { static_cast<int>(150 + 141 * cos(radian2)),static_cast<int>(150 + 141 * sin(radian2)) };
-       rotPos[2] = { static_cast<int>(150 + 141 * cos(radian3)),static_cast<int>(150 + 141 * sin(radian3)) };
+        // 회전 행렬 생성
+        Matrix rotMatrix;
+        rotMatrix.RotateAt(rotationAngle, PointF(centerX, centerY));
         
-
-
-       SelectGDI b(tempDC, BRUSH_TYPE::MAGENTA);
-       // 임시 HDC를 마젠타 색상으로 채우기, 마젠타는 투명처리
-       PatBlt(tempDC, 0, 0, 300, 300, PATCOPY);
-
-
+        // 변환 적용
+        graphics.SetTransform(&rotMatrix);
         
-       // PlgBlt 함수를 사용하여 원본 텍스처의 일부를 임시 HDC에 복사하면서 perspective 변환을 적용
-       // rotPos는 목적지 삼각형의 세 점을 정의
-       // m_pTex->GetDC()는 원본 텍스처의 HDC입니다.
-       // 네 개의 인자는 원본 텍스처에서 복사할 영역의 좌상단 좌표와 크기
-       PlgBlt(tempDC, rotPos, m_pTex->GetDC()
-          , static_cast<int>(m_vecFrm[m_iCurFrm].vLT.x)
-          , static_cast<int>(m_vecFrm[m_iCurFrm].vLT.y)
-          , static_cast<int>(m_vecFrm[m_iCurFrm].vSlice.x)
-          , static_cast<int>(m_vecFrm[m_iCurFrm].vSlice.y)
-          , NULL, NULL, NULL);
-
-        // 마젠타 색상은 투명하게 처리
-       TransparentBlt(_dc
-          , static_cast<int>(vPos.x - m_vecFrm[m_iCurFrm].vSlice.x * m_fSizeMulti / 2.f)
-          , static_cast<int>(vPos.y - m_vecFrm[m_iCurFrm].vSlice.y * m_fSizeMulti / 2.f)
-          , static_cast<int>(m_vecFrm[m_iCurFrm].vSlice.x * m_fSizeMulti)
-          , static_cast<int>(m_vecFrm[m_iCurFrm].vSlice.y * m_fSizeMulti)
-          , tempDC
-          , 0
-          , 0
-          , 300
-          , 300
-          , static_cast<int>((RGB(255, 0, 255)))
-       );
+        // 캐싱된 이미지 그리기 (투명 처리는 이미 적용됨)
+        graphics.DrawImage(
+            frameBitmap,
+            Rect(destX, destY, destWidth, destHeight)
+        );
+        
+        // 변환 초기화
+        graphics.ResetTransform();
     }
-    // 회전 값이 0이면 회전 없이 원본 이미지를 바로 렌더링
     else
     {
-       // 마젠타 색상은 투명하게 처리
-       TransparentBlt(_dc
-          , static_cast<int>(vPos.x - m_vecFrm[m_iCurFrm].vSlice.x * m_fSizeMulti / 2.f)
-          , static_cast<int>(vPos.y - m_vecFrm[m_iCurFrm].vSlice.y * m_fSizeMulti / 2.f)
-          , static_cast<int>(m_vecFrm[m_iCurFrm].vSlice.x * m_fSizeMulti)
-          , static_cast<int>(m_vecFrm[m_iCurFrm].vSlice.y * m_fSizeMulti)
-          , m_pTex->GetDC()
-          , static_cast<int>(m_vecFrm[m_iCurFrm].vLT.x)
-          , static_cast<int>(m_vecFrm[m_iCurFrm].vLT.y)
-          , static_cast<int>(m_vecFrm[m_iCurFrm].vSlice.x)
-          , static_cast<int>(m_vecFrm[m_iCurFrm].vSlice.y)
-          , static_cast<int>((RGB(255, 0, 255)))
-       );
+        // 회전 없이 그리기
+        graphics.DrawImage(
+            frameBitmap,
+            Rect(destX, destY, destWidth, destHeight)
+        );
     }
-    
-    
-    
-    //PlgBlt()
-    
-    //PlgBlt(_dc,)
 }
 
+// 프레임 캐싱 함수
+void CAnimation::CacheFrames()
+{
+    if (m_bCached || m_vecFrm.empty() || !m_pTex)
+        return;
+        
+    // 기존에 캐싱된 비트맵 해제
+    for (auto& bitmap : m_vecFrameBitmaps)
+    {
+        delete bitmap;
+    }
+    m_vecFrameBitmaps.clear();
+    
+    // 원본 비트맵 생성
+    HBITMAP hBitmap = m_pTex->GetHBITMAP();
+    Bitmap sourceBitmap(hBitmap, nullptr);
+    
+    // 각 프레임별로 처리된 비트맵 생성 및 저장
+    for (size_t i = 0; i < m_vecFrm.size(); i++)
+    {
+        int srcX = static_cast<INT>(m_vecFrm[i].vLT.x);
+        int srcY = static_cast<INT>(m_vecFrm[i].vLT.y);
+        int srcWidth = static_cast<INT>(m_vecFrm[i].vSlice.x);
+        int srcHeight = static_cast<INT>(m_vecFrm[i].vSlice.y);
+        
+        // 프레임 크기의 새 비트맵 생성
+        Bitmap* frameBitmap = new Bitmap(srcWidth, srcHeight, PixelFormat32bppARGB);
+        
+        // 원본에서 프레임 부분만 복사
+        Graphics frameGraphics(frameBitmap);
+        
+        // 투명 처리를 위한 이미지 속성 설정
+        ImageAttributes imgAttr;
+        imgAttr.SetColorKey(Color(255, 0, 255), Color(255, 0, 255), ColorAdjustTypeBitmap);
+        
+        // 원본 이미지의 해당 부분을 새 비트맵에 복사
+        frameGraphics.DrawImage(
+            &sourceBitmap,
+            Rect(0, 0, srcWidth, srcHeight), // 대상 사각형
+            srcX, srcY, srcWidth, srcHeight, // 소스 부분
+            UnitPixel,
+            &imgAttr
+        );
+        
+        m_vecFrameBitmaps.push_back(frameBitmap);
+    }
+    
+    m_bCached = true;
+}
 
 void CAnimation::Create(CTexture* _pTex, Vec2 _vLT, Vec2 _vSliceSize,
 					Vec2 _vStep, float _fDuration, UINT _iFrameCount, float _fSizeMulti, Vec2 _vOffset)
@@ -181,6 +198,8 @@ void CAnimation::Create(CTexture* _pTex, Vec2 _vLT, Vec2 _vSliceSize,
 
 
 	m_fSizeMulti = _fSizeMulti;
+    // 프레임 캐싱 실행
+    CacheFrames();
 }
 
 void CAnimation::Save(const wstring& _strRelativePath)
@@ -385,6 +404,8 @@ void CAnimation::Load(const wstring& _strRelativePath)
 
 
 	fclose(pFile);
+    // 프레임 로드 완료 후 캐싱 실행
+    CacheFrames();
 }
 
 

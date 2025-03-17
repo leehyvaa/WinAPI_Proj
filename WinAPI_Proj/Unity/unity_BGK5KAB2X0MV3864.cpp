@@ -1,4 +1,7 @@
 
+#include "C:\WinAPIProject\WinAPI_Proj\Source\Object\CObjectPool.cpp"
+
+
 #include "C:\WinAPIProject\WinAPI_Proj\Source\Object\UI\ChatUI\CTextUI.cpp"
 
 
@@ -18,13 +21,4 @@
 
 
 #include "C:\WinAPIProject\WinAPI_Proj\Source\Component\RigidBody\CRigidBody.cpp"
-
-
-#include "C:\WinAPIProject\WinAPI_Proj\Source\Core\CCore.cpp"
-
-
-#include "C:\WinAPIProject\WinAPI_Proj\Source\Header\func.cpp"
-
-
-#include "C:\WinAPIProject\WinAPI_Proj\Source\Manager\Camera\CCamera.cpp"
 

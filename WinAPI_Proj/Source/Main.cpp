@@ -5,8 +5,8 @@
 #include "framework.h"
 #include "WinAPI_Proj.h"
 #include "CCore.h"
-
-
+#include <gdiplus.h>
+using namespace Gdiplus;
 using namespace std;
 #define MAX_LOADSTRING 100
 
@@ -43,7 +43,15 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     // TODO: 여기에 코드를 입력합니다.
 
-
+    // GDI+ 초기화 시작
+    ULONG_PTR           gdiplusToken;
+    GdiplusStartupInput gdiplusStartupInput;
+    if (GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL) != Ok)
+    {
+        MessageBox(nullptr, L"GDI+ 초기화 실패", L"ERROR", MB_OK);
+        return FALSE;
+    }
+    // GDI+ 초기화 끝
 
     //메모리 릭 확인
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
@@ -57,6 +65,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     // 애플리케이션 초기화를 수행합니다:
     if (!InitInstance(hInstance, nCmdShow))
     {
+        // GDI+ 종료 (InitInstance 실패 시에도 안전하게 호출)
+        GdiplusShutdown(gdiplusToken);
         return FALSE;
     }
     //1280 720
@@ -64,15 +74,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     if (FAILED(CCore::GetInst()->init(hWnd,POINT{1920,1200})))
     {
         MessageBox(nullptr, L"Core 객체 초기화 실패", L"ERROR", MB_OK);
+        // GDI+ 종료 (Core 초기화 실패 시에도 안전하게 호출)
+        GdiplusShutdown(gdiplusToken);
         return FALSE;
     }
-
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_WINAPIPROJ));
 
     MSG msg;
-
-
 
     // 기본 메시지 루프입니다:
     while (true)
@@ -90,13 +99,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         }
         else
         {
-
             CCore::GetInst()->Progress();
-           
-
         }
-
     }
+
+    // GDI+ 종료
+    GdiplusShutdown(gdiplusToken);
 
     return static_cast<int>(msg.wParam);
 }
