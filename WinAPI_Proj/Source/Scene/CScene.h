@@ -56,7 +56,7 @@ public:
 	virtual void Exit() = 0;
 
 public:
-	void AddObject(GameObject* _pObj, GROUP_TYPE _eType){m_arrObj[static_cast<UINT>(_eType)].push_back(_pObj);}
+	void AddObject(GameObject* _pObj, GROUP_TYPE _eType);
 	void RegisterPlayer(GameObject* _pPlayer) { m_pPlayer = _pPlayer; }
 
 

@@ -68,7 +68,7 @@ void CScene::Update()
 	{
 		for (size_t j = 0; j < m_arrObj[i].size(); j++)
 		{
-			if(!m_arrObj[i][j]->IsDead())
+			if(!m_arrObj[i][j]->IsDead() && m_arrObj[i][j]->IsActive())
 				m_arrObj[i][j]->Update();
 		}
 	}
@@ -100,7 +100,7 @@ void CScene::Update()
 
     if (bDrawPlayerState)
     {
-        m_pPlayerText->ClearLines();
+        if(m_pPlayerText) m_pPlayerText->ClearLines();
         const vector<GameObject*>& vecPlayer = GetGroupObject(GROUP_TYPE::PLAYER);
         SPlayer* player;
         if (vecPlayer.size() > 0)
@@ -197,7 +197,7 @@ void CScene::Update()
                 maxDistance
             };
 
-            m_pPlayerText->AddLines(Texts);
+            if (m_pPlayerText) m_pPlayerText->AddLines(Texts);
         }
     }
 }
@@ -228,14 +228,15 @@ void CScene::Render(HDC _dc)
 
 		for (; iter != m_arrObj[i].end();)
 		{
-			if (!(*iter)->IsDead())
+			if ((*iter)->IsDead() || !(*iter)->IsActive())
 			{
-				(*iter)->Render(_dc);
-				++iter;
+			    (*iter)->SetInScene(false);
+			    iter = m_arrObj[i].erase(iter);
 			}
 			else
 			{
-				iter =m_arrObj[i].erase(iter);
+			    (*iter)->Render(_dc);
+			    ++iter;
 			}
 		}
 	}
@@ -317,6 +318,15 @@ void CScene::Render_Tile(HDC _dc)
 		}
 	}
 
+}
+
+void CScene::AddObject(GameObject* _pObj, GROUP_TYPE _eType)
+{
+    if (_pObj->IsInScene())
+        return;
+
+    m_arrObj[static_cast<UINT>(_eType)].push_back(_pObj);
+    _pObj->SetInScene(true);
 }
 
 

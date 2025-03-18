@@ -49,7 +49,7 @@ public:
     void SetPrevState(PLAYER_STATE _state) { prevState = _state; }
 
 
-
+    void ReturnToPool();
 
     virtual void OnCollisionEnter(CCollider* _pOther);
     CLONE(CHook);

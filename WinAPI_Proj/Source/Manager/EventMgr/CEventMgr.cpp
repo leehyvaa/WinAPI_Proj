@@ -72,19 +72,18 @@ void CEventMgr::Excute(const tEvent& _eve)
 	    	AI* pAI = (AI*)_eve.lParam;
 	    	MON_STATE eNextState = static_cast<MON_STATE>(_eve.wParam);
 	    	pAI->ChangeState(eNextState);
-    
-    
 	    }break;
 	    case EVENT_TYPE::RETURN_TO_POOL:
+	    {
+	        // lParam: 풀로 반환할 오브젝트 포인터
+	        GameObject* pObj = (GameObject*)_eve.lParam;
+	        if (pObj)
 	        {
-	            // lParam: 풀로 반환할 오브젝트 포인터
-	            GameObject* pObj = (GameObject*)_eve.lParam;
-	            if (pObj)
-	            {
-	                pObj->SetActive(false); // 오브젝트 비활성화
-	                CObjectPool::GetInst()->ReturnObject(pObj); // 풀에 반환
-	            }
+	            pObj->SetActive(false); // 오브젝트 비활성화
+	            CObjectPool::GetInst()->ReturnObject(pObj); // 풀에 반환
 	        }
-	        break;
+	    }break;
+
+
 	}
 }

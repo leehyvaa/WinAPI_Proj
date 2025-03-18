@@ -33,7 +33,6 @@ public:
     void AddLines(const std::vector<std::wstring>& _vec); // 여러 라인 추가
     void ClearLines();                            // 모든 라인 삭제
     void SetFont(HFONT newFont) { m_hFont = newFont ;}
-
     void SetAlign(TEXT_ALIGN _align) { m_Align = _align; }
     void SetLineSpace(int _space) { m_iLineSpace = _space; }
 

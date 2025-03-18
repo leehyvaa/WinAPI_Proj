@@ -14,18 +14,47 @@ public:
     
     // 미리 오브젝트 생성하여 풀 초기화
     template<typename T>
-    void CreatePool(const wstring& _strKey, int _iPoolSize);
+    void CreatePool(const wstring& _strKey, int _iPoolSize)
+    {
+        // 이미 풀이 존재하는지 확인
+        if (m_mapPools.find(_strKey) != m_mapPools.end())
+            return;
+        
+        vector<GameObject*>& pool = m_mapPools[_strKey];
+    
+        // 요청된 수만큼 객체 생성하여 풀에 추가
+        for (int i = 0; i < _iPoolSize; ++i)
+        {
+            T* pObj = new T(); // 타입에 맞는 오브젝트 생성
+            pObj->SetName(_strKey); // 키를 이름으로 설정
+            pObj->SetActive(false); // 비활성화 상태로 설정
+            pool.push_back(pObj);
+        }  
+    }
     
     // 풀에서 오브젝트 가져오기
     GameObject* GetObject(const wstring& _strKey);
     
     // 오브젝트를 풀로 반환
     void ReturnObject(GameObject* _pObj);
-    
+
     // 풀 정리
     void Clear();
 };
 
+/*
+// 더 간단하고 직관적인 방식
+ GameObject* pObj = CObjectPool::GetInst()->GetObject(L"Bullet");
+ if (pObj) {
+     // 오브젝트 초기 설정
+     pObj->SetPos(playerPos + Vec2(0, -20.f));
+     pObj->SetDirection(playerDir);
+
+     // 씬에 추가
+     CSceneMgr::GetInst()->GetCurScene()->AddObject(pObj,
+ GROUP_TYPE::PROJECTILE);
+ }
+ */
 
 
 /*

@@ -46,7 +46,9 @@ CScene_Tool::~CScene_Tool()
 
 void CScene_Tool::Enter()
 {
-
+ 
+   
+    
 	//메뉴 장착
 	CCore::GetInst()->DockMenu();
 
@@ -113,7 +115,15 @@ void CScene_Tool::Enter()
 
 	m_pUI = pClonepPanel;*/
 
-
+    // 텍스트 UI 초기화
+    m_textureHelp.clear();
+    m_groundHelp.clear();
+    m_commonHelp.clear();
+    
+    m_pModeText = nullptr;  
+    m_pHelpText = nullptr;
+    m_pHelpSubText = nullptr;
+    
 
     // 모드 텍스트 박스 생성
     m_pModeText = new CTextUI();
@@ -216,30 +226,34 @@ void CScene_Tool::Enter()
 
 void CScene_Tool::Exit()
 {
+    // 포인터 초기화를 DeleteAll() 전에 수행
+    m_pModeText = nullptr;
+    m_pHelpText = nullptr;
+    m_pHelpSubText = nullptr;
 	CCore::GetInst()->DivideMenu();
-
 	DeleteAll();
+
+
 }
 
 void CScene_Tool::Update()
 {
 	CScene::Update();
     m_pModeText->ClearLines();
-    m_pHelpSubText->ClearLines();
-
-
-
-    // 현재 모드의 설명만 표시
-    switch(m_eToolMode)
-    {
-    case TEXTURE_MODE:
-        m_pHelpSubText->AddLines(m_textureHelp);
-        break;
+    if (m_pHelpSubText && !m_textureHelp.empty() && !m_groundHelp.empty())
+        {
+            m_pHelpSubText->ClearLines();
             
-    case GROUND_MODE:
-        m_pHelpSubText->AddLines(m_groundHelp);
-        break;
-    }
+            // 현재 모드의 설명만 표시
+            switch(m_eToolMode) {
+            case TEXTURE_MODE:
+                m_pHelpSubText->AddLines(m_textureHelp);
+                break;
+            case GROUND_MODE:
+                m_pHelpSubText->AddLines(m_groundHelp);
+                break;
+            }
+        }
 
 	if (KEY_TAP(KEY::ESC))
 		ChangeScene(SCENE_TYPE::START);

@@ -15,6 +15,7 @@
 #include "PlayerArm.h"
 #include "Raycast.h"
 #include "CHook.h"
+#include "CObjectPool.h"
 
 SPlayer::SPlayer()
 	: m_fSpeed(1000), m_iDir(1), m_iPrevDir(1), m_eCurState(PLAYER_STATE::IDLE), m_ePrevState(PLAYER_STATE::RUN), m_bOnGround(false), m_pPlayerArm(nullptr), m_pPlayerHook(nullptr), m_bClimbing(false), m_pRayHitCollider(nullptr), m_vRayHitPos(Vec2(0.f, 0.f)), m_fWireRange(-1.f), m_fWireMaxRange(700.f), m_fMoveEnergy(0.f), m_fPosEnergy(0.f), m_bCanBooster(false), m_eClimbState(PLAYER_CLIMB_STATE::NONE)
@@ -112,6 +113,7 @@ SPlayer::SPlayer()
 
 	CreateGravity();
 
+    // 레이 생성
 	Raycast *pRay = new Raycast();
 	pRay->SetName(L"PlayerRay");
 	pRay->SetPos(GetPos());
@@ -120,6 +122,33 @@ SPlayer::SPlayer()
     pRay->SetOwner(this);
 	pRay->SetMaxWireRange(m_fWireMaxRange);
     pRay->SetMaxMonsterSearchRange(m_fWireMaxRange);
+
+    // 팔 생성
+    GameObject* playerArm = new PlayerArm();
+    playerArm->SetName(L"PlayerArm");
+    playerArm->SetPos(GetPos());
+    playerArm->SetParent(this);
+    SetArm(static_cast<PlayerArm*>(playerArm));
+    CreateObject(playerArm, GROUP_TYPE::PLAYER_ARM);
+    
+    // 와이어 생성
+    // m_pPlayerHook = new CHook;
+    // m_pPlayerHook->SetName(L"Hook");
+    // m_pPlayerHook->SetPos(playerArm->GetPos());
+    // m_pPlayerHook->SetScale(Vec2(11.f, 11.f));
+    // static_cast<GameObject *>(m_pPlayerHook)->SetDir(Vec2(0.f, -1.f));
+    // m_pPlayerHook->SetParent(m_pPlayerArm);
+    // CreateObject(m_pPlayerHook, GROUP_TYPE::HOOK);
+
+    CObjectPool::GetInst()->CreatePool<CHook>(L"Hook", 1);
+    m_pPlayerHook =  dynamic_cast<CHook*>(CObjectPool::GetInst()->GetObject(L"Hook"));
+    m_pPlayerHook->SetName(L"Hook");
+    m_pPlayerHook->SetPos(playerArm->GetPos());
+    m_pPlayerHook->SetScale(Vec2(11.f, 11.f));
+    static_cast<GameObject *>(m_pPlayerHook)->SetDir(Vec2(0.f, -1.f));
+    m_pPlayerHook->SetParent(m_pPlayerArm);
+    CreateObject(m_pPlayerHook, GROUP_TYPE::HOOK);
+    CObjectPool::GetInst()->ReturnObject(m_pPlayerHook);
     
 	Enter_State(m_eCurState);
 }
@@ -809,7 +838,7 @@ void SPlayer::SwingMove()
     // 이전 에너지 상태 저장
     float prevMoveEnergy = m_fMoveEnergy;
     Vec2 hookPos = m_pPlayerHook->GetPos();
-
+    m_pPlayerHook->SetHookState(HOOK_STATE::FLYING);
     
     
     // MoveEnergy와 PosEnergy 계산
@@ -891,18 +920,12 @@ void SPlayer::CreateHook()
 
 	Vec2 vHookPos = m_pPlayerArm->GetPos();
 	// vHookPos.y -= GetScale().y / 2.f;
-
-    // 와이어 생성
-	m_pPlayerHook = new CHook;
-	m_pPlayerHook->SetName(L"Hook");
-	m_pPlayerHook->SetPos(vHookPos);
-	m_pPlayerHook->SetScale(Vec2(11.f, 11.f));
-	static_cast<GameObject *>(m_pPlayerHook)->SetDir(Vec2(0.f, -1.f));
-	m_pPlayerHook->SetParent(m_pPlayerArm);
-
-	CreateObject(m_pPlayerHook, GROUP_TYPE::HOOK);
-	// CreateObject 함수에 포지션, 방향, 스케일을 설정해주는 인자를 넣어야함
-
+    
+    // 오브젝트풀에서 와이어 불러오면서 와이어 포지션, 방향 여기서 정해야함
+    m_pPlayerHook = dynamic_cast<CHook*>(CObjectPool::GetInst()->GetObject(L"Hook"));
+    m_pPlayerHook->SetPos(m_pPlayerArm->GetPos());
+    
+    
     // 와이어 발사 방향으로 플레이어 바라보기
 	if (CCamera::GetInst()->GetRealPos(MOUSE_POS).x < GetPos().x)
 		m_iDir = -1;
@@ -910,12 +933,12 @@ void SPlayer::CreateHook()
 		m_iDir = 1;
 
 
-    // 와이어가 아무것도 맞추지 못했을 경우
+    // Ray가 아무것도 맞추지 못했을 경우
 	if (m_vRayHitPos.IsZero())
 	{
 		m_pPlayerHook->LookAt(CCamera::GetInst()->GetRealPos(MOUSE_POS));
 	}
-	else // 와이어가 오브젝트에 닿았을 경우
+	else // Ray의 거리가 오브젝트에 닿았을 경우
 	{
 		m_pPlayerHook->LookAt(m_vRayHitPos);
 

@@ -8,8 +8,10 @@
 #include "CAnimation.h"
 #include "SPlayer.h"
 #include "CCore.h"
+#include "CEventMgr.h"
 #include "SelectGDI.h"
 #include "CKeyMgr.h"
+#include "CObjectPool.h"
 #include "PlayerArm.h"
 CHook::CHook()
 	:m_fSpeed(2000)
@@ -92,6 +94,13 @@ CHook::~CHook()
 
 }
 
+void CHook::ReturnToPool()
+{
+    tEvent evn = {};
+    evn.eEvent = EVENT_TYPE::RETURN_TO_POOL;
+    evn.lParam = (DWORD_PTR)this;
+    CEventMgr::GetInst()->AddEvent(evn);
+}
 
 void CHook::Update_Animation()
 {
@@ -164,14 +173,12 @@ void CHook::Update_Move()
 		{
 			hookState = HOOK_STATE::RETURN_WITHOUT;
 		}
-	}
-	break;
+	}break;
 	case HOOK_STATE::GRAB:
 		if (KEY_HOLD(KEY::LBUTTON) == false)
 		{
 			hookState = HOOK_STATE::RETURN_WITH;
-		}
-		break;
+		}break;
 	case HOOK_STATE::GRABBING:
 
 		break;
@@ -186,14 +193,11 @@ void CHook::Update_Move()
 		//플레이어한테 도달하면 삭제
 		if ((GetPos() - pArm->GetPos()).Length() < 30.f)
 		{
-			DeleteObject(this);
+		    ReturnToPool();
 			player->SetHookRemove(nullptr);
 
 		}
-	}
-
-
-	break;
+	}break;
 	case HOOK_STATE::RETURN_WITHOUT:
 	{
 		Vec2 newDir = pArm->GetPos() - GetPos();
@@ -205,11 +209,10 @@ void CHook::Update_Move()
 		//플레이어한테 도달하면 삭제
 		if ((GetPos() - pArm->GetPos()).Length() < 30.f)
 		{
-			DeleteObject(this);
+		    ReturnToPool();
 			player->SetHookRemove(nullptr);
 		}
-	}
-	break;
+	}break;
 	default:
 		break;
 	}

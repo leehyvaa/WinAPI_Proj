@@ -23,12 +23,19 @@ void CTextUI::AddLine(const std::wstring& _str)
 
 void CTextUI::AddLines(const std::vector<std::wstring>& _vec)
 {
-    m_vecLines.insert(m_vecLines.end(), _vec.begin(), _vec.end());
+    if (_vec.empty()) return;
+    
+    try {
+        m_vecLines.insert(m_vecLines.end(), _vec.begin(), _vec.end());
+    }
+    catch (std::exception& e) {
+        OutputDebugStringA(e.what());
+    }
 }
-
 void CTextUI::ClearLines()
 {
-    m_vecLines.clear();
+    if(this && !m_vecLines.empty())
+        m_vecLines.clear();
 }
 
 void CTextUI::SetText(const std::wstring& _str, wchar_t _delimiter)

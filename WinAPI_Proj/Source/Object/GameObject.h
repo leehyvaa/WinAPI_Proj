@@ -17,6 +17,7 @@ class GameObject
 private:
     bool m_bAlive;
     bool m_bActive; // 활성화 상태 (풀링에서 사용)
+    bool m_bInScene; // 씬에 등록되어 있는지
 	wstring m_strName;
 	Vec2 m_vDir;
 	Vec2 m_vStandardDir;
@@ -52,8 +53,8 @@ public:
 	Vec2 GetDir() { return m_vDir; }
 	Vec2 GetStdDir() { return m_vStandardDir; }
     GROUP_TYPE GetGroup() { return m_eGroup; }
-    
-    
+    bool IsInScene() const { return m_bInScene; }
+    void SetInScene(bool _bInScene) { m_bInScene = _bInScene; }
 
     
     void SetLocalRotation(float _fRot) { m_fLocalRotation = _fRot; }
