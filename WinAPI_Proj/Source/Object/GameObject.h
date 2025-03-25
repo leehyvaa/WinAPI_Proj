@@ -16,8 +16,9 @@ class GameObject
 {
 private:
     bool m_bAlive;
-    bool m_bActive; // 활성화 상태 (풀링에서 사용)
-    bool m_bInScene; // 씬에 등록되어 있는지
+    bool m_bActive; // 활성화 상태 (풀링에서도 사용)
+    bool m_bManagedByPool;
+    
 	wstring m_strName;
 	Vec2 m_vDir;
 	Vec2 m_vStandardDir;
@@ -53,8 +54,6 @@ public:
 	Vec2 GetDir() { return m_vDir; }
 	Vec2 GetStdDir() { return m_vStandardDir; }
     GROUP_TYPE GetGroup() { return m_eGroup; }
-    bool IsInScene() const { return m_bInScene; }
-    void SetInScene(bool _bInScene) { m_bInScene = _bInScene; }
 
     
     void SetLocalRotation(float _fRot) { m_fLocalRotation = _fRot; }
@@ -80,7 +79,8 @@ public:
     bool IsActive() const { return m_bActive; }
     void SetActive(bool _bActive);
 	bool IsDead() { return !m_bAlive; }
-
+    void SetManagedByPool(bool _bManaged) { m_bManagedByPool = _bManaged; }
+    bool IsManagedByPool() { return m_bManagedByPool; }
 
 	void CreateCollider();
 	CCollider* GetCollider() {return m_pCollider; }
@@ -107,8 +107,8 @@ public:
 
 	virtual GameObject* Clone() = 0;
 
-private:
-	void SetDead() { m_bAlive = false; }
+protected:
+	void SetDead(bool _bDead) { m_bAlive = _bDead; }
 
 	friend class CEventMgr;
 };

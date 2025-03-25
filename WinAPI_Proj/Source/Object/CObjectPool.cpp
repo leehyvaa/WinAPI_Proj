@@ -9,7 +9,7 @@ CObjectPool::CObjectPool()
 
 CObjectPool::~CObjectPool()
 {
-    Clear();
+    ClearPool();
 }
 
 void CObjectPool::Init()
@@ -19,7 +19,7 @@ void CObjectPool::Init()
 
 
 
-GameObject* CObjectPool::GetObject(const wstring& _strKey)
+GameObject* CObjectPool::GetPoolObject(const wstring& _strKey)
 {
     // 해당 키의 풀이 존재하는지 확인
     auto iter = m_mapPools.find(_strKey);
@@ -34,7 +34,6 @@ GameObject* CObjectPool::GetObject(const wstring& _strKey)
         if (!pObj->IsActive())
         {
             pObj->Reset(); // 상태 초기화
-            pObj->SetActive(true); // 활성화
             return pObj;
         }
     }
@@ -50,17 +49,16 @@ GameObject* CObjectPool::GetObject(const wstring& _strKey)
 
 void CObjectPool::ReturnObject(GameObject* _pObj)
 {
-    if (!_pObj)
+    if (!_pObj || !_pObj->IsManagedByPool())
         return;
         
     _pObj->SetActive(false);
-    
     // 해당 오브젝트가 어느 풀에 속하는지는 이름으로 판단
     // 오브젝트의 이름이 풀의 키와 일치해야 함
 }
 
 
-void CObjectPool::Clear()
+void CObjectPool::ClearPool()
 {
     // 모든 풀의 오브젝트 정리
     for (auto& pair : m_mapPools)
@@ -73,4 +71,18 @@ void CObjectPool::Clear()
     }
     
     m_mapPools.clear();
+}
+
+void CObjectPool::ClearPoolByKey(const wstring& _strKey)
+{
+    auto iter = m_mapPools.find(_strKey);
+    if (iter != m_mapPools.end())
+    {
+        for (GameObject* pObj : iter->second)
+        {
+            DeleteObject(pObj);
+        }
+        iter->second.clear();
+        m_mapPools.erase(iter);
+    }
 }

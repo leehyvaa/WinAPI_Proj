@@ -20,6 +20,7 @@ GameObject::GameObject()
     , m_vStandardDir(0.f,-1.f)
     , m_eGroup(GROUP_TYPE::END)
     , m_pParent(nullptr)
+    , m_bManagedByPool(false)
 {
 }
 GameObject::GameObject(const GameObject& _origin)

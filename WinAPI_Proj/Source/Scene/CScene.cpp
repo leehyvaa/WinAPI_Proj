@@ -10,6 +10,7 @@
 #include "SelectGDI.h"
 #include "CKeyMgr.h"
 #include "CGround.h"
+#include "CObjectPool.h"
 #include "CRigidBody.h"
 #include "CTextUI.h"
 #include "SPlayer.h"
@@ -26,17 +27,10 @@ CScene::CScene()
     ,bDrawCompleteGround(false)
 	,backGround(nullptr)
     ,m_pPlayerText(nullptr)
-    ,bDrawPlayerState(true)
+    ,m_pPoolDebugText(nullptr)
 {
 
-    m_pPlayerText = new CTextUI();
-    m_pPlayerText->SetPos(Vec2(900, 0));
-    m_pPlayerText->SetAlign(CTextUI::TEXT_ALIGN::CENTER);
-    m_pPlayerText->SetLineSpace(5);
-    m_pPlayerText->SetVisibleBox(false);
-    m_pPlayerText->SetFontSize(20);
-    m_pPlayerText->SetFontColor(RGB(0,0,255));
-    AddObject(m_pPlayerText, GROUP_TYPE::UI);
+
 }
 
 CScene::~CScene()
@@ -61,6 +55,45 @@ void CScene::Start()
 		}
 	}
 }
+void CScene::Enter()
+{
+    if (m_pPlayerText == nullptr) {
+        m_pPlayerText = new CTextUI();
+        m_pPlayerText->SetPos(Vec2(900, 0));
+        m_pPlayerText->SetAlign(CTextUI::TEXT_ALIGN::CENTER);
+        m_pPlayerText->SetLineSpace(5);
+        m_pPlayerText->SetVisibleBox(false);
+        m_pPlayerText->SetFontSize(20);
+        m_pPlayerText->SetFontColor(RGB(0,0,255));
+        AddObject(m_pPlayerText, GROUP_TYPE::UI);
+    }
+
+    // 디버그 설정 초기화
+    bDrawGrid = false;
+    bDrawCollider = false;
+    bDrawGroundType = false;
+    bDrawCompleteGround = false;
+    bDrawOutWindow = false;
+    m_pPlayerText->SetActive(true);
+
+    // 풀 디버그 텍스트 초기화
+    if (m_pPoolDebugText == nullptr) {
+        m_pPoolDebugText = new CTextUI();
+        m_pPoolDebugText->SetPos(Vec2(10, 10)); // 왼쪽 상단에 위치
+        m_pPoolDebugText->SetAlign(CTextUI::TEXT_ALIGN::LEFT);
+        m_pPoolDebugText->SetLineSpace(5);
+        m_pPoolDebugText->SetVisibleBox(true);
+        m_pPoolDebugText->SetFontSize(16);
+        m_pPoolDebugText->SetFontColor(RGB(255, 200, 0)); // 오렌지색
+        m_pPoolDebugText->SetActive(false); // 기본적으로 숨김
+        AddObject(m_pPoolDebugText, GROUP_TYPE::UI);
+    }
+}
+
+void CScene::Exit()
+{
+}
+
 
 void CScene::Update()
 {
@@ -89,16 +122,26 @@ void CScene::Update()
     {
         bDrawCompleteGround = !bDrawCompleteGround;
     }
+    if (KEY_TAP(KEY::F9))
+    {
+        TogglePoolDebugDisplay();
+    }
 	if (KEY_TAP(KEY::F12))
 	{
 		bDrawOutWindow = !bDrawOutWindow;
 	}
     if (KEY_TAP(KEY::C))
     {
-        bDrawPlayerState = !bDrawPlayerState;
+        m_pPlayerText->SetActive(!m_pPlayerText->IsActive());
     }
 
-    if (bDrawPlayerState)
+    // 풀 디버그 UI가 활성화된 경우 정보 업데이트
+    if (m_pPoolDebugText && m_pPoolDebugText->IsActive())
+    {
+        UpdatePoolDebugInfo();
+    }
+    
+    if (m_pPlayerText != nullptr)
     {
         if(m_pPlayerText) m_pPlayerText->ClearLines();
         const vector<GameObject*>& vecPlayer = GetGroupObject(GROUP_TYPE::PLAYER);
@@ -208,7 +251,8 @@ void CScene::FinalUpdate()
 	{
 		for (size_t j = 0; j < m_arrObj[i].size(); j++)
 		{
-			m_arrObj[i][j]->FinalUpdate();
+		    if(!m_arrObj[i][j]->IsDead() && m_arrObj[i][j]->IsActive())
+			    m_arrObj[i][j]->FinalUpdate();
 		}
 	}
 }
@@ -228,14 +272,14 @@ void CScene::Render(HDC _dc)
 
 		for (; iter != m_arrObj[i].end();)
 		{
-			if ((*iter)->IsDead() || !(*iter)->IsActive())
+			if ((*iter)->IsDead() && !(*iter)->IsManagedByPool())
 			{
-			    (*iter)->SetInScene(false);
 			    iter = m_arrObj[i].erase(iter);
 			}
 			else
 			{
-			    (*iter)->Render(_dc);
+			    if ((*iter)->IsActive())
+			        (*iter)->Render(_dc);
 			    ++iter;
 			}
 		}
@@ -320,13 +364,14 @@ void CScene::Render_Tile(HDC _dc)
 
 }
 
+
 void CScene::AddObject(GameObject* _pObj, GROUP_TYPE _eType)
 {
-    if (_pObj->IsInScene())
+    auto& vec = m_arrObj[static_cast<UINT>(_eType)];
+    if (std::find(vec.begin(), vec.end(), _pObj) != vec.end())
         return;
-
-    m_arrObj[static_cast<UINT>(_eType)].push_back(_pObj);
-    _pObj->SetInScene(true);
+    
+    vec.push_back(_pObj);
 }
 
 
@@ -338,6 +383,7 @@ void CScene::DeleteGroup(GROUP_TYPE _eTarget)
 
 void CScene::DeleteAll()
 {
+    m_pPlayerText = nullptr;
 	for (UINT i = 0; i < static_cast<UINT>(GROUP_TYPE::END); i++)
 	{
 		DeleteGroup(static_cast<GROUP_TYPE>(i));
@@ -440,10 +486,8 @@ void CScene::CreateTile(UINT _iXCount, UINT _iYCount)
     }
 }
 
-/*
-    지형의 맨 왼쪽 위 꼭짓점과 오른쪽 아래 꼭짓점의 위치를 받아와서
-    해당 사각형 지형 하나당 상하좌우 4개의 콜라이더 지형을 생성한다.
- */
+
+// 지형의 맨 왼쪽 위 꼭짓점과 오른쪽 아래 꼭짓점의 위치를 받아와서 사각형 지형을 생성
 void CScene::CreateGround()
 {
 
@@ -521,5 +565,58 @@ void CScene::CreateGround()
 }
 
 
+void CScene::UpdatePoolDebugInfo()
+{
+    if (!m_pPoolDebugText)
+        return;
+        
+    m_pPoolDebugText->ClearLines();
+    
+    // 오브젝트 풀 정보 수집
+    map<wstring, vector<GameObject*>>& pools = CObjectPool::GetInst()->GetPools();
+    
+    // 헤더 라인 추가
+    m_pPoolDebugText->AddLine(L"=== OBJECT POOLS ===");
+    
+    // 풀이 비어있는 경우
+    if (pools.empty())
+    {
+        m_pPoolDebugText->AddLine(L"No active pools");
+        return;
+    }
+    
+    // 각 풀의 정보 추가
+    for (const auto& pool : pools)
+    {
+        // 활성/비활성 객체 수 계산
+        int totalCount = (int)pool.second.size();
+        int activeCount = 0;
+        
+        for (GameObject* obj : pool.second)
+        {
+            if (obj->IsActive())
+                activeCount++;
+        }
+        
+        // 풀 정보 문자열 생성
+        wstring poolInfo = pool.first + L": " + 
+                         L"Active: " + to_wstring(activeCount) + L", " +
+                         L"Total: " + to_wstring(totalCount);
+        
+        m_pPoolDebugText->AddLine(poolInfo);
+    }
+    
+    // 메모리 사용량 정보 추가 (옵션)
+    m_pPoolDebugText->AddLine(L"");
+    m_pPoolDebugText->AddLine(L"Press F9 to toggle this display");
+}
+
+void CScene::TogglePoolDebugDisplay()
+{
+    if (m_pPoolDebugText)
+    {
+        m_pPoolDebugText->SetActive(!m_pPoolDebugText->IsActive());
+    }
+}
 
 

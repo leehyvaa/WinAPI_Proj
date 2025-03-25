@@ -61,6 +61,7 @@ void Scene_Stage_01::Render(HDC _dc)
 
 void Scene_Stage_01::Enter()
 {
+    CScene::Enter();
 	//CCamera::GetInst()->FadeIn(2.f);
 
 	//씬 진입 상황에서는 AddObject 해도 되지만 
@@ -194,6 +195,7 @@ void Scene_Stage_01::Enter()
 
 void Scene_Stage_01::Exit()
 {
+    CScene::Exit();
 	DeleteAll();
 	CCollisionMgr::GetInst()->Reset();
 	ShowCursor(true);

@@ -226,14 +226,14 @@ void CScene_Tool::Enter()
 
 void CScene_Tool::Exit()
 {
+    CScene::Exit();
     // 포인터 초기화를 DeleteAll() 전에 수행
     m_pModeText = nullptr;
     m_pHelpText = nullptr;
     m_pHelpSubText = nullptr;
-	CCore::GetInst()->DivideMenu();
-	DeleteAll();
-
-
+    
+    CCore::GetInst()->DivideMenu();
+    DeleteAll();
 }
 
 void CScene_Tool::Update()

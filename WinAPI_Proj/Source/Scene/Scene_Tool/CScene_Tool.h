@@ -34,12 +34,13 @@ private:
 	int m_iImgTileY;
 	UINT m_iImgTileIdx;
 	Vec2 m_vImgTilePos;
-    
+
+    bool m_eWriteTwo;
 	bool m_bErase;
 	bool m_bSecondTex;
 	TOOL_MODE m_eToolMode;
 	GROUND_TYPE m_eGroundType;
-
+  
     int m_iLastBotRightTileIdx;
     int m_iLastTopLeftTileIdx;
     
@@ -53,7 +54,6 @@ private:
     
 public:
 	
-
 	virtual void Update();
 	virtual void Enter();
 	virtual void Exit();
@@ -63,7 +63,7 @@ public:
 	void SetTileUIIdx();
 	void DrawSelectTile();
 
-
+    
 	void SaveTile(const wstring& _strFilePath);
 	void SaveTileData();
 	void LoadTileData();

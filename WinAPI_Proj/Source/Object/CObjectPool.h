@@ -28,18 +28,23 @@ public:
             T* pObj = new T(); // 타입에 맞는 오브젝트 생성
             pObj->SetName(_strKey); // 키를 이름으로 설정
             pObj->SetActive(false); // 비활성화 상태로 설정
+            pObj->SetManagedByPool(true);
             pool.push_back(pObj);
         }  
     }
     
     // 풀에서 오브젝트 가져오기
-    GameObject* GetObject(const wstring& _strKey);
+    GameObject* GetPoolObject(const wstring& _strKey);
     
     // 오브젝트를 풀로 반환
     void ReturnObject(GameObject* _pObj);
 
     // 풀 정리
-    void Clear();
+    void ClearPool();
+    void ClearPoolByKey(const wstring& _strKey);
+
+    // 풀 가져오기
+    map<wstring, vector<GameObject*>>& GetPools() { return m_mapPools; }
 };
 
 /*

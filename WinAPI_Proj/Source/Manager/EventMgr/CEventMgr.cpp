@@ -21,12 +21,21 @@ void CEventMgr::Update()
 	//이전 프레임에 등록해둔 dead object들을 삭제
 	for (size_t i = 0; i < m_vecDead.size(); i++)
 	{
-		delete m_vecDead[i];
+	    // 풀에 의해 관리되는 오브젝트는 삭제 대신 비활성화 및 풀에 반환
+	    if (m_vecDead[i]->IsManagedByPool())
+	    {
+	        CObjectPool::GetInst()->ReturnObject(m_vecDead[i]); // 풀에 직접 반환
+	    }
+	    else
+	    {
+	        // 풀에 의해 관리되지 않는 일반 오브젝트는 삭제
+	        delete m_vecDead[i];
+	    }
 	}
 	m_vecDead.clear();
 
 
-	//Event 처리
+	// Event 처리
 	for (size_t i = 0; i < m_vecEvent.size(); i++)
 	{
 		Excute(m_vecEvent[i]);
@@ -45,18 +54,16 @@ void CEventMgr::Excute(const tEvent& _eve)
 	    	GameObject* pNewObj = (GameObject*)_eve.lParam;
 	    	GROUP_TYPE eType = static_cast<GROUP_TYPE>(_eve.wParam);
 	    	CSceneMgr::GetInst()->GetCurScene()->AddObject(pNewObj, eType);
-	    }	
-	    break;
+	    }break;
 	    case EVENT_TYPE::DELETE_OBJECT:
 	    {
 	    	//lParam : 삭제될 오브젝트 주소
 	    	//object를 dead 상태로 변경
 	    	//삭제예정 오브젝트들을 모아둔다.
 	    	GameObject* pDeadObj = (GameObject*)_eve.lParam;
-	    	pDeadObj->SetDead();
+	        pDeadObj->SetDead(true);
 	    	m_vecDead.push_back(pDeadObj);
-	    }
-	    	break;
+	    }break;
 	    case EVENT_TYPE::SCENE_CHANGE:
 	    {
 	    	// lParam : Next Cene Type
@@ -72,16 +79,6 @@ void CEventMgr::Excute(const tEvent& _eve)
 	    	AI* pAI = (AI*)_eve.lParam;
 	    	MON_STATE eNextState = static_cast<MON_STATE>(_eve.wParam);
 	    	pAI->ChangeState(eNextState);
-	    }break;
-	    case EVENT_TYPE::RETURN_TO_POOL:
-	    {
-	        // lParam: 풀로 반환할 오브젝트 포인터
-	        GameObject* pObj = (GameObject*)_eve.lParam;
-	        if (pObj)
-	        {
-	            pObj->SetActive(false); // 오브젝트 비활성화
-	            CObjectPool::GetInst()->ReturnObject(pObj); // 풀에 반환
-	        }
 	    }break;
 
 

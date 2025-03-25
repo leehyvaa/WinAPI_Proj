@@ -13,7 +13,7 @@ private:
 	vector<GameObject*> m_arrObj[static_cast<UINT>(GROUP_TYPE::END)];
 	wstring			 m_strName;//씬 이름
     CTextUI* m_pPlayerText;
-	
+    CTextUI* m_pPoolDebugText; // 오브젝트 풀 디버깅용 텍스트 UI
 
 
 	UINT m_iTileX; //타일 가로 개수
@@ -25,7 +25,6 @@ private:
 	bool bDrawGroundType;
     bool bDrawCompleteGround;
 	bool bDrawOutWindow;
-    bool bDrawPlayerState;
     
 	GameObject* m_pPlayer;
 	CBackGround* backGround;
@@ -52,8 +51,8 @@ public:
 	virtual void Render(HDC _dc);
 	void Render_Tile(HDC _dc);
 
-	virtual void Enter()=0;
-	virtual void Exit() = 0;
+	virtual void Enter();
+	virtual void Exit();
 
 public:
 	void AddObject(GameObject* _pObj, GROUP_TYPE _eType);
@@ -70,7 +69,8 @@ public:
 	void CreateGround();
 	
 	vector<GameObject*>& GetUIGroup() { return m_arrObj[static_cast<UINT>(GROUP_TYPE::UI)]; }
-
+    void UpdatePoolDebugInfo(); // 오브젝트 풀 정보 업데이트 함수
+    void TogglePoolDebugDisplay(); // 풀 디버그 표시 토글 함수
 public:
 	CScene();
 	virtual ~CScene();

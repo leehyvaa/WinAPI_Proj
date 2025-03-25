@@ -141,20 +141,56 @@ SPlayer::SPlayer()
     // CreateObject(m_pPlayerHook, GROUP_TYPE::HOOK);
 
     CObjectPool::GetInst()->CreatePool<CHook>(L"Hook", 1);
-    m_pPlayerHook =  dynamic_cast<CHook*>(CObjectPool::GetInst()->GetObject(L"Hook"));
-    m_pPlayerHook->SetName(L"Hook");
-    m_pPlayerHook->SetPos(playerArm->GetPos());
-    m_pPlayerHook->SetScale(Vec2(11.f, 11.f));
-    static_cast<GameObject *>(m_pPlayerHook)->SetDir(Vec2(0.f, -1.f));
-    m_pPlayerHook->SetParent(m_pPlayerArm);
-    CreateObject(m_pPlayerHook, GROUP_TYPE::HOOK);
-    CObjectPool::GetInst()->ReturnObject(m_pPlayerHook);
+    // GameObject* hook =  dynamic_cast<CHook*>(CObjectPool::GetInst()->GetPoolObject(L"Hook"));
+    // hook->SetName(L"Hook");
+    // hook->SetPos(playerArm->GetPos());
+    // hook->SetScale(Vec2(11.f, 11.f));
+    // static_cast<GameObject *>(hook)->SetDir(Vec2(0.f, -1.f));
+    // hook->SetParent(m_pPlayerArm);
+    // CreateObject(hook, GROUP_TYPE::HOOK);
+    // CObjectPool::GetInst()->ReturnObject(hook);
     
 	Enter_State(m_eCurState);
 }
 
 SPlayer::~SPlayer()
 {
+}
+
+void SPlayer::Reset()
+{
+    GameObject::Reset();
+
+    m_pPlayerHook = nullptr; // Hook 포인터 초기화
+    m_bOnGround = false;
+    m_bClimbing = false;
+    m_bRidingWire = false;
+    m_bCanBooster = false;
+    m_eCurState = PLAYER_STATE::IDLE;
+    m_ePrevState = PLAYER_STATE::RUN;
+    m_eClimbState = PLAYER_CLIMB_STATE::NONE;
+    m_fWireRange = -1.f;
+    m_fMoveEnergy = 0.f;
+    m_fPosEnergy = 0.f;
+    
+    // 필요한 경우 Raycast 포인터도 초기화
+    m_pRayHitCollider = nullptr;
+    m_vRayHitPos = Vec2(0.f, 0.f);
+    
+    // 필요시 새 Hook 생성
+    // if (m_pPlayerHook == nullptr)
+    // {
+    //     m_pPlayerHook = dynamic_cast<CHook*>(CObjectPool::GetInst()->GetObject(L"Hook"));
+    //     if (m_pPlayerHook) {
+    //         m_pPlayerHook->SetName(L"Hook");
+    //         m_pPlayerHook->SetPos(m_pPlayerArm->GetPos());
+    //         m_pPlayerHook->SetScale(Vec2(11.f, 11.f));
+    //         m_pPlayerHook->SetDir(-1.f);
+    //         m_pPlayerHook->SetParent(m_pPlayerArm);
+    //         // CreateObject는 필요 없음 - 비활성화 상태로 유지
+    //         CObjectPool::GetInst()->ReturnObject(m_pPlayerHook);
+    //     }
+    // }
 }
 
 void SPlayer::Update()
@@ -238,6 +274,8 @@ void SPlayer::Render(HDC _dc)
 
 	Component_Render(_dc);
 }
+
+
 
 void SPlayer::Enter_State(PLAYER_STATE _eState)
 {
@@ -353,6 +391,8 @@ void SPlayer::Update_State()
 	case PLAYER_STATE::SHOT:
 	    if (m_pRayHitCollider != nullptr && m_pRayHitCollider->GetObj()->GetGroup() == GROUP_TYPE::GROUND)
 	        eNextState = PLAYER_STATE::SWING;
+	    if (m_pPlayerHook == nullptr)
+	        eNextState = PLAYER_STATE::IDLE;
 		break;
 	case PLAYER_STATE::SWING:
 		SwingMove();
@@ -918,13 +958,12 @@ void SPlayer::CreateHook()
 
 	m_bCanBooster = true;
 
-	Vec2 vHookPos = m_pPlayerArm->GetPos();
-	// vHookPos.y -= GetScale().y / 2.f;
-    
-    // 오브젝트풀에서 와이어 불러오면서 와이어 포지션, 방향 여기서 정해야함
-    m_pPlayerHook = dynamic_cast<CHook*>(CObjectPool::GetInst()->GetObject(L"Hook"));
+    // 풀에서 Hook 가져오기
+    m_pPlayerHook = dynamic_cast<CHook*>(CObjectPool::GetInst()->GetPoolObject(L"Hook"));
+    m_pPlayerHook->SetParent(m_pPlayerArm);
     m_pPlayerHook->SetPos(m_pPlayerArm->GetPos());
-    
+    // 씬에 넣기
+    CreateObject(m_pPlayerHook, GROUP_TYPE::HOOK);
     
     // 와이어 발사 방향으로 플레이어 바라보기
 	if (CCamera::GetInst()->GetRealPos(MOUSE_POS).x < GetPos().x)
@@ -969,6 +1008,7 @@ void SPlayer::CreateHook()
 		{
 		}
 	}
+ 
 }
 
 // RayCast를 진행 후 Ray와 충돌한 충돌체를 onCollisionRay에 저장하고 충돌 지점을 targetPos에 저장 

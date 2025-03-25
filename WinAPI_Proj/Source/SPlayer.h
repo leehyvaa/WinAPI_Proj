@@ -77,9 +77,11 @@ public:
 	void SetPlayerState(PLAYER_STATE _eState) { m_eCurState = _eState; }
     void SetMoveEnergy(float _energy) { m_fMoveEnergy = _energy; }
     void SetPosEnergy(float _energy) { m_fPosEnergy = _energy; }
+
     
 	virtual void Update() override;
 	virtual void Render(HDC _dc) override;
+    virtual void Reset() override;
 
 private:
 	void Enter_State(PLAYER_STATE _eState);

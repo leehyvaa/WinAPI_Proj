@@ -96,10 +96,56 @@ CHook::~CHook()
 
 void CHook::ReturnToPool()
 {
-    tEvent evn = {};
-    evn.eEvent = EVENT_TYPE::RETURN_TO_POOL;
-    evn.lParam = (DWORD_PTR)this;
-    CEventMgr::GetInst()->AddEvent(evn);
+    DeleteObject(this);
+}
+
+void CHook::Reset()
+{
+    GameObject::Reset();
+
+    // Hook 속성 초기화
+    hookState = HOOK_STATE::FLYING;
+    m_fSpeed = 2000.f;  // 원래 생성자에서 설정한 속도
+    
+    // 애니메이션 초기화
+    if (GetAnimator())
+    {
+        if (dir == -1)
+            GetAnimator()->Play(L"SNB_GRAB_LEFT_FLYING", true);
+        else
+            GetAnimator()->Play(L"SNB_GRAB_RIGHT_FLYING", true);
+    }
+    
+    // 충돌체 상태 초기화 (충돌 기록 제거)
+    if (GetCollider())
+    {
+        GetCollider()->SetActive(true);
+        // 필요하다면 충돌체 크기와 오프셋 재설정
+        GetCollider()->SetOffsetPos(Vec2());
+        GetCollider()->SetScale(Vec2(20.f, 20.f));
+    }
+    
+    if (GetParent())
+    {
+        SetPos(GetParent()->GetPos());
+        
+        // PlayerArm의 방향에 따라 Hook 방향 설정
+        PlayerArm* pArm = dynamic_cast<PlayerArm*>(GetParent());
+        if (pArm) {
+            SPlayer* pPlayer = dynamic_cast<SPlayer*>(pArm->GetParent());
+            if (pPlayer) {
+                dir = pPlayer->GetDir();
+                curState = pPlayer->GetState();
+            }
+        }
+    }
+    
+    // 방향 초기화 (기본 위쪽 방향)
+    SetDir(-1.f);
+    
+    // 상태 추적 변수 초기화
+    prevDir = dir;
+    prevState = curState;
 }
 
 void CHook::Update_Animation()
@@ -175,10 +221,13 @@ void CHook::Update_Move()
 		}
 	}break;
 	case HOOK_STATE::GRAB:
-		if (KEY_HOLD(KEY::LBUTTON) == false)
-		{
-			hookState = HOOK_STATE::RETURN_WITH;
-		}break;
+	    {
+	        if (KEY_HOLD(KEY::LBUTTON) == false)
+	        {
+	            hookState = HOOK_STATE::RETURN_WITH;
+	            return;
+	        }
+	    }break;
 	case HOOK_STATE::GRABBING:
 
 		break;
@@ -191,9 +240,10 @@ void CHook::Update_Move()
 		vPos.y = vPos.y + m_fSpeed * newDir.y * fDT * 3;
 
 		//플레이어한테 도달하면 삭제
-		if ((GetPos() - pArm->GetPos()).Length() < 30.f)
+		if ((GetPos() - pArm->GetPos()).Length() < 30.f && !IsDead())
 		{
 		    ReturnToPool();
+		    SetDead(true);
 			player->SetHookRemove(nullptr);
 
 		}
@@ -207,9 +257,10 @@ void CHook::Update_Move()
 		vPos.y = vPos.y + m_fSpeed * newDir.y * fDT * 3;
 
 		//플레이어한테 도달하면 삭제
-		if ((GetPos() - pArm->GetPos()).Length() < 30.f)
+		if ((GetPos() - pArm->GetPos()).Length() < 30.f && !IsDead())
 		{
 		    ReturnToPool();
+		    SetDead(true);
 			player->SetHookRemove(nullptr);
 		}
 	}break;
@@ -258,19 +309,27 @@ void CHook::Render(HDC _dc)
 void CHook::OnCollisionEnter(CCollider* _pOther)
 {
 	GameObject* pOtherObj = _pOther->GetObj();
-
-	if (pOtherObj->GetGroup() == GROUP_TYPE::GROUND
-	    && static_cast<CGround*>(pOtherObj)->GetGroundType() == GROUND_TYPE::NORMAL 
-	    && hookState == HOOK_STATE::FLYING)
-	{
-		hookState = HOOK_STATE::GRAB;
-		//DeleteObject(this);
-	}
-	else if (pOtherObj->GetGroup() == GROUP_TYPE::GROUND
-	    && static_cast<CGround*>(pOtherObj)->GetGroundType() == GROUND_TYPE::UNWALKABLE 
-	    && hookState == HOOK_STATE::FLYING)
-	{
-		hookState = HOOK_STATE::RETURN_WITHOUT;
-
-	}
+    
+    cout << "Hook collision with: " << static_cast<int>(pOtherObj->GetGroup()) << endl;
+    
+    if (pOtherObj->GetGroup() == GROUP_TYPE::GROUND)
+    {
+        cout << "Hook collided with ground, current state: " << static_cast<int>(hookState) << endl;
+        
+        if (hookState == HOOK_STATE::FLYING)
+        {
+            GROUND_TYPE groundType = static_cast<CGround*>(pOtherObj)->GetGroundType();
+            
+            if (groundType == GROUND_TYPE::NORMAL)
+            {
+                hookState = HOOK_STATE::GRAB;
+                cout << "Hook state changed to GRAB" << endl;
+            }
+            else if (groundType == GROUND_TYPE::UNWALKABLE)
+            {
+                hookState = HOOK_STATE::RETURN_WITHOUT;
+                cout << "Hook state changed to RETURN_WITHOUT" << endl;
+            }
+        }
+    }
 }

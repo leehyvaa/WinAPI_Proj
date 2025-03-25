@@ -26,6 +26,8 @@ private:
     PLAYER_STATE curState;
     PLAYER_STATE prevState;
     HOOK_STATE hookState;
+    bool m_bGroundCollision;
+    GROUND_TYPE m_eCollidedGroundType;
 
 public:
     CHook();
@@ -48,9 +50,10 @@ public:
     void SetState(PLAYER_STATE _state) { curState = _state; }
     void SetPrevState(PLAYER_STATE _state) { prevState = _state; }
 
-
+    
     void ReturnToPool();
-
+    virtual void Reset() override;
+    
     virtual void OnCollisionEnter(CCollider* _pOther);
     CLONE(CHook);
 };
