@@ -29,7 +29,8 @@ private:
 	bool m_bFinish; //재생 끝에 도달 여부
 	float m_fSizeMulti;
 	POINT* rotPos;
-
+    Vec2 m_vOffset;
+    
     vector<Gdiplus::Bitmap*> m_vecFrameBitmaps; // 미리 처리된 프레임 비트맵들
     bool m_bCached; // 캐싱 여부
 
@@ -47,9 +48,16 @@ public:
 
 	tAnimFrm& GetFrame(int _iIdx) { return m_vecFrm[_iIdx]; }
 	int GetMaxFrame() { return static_cast<UINT>(m_vecFrm.size()); }
+    Vec2 GetOffset() { return m_vOffset; }
 
-
-
+    // 현재 프레임의 오프셋 반환
+    Vec2 GetCurrentFrameOffset() const {
+	    if (m_vecFrm.empty() || m_iCurFrm < 0 || m_iCurFrm >= m_vecFrm.size())
+	        return Vec2(0.f, 0.f);
+	    return m_vecFrm[m_iCurFrm].vOffset;}
+    
+    // 현재 프레임 인덱스 반환
+    int GetCurrentFrame() const {return m_iCurFrm;}
 private:
 	void SetName(const wstring& _strName) { m_strName = _strName; }
     void CacheFrames();

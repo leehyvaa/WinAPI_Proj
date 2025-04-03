@@ -51,11 +51,11 @@ void CUI::FinalUpdate()
 	GameObject::FinalUpdate();
 
 	//ui의 최종 좌표를 구한다.
-	m_vFinalPos = GetPos();
+	m_vFinalPos = GetWorldPos();
 
-	if (GetParent())
+	if (GetParentUI())
 	{
-		Vec2 vParentPos = GetParent()->GetFinalPos();
+		Vec2 vParentPos = GetParentUI()->GetFinalPos();
 		m_vFinalPos += vParentPos;
 	}
 

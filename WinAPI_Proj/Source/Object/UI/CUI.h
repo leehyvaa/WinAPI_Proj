@@ -29,7 +29,7 @@ public:
     
 
     Vec2 GetFinalPos() { return m_vFinalPos; }
-    CUI* GetParent() { return m_pParentUI; }
+    CUI* GetParentUI() { return m_pParentUI; }
     bool IsMouseOn() { return m_bMouseOn; }
     bool IsLbtnDown() { return m_bLbtnDown; }
 

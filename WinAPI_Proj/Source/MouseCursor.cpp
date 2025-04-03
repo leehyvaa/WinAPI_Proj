@@ -26,12 +26,12 @@ MouseCursor::~MouseCursor()
 
 void MouseCursor::Update()
 {
-	Vec2 pos = GetPos();
+	Vec2 pos = GetWorldPos();
 
 	pos = CCamera::GetInst()->GetRealPos(MOUSE_POS);
 
 
-	SetPos(pos);
+	SetWorldPos(pos);
 }
 
 void MouseCursor::Render(HDC _dc)

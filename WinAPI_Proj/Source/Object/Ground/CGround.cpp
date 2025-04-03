@@ -64,7 +64,7 @@ void CGround::Render(HDC _dc)
         SelectGDI b(_dc, BRUSH_TYPE::HOLLOW);
         SelectGDI p(_dc, ePen);
 
-        Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(Vec2(GetPos().x + 2, GetPos().y + 2));
+        Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(Vec2(GetWorldPos().x + 2, GetWorldPos().y + 2));
         Vec2 vScale = Vec2(GetScale().x - 4.f, GetScale().y - 4.f);
 
         Rectangle(_dc, static_cast<int>(vRenderPos.x), static_cast<int>(vRenderPos.y), static_cast<int>(vRenderPos.x + vScale.x), static_cast<int>(vRenderPos.y + vScale.y));
@@ -82,7 +82,7 @@ COLLISION_SIDE CGround::DetectCollisionSide(CCollider* _pOther)
     Vec2 vObjColScale = _pOther->GetScale();
     Vec2 vGroundPos = GetCollider()->GetFinalPos();
     Vec2 vGroundScale = GetCollider()->GetScale();
-    Vec2 vObjPos = pOtherObj->GetPos();
+    Vec2 vObjPos = pOtherObj->GetWorldPos();
     
     bool top = vObjColPos.y < vGroundPos.y + margin;
     bool bottom = vObjColPos.y > vGroundPos.y + vGroundScale.y - margin;
@@ -113,13 +113,13 @@ void CGround::NormalCollisionEnter(CCollider* _pOther)
     Vec2 vObjColScale = _pOther->GetScale();
     Vec2 vGroundColPos = GetCollider()->GetFinalPos();
     Vec2 vGroundColScale = GetCollider()->GetScale();
-    Vec2 vObjPos = pOtherObj->GetPos();
+    Vec2 vObjPos = pOtherObj->GetWorldPos();
 
     
     // 위에서 충돌
-    if (vObjPos.x + vObjColScale.x/2>= GetPos().x &&
-        vObjPos.x - vObjColScale.x/2<= GetPos().x + GetScale().x &&
-        vObjPos.y <= GetPos().y+COLLISION_TOP_THRESHOLD)
+    if (vObjPos.x + vObjColScale.x/2>= GetWorldPos().x &&
+        vObjPos.x - vObjColScale.x/2<= GetWorldPos().x + GetScale().x &&
+        vObjPos.y <= GetWorldPos().y+COLLISION_TOP_THRESHOLD)
     {
         float fLen = abs(vObjColPos.y - vGroundColPos.y);
         float fValue = (vObjColScale.y / 2.f + vGroundColScale.y / 2.f) - fLen;
@@ -132,8 +132,8 @@ void CGround::NormalCollisionEnter(CCollider* _pOther)
 
     
     // 왼쪽 충돌
-    if (vObjPos.y > GetPos().y &&
-        vObjPos.x <= GetPos().x + COLLISION_SIDE_THRESHOLD)
+    if (vObjPos.y > GetWorldPos().y &&
+        vObjPos.x <= GetWorldPos().x + COLLISION_SIDE_THRESHOLD)
     {
         pPlayer->SetDir(1); 
         float fLen = abs(vObjColPos.x - vGroundColPos.x);
@@ -142,16 +142,16 @@ void CGround::NormalCollisionEnter(CCollider* _pOther)
         pOtherObj->GetRigidBody()->SetVelocity(Vec2(0.f, pOtherObj->GetRigidBody()->GetVelocity().y));
         
         // 벽 최상단, 자동 점프로 전환
-        if (vObjPos.y <= GetPos().y + WALL_CLIMB_TOP_OFFSET)
+        if (vObjPos.y <= GetWorldPos().y + WALL_CLIMB_TOP_OFFSET)
             pPlayer->SetWallClimbing(false);
-        else if (vObjPos.y <= GetPos().y + GetScale().y + WALL_CLIMB_BOT_OFFSET)// 벽타기 구간
+        else if (vObjPos.y <= GetWorldPos().y + GetScale().y + WALL_CLIMB_BOT_OFFSET)// 벽타기 구간
             pPlayer->SetWallClimbing(true);
     }
     
     
     // 오른쪽 충돌
-    if (vObjPos.y > GetPos().y &&
-        vObjPos.x >= GetPos().x + GetScale().x - COLLISION_SIDE_THRESHOLD)
+    if (vObjPos.y > GetWorldPos().y &&
+        vObjPos.x >= GetWorldPos().x + GetScale().x - COLLISION_SIDE_THRESHOLD)
     {
         pPlayer->SetDir(-1); 
         float fLen = abs(vObjColPos.x - vGroundColPos.x);
@@ -159,17 +159,17 @@ void CGround::NormalCollisionEnter(CCollider* _pOther)
         vObjPos.x += fValue;
         pOtherObj->GetRigidBody()->SetVelocity(Vec2(0.f, pOtherObj->GetRigidBody()->GetVelocity().y));
 
-        if (vObjPos.y <= GetPos().y + WALL_CLIMB_TOP_OFFSET)
+        if (vObjPos.y <= GetWorldPos().y + WALL_CLIMB_TOP_OFFSET)
             pPlayer->SetWallClimbing(false);
-        else if (vObjPos.y <= GetPos().y + GetScale().y + WALL_CLIMB_BOT_OFFSET)
+        else if (vObjPos.y <= GetWorldPos().y + GetScale().y + WALL_CLIMB_BOT_OFFSET)
             pPlayer->SetWallClimbing(true);
     }
 		
 
     //아래에서 충돌했을때
-    if (vObjPos.x >= GetPos().x &&
-        vObjPos.x <= GetPos().x + GetScale().x &&
-        vObjPos.y-vObjColScale.y >= GetPos().y +GetScale().y - COLLISION_BOT_THRESHOLD)
+    if (vObjPos.x >= GetWorldPos().x &&
+        vObjPos.x <= GetWorldPos().x + GetScale().x &&
+        vObjPos.y-vObjColScale.y >= GetWorldPos().y +GetScale().y - COLLISION_BOT_THRESHOLD)
     {
         float fLen = abs(vObjColPos.y - vGroundColPos.y);
         float fValue = (vObjColScale.y / 2.f + vGroundColScale.y / 2.f) - fLen;
@@ -181,7 +181,7 @@ void CGround::NormalCollisionEnter(CCollider* _pOther)
 
     }
 
-    pOtherObj->SetPos(vObjPos);
+    pOtherObj->SetWorldPos(vObjPos);
 }
 
 
@@ -195,13 +195,13 @@ void CGround::NormalCollision(CCollider* _pOther)
     Vec2 vObjColScale = _pOther->GetScale();
     Vec2 vGroundColPos = GetCollider()->GetFinalPos();
     Vec2 vGroundColScale = GetCollider()->GetScale();
-    Vec2 vObjPos = pOtherObj->GetPos();
+    Vec2 vObjPos = pOtherObj->GetWorldPos();
     
     
     //위에서 충돌
-    if (vObjPos.x + vObjColScale.x/2>= GetPos().x &&
-        vObjPos.x - vObjColScale.x/2<= GetPos().x + GetScale().x &&
-        vObjPos.y <= GetPos().y + COLLISION_TOP_THRESHOLD)
+    if (vObjPos.x + vObjColScale.x/2>= GetWorldPos().x &&
+        vObjPos.x - vObjColScale.x/2<= GetWorldPos().x + GetScale().x &&
+        vObjPos.y <= GetWorldPos().y + COLLISION_TOP_THRESHOLD)
     {
         float fLen = abs(vObjColPos.y - vGroundColPos.y);
         float fValue = (vObjColScale.y / 2.f + vGroundColScale.y / 2.f) - fLen;
@@ -217,8 +217,8 @@ void CGround::NormalCollision(CCollider* _pOther)
 
     
     //왼쪽 충돌
-    if (vObjPos.y > GetPos().y &&
-        vObjPos.x <= GetPos().x + COLLISION_SIDE_THRESHOLD)
+    if (vObjPos.y > GetWorldPos().y &&
+        vObjPos.x <= GetWorldPos().x + COLLISION_SIDE_THRESHOLD)
     {
         pPlayer->SetDir(1); 
         float fLen = abs(vObjColPos.x - vGroundColPos.x);
@@ -227,16 +227,16 @@ void CGround::NormalCollision(CCollider* _pOther)
         pOtherObj->GetRigidBody()->SetVelocity(Vec2(0.f, pOtherObj->GetRigidBody()->GetVelocity().y));
 
         // 벽 최상단, 자동점프 구간
-        if (vObjPos.y <= GetPos().y + WALL_CLIMB_TOP_OFFSET)
+        if (vObjPos.y <= GetWorldPos().y + WALL_CLIMB_TOP_OFFSET)
             pPlayer->SetWallClimbing(false);
-        else if (vObjPos.y <= GetPos().y + GetScale().y + WALL_CLIMB_BOT_OFFSET) // 벽타기 구간
+        else if (vObjPos.y <= GetWorldPos().y + GetScale().y + WALL_CLIMB_BOT_OFFSET) // 벽타기 구간
             pPlayer->SetWallClimbing(true);
     }
   
 
     // 오른쪽 충돌
-    if (vObjPos.y > GetPos().y &&
-        vObjPos.x >= GetPos().x + GetScale().x - COLLISION_SIDE_THRESHOLD)
+    if (vObjPos.y > GetWorldPos().y &&
+        vObjPos.x >= GetWorldPos().x + GetScale().x - COLLISION_SIDE_THRESHOLD)
     {
         pPlayer->SetDir(-1);
         float fLen = abs(vObjColPos.x - vGroundColPos.x);
@@ -245,18 +245,18 @@ void CGround::NormalCollision(CCollider* _pOther)
         pOtherObj->GetRigidBody()->SetVelocity(Vec2(0.f, pOtherObj->GetRigidBody()->GetVelocity().y));
 
         // 벽 최상단, 자동점프 구간
-        if (vObjPos.y <= GetPos().y + WALL_CLIMB_TOP_OFFSET)
+        if (vObjPos.y <= GetWorldPos().y + WALL_CLIMB_TOP_OFFSET)
             pPlayer->SetWallClimbing(false);
-        else if (vObjPos.y <= GetPos().y + GetScale().y + WALL_CLIMB_BOT_OFFSET) // 벽타기 구간
+        else if (vObjPos.y <= GetWorldPos().y + GetScale().y + WALL_CLIMB_BOT_OFFSET) // 벽타기 구간
             pPlayer->SetWallClimbing(true); // 벽타기 상태 설정
     }
     
 
     
     //아래에서 충돌했을때
-    if (vObjPos.x >= GetPos().x &&
-        vObjPos.x <= GetPos().x + GetScale().x &&
-        vObjPos.y-vObjColScale.y >= GetPos().y + GetScale().y - COLLISION_BOT_THRESHOLD)
+    if (vObjPos.x >= GetWorldPos().x &&
+        vObjPos.x <= GetWorldPos().x + GetScale().x &&
+        vObjPos.y-vObjColScale.y >= GetWorldPos().y + GetScale().y - COLLISION_BOT_THRESHOLD)
     {
         float fLen = abs(vObjColPos.y - vGroundColPos.y);
         float fValue = (vObjColScale.y / 2.f + vGroundColScale.y / 2.f) - fLen;
@@ -266,7 +266,7 @@ void CGround::NormalCollision(CCollider* _pOther)
         pOtherObj->GetRigidBody()->SetVelocityY(0.f);
     }
 
-    pOtherObj->SetPos(vObjPos);
+    pOtherObj->SetWorldPos(vObjPos);
 }
 
 
@@ -274,7 +274,7 @@ void CGround::NormalCollision(CCollider* _pOther)
 void CGround::OnCollisionEnter(CCollider *_pOther)
 {
     GameObject *pOtherObj = _pOther->GetObj();
-    Vec2 vObjPos = pOtherObj->GetPos();
+    Vec2 vObjPos = pOtherObj->GetWorldPos();
     Vec2 vObjColScale = _pOther->GetScale();
 
     
@@ -298,7 +298,7 @@ void CGround::OnCollisionEnter(CCollider *_pOther)
 void CGround::OnCollision(CCollider *_pOther)
 {
     GameObject *pOtherObj = _pOther->GetObj();
-    Vec2 vObjPos = pOtherObj->GetPos();
+    Vec2 vObjPos = pOtherObj->GetWorldPos();
     Vec2 vObjColScale = _pOther->GetScale();
 
     

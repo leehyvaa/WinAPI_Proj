@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "GameObject.h"
 
+class PlayerArm;
 class SPlayer;
 
 
@@ -28,7 +29,8 @@ private:
     HOOK_STATE hookState;
     bool m_bGroundCollision;
     GROUND_TYPE m_eCollidedGroundType;
-
+    PlayerArm* m_pOwnerArm;
+    
 public:
     CHook();
     virtual ~CHook();
@@ -53,7 +55,11 @@ public:
     
     void ReturnToPool();
     virtual void Reset() override;
+
+    void SetOwnerArm(PlayerArm* _pArm) { m_pOwnerArm = _pArm; }
+    PlayerArm* GetOwnerArm() { return m_pOwnerArm; }
     
+    virtual void LookAt(Vec2 _target) override;
     virtual void OnCollisionEnter(CCollider* _pOther);
     CLONE(CHook);
 };

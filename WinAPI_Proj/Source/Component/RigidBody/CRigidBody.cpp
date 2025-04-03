@@ -104,10 +104,10 @@ void CRigidBody::Move()
 	float fSpeed = m_vVelocity.Length(); //이동 속력
 	if (0.f != fSpeed)
 	{
-		Vec2 vPos = m_pOwner->GetPos();
+		Vec2 vPos = m_pOwner->GetWorldPos();
 
 		vPos += m_vVelocity * fDT;
 
-		m_pOwner->SetPos(vPos);
+		m_pOwner->SetWorldPos(vPos);
 	}
 }

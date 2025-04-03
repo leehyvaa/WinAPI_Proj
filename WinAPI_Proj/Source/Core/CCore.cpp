@@ -167,7 +167,7 @@ void CCore::Clear(HDC _dc)
 		return;
 
 
-	Vec2 vRenderPos = backGround->GetPos();
+	Vec2 vRenderPos = backGround->GetWorldPos();
 
 	Vec2 vScale = backGround->GetScale();
 

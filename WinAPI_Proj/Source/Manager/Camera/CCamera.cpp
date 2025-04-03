@@ -27,13 +27,13 @@ void CCamera::Update()
 {
 	if (m_pTargetObj)
 	{
-		if (m_pTargetObj->IsDead())
+		if (m_pTargetObj->IsDead() || !m_pTargetObj->IsActive()) 
 		{
 			m_pTargetObj = nullptr;
 		}
 		else
 		{
-			m_vLookAt = m_pTargetObj->GetPos() + Vec2(0.f,-200.f);
+			m_vLookAt = m_pTargetObj->GetWorldPos() + Vec2(0.f,-200.f);
 		}
 
 	}

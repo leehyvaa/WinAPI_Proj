@@ -116,7 +116,7 @@ SPlayer::SPlayer()
     // 레이 생성
 	Raycast *pRay = new Raycast();
 	pRay->SetName(L"PlayerRay");
-	pRay->SetPos(GetPos());
+	pRay->SetWorldPos(GetWorldPos());
 	CreateObject(pRay, GROUP_TYPE::Ray);
 	m_pPlayerRay = pRay;
     pRay->SetOwner(this);
@@ -126,7 +126,8 @@ SPlayer::SPlayer()
     // 팔 생성
     GameObject* playerArm = new PlayerArm();
     playerArm->SetName(L"PlayerArm");
-    playerArm->SetPos(GetPos());
+    playerArm->SetLocalPos(Vec2(0.f, -80.f));
+    playerArm->SetWorldPos(GetWorldPos());
     playerArm->SetParent(this);
     SetArm(static_cast<PlayerArm*>(playerArm));
     CreateObject(playerArm, GROUP_TYPE::PLAYER_ARM);
@@ -210,14 +211,14 @@ void SPlayer::Update()
 
 	if (KEY_TAP(KEY::C))
 	{
-		cout << GetPos().x << " " << GetPos().y << endl;
+		cout << GetWorldPos().x << " " << GetWorldPos().y << endl;
 		cout << GetRigidBody()->GetSpeed() << endl;
 		cout << GetRigidBody()->GetVelocity().x << endl;
 		cout << GetRigidBody()->GetVelocity().y << endl;
 		cout << static_cast<int>(m_eCurState) << endl;
 		cout << m_vRayHitPos.x << " " << m_vRayHitPos.y << endl;
 		cout << m_pRayHitCollider << endl;
-		cout << m_pPlayerArm->GetPos().x << " " << m_pPlayerArm->GetPos().y << endl;
+		cout << m_pPlayerArm->GetWorldPos().x << " " << m_pPlayerArm->GetWorldPos().y << endl;
 	}
 
 	GetAnimator()->Update();
@@ -296,7 +297,7 @@ void SPlayer::Enter_State(PLAYER_STATE _eState)
 	        GetRigidBody()->AddForce(Vec2(0.f, -10000.f));
         else
             GetRigidBody()->AddForce(Vec2(0.f, -5000.f));
-		SetPos(Vec2(GetPos().x, GetPos().y - 20.f));
+		SetWorldPos(Vec2(GetWorldPos().x, GetWorldPos().y - 20.f));
 		GetGravity()->SetApplyGravity(true);
 		SetOnGround(false);
 		break;
@@ -510,13 +511,13 @@ void SPlayer::Update_Animation()
 	case PLAYER_STATE::SWING:
 	    if (m_pPlayerHook != nullptr)
 	    {
-	        LookAt(m_pPlayerHook->GetPos());
+	        LookAt(m_pPlayerHook->GetWorldPos());
 	    }
-		if (m_iDir == -1)
-			GetAnimator()->Play(L"SNB_LEFT_SWING", true);
-		else
-			GetAnimator()->Play(L"SNB_RIGHT_SWING", true);
-		break;
+	    if (m_iDir == -1)
+	        GetAnimator()->Play(L"SNB_LEFT_SWING", true);
+	    else
+	        GetAnimator()->Play(L"SNB_RIGHT_SWING", true);
+	    break;
 	case PLAYER_STATE::DAMAGED:
 
 		break;
@@ -614,7 +615,7 @@ void SPlayer::WallKickJump()
 	    {
 	        // 이 부분을 매끄럽게 처리하려면 점프 후에 일정 시간동안 climb로 안넘어가게 하거나 점프를 Addforce로 수정
 	        //GetRigidBody()->SetVelocity(Vec2(-1000.f, -2000.f));
-	        SetPos(Vec2(GetPos().x-20.f, GetPos().y-50.f));
+	        SetWorldPos(Vec2(GetWorldPos().x-20.f, GetWorldPos().y-50.f));
 	    }
         else
         {
@@ -627,7 +628,7 @@ void SPlayer::WallKickJump()
 	{
 	    if (KEY_HOLD(KEY::A))
 	    {
-	        SetPos(Vec2(GetPos().x+20.f, GetPos().y-50.f));
+	        SetWorldPos(Vec2(GetWorldPos().x+20.f, GetWorldPos().y-50.f));
 	    }
 	    else
 	    {
@@ -692,23 +693,23 @@ void SPlayer::VirticalMove()
 // 와이어가 팽팽한 상태인지 판별
 bool SPlayer::IsWireTaut()
 {
-    Vec2 hookPos = m_pPlayerHook->GetPos();
+    Vec2 hookPos = m_pPlayerHook->GetWorldPos();
     
     // 거리 기반 판별
-    float currentDistance = (hookPos - m_pPlayerArm->GetPos()).Length();
+    float currentDistance = (hookPos - m_pPlayerArm->GetWorldPos()).Length();
     float distanceRatio = currentDistance / m_fWireRange;
     bool isNearPerimeter = (distanceRatio > 0.95f); // 95% 이상이면 최외각 근처로 간주
 
     // 다음 위치 예측
     Vec2 currentVelocity = GetRigidBody()->GetVelocity();
-    Vec2 nextPredictedPos = m_pPlayerArm->GetPos() + currentVelocity * fDT;
+    Vec2 nextPredictedPos = m_pPlayerArm->GetWorldPos() + currentVelocity * fDT;
     float nextPredictedDistance = (hookPos - nextPredictedPos).Length();
 
     // 다음 위치가 와이어 범위를 초과할 것으로 예상되는지 확인
     bool willExceedRange = (nextPredictedDistance > m_fWireRange);
 
     // 진행 방향과 갈고리 방향의 관계 확인 (갈고리 바깥쪽으로 향하는지)
-    Vec2 wireDir = m_pPlayerArm->GetPos() - hookPos;
+    Vec2 wireDir = m_pPlayerArm->GetWorldPos() - hookPos;
     wireDir.Normalize();
     Vec2 velocityDir = currentVelocity;
     velocityDir.Normalize();
@@ -732,7 +733,7 @@ bool SPlayer::IsWireTaut()
 // Swing 상태에서 플레이어의 속도를 적용
 void SPlayer::ApplySwingVelocity()
 {
-    Vec2 hookPos = m_pPlayerHook->GetPos();
+    Vec2 hookPos = m_pPlayerHook->GetWorldPos();
 
     // 원심력이 존재해서 플레이어 이동
     // (3.14159 / 180.f)는 degree를 radian으로 변환하는 공식
@@ -742,7 +743,7 @@ void SPlayer::ApplySwingVelocity()
         radian *= -1.f;
 
     // 갈고리에서 플레이어 방향 계산
-    Vec2 dirToPlayer = m_pPlayerArm->GetPos() - hookPos;
+    Vec2 dirToPlayer = m_pPlayerArm->GetWorldPos() - hookPos;
     dirToPlayer.Normalize();
 
     // m_fWireRange 거리에 있는 점 계산,이 위치는 부스터 쓸때만 써야할듯?
@@ -753,13 +754,13 @@ void SPlayer::ApplySwingVelocity()
     // 이 위치는 부스터 쓸때만 써야할듯?, 갈고리 박고 4초간 덜덜 떨리는 현상 발생
     //nextPos.x = (curMaxPos.x - hookPos.x) * cos(radian) - (curMaxPos.y - hookPos.y) * sin(radian) + hookPos.x;
     //nextPos.y = (curMaxPos.x - hookPos.x) * sin(radian) + (curMaxPos.y - hookPos.y) * cos(radian) + hookPos.y;
-    nextPos.x = (m_pPlayerArm->GetPos().x - hookPos.x) * cos(radian) - (m_pPlayerArm->GetPos().y - hookPos.y) *
+    nextPos.x = (m_pPlayerArm->GetWorldPos().x - hookPos.x) * cos(radian) - (m_pPlayerArm->GetWorldPos().y - hookPos.y) *
         sin(radian) + hookPos.x;
-    nextPos.y = (m_pPlayerArm->GetPos().x - hookPos.x) * sin(radian) + (m_pPlayerArm->GetPos().y - hookPos.y) *
+    nextPos.y = (m_pPlayerArm->GetWorldPos().x - hookPos.x) * sin(radian) + (m_pPlayerArm->GetWorldPos().y - hookPos.y) *
         cos(radian) + hookPos.y;
 
     // 플레이어와 갈고리 사이의 각도와 현재 받는 힘에 따라 플레이어가 이동할 다음 위치 계산
-    Vec2 nextDir = nextPos - m_pPlayerArm->GetPos();
+    Vec2 nextDir = nextPos - m_pPlayerArm->GetWorldPos();
     nextDir.Normalize();
 
 
@@ -773,7 +774,7 @@ void SPlayer::ApplySwingVelocity()
     if (m_fHookDistance > m_fWireRange)
     {
         // 현재 위치와 원하는 위치의 차이 (보정 벡터)
-        Vec2 correction = curMaxPos - m_pPlayerArm->GetPos();
+        Vec2 correction = curMaxPos - m_pPlayerArm->GetWorldPos();
 
         // 스프링 힘 계산 (강성계수 k 값 조절로 탄성 조절)
         float k = 1000.0f; 
@@ -796,16 +797,16 @@ void SPlayer::ApplySwingVelocity()
 void SPlayer::UpdateSwingEnergy()
 {
     // 갈고리 위치와 플레이어 사이의 거리 저장
-    Vec2 hookPos = m_pPlayerHook->GetPos();
-    m_fHookDistance = (hookPos - m_pPlayerArm->GetPos()).Length();
+    Vec2 hookPos = m_pPlayerHook->GetWorldPos();
+    m_fHookDistance = (hookPos - m_pPlayerArm->GetWorldPos()).Length();
 
     // 갈고리와 플레이어의 현재 각도 구하기
-    Vec2 wireDir = m_pPlayerArm->GetPos() - hookPos;
+    Vec2 wireDir = m_pPlayerArm->GetWorldPos() - hookPos;
     Vec2 up = Vec2(hookPos.x, hookPos.y - 1) - hookPos;
     float angle;
     
     // 갈고리가 플레이어의 좌우 중 어디에 있냐에 따라 각도 offset 조절
-    if (hookPos.x < m_pPlayerArm->GetPos().x)
+    if (hookPos.x < m_pPlayerArm->GetWorldPos().x)
         angle = wireDir.Angle(up);
     else
     {
@@ -830,7 +831,7 @@ void SPlayer::UpdateSwingEnergy()
             m_fPosEnergy = 75.f;
     }
         
-    if (hookPos.y > m_pPlayerArm->GetPos().y) // 플레이어가 갈고리보다 위에 있으면 m_fPosEnergy = 0
+    if (hookPos.y > m_pPlayerArm->GetWorldPos().y) // 플레이어가 갈고리보다 위에 있으면 m_fPosEnergy = 0
         m_fPosEnergy = 0.f;
 	
 
@@ -877,8 +878,7 @@ void SPlayer::SwingMove()
     
     // 이전 에너지 상태 저장
     float prevMoveEnergy = m_fMoveEnergy;
-    Vec2 hookPos = m_pPlayerHook->GetPos();
-    m_pPlayerHook->SetHookState(HOOK_STATE::FLYING);
+    Vec2 hookPos = m_pPlayerHook->GetWorldPos();
     
     
     // MoveEnergy와 PosEnergy 계산
@@ -898,7 +898,6 @@ void SPlayer::SwingMove()
             m_bCanBooster = false;
         }
     }
-
     
     // 와이어가 팽팽한 상태(플레이어가 원의 최외곽에 있는지)
     if (IsWireTaut())
@@ -907,7 +906,7 @@ void SPlayer::SwingMove()
         GetGravity()->SetApplyGravity(false);
 
         // 플레이어가 갈고리보다 위에 있는 경우
-        if (hookPos.y > m_pPlayerArm->GetPos().y)
+        if (hookPos.y > m_pPlayerArm->GetWorldPos().y)
         {
             // MoveEnergy의 힘이 500보다 작으면 원심력이 부족하다 판단하고 중력 적용
             if ((prevMoveEnergy > 500 && m_fMoveEnergy <= 500) || 
@@ -960,13 +959,13 @@ void SPlayer::CreateHook()
 
     // 풀에서 Hook 가져오기
     m_pPlayerHook = dynamic_cast<CHook*>(CObjectPool::GetInst()->GetPoolObject(L"Hook"));
-    m_pPlayerHook->SetParent(m_pPlayerArm);
-    m_pPlayerHook->SetPos(m_pPlayerArm->GetPos());
+    m_pPlayerHook->SetOwnerArm(m_pPlayerArm);
+    m_pPlayerHook->SetWorldPos(m_pPlayerArm->GetWorldPos());
     // 씬에 넣기
     CreateObject(m_pPlayerHook, GROUP_TYPE::HOOK);
     
     // 와이어 발사 방향으로 플레이어 바라보기
-	if (CCamera::GetInst()->GetRealPos(MOUSE_POS).x < GetPos().x)
+	if (CCamera::GetInst()->GetRealPos(MOUSE_POS).x < GetWorldPos().x)
 		m_iDir = -1;
 	else
 		m_iDir = 1;
@@ -984,10 +983,10 @@ void SPlayer::CreateHook()
 	    // Ray에 충돌한 물체가 GROUND일 경우
 		if (m_pRayHitCollider->GetObj()->GetGroup() == GROUP_TYPE::GROUND)
 		{
-			Vec2 dir = m_vRayHitPos - m_pPlayerArm->GetPos();
+			Vec2 dir = m_vRayHitPos - m_pPlayerArm->GetWorldPos();
 			dir.Normalize();
 
-			float distance = (m_vRayHitPos - m_pPlayerArm->GetPos()).Length();
+			float distance = (m_vRayHitPos - m_pPlayerArm->GetWorldPos()).Length();
 
 			if (distance > m_fWireMaxRange)
 			{
@@ -999,7 +998,7 @@ void SPlayer::CreateHook()
 				m_fWireRange = distance;
 			}
 
-			if (m_vRayHitPos.x < m_pPlayerArm->GetPos().x)
+			if (m_vRayHitPos.x < m_pPlayerArm->GetWorldPos().x)
 				m_fMoveEnergy = -distance * 1.5;
 			else
 				m_fMoveEnergy = distance * 1.5;
@@ -1014,7 +1013,7 @@ void SPlayer::CreateHook()
 // RayCast를 진행 후 Ray와 충돌한 충돌체를 onCollisionRay에 저장하고 충돌 지점을 targetPos에 저장 
 void SPlayer::RayCasting()
 {
-	m_pPlayerRay->SetPos(m_pPlayerArm->GetPos());
+	m_pPlayerRay->SetWorldPos(m_pPlayerArm->GetWorldPos());
 	m_pRayHitCollider = m_pPlayerRay->GetCollisionRay();
 	m_vRayHitPos = m_pPlayerRay->GetTargetPos();
 }

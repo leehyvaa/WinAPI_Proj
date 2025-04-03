@@ -40,7 +40,7 @@ void Raycast::CollisionCheck()
 {
 	Vec2 mousePos = CCamera::GetInst()->GetRealPos(MOUSE_POS);
 
-	Vec2 dir = mousePos - GetPos();
+	Vec2 dir = mousePos - GetWorldPos();
 	dir.Normalize();
 
 
@@ -95,19 +95,19 @@ void Raycast::CollisionCheck()
         // Ray에 부딪힌 물체가 있으면 while문 탈출
 		if (onCollisionRay != nullptr)
 		{
-			Vec2 pos = GetPos();
+			Vec2 pos = GetWorldPos();
 			Vec2 ColPos = GetCollider()->GetOffsetPos();
 			//targetpos가 플레이어와 가장 가까운 곳으로 찍히게 수정할 여지 있음
 
 		    // 타겟과 Ray가 충돌한 지점의 위치를 저장
-			targetPos = GetPos() + GetCollider()->GetOffsetPos();
+			targetPos = GetWorldPos() + GetCollider()->GetOffsetPos();
 			break;
 		}
 
-		Vec2 curPos = GetCollider()->GetOffsetPos() +GetPos();
+		Vec2 curPos = GetCollider()->GetOffsetPos() +GetWorldPos();
 
 		//레이 최대거리에 도달시 while문 탈출
-		if ((curPos - GetPos()).Length() >= m_fMaxWireRange + 50.f)
+		if ((curPos - GetWorldPos()).Length() >= m_fMaxWireRange + 50.f)
 			break;
 		
 		
@@ -120,7 +120,7 @@ void Raycast::CollisionCheck()
 
 bool Raycast::IsCollision(CCollider* _pLeftCol, CCollider* _pRightCol)
 {
-	Vec2 vLeftPos = _pLeftCol->GetOffsetPos() + _pLeftCol->GetObj()->GetPos();
+	Vec2 vLeftPos = _pLeftCol->GetOffsetPos() + _pLeftCol->GetObj()->GetWorldPos();
 	Vec2 vLeftScale = _pLeftCol->GetScale();
 
 	Vec2 vRightPos = _pRightCol->GetFinalPos();

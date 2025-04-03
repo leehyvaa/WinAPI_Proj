@@ -127,7 +127,7 @@ void CHook::Reset()
     
     if (GetParent())
     {
-        SetPos(GetParent()->GetPos());
+        SetWorldPos(GetParent()->GetWorldPos());
         
         // PlayerArm의 방향에 따라 Hook 방향 설정
         PlayerArm* pArm = dynamic_cast<PlayerArm*>(GetParent());
@@ -146,6 +146,11 @@ void CHook::Reset()
     // 상태 추적 변수 초기화
     prevDir = dir;
     prevState = curState;
+}
+
+void CHook::LookAt(Vec2 _target)
+{
+    GameObject::LookAt(_target);
 }
 
 void CHook::Update_Animation()
@@ -202,9 +207,9 @@ void CHook::Update_State()
 
 void CHook::Update_Move()
 {
-	Vec2 vPos = GetPos();
-
-    PlayerArm* pArm = static_cast<PlayerArm*>(GetParent());
+	Vec2 vPos = GetWorldPos();
+    
+    PlayerArm* pArm = m_pOwnerArm;
     SPlayer* player = static_cast<SPlayer*>(pArm->GetParent());
     
 	switch (hookState)
@@ -215,7 +220,7 @@ void CHook::Update_Move()
 		vPos.y = vPos.y + m_fSpeed * GetDir().y * fDT * 2;
         m_fMaxRange = player->GetWireMaxRange();
 		//거리가 제한거리이상 벗어나면 without리턴으로 변환
-		if ((GetPos() - pArm->GetPos()).Length() > m_fMaxRange)
+		if ((GetWorldPos() - pArm->GetWorldPos()).Length() > m_fMaxRange)
 		{
 			hookState = HOOK_STATE::RETURN_WITHOUT;
 		}
@@ -233,14 +238,14 @@ void CHook::Update_Move()
 		break;
 	case HOOK_STATE::RETURN_WITH:
 	{
-		Vec2 newDir = pArm->GetPos() - GetPos();
+		Vec2 newDir = pArm->GetWorldPos() - GetWorldPos();
 		newDir.Normalize();
 
 		vPos.x = vPos.x + m_fSpeed * newDir.x * fDT * 3;
 		vPos.y = vPos.y + m_fSpeed * newDir.y * fDT * 3;
 
 		//플레이어한테 도달하면 삭제
-		if ((GetPos() - pArm->GetPos()).Length() < 30.f && !IsDead())
+		if ((GetWorldPos() - pArm->GetWorldPos()).Length() < 30.f && !IsDead())
 		{
 		    ReturnToPool();
 		    SetDead(true);
@@ -250,14 +255,14 @@ void CHook::Update_Move()
 	}break;
 	case HOOK_STATE::RETURN_WITHOUT:
 	{
-		Vec2 newDir = pArm->GetPos() - GetPos();
+		Vec2 newDir = pArm->GetWorldPos() - GetWorldPos();
 		newDir.Normalize();
 
 		vPos.x = vPos.x + m_fSpeed * newDir.x * fDT * 3;
 		vPos.y = vPos.y + m_fSpeed * newDir.y * fDT * 3;
 
 		//플레이어한테 도달하면 삭제
-		if ((GetPos() - pArm->GetPos()).Length() < 30.f && !IsDead())
+		if ((GetWorldPos() - pArm->GetWorldPos()).Length() < 30.f && !IsDead())
 		{
 		    ReturnToPool();
 		    SetDead(true);
@@ -268,7 +273,7 @@ void CHook::Update_Move()
 		break;
 	}
 
-	SetPos(vPos);
+	SetWorldPos(vPos);
 
 }
 
@@ -277,8 +282,10 @@ void CHook::Update_Move()
 void CHook::Update()
 {
 
-
-	Update_State();
+    if (hookState != HOOK_STATE::GRAB)
+    {
+        Update_State();
+    }
 	Update_Move();
 	Update_Animation();
 
@@ -288,7 +295,7 @@ void CHook::Update()
 
 void CHook::Render(HDC _dc)
 {
-	Vec2 vPos = GetPos();
+	Vec2 vPos = GetWorldPos();
 	Vec2 vScale = GetScale();
 
 
@@ -296,8 +303,10 @@ void CHook::Render(HDC _dc)
 	Component_Render(_dc);
 
 
-	Vec2 pos1 = CCamera::GetInst()->GetRenderPos(GetPos());
-	Vec2 pos2 = CCamera::GetInst()->GetRenderPos(GetParent()->GetPos());
+    // 부모 대신 소유자 참조
+    Vec2 pos1 = CCamera::GetInst()->GetRenderPos(GetWorldPos());
+    Vec2 pos2 = CCamera::GetInst()->GetRenderPos(m_pOwnerArm->GetWorldPos());
+
 
 	SelectGDI p(_dc, PEN_TYPE::BLUE);
 
@@ -310,12 +319,8 @@ void CHook::OnCollisionEnter(CCollider* _pOther)
 {
 	GameObject* pOtherObj = _pOther->GetObj();
     
-    cout << "Hook collision with: " << static_cast<int>(pOtherObj->GetGroup()) << endl;
-    
     if (pOtherObj->GetGroup() == GROUP_TYPE::GROUND)
     {
-        cout << "Hook collided with ground, current state: " << static_cast<int>(hookState) << endl;
-        
         if (hookState == HOOK_STATE::FLYING)
         {
             GROUND_TYPE groundType = static_cast<CGround*>(pOtherObj)->GetGroundType();
@@ -323,12 +328,10 @@ void CHook::OnCollisionEnter(CCollider* _pOther)
             if (groundType == GROUND_TYPE::NORMAL)
             {
                 hookState = HOOK_STATE::GRAB;
-                cout << "Hook state changed to GRAB" << endl;
             }
             else if (groundType == GROUND_TYPE::UNWALKABLE)
             {
                 hookState = HOOK_STATE::RETURN_WITHOUT;
-                cout << "Hook state changed to RETURN_WITHOUT" << endl;
             }
         }
     }

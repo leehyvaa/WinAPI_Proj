@@ -62,14 +62,14 @@ void CScene_Tool::Enter()
 	CUI* pPanelUI = new CPanelUI;
 	pPanelUI->SetName(L"parentUI");
 	pPanelUI->SetScale(Vec2(320.f,350.f));
-	pPanelUI->SetPos(Vec2(vResolution.x - pPanelUI->GetScale().x,0.f));
+	pPanelUI->SetWorldPos(Vec2(vResolution.x - pPanelUI->GetScale().x,0.f));
 	AddObject(pPanelUI, GROUP_TYPE::UI);
 	m_pPanelUI = static_cast<CPanelUI*>(pPanelUI);
 
 	CBtnUI* pBtnTileTex = new CBtnUI;
 	pBtnTileTex->SetName(L"ChildUI");
 	pBtnTileTex->SetScale(Vec2(320.f, 288.f));
-	pBtnTileTex->SetPos(Vec2(0.f, 30.f));
+	pBtnTileTex->SetWorldPos(Vec2(0.f, 30.f));
 	((CBtnUI*)pBtnTileTex)->SetClickedCallBack(this, static_cast<SCENE_MEMFUNC>(&CScene_Tool::SetTileUIIdx));
 	
 	pPanelUI->AddChild(pBtnTileTex);
@@ -80,7 +80,7 @@ void CScene_Tool::Enter()
 	CBtnUI* pBtnPrev = new CBtnUI;
 	pBtnPrev->SetName(L"ChildUI");
 	pBtnPrev->SetScale(Vec2(32.f, 31.f));
-	pBtnPrev->SetPos(Vec2(1.f,288.f));
+	pBtnPrev->SetWorldPos(Vec2(1.f,288.f));
 	//pBtnUI->SetClickedCallBack(&ChangeScene,0,0);
 	((CBtnUI*)pBtnPrev)->SetClickedCallBack(this,static_cast<SCENE_MEMFUNC>(&CScene_Tool::PrevTileUI));
 	CTexture* pBtnTexPrev = CResMgr::GetInst()->LoadTexture(L"UI_LEFT", L"Texture\\UI\\UI_LEFT.bmp");
@@ -90,7 +90,7 @@ void CScene_Tool::Enter()
 
 
 	CBtnUI* pBtnNext = pBtnPrev->Clone();
-	pBtnNext->SetPos(Vec2(283.f, 288.f));
+	pBtnNext->SetWorldPos(Vec2(283.f, 288.f));
 	((CBtnUI*)pBtnNext)->SetClickedCallBack(this, static_cast<SCENE_MEMFUNC>(&CScene_Tool::NextTileUI));
 	CTexture* pBtnTexNext = CResMgr::GetInst()->LoadTexture(L"UI_RIGHT", L"Texture\\UI\\UI_RIGHT.bmp");
 	pBtnNext->SetTexture(pBtnTexNext);
@@ -98,7 +98,7 @@ void CScene_Tool::Enter()
 
 
 	CBtnUI* pBtnSave = pBtnPrev->Clone();
-	pBtnSave->SetPos(Vec2(140.f, 288.f));
+	pBtnSave->SetWorldPos(Vec2(140.f, 288.f));
 	((CBtnUI*)pBtnSave)->SetClickedCallBack(this, static_cast<SCENE_MEMFUNC>(&CScene_Tool::SaveTileData));
 	//CTexture* pBtnTexNext = CResMgr::GetInst()->LoadTexture(L"UI_RIGHT", L"Tool\\Button\\UI_RIGHT.bmp");
 	//pBtnNext->SetTexture(pBtnTexNext);
@@ -127,7 +127,7 @@ void CScene_Tool::Enter()
 
     // 모드 텍스트 박스 생성
     m_pModeText = new CTextUI();
-    m_pModeText->SetPos(Vec2(900, 0));
+    m_pModeText->SetWorldPos(Vec2(900, 0));
     m_pModeText->SetAlign(CTextUI::TEXT_ALIGN::CENTER);
     m_pModeText->SetLineSpace(5);
     m_pModeText->SetVisibleBox(false);
@@ -138,7 +138,7 @@ void CScene_Tool::Enter()
 
     // 설명서 텍스트 박스 생성
     m_pHelpText = new CTextUI();
-    m_pHelpText->SetPos(Vec2(0, 0));
+    m_pHelpText->SetWorldPos(Vec2(0, 0));
     m_pHelpText->SetAlign(CTextUI::TEXT_ALIGN::LEFT);
     m_pHelpText->SetLineSpace(5);
     m_pHelpText->SetVisibleBox(false);
@@ -148,7 +148,7 @@ void CScene_Tool::Enter()
 
 
     m_pHelpSubText = new CTextUI();
-    m_pHelpSubText->SetPos(Vec2(400, 0));
+    m_pHelpSubText->SetWorldPos(Vec2(400, 0));
     m_pHelpSubText->SetAlign(CTextUI::TEXT_ALIGN::LEFT);
     m_pHelpSubText->SetLineSpace(5);
     m_pHelpSubText->SetVisibleBox(false);
@@ -210,7 +210,7 @@ void CScene_Tool::Enter()
 	
 
 	CBackGround* backGround = new CBackGround;
-	backGround->SetPos(Vec2(0, 0));
+	backGround->SetWorldPos(Vec2(0, 0));
 	CTexture* back = CResMgr::GetInst()->LoadTexture(L"TutorialBack", L"texture\\background\\Forest_Mountain2.bmp");
 	
 	backGround->SetTexture(back);

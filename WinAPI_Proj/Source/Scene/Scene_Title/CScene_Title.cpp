@@ -49,7 +49,7 @@ void CScene_Title::Enter()
 
 	//백그라운드
 	CBackGround* backGround = new CBackGround;
-	backGround->SetPos(Vec2(0, 0));
+	backGround->SetWorldPos(Vec2(0, 0));
 	CTexture* back = CResMgr::GetInst()->LoadTexture(L"TitleBack", L"texture\\background\\Title.bmp");
 
 	backGround->SetTexture(back);
@@ -62,7 +62,7 @@ void CScene_Title::Enter()
 	CUI* pPanelUI = new CPanelUI;
 	pPanelUI->SetName(L"TitleUI");
 	pPanelUI->SetScale(Vec2(300.f, 300.f));
-	pPanelUI->SetPos(Vec2(800.f, 700.f));
+	pPanelUI->SetWorldPos(Vec2(800.f, 700.f));
 	CTexture* TitleUI = CResMgr::GetInst()->LoadTexture(L"UI_RECT", L"Texture\\UI\\UI_RECT.bmp");
 	((CPanelUI*)pPanelUI)->SetTexture(TitleUI);
 	
@@ -73,7 +73,7 @@ void CScene_Title::Enter()
 	CBtnUI* pBtnStart = new CBtnUI;
 	pBtnStart->SetName(L"Btn_Scene_Title");
 	pBtnStart->SetScale(Vec2(300.f, 100.f));
-	pBtnStart->SetPos(Vec2(50.f, 0.f));
+	pBtnStart->SetWorldPos(Vec2(50.f, 0.f));
 	pBtnStart->SetClickedCallBack(&ChangeScene, 2, 0);
 
 	CTexture* pBtnGameStart = CResMgr::GetInst()->LoadTexture(L"UI_GameStart", L"Texture\\UI\\UI_GameStart.bmp");
@@ -83,7 +83,7 @@ void CScene_Title::Enter()
 
 
 	CBtnUI* pBtnMap = pBtnStart->Clone();
-	pBtnMap->SetPos(Vec2(50.f, 100.f));
+	pBtnMap->SetWorldPos(Vec2(50.f, 100.f));
 	pBtnMap->SetClickedCallBack(&ChangeScene, 1, 0);
 	CTexture* pBtnTexMap = CResMgr::GetInst()->LoadTexture(L"UI_MapEditor", L"Texture\\UI\\UI_MapEditor.bmp");
 	pBtnMap->SetTexture(pBtnTexMap);
@@ -91,7 +91,7 @@ void CScene_Title::Enter()
 
 
 	CBtnUI* pBtnQuit = pBtnStart->Clone();
-	pBtnQuit->SetPos(Vec2(50.f, 200.f));
+	pBtnQuit->SetWorldPos(Vec2(50.f, 200.f));
 	pBtnQuit->SetClickedCallBack(&GameOver,0,0);
 	CTexture* pBtnTexQuit = CResMgr::GetInst()->LoadTexture(L"UI_GameQuit", L"Texture\\UI\\UI_GameQuit.bmp");
 	pBtnQuit->SetTexture(pBtnTexQuit);

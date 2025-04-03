@@ -79,7 +79,7 @@ void Scene_Stage_01::Enter()
 	
 	GameObject* player = new SPlayer();
 	player->SetName(L"Player");
-	player->SetPos(Vec2(0.f,0.f)); //700,3000
+	player->SetWorldPos(Vec2(0.f,0.f)); //700,3000
 	//player->SetScale(Vec2(100.f, 100.f));
 	AddObject(player, GROUP_TYPE::PLAYER);
 	RegisterPlayer(player);
@@ -96,7 +96,7 @@ void Scene_Stage_01::Enter()
 
 	GameObject* cursor = new MouseCursor();
 	cursor->SetName(L"Cursor");
-	cursor->SetPos(player->GetPos());
+	cursor->SetWorldPos(player->GetWorldPos());
 	AddObject(cursor, GROUP_TYPE::Ray);
 
 
@@ -176,7 +176,7 @@ void Scene_Stage_01::Enter()
 
 
 	CBackGround* backGround = new CBackGround;
-	backGround->SetPos(Vec2(0, 0));
+	backGround->SetWorldPos(Vec2(0, 0));
 	CTexture* back = CResMgr::GetInst()->LoadTexture(L"TutorialBack", L"texture\\background\\Forest_Mountain2.bmp");
 	
 	backGround->SetTexture(back);
@@ -199,6 +199,7 @@ void Scene_Stage_01::Exit()
 	DeleteAll();
 	CCollisionMgr::GetInst()->Reset();
 	ShowCursor(true);
+    CCamera::GetInst()->SetTarget(nullptr);
 
 
 }

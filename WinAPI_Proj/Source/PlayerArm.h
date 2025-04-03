@@ -24,7 +24,7 @@ public:
     void SetDir(int _dir) { m_iDir = _dir; }
     void SetState(PLAYER_STATE _state) { m_eCurState = _state; }
     void SetPrevState(PLAYER_STATE _state) { m_ePrevState = _state; }
-
+    
 public:
     PlayerArm();
     ~PlayerArm();

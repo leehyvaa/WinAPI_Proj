@@ -15,7 +15,7 @@ CMonster* CMonPrefab::CreateMonster(MON_TYPE _eType, Vec2 _vPos)
 	case MON_TYPE::NORMAL:
 	{
 		pMon = new CMonster;
-		pMon->SetPos(_vPos);
+		pMon->SetWorldPos(_vPos);
 		tMonInfo info = {};
 		info.fAtt = 10.f;
 		info.fAttRange = 50.f;

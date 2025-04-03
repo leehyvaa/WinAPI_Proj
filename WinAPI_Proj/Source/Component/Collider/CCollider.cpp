@@ -38,7 +38,7 @@ void CCollider::FinalUpdate()
     if (!m_bActive)
         return;
     
-	Vec2 vObjectPos = m_pOwner->GetPos();
+	Vec2 vObjectPos = m_pOwner->GetWorldPos();
 	m_vFinalPos = vObjectPos + m_vOffsetPos;
 
 

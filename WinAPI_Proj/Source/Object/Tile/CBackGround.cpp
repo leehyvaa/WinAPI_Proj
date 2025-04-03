@@ -21,7 +21,7 @@ void CBackGround::Render(HDC _dc)
 		return;
 
 
-	Vec2 vRenderPos =GetPos();
+	Vec2 vRenderPos =GetWorldPos();
 
 	Vec2 vScale = GetScale();
 

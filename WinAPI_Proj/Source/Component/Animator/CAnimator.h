@@ -21,7 +21,8 @@ public:
 						Vec2 _vSliceSize, Vec2 _vStep, float _fDuration,UINT _iFrameCount, float _fSizeMulti, Vec2 _vOffset);
 	void LoadAnimation(const wstring& _strRelativePath);
 	
-	
+    Vec2 GetCurrentAnimationOffset();
+ 
 	CAnimation* FindAnimation(const wstring& _strName);
 	void Play(const wstring& _strName,bool _bRepeat);
 

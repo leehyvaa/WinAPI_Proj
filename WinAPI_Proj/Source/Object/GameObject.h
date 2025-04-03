@@ -23,33 +23,36 @@ private:
 	Vec2 m_vDir;
 	Vec2 m_vStandardDir;
 	float m_fLocalRotation;
-
-	Vec2 m_vPos;
-	Vec2 m_vScale;
     
+	Vec2 m_vScale;
+    Vec2 m_vPos;
+    Vec2 m_vPivotOffset;  // 회전 중심점 오프셋
     GameObject* m_pParent;
 	CCollider* m_pCollider;
 	CAnimator* m_pAnimator;
 	CRigidBody* m_pRigidBody;
 	CGravity* m_pGravity;
 
-
 protected:
     GROUP_TYPE m_eGroup;
-
+    Vec2 m_vLocalPos;
 public:
 	GameObject();
 	GameObject(const GameObject& _origin);
 	virtual ~GameObject();
 
-	void LookAt(Vec2 _target);
+	virtual void LookAt(Vec2 _target);
 	void SetDir(Vec2 _dir) { m_vDir = _dir; }
-	void SetPos(Vec2 _vPos) { m_vPos = _vPos; }
+    void SetWorldPos(Vec2 _vWorldPos);
+    void SetLocalPos(Vec2 _vLocalPos) { m_vLocalPos = _vLocalPos; };
 	void SetScale(Vec2 _vScale) { m_vScale = _vScale; }
 	void SetStdDir(Vec2 _dir) { m_vStandardDir = _dir; }
     void SetGroup(GROUP_TYPE _type) { m_eGroup = _type; }
+    void SetPivotOffset(Vec2 _offset) { m_vPivotOffset = _offset; }
     
-	Vec2 GetPos() { return m_vPos; }
+    Vec2 GetPivotOffset() { return m_vPivotOffset; }
+    Vec2 GetLocalPos(){ return m_vLocalPos; }
+	Vec2 GetWorldPos();
 	Vec2 GetScale() { return m_vScale; }
 	Vec2 GetDir() { return m_vDir; }
 	Vec2 GetStdDir() { return m_vStandardDir; }

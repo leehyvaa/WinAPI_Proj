@@ -5,6 +5,7 @@
 #include "CAnimator.h"
 #include "CAnimation.h"
 #include "CCollider.h"
+#include "CHook.h"
 
 PlayerArm::PlayerArm()
 	: m_fSpeed(1000), m_ePrevClimbState(PLAYER_CLIMB_STATE::NONE)
@@ -14,6 +15,7 @@ PlayerArm::PlayerArm()
 	CreateCollider();
 	GetCollider()->SetOffsetPos(Vec2(0.f, 5.f));
 	GetCollider()->SetScale(Vec2(10.f, 10.f));
+    
 
 #pragma region 플레이어 Arm 애니메이션
 	// 텍스쳐 로딩
@@ -96,18 +98,34 @@ PlayerArm::~PlayerArm()
 void PlayerArm::Update()
 {
     SPlayer* player = static_cast<SPlayer*>(GetParent());
-    
-	Vec2 vPos(GetPos());
-	if (player->GetDir() == 1)
-	{
-		vPos = Vec2(player->GetPos().x, player->GetPos().y - 80);
-	}
-	else
-	{
-		vPos = Vec2(player->GetPos().x, player->GetPos().y - 80);
-	}
-	SetPos(vPos);
-
+    if (player)
+    {
+        m_iDir = player->GetDir();
+        m_eCurState = player->GetState();
+        
+        // 기본적인 로컬 위치 설정
+        if (m_eCurState != PLAYER_STATE::SWING)
+        {
+            // 일반 상태에서는 고정된 오프셋 사용
+            SetLocalPos(Vec2(0.f, -80.f));
+            SetLocalRotation(0.f); // 회전 초기화
+        }
+        else 
+        {
+            // Swing 상태에서는 항상 일정한 로컬 위치 유지
+            SetLocalPos(Vec2(0.f, -80.f));
+            
+            // PlayerArm 자체는 별도 회전을 하지 않음
+            // 플레이어의 회전이 자동으로 적용됨
+            SetLocalRotation(0.f);
+            
+            // 만약 필요하다면 애니메이션 오프셋 조정
+            if (GetAnimator() && GetAnimator()->FindAnimation(L"SNB_ARM_RIGHT_SWING"))
+            {
+                // 여기서 스윙 애니메이션의 오프셋 동적 조정 가능
+            }
+        }
+    }
 	Update_ClimbAnimation();
 	Update_Animation();
 	GetAnimator()->Update();
@@ -127,7 +145,9 @@ void PlayerArm::Update_Animation()
 	if (m_ePrevState == m_eCurState && m_iPrevDir == m_iDir)
 		return;
     SPlayer* player = static_cast<SPlayer*>(GetParent());
-
+    if (!player) return;
+    CHook* currentHook = player->GetPlayerHook();
+    
 	switch (m_eCurState)
 	{
 	case PLAYER_STATE::IDLE:
@@ -166,7 +186,15 @@ void PlayerArm::Update_Animation()
 		break;
 	case PLAYER_STATE::SWING:
 		// LookAt 고쳐야함 기준방향으로부터의 회전으로
-		LookAt(player->GetTargetPos());
+		    // if (currentHook != nullptr)
+		    // {
+		    //     LookAt(currentHook->GetWorldPos()); // 이건 갈고리 방향으로 바라보게 함
+      //       
+		    //     // 왼쪽으로 90도 추가 회전
+		    //     float currentRotation = GetLocalRotation();
+		    //     SetLocalRotation(currentRotation - 90.0f);
+		    // }
+		        SetLocalRotation(0.f);
 		if (m_iDir == -1)
 			GetAnimator()->Play(L"SNB_ARM_LEFT_SWING", true);
 		else

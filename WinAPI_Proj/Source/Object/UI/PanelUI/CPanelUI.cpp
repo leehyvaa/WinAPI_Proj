@@ -25,9 +25,9 @@ void CPanelUI::MouseOn()
 	if (IsLbtnDown())
 	{
 		Vec2 vDiff = MOUSE_POS - m_vDragStart;
-		Vec2 vCurPos = GetPos();
+		Vec2 vCurPos = GetWorldPos();
 		vCurPos += vDiff;
-		SetPos(vCurPos);
+		SetWorldPos(vCurPos);
 
 		m_vDragStart = MOUSE_POS;
 	}

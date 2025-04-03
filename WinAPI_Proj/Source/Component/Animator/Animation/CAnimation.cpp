@@ -72,7 +72,7 @@ void CAnimation::Render(HDC _dc)
     }
 
     GameObject* pObj = m_pAnimator->GetObj();
-    Vec2 vPos = pObj->GetPos();
+    Vec2 vPos = pObj->GetWorldPos();
     vPos += m_vecFrm[m_iCurFrm].vOffset;
     vPos = CCamera::GetInst()->GetRenderPos(vPos);
 
@@ -184,7 +184,8 @@ void CAnimation::Create(CTexture* _pTex, Vec2 _vLT, Vec2 _vSliceSize,
 {
 	m_pTex = _pTex;
 	tAnimFrm frm = {};
-
+    m_vOffset = _vOffset;
+    
 	for (UINT i = 0; i < _iFrameCount; i++)
 	{
 		frm.fDuration = _fDuration;

@@ -34,7 +34,7 @@ void CTile::Render(HDC _dc)
 
 	if (nullptr != m_pTileTex && -1 != m_iImgIdx)
 	{
-		Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(GetPos());
+		Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(GetWorldPos());
 		Vec2 vScale = GetScale();
 
 
@@ -81,7 +81,7 @@ void CTile::Render(HDC _dc)
 
 	if (nullptr != m_pTileTex2 && -1 != m_iImgIdx2)
 	{
-		Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(GetPos());
+		Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(GetWorldPos());
 		Vec2 vScale = GetScale();
 
 
@@ -135,7 +135,7 @@ void CTile::Render(HDC _dc)
         SelectGDI b(_dc, BRUSH_TYPE::HOLLOW);
         SelectGDI p(_dc, ePen);
 
-        Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(Vec2(GetPos().x + 2, GetPos().y + 2));
+        Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(Vec2(GetWorldPos().x + 2, GetWorldPos().y + 2));
         Vec2 vScale = Vec2(GetScale().x - 4.f, GetScale().y - 4.f);
 
 

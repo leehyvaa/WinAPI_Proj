@@ -91,6 +91,13 @@ void CAnimator::LoadAnimation(const wstring& _strRelativePath)
 	m_mapAnim.insert(make_pair(pAnim->GetName(), pAnim));
 }
 
+Vec2 CAnimator::GetCurrentAnimationOffset()
+{
+    if (m_pCurAnim)
+        return m_pCurAnim->GetCurrentFrameOffset();
+    return Vec2(0.f, 0.f);
+}
+
 CAnimation* CAnimator::FindAnimation(const wstring& _strName)
 {
 	map<wstring,CAnimation*>::iterator iter = m_mapAnim.find(_strName);

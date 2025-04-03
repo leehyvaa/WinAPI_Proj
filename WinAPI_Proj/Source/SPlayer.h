@@ -68,7 +68,8 @@ public:
     PLAYER_STATE GetState() { return m_eCurState; }
     PLAYER_STATE GetPrevState() { return m_ePrevState; }
     PLAYER_CLIMB_STATE GetClimbState() { return m_eClimbState; }
-    
+    CHook* GetPlayerHook() const { return m_pPlayerHook; }
+
 	void SetOnGround(bool _onGround) { m_bOnGround = _onGround; }
     void SetRidingWire(bool _ridingWire) { m_bRidingWire = _ridingWire; }
     void SetWallClimbing(bool _isClimbing) { m_bClimbing = _isClimbing; }

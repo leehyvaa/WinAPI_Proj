@@ -59,7 +59,7 @@ void CScene::Enter()
 {
     if (m_pPlayerText == nullptr) {
         m_pPlayerText = new CTextUI();
-        m_pPlayerText->SetPos(Vec2(900, 0));
+        m_pPlayerText->SetWorldPos(Vec2(900, 0));
         m_pPlayerText->SetAlign(CTextUI::TEXT_ALIGN::CENTER);
         m_pPlayerText->SetLineSpace(5);
         m_pPlayerText->SetVisibleBox(false);
@@ -79,7 +79,7 @@ void CScene::Enter()
     // 풀 디버그 텍스트 초기화
     if (m_pPoolDebugText == nullptr) {
         m_pPoolDebugText = new CTextUI();
-        m_pPoolDebugText->SetPos(Vec2(10, 10)); // 왼쪽 상단에 위치
+        m_pPoolDebugText->SetWorldPos(Vec2(10, 10)); // 왼쪽 상단에 위치
         m_pPoolDebugText->SetAlign(CTextUI::TEXT_ALIGN::LEFT);
         m_pPoolDebugText->SetLineSpace(5);
         m_pPoolDebugText->SetVisibleBox(true);
@@ -326,7 +326,7 @@ void CScene::Render_Tile(HDC _dc)
 
 			if(bDrawGrid)
 			{
-				Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(vecTile[iIdx]->GetPos());
+				Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(vecTile[iIdx]->GetWorldPos());
 				Vec2 vScale = vecTile[iIdx]->GetScale();
 
 				SelectGDI brush(_dc, BRUSH_TYPE::HOLLOW);
@@ -350,8 +350,8 @@ void CScene::Render_Tile(HDC _dc)
 		        int botIdx = static_cast<CTile*>(vecTile[iIdx])->GetBotRightTileIdx();
 		        if (botIdx != -1 && botIdx < static_cast<int>(vecTile.size()))
 		        {
-		            Vec2 vStartPos = CCamera::GetInst()->GetRenderPos(vecTile[iIdx]->GetPos());
-		            Vec2 vEndPos = CCamera::GetInst()->GetRenderPos(vecTile[botIdx]->GetPos());
+		            Vec2 vStartPos = CCamera::GetInst()->GetRenderPos(vecTile[iIdx]->GetWorldPos());
+		            Vec2 vEndPos = CCamera::GetInst()->GetRenderPos(vecTile[botIdx]->GetWorldPos());
 		            SelectGDI brush(_dc, PEN_TYPE::BIGGREEN);
 
 		            // 화면에 선 그리기
@@ -479,7 +479,7 @@ void CScene::CreateTile(UINT _iXCount, UINT _iYCount)
         {
             CTile* pTile = new CTile();
 
-            pTile->SetPos(Vec2(static_cast<float>(j * TILE_SIZE), static_cast<float>(i * TILE_SIZE)));
+            pTile->SetWorldPos(Vec2(static_cast<float>(j * TILE_SIZE), static_cast<float>(i * TILE_SIZE)));
             //pTile->SetTexture(pTileTex);
             AddObject(pTile, GROUP_TYPE::TILE);
         }
@@ -502,18 +502,18 @@ void CScene::CreateGround()
         
         if (pTile->GetVertexPosition() == VERTEX_POSITION::TOP_LEFT)
          {
-             Vec2 vPos1 = pTile->GetPos();
+             Vec2 vPos1 = pTile->GetWorldPos();
              int iBotRightIdx = pTile->GetBotRightTileIdx();
              if (iBotRightIdx < 0 || iBotRightIdx >= (int)vecTile.size()) continue;
 
-             Vec2 vPos2 = vecTile[iBotRightIdx]->GetPos() + vecTile[iBotRightIdx]->GetScale();
+             Vec2 vPos2 = vecTile[iBotRightIdx]->GetWorldPos() + vecTile[iBotRightIdx]->GetScale();
              GROUND_TYPE groundType = pTile->GetGroundType();
              Vec2 vTileScale = pTile->GetScale();
             
              if (groundType == GROUND_TYPE::NORMAL)
              {
                  CGround* pGround = new CGround();
-                 pGround->SetPos(vPos1);
+                 pGround->SetWorldPos(vPos1);
                  pGround->SetGroundType(groundType);
                  pGround->SetScale(vPos2 - vPos1);
                  pGround->SetCollideType(TILE_COLLIDE_TYPE::SOLID);
@@ -554,7 +554,7 @@ void CScene::CreateGround()
              else // 이동불가/데미지/즉사 지형
              {
                  CGround* pGround = new CGround();
-                 pGround->SetPos(vPos1);
+                 pGround->SetWorldPos(vPos1);
                  pGround->SetGroundType(groundType);
                  pGround->SetScale(vPos2 - vPos1);
                  pGround->SetCollideType(TILE_COLLIDE_TYPE::SOLID);
