@@ -98,7 +98,13 @@ PlayerArm::~PlayerArm()
 void PlayerArm::Update()
 {
     SPlayer* player = static_cast<SPlayer*>(GetParent());
-   
+    if (player)
+    {
+        m_iDir = player->GetDir();
+        m_eCurState = player->GetState();
+    }
+
+    
     // if (player)
     // {
     //     m_iDir = player->GetDir();

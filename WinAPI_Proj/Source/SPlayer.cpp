@@ -126,8 +126,8 @@ SPlayer::SPlayer()
     // 팔 생성
     GameObject* playerArm = new PlayerArm();
     playerArm->SetName(L"PlayerArm");
-    playerArm->SetLocalPos(Vec2(0.f, -80.f));
     playerArm->SetWorldPos(GetWorldPos());
+    playerArm->SetLocalPos(Vec2(0.f, -80.f));
     playerArm->SetParent(this);
     SetArm(static_cast<PlayerArm*>(playerArm));
     CreateObject(playerArm, GROUP_TYPE::PLAYER_ARM);

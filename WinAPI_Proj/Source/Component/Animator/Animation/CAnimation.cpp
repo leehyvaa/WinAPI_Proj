@@ -62,63 +62,69 @@ void CAnimation::Update()
 
 void CAnimation::Render(HDC _dc)
 {
-    if (m_bFinish || m_iCurFrm < 0 || m_iCurFrm >= m_vecFrameBitmaps.size()) // m_vecFrm.size() ->m_vecFrameBitmaps.size()
-        return;
+    if (m_bFinish || m_iCurFrm < 0 || m_iCurFrm >= m_vecFrameBitmaps.size())
+           return;
 
-    // 캐싱되지 않은 경우 캐싱 수행 (이전 코드 유지)
-    if (!m_bCached)
-    {
-        CacheFrames();
-    }
+       if (!m_bCached)
+       {
+           CacheFrames();
+       }
 
-    GameObject* pObj = m_pAnimator->GetObj();
-    Vec2 vPos = pObj->GetWorldPos(); // FinalUpdate에서 계산된 최종 논리적 위치
+       GameObject* pObj = m_pAnimator->GetObj();
+       Vec2 vLogicalPos = pObj->GetWorldPos(); // 최종 논리적 위치
+       tAnimFrm& curFrame = m_vecFrm[m_iCurFrm];
+       Vec2 vOffset = curFrame.vOffset; // 현재 프레임의 로컬 오프셋
 
-    // --- 확인 및 제거 ---
-    // 만약 아래와 같이 vOffset을 직접 더하는 코드가 있다면 제거합니다.
-    //vPos += m_vecFrm[m_iCurFrm].vOffset; // <--- 이 줄 제거 또는 주석 처리
-    // --------------------
+       float worldRotationAngle = pObj->GetWorldRotation(); // 최종 월드 회전 각도
+       float rotationRad = worldRotationAngle * (3.14159f / 180.f);
+       float cosAngle = cosf(rotationRad);
+       float sinAngle = sinf(rotationRad);
 
-    vPos = CCamera::GetInst()->GetRenderPos(vPos); // 카메라 변환 적용
+       // 오프셋을 객체의 월드 회전만큼 회전시킴
+       Vec2 vRotatedOffset;
+       vRotatedOffset.x = vOffset.x * cosAngle - vOffset.y * sinAngle;
+       vRotatedOffset.y = vOffset.x * sinAngle + vOffset.y * cosAngle;
 
-    float rotationAngle = m_pAnimator->GetObj()->GetWorldRotation();
-    float minRotationThreshold = 3.0f; // 회전 적용 임계값 (이전 코드 유지)
+       // 최종 시각적 위치 계산 = 논리적 위치 + 회전된 오프셋
+       Vec2 vVisualPos = vLogicalPos + vRotatedOffset;
 
-    // GDI+ Graphics 객체 생성 (이전 코드 유지)
-    Graphics graphics(_dc);
-    graphics.SetInterpolationMode(InterpolationModeNearestNeighbor);
-    graphics.SetPixelOffsetMode(PixelOffsetModeHalf);
+       // 카메라 변환 적용 (시각적 위치 기준)
+       Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(vVisualPos);
 
-    // 현재 프레임의 캐싱된 비트맵 가져오기 (이전 코드 유지)
-    Bitmap* frameBitmap = m_vecFrameBitmaps[m_iCurFrm];
+       float minRotationThreshold = 3.0f;
 
-    // 프레임 정보 (이전 코드 유지)
-    int srcWidth = frameBitmap->GetWidth();
-    int srcHeight = frameBitmap->GetHeight();
+       Graphics graphics(_dc);
+       graphics.SetInterpolationMode(InterpolationModeNearestNeighbor);
+       graphics.SetPixelOffsetMode(PixelOffsetModeHalf);
 
-    // 렌더링 위치 계산 (논리적 vPos 기준)
-    // destX/destY는 논리적 위치 vPos를 기준으로 스프라이트의 좌상단 좌표를 계산합니다.
-    // GDI+ 회전 중심(centerX/centerY)도 이 destX/destY 기반으로 계산됩니다.
-    int destX = static_cast<INT>(vPos.x - srcWidth * m_fSizeMulti / 2.0f + 0.5f);
-    int destY = static_cast<INT>(vPos.y - srcHeight * m_fSizeMulti / 2.0f + 0.5f);
-    int destWidth = static_cast<INT>(srcWidth * m_fSizeMulti + 0.5f);
-    int destHeight = static_cast<INT>(srcHeight * m_fSizeMulti + 0.5f);
+       Bitmap* frameBitmap = m_vecFrameBitmaps[m_iCurFrm];
+       int srcWidth = frameBitmap->GetWidth();
+       int srcHeight = frameBitmap->GetHeight();
 
-    // 회전 및 그리기 로직 (이전 코드 유지)
-    if (abs(rotationAngle) > minRotationThreshold)
-    {
-        float centerX = static_cast<float>(destX + destWidth / 2);
-        float centerY = static_cast<float>(destY + destHeight / 2);
-        Matrix rotMatrix;
-        rotMatrix.RotateAt(rotationAngle, PointF(centerX, centerY));
-        graphics.SetTransform(&rotMatrix);
-        graphics.DrawImage(frameBitmap, Rect(destX, destY, destWidth, destHeight));
-        graphics.ResetTransform();
-    }
-    else
-    {
-        graphics.DrawImage(frameBitmap, Rect(destX, destY, destWidth, destHeight));
-    }
+       // 렌더링 위치 계산 (시각적 vRenderPos 기준)
+       int destWidth = static_cast<INT>(srcWidth * m_fSizeMulti + 0.5f);
+       int destHeight = static_cast<INT>(srcHeight * m_fSizeMulti + 0.5f);
+       // 시각적 중심점에 이미지의 좌상단이 오도록 계산
+       int destX = static_cast<INT>(vRenderPos.x - destWidth / 2.0f + 0.5f);
+       int destY = static_cast<INT>(vRenderPos.y - destHeight / 2.0f + 0.5f);
+
+
+       if (abs(worldRotationAngle) > minRotationThreshold)
+       {
+           // 회전 중심은 시각적 위치의 중심 (vRenderPos)
+           float centerX = static_cast<float>(vRenderPos.x);
+           float centerY = static_cast<float>(vRenderPos.y);
+           Matrix rotMatrix;
+           rotMatrix.RotateAt(worldRotationAngle, PointF(centerX, centerY)); // GDI+는 각도 단위 사용
+           graphics.SetTransform(&rotMatrix);
+           // DrawImage는 좌상단 좌표 기준이므로 destX, destY 사용
+           graphics.DrawImage(frameBitmap, Rect(destX, destY, destWidth, destHeight));
+           graphics.ResetTransform();
+       }
+       else
+       {
+           graphics.DrawImage(frameBitmap, Rect(destX, destY, destWidth, destHeight));
+       }
 }
 
 // 프레임 캐싱 함수

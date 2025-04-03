@@ -209,75 +209,45 @@ void GameObject::Update()
 
 void GameObject::FinalUpdate()
 {
-     if (!m_bActive)
+    if (!m_bActive)
         return;
 
     // 1. 컴포넌트 업데이트 (RigidBody 먼저)
     if (m_pGravity)
         m_pGravity->FinalUpdate();
     if (m_pRigidBody)
-        m_pRigidBody->FinalUpdate(); // RigidBody가 m_vPos/m_vLocalPos를 확정
+        m_pRigidBody->FinalUpdate(); // RigidBody가 m_vPos/m_vLocalPos를 확정할 수 있음 (하지만 아래에서 재계산될수 있음)
 
-    // 2. 부모-자식 관계에 따른 최종 월드 위치(m_vPos) 및 회전 계산
-    if (m_pParent)
-    {
-        // --- 부모 정보 ---
-        Vec2 parentWorldPos = m_pParent->GetWorldPos(); // 부모 논리적 월드 위치
-        float parentWorldRotation = m_pParent->GetWorldRotation(); // 부모 최종 월드 회전
-        float parentRotationRad = parentWorldRotation * (3.14159f / 180.f);
-        float cosParent = cosf(parentRotationRad);
-        float sinParent = sinf(parentRotationRad);
+        // 2. 부모-자식 관계에 따른 최종 논리적 월드 위치(m_vPos) 및 회전 계산
+        if (m_pParent)
+        {
+            // --- 부모 정보 ---
+            Vec2 parentWorldPos = m_pParent->GetWorldPos(); // 부모 논리적 월드 위치
+            float parentWorldRotation = m_pParent->GetWorldRotation(); // 부모 최종 월드 회전
+            float parentRotationRad = parentWorldRotation * (3.14159f / 180.f);
+            float cosParent = cosf(parentRotationRad);
+            float sinParent = sinf(parentRotationRad);
 
-        Vec2 parentAnimOffset(0.f, 0.f);
-        if (m_pParent->GetAnimator()) {
-            parentAnimOffset = m_pParent->GetAnimator()->GetCurrentAnimationOffset();
+            // --- 자식 로컬 위치를 부모 회전에 맞춰 회전 (부모 기준 오프셋) ---
+            Vec2 rotatedLocalPosOffset;
+            rotatedLocalPosOffset.x = m_vLocalPos.x * cosParent - m_vLocalPos.y * sinParent;
+            rotatedLocalPosOffset.y = m_vLocalPos.x * sinParent + m_vLocalPos.y * cosParent;
+
+            // --- 최종 자식 논리적 위치 (m_vPos) 계산 ---
+            // 부모의 논리적 위치 + 회전된 자식의 로컬 오프셋
+            m_vPos = parentWorldPos + rotatedLocalPosOffset;
+        }
+        else
+        {
+            // 부모가 없는 경우, 로컬 위치가 월드 위치
+            m_vPos = m_vLocalPos;
         }
 
-        // --- 부모 시각적 중심 (p1) 계산 ---
-        Vec2 rotatedParentAnimOffset;
-        rotatedParentAnimOffset.x = parentAnimOffset.x * cosParent - parentAnimOffset.y * sinParent;
-        rotatedParentAnimOffset.y = parentAnimOffset.x * sinParent + parentAnimOffset.y * cosParent;
-        Vec2 parentVisualCenter = parentWorldPos + rotatedParentAnimOffset; // p1
-
-        // --- 자식 정보 ---
-        float childWorldRotation = GetWorldRotation(); // 자식 최종 월드 회전 (부모 회전 포함)
-        float childRotationRad = childWorldRotation * (3.14159f / 180.f);
-        float cosChild = cosf(childRotationRad);
-        float sinChild = sinf(childRotationRad);
-
-        Vec2 childAnimOffset(0.f, 0.f);
-        if (m_pAnimator) { // 자신의 애니메이터 사용
-            childAnimOffset = m_pAnimator->GetCurrentAnimationOffset();
-        }
-
-        // --- 자식 로컬 위치를 부모 회전에 맞춰 회전 (부모 기준 오프셋) ---
-        Vec2 rotatedLocalPosOffset;
-        rotatedLocalPosOffset.x = m_vLocalPos.x * cosParent - m_vLocalPos.y * sinParent;
-        rotatedLocalPosOffset.y = m_vLocalPos.x * sinParent + m_vLocalPos.y * cosParent;
-
-        // --- 자식 애니메이션 오프셋을 자식 최종 회전에 맞춰 회전 ---
-        Vec2 rotatedChildAnimOffset;
-        rotatedChildAnimOffset.x = childAnimOffset.x * cosChild - childAnimOffset.y * sinChild;
-        rotatedChildAnimOffset.y = childAnimOffset.x * sinChild + childAnimOffset.y * cosChild;
-
-        // --- 최종 자식 논리적 위치 (m_vPos) 계산 ---
-        // 목표: Child_VisualPos = Parent_VisualPos + Rotated_ChildLocalPos
-        // Child_VisualPos = Child_LogicalPos(m_vPos) + Rotated_ChildAnimOffset
-        // 따라서, Child_LogicalPos(m_vPos) = Parent_VisualPos + Rotated_ChildLocalPos - Rotated_ChildAnimOffset
-        m_vPos = parentVisualCenter + rotatedLocalPosOffset - rotatedChildAnimOffset;
-
-    }
-    else
-    {
-        // 부모가 없는 경우
-        m_vPos = m_vLocalPos;
-    }
-
-    // 3. 나머지 컴포넌트 업데이트 (최종 위치/회전 기반)
+    // 3. 나머지 컴포넌트 업데이트 (최종 논리적 위치/회전 기반)
     if (m_pAnimator)
-        m_pAnimator->FinalUpdate();
+        m_pAnimator->FinalUpdate(); // 애니메이션 상태 업데이트 (시간 등)
     if (m_pCollider)
-        m_pCollider->FinalUpdate();
+        m_pCollider->FinalUpdate(); // 콜라이더 위치 업데이트 (이제 순수 논리적 m_vPos 사용)
 }
 
 void GameObject::Render(HDC _dc)
