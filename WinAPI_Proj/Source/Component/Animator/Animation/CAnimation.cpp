@@ -62,70 +62,62 @@ void CAnimation::Update()
 
 void CAnimation::Render(HDC _dc)
 {
-    if (m_bFinish || m_iCurFrm < 0 || m_iCurFrm >= m_vecFrameBitmaps.size())
+    if (m_bFinish || m_iCurFrm < 0 || m_iCurFrm >= m_vecFrameBitmaps.size()) // m_vecFrm.size() ->m_vecFrameBitmaps.size()
         return;
-        
-    // 캐싱되지 않은 경우 캐싱 수행
+
+    // 캐싱되지 않은 경우 캐싱 수행 (이전 코드 유지)
     if (!m_bCached)
     {
         CacheFrames();
     }
 
     GameObject* pObj = m_pAnimator->GetObj();
-    Vec2 vPos = pObj->GetWorldPos();
-    vPos += m_vecFrm[m_iCurFrm].vOffset;
-    vPos = CCamera::GetInst()->GetRenderPos(vPos);
+    Vec2 vPos = pObj->GetWorldPos(); // FinalUpdate에서 계산된 최종 논리적 위치
+
+    // --- 확인 및 제거 ---
+    // 만약 아래와 같이 vOffset을 직접 더하는 코드가 있다면 제거합니다.
+    //vPos += m_vecFrm[m_iCurFrm].vOffset; // <--- 이 줄 제거 또는 주석 처리
+    // --------------------
+
+    vPos = CCamera::GetInst()->GetRenderPos(vPos); // 카메라 변환 적용
 
     float rotationAngle = m_pAnimator->GetObj()->GetWorldRotation();
-    float minRotationThreshold = 3.0f;
+    float minRotationThreshold = 3.0f; // 회전 적용 임계값 (이전 코드 유지)
 
-    // GDI+ Graphics 객체 생성
+    // GDI+ Graphics 객체 생성 (이전 코드 유지)
     Graphics graphics(_dc);
     graphics.SetInterpolationMode(InterpolationModeNearestNeighbor);
     graphics.SetPixelOffsetMode(PixelOffsetModeHalf);
-    
-    // 현재 프레임의 캐싱된 비트맵 가져오기
+
+    // 현재 프레임의 캐싱된 비트맵 가져오기 (이전 코드 유지)
     Bitmap* frameBitmap = m_vecFrameBitmaps[m_iCurFrm];
-    
-    // 프레임 정보
+
+    // 프레임 정보 (이전 코드 유지)
     int srcWidth = frameBitmap->GetWidth();
     int srcHeight = frameBitmap->GetHeight();
-    
-    // 렌더링 위치 계산
+
+    // 렌더링 위치 계산 (논리적 vPos 기준)
+    // destX/destY는 논리적 위치 vPos를 기준으로 스프라이트의 좌상단 좌표를 계산합니다.
+    // GDI+ 회전 중심(centerX/centerY)도 이 destX/destY 기반으로 계산됩니다.
     int destX = static_cast<INT>(vPos.x - srcWidth * m_fSizeMulti / 2.0f + 0.5f);
     int destY = static_cast<INT>(vPos.y - srcHeight * m_fSizeMulti / 2.0f + 0.5f);
     int destWidth = static_cast<INT>(srcWidth * m_fSizeMulti + 0.5f);
     int destHeight = static_cast<INT>(srcHeight * m_fSizeMulti + 0.5f);
-    
+
+    // 회전 및 그리기 로직 (이전 코드 유지)
     if (abs(rotationAngle) > minRotationThreshold)
     {
-        // 회전 중심점 설정
         float centerX = static_cast<float>(destX + destWidth / 2);
         float centerY = static_cast<float>(destY + destHeight / 2);
-        
-        // 회전 행렬 생성
         Matrix rotMatrix;
         rotMatrix.RotateAt(rotationAngle, PointF(centerX, centerY));
-        
-        // 변환 적용
         graphics.SetTransform(&rotMatrix);
-        
-        // 캐싱된 이미지 그리기 (투명 처리는 이미 적용됨)
-        graphics.DrawImage(
-            frameBitmap,
-            Rect(destX, destY, destWidth, destHeight)
-        );
-        
-        // 변환 초기화
+        graphics.DrawImage(frameBitmap, Rect(destX, destY, destWidth, destHeight));
         graphics.ResetTransform();
     }
     else
     {
-        // 회전 없이 그리기
-        graphics.DrawImage(
-            frameBitmap,
-            Rect(destX, destY, destWidth, destHeight)
-        );
+        graphics.DrawImage(frameBitmap, Rect(destX, destY, destWidth, destHeight));
     }
 }
 
@@ -184,7 +176,6 @@ void CAnimation::Create(CTexture* _pTex, Vec2 _vLT, Vec2 _vSliceSize,
 {
 	m_pTex = _pTex;
 	tAnimFrm frm = {};
-    m_vOffset = _vOffset;
     
 	for (UINT i = 0; i < _iFrameCount; i++)
 	{

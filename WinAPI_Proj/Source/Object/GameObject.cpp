@@ -82,6 +82,19 @@ void GameObject::SetActive(bool _bActive)
         m_pCollider->SetActive(_bActive);
 }
 
+float GameObject::GetWorldRotation()
+{
+    float finalRotation = m_fLocalRotation;
+    GameObject* currentParent = m_pParent; // const 사용
+
+    while (currentParent != nullptr)
+    {
+        finalRotation += currentParent->GetLocalRotation(); // 부모의 로컬 회전 누적
+        currentParent = currentParent->GetParent();
+    }
+    return finalRotation;
+}
+
 void GameObject::Reset()
 {
     // 오브젝트의 기본 속성 초기화
@@ -196,49 +209,75 @@ void GameObject::Update()
 
 void GameObject::FinalUpdate()
 {
-    if (!m_bActive)
+     if (!m_bActive)
         return;
 
-    // 1. 컴포넌트 업데이트 (특히 위치에 영향을 줄 수 있는 RigidBody먼저)
-    //    순서는 중요할 수 있음: Gravity -> RigidBody -> Animator ->Collider
+    // 1. 컴포넌트 업데이트 (RigidBody 먼저)
     if (m_pGravity)
         m_pGravity->FinalUpdate();
     if (m_pRigidBody)
-        m_pRigidBody->FinalUpdate(); // RigidBody가 m_vPos/m_vLocalPos를확정하도록 함
+        m_pRigidBody->FinalUpdate(); // RigidBody가 m_vPos/m_vLocalPos를 확정
 
-    // 2. 부모-자식 관계에 따른 최종 월드 위치(m_vPos) 계산
+    // 2. 부모-자식 관계에 따른 최종 월드 위치(m_vPos) 및 회전 계산
     if (m_pParent)
     {
-        // 부모의 최종 월드 회전을 가져옴
-        float parentRotationRad = m_pParent->GetWorldRotation() *
-            (3.14159f / 180.f);
-        float cosAngle = cosf(parentRotationRad);
-        float sinAngle = sinf(parentRotationRad);
+        // --- 부모 정보 ---
+        Vec2 parentWorldPos = m_pParent->GetWorldPos(); // 부모 논리적 월드 위치
+        float parentWorldRotation = m_pParent->GetWorldRotation(); // 부모 최종 월드 회전
+        float parentRotationRad = parentWorldRotation * (3.14159f / 180.f);
+        float cosParent = cosf(parentRotationRad);
+        float sinParent = sinf(parentRotationRad);
 
-        // 자신의 로컬 위치를 부모의 회전에 맞춰 변환 (회전된 오프셋계산)
-        Vec2 rotatedLocalPos;
-        rotatedLocalPos.x = m_vLocalPos.x * cosAngle - m_vLocalPos.y *
-            sinAngle;
-        rotatedLocalPos.y = m_vLocalPos.x * sinAngle + m_vLocalPos.y *
-            cosAngle;
+        Vec2 parentAnimOffset(0.f, 0.f);
+        if (m_pParent->GetAnimator()) {
+            parentAnimOffset = m_pParent->GetAnimator()->GetCurrentAnimationOffset();
+        }
 
-        // 부모의 최종 월드 위치(RigidBody 업데이트 후)에 회전된 로컬오프셋을 더함
-        m_vPos = m_pParent->GetWorldPos() + rotatedLocalPos;
+        // --- 부모 시각적 중심 (p1) 계산 ---
+        Vec2 rotatedParentAnimOffset;
+        rotatedParentAnimOffset.x = parentAnimOffset.x * cosParent - parentAnimOffset.y * sinParent;
+        rotatedParentAnimOffset.y = parentAnimOffset.x * sinParent + parentAnimOffset.y * cosParent;
+        Vec2 parentVisualCenter = parentWorldPos + rotatedParentAnimOffset; // p1
+
+        // --- 자식 정보 ---
+        float childWorldRotation = GetWorldRotation(); // 자식 최종 월드 회전 (부모 회전 포함)
+        float childRotationRad = childWorldRotation * (3.14159f / 180.f);
+        float cosChild = cosf(childRotationRad);
+        float sinChild = sinf(childRotationRad);
+
+        Vec2 childAnimOffset(0.f, 0.f);
+        if (m_pAnimator) { // 자신의 애니메이터 사용
+            childAnimOffset = m_pAnimator->GetCurrentAnimationOffset();
+        }
+
+        // --- 자식 로컬 위치를 부모 회전에 맞춰 회전 (부모 기준 오프셋) ---
+        Vec2 rotatedLocalPosOffset;
+        rotatedLocalPosOffset.x = m_vLocalPos.x * cosParent - m_vLocalPos.y * sinParent;
+        rotatedLocalPosOffset.y = m_vLocalPos.x * sinParent + m_vLocalPos.y * cosParent;
+
+        // --- 자식 애니메이션 오프셋을 자식 최종 회전에 맞춰 회전 ---
+        Vec2 rotatedChildAnimOffset;
+        rotatedChildAnimOffset.x = childAnimOffset.x * cosChild - childAnimOffset.y * sinChild;
+        rotatedChildAnimOffset.y = childAnimOffset.x * sinChild + childAnimOffset.y * cosChild;
+
+        // --- 최종 자식 논리적 위치 (m_vPos) 계산 ---
+        // 목표: Child_VisualPos = Parent_VisualPos + Rotated_ChildLocalPos
+        // Child_VisualPos = Child_LogicalPos(m_vPos) + Rotated_ChildAnimOffset
+        // 따라서, Child_LogicalPos(m_vPos) = Parent_VisualPos + Rotated_ChildLocalPos - Rotated_ChildAnimOffset
+        m_vPos = parentVisualCenter + rotatedLocalPosOffset - rotatedChildAnimOffset;
+
     }
     else
     {
-        // 부모가 없는 경우, RigidBody 등이 업데이트한 m_vPos 또는m_vLocalPos 사용
-        // 만약 RigidBody가 m_vPos를 직접 업데이트했다면 그대로 두고,
-        // m_vLocalPos만 업데이트했다면 여기서 m_vPos = m_vLocalPos; 수행
-        // 현재 코드는 m_vLocalPos를 사용하는 것으로 보이므로 아래 유지:
+        // 부모가 없는 경우
         m_vPos = m_vLocalPos;
     }
 
-    // 3. 나머지 컴포넌트 업데이트 (최종 위치 기반)
+    // 3. 나머지 컴포넌트 업데이트 (최종 위치/회전 기반)
     if (m_pAnimator)
-        m_pAnimator->FinalUpdate(); // Animator는 최종 m_vPos 기반으로상태 업데이트
+        m_pAnimator->FinalUpdate();
     if (m_pCollider)
-        m_pCollider->FinalUpdate(); // Collider는 최종 m_vPos 기반으로위치 설정
+        m_pCollider->FinalUpdate();
 }
 
 void GameObject::Render(HDC _dc)

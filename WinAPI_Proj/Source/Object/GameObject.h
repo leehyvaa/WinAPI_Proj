@@ -61,18 +61,8 @@ public:
     
     void SetLocalRotation(float _fRot) { m_fLocalRotation = _fRot; }
     float GetLocalRotation() {return m_fLocalRotation; }
-    float GetWorldRotation() const
-	{
-	    float finalRotation = m_fLocalRotation;
-	    GameObject* currentParent = m_pParent;
+    float GetWorldRotation();
 
-	    while (currentParent != nullptr)
-	    {
-	        finalRotation += currentParent->GetWorldRotation(); // 부모의 최종 Rotation 값을 더함
-	        currentParent = currentParent->GetParent();
-	    }
-	    return finalRotation;
-	}
     
 	void SetName(const wstring& _strName) { m_strName = _strName; }
 	const wstring& GetName() { return m_strName; }
