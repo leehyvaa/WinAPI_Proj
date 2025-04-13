@@ -34,23 +34,23 @@ public:
 	//virtual void Save(FILE* _file);
 	//virtual void Load(FILE* _file);
 
-    void NormalTopCollisionEnter(CCollider* _pOther);
-    void NormalBotCollisionEnter(CCollider* _pOther);
-    void NormalRightCollisionEnter(CCollider* _pOther);
-    void NormalLeftCollisionEnter(CCollider* _pOther);
-
-    void NormalTopCollision(CCollider* _pOther);
-    void NormalBotCollision(CCollider* _pOther);
-    void NormalRightCollision(CCollider* _pOther);
-    void NormalLeftCollision(CCollider* _pOther);
-
-    void NormalCollisionEnter(CCollider* _pOther);
-    void NormalCollision(CCollider* _pOther);
-    COLLISION_SIDE DetectCollisionSide(CCollider* _pOther);
-    
-    float CalculateCollisionOffset(const Vec2& vObjColPos, const Vec2& vObjColScale,
-                                        const Vec2& vGroundColPos, const Vec2& vGroundColScale,
-                                        bool isHorizontal);
+    // void NormalTopCollisionEnter(CCollider* _pOther);
+    // void NormalBotCollisionEnter(CCollider* _pOther);
+    // void NormalRightCollisionEnter(CCollider* _pOther);
+    // void NormalLeftCollisionEnter(CCollider* _pOther);
+    //
+    // void NormalTopCollision(CCollider* _pOther);
+    // void NormalBotCollision(CCollider* _pOther);
+    // void NormalRightCollision(CCollider* _pOther);
+    // void NormalLeftCollision(CCollider* _pOther);
+    //
+    // void NormalCollisionEnter(CCollider* _pOther);
+    // void NormalCollision(CCollider* _pOther);
+    // COLLISION_SIDE DetectCollisionSide(CCollider* _pOther);
+    //
+    // float CalculateCollisionOffset(const Vec2& vObjColPos, const Vec2& vObjColScale,
+    //                                     const Vec2& vGroundColPos, const Vec2& vGroundColScale,
+    //                                     bool isHorizontal);
 public:
 	CGround();
 	virtual ~CGround();
