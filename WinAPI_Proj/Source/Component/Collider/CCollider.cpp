@@ -42,7 +42,20 @@ void CCollider::FinalUpdate()
 	m_vFinalPos = vObjectPos + m_vOffsetPos;
 
 
-
+    // OBB 축 계산
+    m_vAxes[0] = Vec2(1.0f, 0.0f).Rotate(m_fRotation);
+    m_vAxes[1] = Vec2(0.0f, 1.0f).Rotate(m_fRotation);
+    
+    // OBB 모서리 계산
+    Vec2 halfScale = m_vScale / 2.0f;
+    Vec2 extX = m_vAxes[0] * halfScale.x;
+    Vec2 extY = m_vAxes[1] * halfScale.y;
+    
+    m_vCorners[0] = m_vFinalPos - extX - extY; // 좌상단
+    m_vCorners[1] = m_vFinalPos + extX - extY; // 우상단
+    m_vCorners[2] = m_vFinalPos + extX + extY; // 우하단
+    m_vCorners[3] = m_vFinalPos - extX + extY; // 좌하단
+    
 	assert(0 <= m_iCol);
 }
 

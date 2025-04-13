@@ -37,6 +37,8 @@ Vec2 Vec2::operator+(const Vec2& v) const
 	return Vec2(x+v.x,y+v.y);
 }
 
+
+
 float Vec2::Length()
 {
 	return sqrt(x * x + y * y);

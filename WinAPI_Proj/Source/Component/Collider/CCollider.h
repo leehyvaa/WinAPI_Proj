@@ -8,16 +8,20 @@ class CCollider
 private:
 	static UINT g_iNextID;
 
-	GameObject* m_pOwner;
-	Vec2 m_vOffsetPos;
-	Vec2 m_vFinalPos; //finalUpdate에서 매 프레임 계산
-	Vec2 m_vScale;
+    GameObject* m_pOwner;
+    Vec2 m_vOffsetPos;      // 소유자 로컬 좌표 기준 오프셋
+    Vec2 m_vScale;          // OBB의 전체 너비와 높이 (로컬 축 기준)
+    Vec2 m_vHalfExtents;    // OBB의 절반 너비/높이
+    Vec2 m_vFinalPos;       // 최종 월드 좌표 (중심점)
+    float m_fWorldRotation; // 최종 월드 회전 각도 (라디안)
+    Vec2 m_vAxes[2];        // OBB의 월드 기준 로컬 축 벡터(노말)
+    Vec2 m_vCorners[4];     // OBB 꼭짓점 4개의 좌표
 
-	UINT m_iID; //충돌체의 고유 ID값
-	int m_iCol;
+    UINT m_iID;             // 충돌체의 고유 ID값
+    int m_iCol;             // 충돌 횟수 카운터
 
-	bool m_bActive; //충돌체 활성 여부
-
+    bool m_bActive;         // 충돌체 활성 여부
+    
 public:
 	void SetOffsetPos(Vec2 _vPos) { m_vOffsetPos = _vPos; }
 	void SetScale(Vec2 _vScale) { m_vScale = _vScale; }
