@@ -33,7 +33,7 @@ void CCollisionMgr::Update()
 void CCollisionMgr::CollisionGroupUpdate(GROUP_TYPE _eLeft, GROUP_TYPE _eRight)
 {
 	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
-
+    if (!pCurScene) return; // Scene 로딩 중 예외 처리
 
 	//GetGroupObject 함수가 벡터를 레퍼런스로 보냈으니까
 	//받을때도 레퍼런스로 받아야한다. 레퍼런스를 안쓰면 그냥
@@ -45,24 +45,31 @@ void CCollisionMgr::CollisionGroupUpdate(GROUP_TYPE _eLeft, GROUP_TYPE _eRight)
 
 	for (size_t i = 0; i < vecLeft.size(); i++)
 	{
-		//충돌체를 보유하지 않는 경우
-		if (nullptr == vecLeft[i]->GetCollider())
-			continue;
+	    CCollider* pLeftCol = vecLeft[i]->GetCollider();
+	    // 충돌체 없거나, 비활성 상태면 건너뜀
+	    if (nullptr == pLeftCol || !pLeftCol->IsActive())
+	        continue;
 
-		for (size_t j = 0; j < vecRight.size(); j++)
-		{
-			//충돌체가 없거나, 자기 자신과의 충돌인 경우
-			if (nullptr == vecRight[j]->GetCollider() ||
-				vecLeft[i] == vecRight[j])
-				continue;
+	    for (size_t j = 0; j < vecRight.size(); j++)
+	    {
+	        CCollider* pRightCol = vecRight[j]->GetCollider();
+	        // 충돌체 없거나, 비활성 상태거나, 자기 자신이면 건너뜀
+	        if (nullptr == pRightCol || !pRightCol->IsActive() || vecLeft[i] == vecRight[j])
+	            continue;
 
-			CCollider* pLeftCol = vecLeft[i]->GetCollider();
-			CCollider* pRightCol = vecRight[j]->GetCollider();
-
-			//두 충돌체 조합 아이디 생성
-			COLLIDER_ID ID;
-			ID.iLeft_id = pLeftCol->GetID();
-			ID.iRight_id = pRightCol->GetID();
+	        // 두 충돌체 조합 아이디 생성
+	        COLLIDER_ID ID;
+	        // ID 순서 정렬 (일관성 유지)
+	        if (pLeftCol->GetID() < pRightCol->GetID())
+	        {
+	            ID.iLeft_id = pLeftCol->GetID();
+	            ID.iRight_id = pRightCol->GetID();
+	        }
+	        else
+	        {
+	            ID.iLeft_id = pRightCol->GetID();
+	            ID.iRight_id = pLeftCol->GetID();
+	        }
 			
 			iter =  m_mapColInfo.find(ID.ID);
 
@@ -72,72 +79,98 @@ void CCollisionMgr::CollisionGroupUpdate(GROUP_TYPE _eLeft, GROUP_TYPE _eRight)
 				m_mapColInfo.insert(make_pair(ID.ID, false));
 				iter = m_mapColInfo.find(ID.ID);
 			}
+	        
+	        bool bCurrentlyColliding = IsCollision(pLeftCol, pRightCol); // SAT 검사 호출
+	        bool bPreviouslyColliding = iter->second;
 
-			//현재 충돌중인 경우
-			if (IsCollision(pLeftCol, pRightCol))
-			{
-				//이전 프레임에서도 충돌중이었다.	
-				if (iter->second)
-				{
-
-					if (vecLeft[i]->IsDead() || vecRight[j]->IsDead())
-					{
-						//둘 중 하나가 삭제 예정이면 충돌 해제
-						pLeftCol->OnCollisionExit(pRightCol);
-						pRightCol->OnCollisionExit(pLeftCol);
-						iter->second = false;
-					}
-					else
-					{
-						pLeftCol->OnCollision(pRightCol);
-						pRightCol->OnCollision(pLeftCol);
-					}
-				}
-				else//이전 프레임엔 충돌이 없었으나 방금 충돌.
-				{				
-					//둘 중 하나가 삭제 예정이면 충돌 취급 하지 않음
-					if (!vecLeft[i]->IsDead() || !vecRight[j]->IsDead())
-					{
-						pLeftCol->OnCollisionEnter(pRightCol);
-						pRightCol->OnCollisionEnter(pLeftCol);
-						iter->second = true;
-					}
-
-
-
-				}
-			}
-			else//현재 충돌하지 않고있음
-			{
-				if (iter->second)
-				{
-					//이전에는 충돌하고 있었으나 방금 충돌이 끝남
-					pLeftCol->OnCollisionExit(pRightCol);
-					pRightCol->OnCollisionExit(pLeftCol);
-					iter->second = false;
-				}
-			}
-
-
+	        // 현재 충돌중인 경우
+	        if (bCurrentlyColliding)
+	        {
+	            // 이전에도 충돌중
+	            if (bPreviouslyColliding) // 충돌 지속 (OnCollision)
+	            {
+	                // 둘 중 하나라도 삭제 예정이면 충돌 해제
+	                if (vecLeft[i]->IsDead() || vecRight[j]->IsDead()) 
+	                {
+	                        pLeftCol->OnCollisionExit(pRightCol);
+	                        pRightCol->OnCollisionExit(pLeftCol);
+	                        iter->second = false;
+	                }
+	                else // 둘 다 살아있으면 OnCollision 호출
+	                {
+	                    pLeftCol->OnCollision(pRightCol);
+	                    pRightCol->OnCollision(pLeftCol);
+	                }
+	            }
+	            else // 충돌 시작 (OnCollisionEnter)
+	            {
+	                if (!vecLeft[i]->IsDead() && !vecRight[j]->IsDead()) // 둘 다 살아있을 때만 Enter
+	                {
+	                    pLeftCol->OnCollisionEnter(pRightCol);
+	                    pRightCol->OnCollisionEnter(pLeftCol);
+	                    iter->second = true;
+	                }
+	            }
+	        }
+	        else // 현재 충돌 안 함
+	        {
+	            if (bPreviouslyColliding) // 충돌 종료 (OnCollisionExit)
+	            {
+	                pLeftCol->OnCollisionExit(pRightCol);
+	                pRightCol->OnCollisionExit(pLeftCol);
+	                iter->second = false;
+	            }
+	        }
 		}
 	}
 }
 
 bool CCollisionMgr::IsCollision(CCollider* _pLeftCol, CCollider* _pRightCol)
 {
-	Vec2 vLeftPos = _pLeftCol->GetFinalPos();
-	Vec2 vLeftScale = _pLeftCol->GetScale();
+    // 두 OBB의 정보 가져오기
+    Vec2 leftPos = _pLeftCol->GetFinalPos();
+    Vec2 leftHalfExtents = _pLeftCol->GetHalfExtents();
+    Vec2* leftAxes = _pLeftCol->GetAxes();
 
-	Vec2 vRightPos = _pRightCol->GetFinalPos();
-	Vec2 vRightScale = _pRightCol->GetScale();
+    Vec2 rightPos = _pRightCol->GetFinalPos();
+    Vec2 rightHalfExtents = _pRightCol->GetHalfExtents();
+    Vec2* rightAxes = _pRightCol->GetAxes();
 
-	if(abs(vRightPos.x - vLeftPos.x) <= (vLeftScale.x + vRightScale.x)/2.f
-	&& abs(vRightPos.y - vLeftPos.y) <= (vLeftScale.y + vRightScale.y) / 2.f)
-	{
-		return true;
-	}
+    // 두 OBB 중심 사이의 벡터
+    Vec2 distVec = rightPos - leftPos;
 
-	return false;
+    // 분리축 후보 (총 4개)
+    Vec2 axesToCheck[4] = {
+        leftAxes[0],  // Left OBB의 X축
+        leftAxes[1],  // Left OBB의 Y축
+        rightAxes[0], // Right OBB의 X축
+        rightAxes[1]  // Right OBB의 Y축
+    };
+
+    // 각 축에 대해 투영하여 겹치는지 검사
+    for (int i = 0; i < 4; ++i)
+    {
+        Vec2 currentAxis = axesToCheck[i];
+        // currentAxis.Normalize(); // CCollider에서 이미 정규화됨
+
+        // 각 OBB를 현재 축에 투영했을 때의 반지름 계산
+        float leftRadius = leftHalfExtents.x * abs(currentAxis.Dot(leftAxes[0])) +
+                           leftHalfExtents.y * abs(currentAxis.Dot(leftAxes[1]));
+        float rightRadius = rightHalfExtents.x * abs(currentAxis.Dot(rightAxes[0])) +
+                            rightHalfExtents.y * abs(currentAxis.Dot(rightAxes[1]));
+
+        // 두 OBB 중심 사이의 거리를 현재 축에 투영
+        float distProjection = abs(distVec.Dot(currentAxis));
+
+        // 투영된 거리가 두 반지름의 합보다 크면, 분리축이 존재 -> 충돌하지 않음
+        if (distProjection > leftRadius + rightRadius)
+        {
+            return false;
+        }
+    }
+
+    // 모든 축에서 겹친 경우
+    return true;
 }
 
 

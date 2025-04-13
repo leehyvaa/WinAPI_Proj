@@ -15,7 +15,7 @@ private:
     Vec2 m_vFinalPos;       // 최종 월드 좌표 (중심점)
     float m_fWorldRotation; // 최종 월드 회전 각도 (라디안)
     Vec2 m_vAxes[2];        // OBB의 월드 기준 로컬 축 벡터(노말)
-    Vec2 m_vCorners[4];     // OBB 꼭짓점 4개의 좌표
+    //Vec2 m_vCorners[4];     // OBB 꼭짓점 4개의 좌표
 
     UINT m_iID;             // 충돌체의 고유 ID값
     int m_iCol;             // 충돌 횟수 카운터
@@ -24,21 +24,26 @@ private:
     
 public:
 	void SetOffsetPos(Vec2 _vPos) { m_vOffsetPos = _vPos; }
-	void SetScale(Vec2 _vScale) { m_vScale = _vScale; }
+    void SetScale(Vec2 _vScale)
+	{
+	    m_vScale = _vScale;
+	    m_vHalfExtents = m_vScale / 2.f; // 절반 크기 업데이트
+	}
 
 	UINT GetID() { return m_iID; }
 
 	Vec2 GetOffsetPos() { return m_vOffsetPos; }
 	Vec2 GetScale() { return m_vScale; }
-
+    Vec2 GetHalfExtents() { return m_vHalfExtents; }
 	Vec2 GetFinalPos() { return m_vFinalPos; }
-
+    Vec2* GetAxes() { return m_vAxes; }
+    
 	GameObject* GetObj() { return m_pOwner; }
 
 	void FinalUpdate();
 	void Render(HDC _dc);
 
-	void OnCollision(CCollider* _pOther);// 충돌 중인 경우 호출
+	void OnCollision(CCollider* _pOther);
 	void OnCollisionEnter(CCollider* pOther);
 	void OnCollisionExit(CCollider* pOther);
 
