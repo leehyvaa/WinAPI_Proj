@@ -132,24 +132,9 @@ SPlayer::SPlayer()
     SetArm(static_cast<PlayerArm*>(playerArm));
     CreateObject(playerArm, GROUP_TYPE::PLAYER_ARM);
     
+  
     // 와이어 생성
-    // m_pPlayerHook = new CHook;
-    // m_pPlayerHook->SetName(L"Hook");
-    // m_pPlayerHook->SetPos(playerArm->GetPos());
-    // m_pPlayerHook->SetScale(Vec2(11.f, 11.f));
-    // static_cast<GameObject *>(m_pPlayerHook)->SetDir(Vec2(0.f, -1.f));
-    // m_pPlayerHook->SetParent(m_pPlayerArm);
-    // CreateObject(m_pPlayerHook, GROUP_TYPE::HOOK);
-
     CObjectPool::GetInst()->CreatePool<CHook>(L"Hook", 1);
-    // GameObject* hook =  dynamic_cast<CHook*>(CObjectPool::GetInst()->GetPoolObject(L"Hook"));
-    // hook->SetName(L"Hook");
-    // hook->SetPos(playerArm->GetPos());
-    // hook->SetScale(Vec2(11.f, 11.f));
-    // static_cast<GameObject *>(hook)->SetDir(Vec2(0.f, -1.f));
-    // hook->SetParent(m_pPlayerArm);
-    // CreateObject(hook, GROUP_TYPE::HOOK);
-    // CObjectPool::GetInst()->ReturnObject(hook);
     
 	Enter_State(m_eCurState);
 }
@@ -632,8 +617,8 @@ void SPlayer::WallKickJump()
 	    }
 	    else
 	    {
-	        m_iDir = -1;
-	        GetRigidBody()->AddForce(Vec2(-4000.f, -9500.f));
+	        m_iDir = 1;
+	        GetRigidBody()->AddForce(Vec2(4000.f, -9500.f));
 	        //GetRigidBody()->SetVelocity(Vec2(400.f, -950.f));
 	    }
 	}
@@ -889,12 +874,12 @@ void SPlayer::SwingMove()
     {
         if (KEY_HOLD(KEY::A) && KEY_HOLD(KEY::LSHIFT))
         {
-            m_fMoveEnergy -= 2600.f;
+            m_fMoveEnergy -= 3500.f;
             m_bCanBooster = false;
         }
         if (KEY_HOLD(KEY::D) && KEY_HOLD(KEY::LSHIFT))
         {
-            m_fMoveEnergy += 2600.f;
+            m_fMoveEnergy += 3500.f;
             m_bCanBooster = false;
         }
     }
@@ -911,10 +896,11 @@ void SPlayer::SwingMove()
             // MoveEnergy의 힘이 500보다 작으면 원심력이 부족하다 판단하고 중력 적용
             if ((prevMoveEnergy > 500 && m_fMoveEnergy <= 500) || 
                 (prevMoveEnergy < -500 && m_fMoveEnergy >= -500) ||
-                (abs(m_fMoveEnergy) < 500.f)) // 작은 허용 오차 추가
+                (abs(m_fMoveEnergy) < 800.f)) // 허용 오차 추가
             {
                 // 중력 적용
-                GetGravity()->SetApplyGravity(true);
+                GetGravity()->SetApplyGravity(true);    
+                m_fMoveEnergy=0.f;
             }
 
             // 스윙 도중에 벽 옆면에 부딪힌 상황

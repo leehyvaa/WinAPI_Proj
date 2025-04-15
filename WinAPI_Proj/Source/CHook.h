@@ -3,7 +3,7 @@
 
 class PlayerArm;
 class SPlayer;
-
+class CTexture;
 
 
 enum class HOOK_STATE
@@ -24,6 +24,7 @@ private:
     float m_fMaxRange;
     int dir;
     int prevDir;
+    CTexture* pChainTex;
     PLAYER_STATE curState;
     PLAYER_STATE prevState;
     HOOK_STATE hookState;

@@ -140,13 +140,13 @@ void CGround::OnCollision(CCollider* _pOther)
         // 충돌 방향 분류를 위한 임계값 (필요에 따라 조정)
         const float directionThreshold = 0.707f; // 약 45도 각도 기준
         
-        // 수직 충돌 (MTV가 위/아래 방향에 가까움)
+        // 수직 충돌 (MTV가 위/아래 방향에 더 가까울 때)
         if (abs(verticalDot) > directionThreshold)
         {
             // 플레이어 중심이 땅 중심보다 위에 있는지 확인
             if (vObjPos.y < vGroundColPos.y) // 플레이어가 땅보다 위에 있음 -> 윗면 충돌 (Top Collision)
             {
-                // 요구사항: 플레이어를 위로 밀어낸다.
+                // 플레이어를 위로 밀어낸다.
                 // MTV는 플레이어를 땅에서 밀어내는 방향이므로, 윗면 충돌 시 위쪽을 향함.
                 vObjPos += mtvDirection * mtvDepth;
                 pOtherObj->SetWorldPos(vObjPos);
@@ -162,23 +162,22 @@ void CGround::OnCollision(CCollider* _pOther)
                 // 플레이어가 위로 점프하다가 윗면 모서리에 걸린 경우,
                 // 위치 보정만 하고 착지 처리는 하지 않음 (계속 상승 가능)
             }
-            else // 플레이어가 땅보다 아래에 있음 -> 아랫면 충돌 (Bottom Collision)
+            else // 플레이어가 땅보다 아래에 있음 -> 아랫면 충돌
             {
                 // 플레이어를 아래로 밀어낸다.
-                Vec2 pushDirection = Vec2(0.f, 1.f); // 명시적으로 월드 아래 방향
+                Vec2 pushDirection = Vec2(0.f, 1.f); // 아래 방향
                 vObjPos += pushDirection * mtvDepth;
                 pOtherObj->SetWorldPos(vObjPos);
 
                 // 상승 중이었다면 Y축 속도를 0으로
-                if (playerRigidBody && playerRigidBody->GetVelocity().y < 0.f) {
+                if (playerRigidBody && playerRigidBody->GetVelocity().y < 0.f)
                     playerRigidBody->SetVelocityY(0.f);
-                }
-                pPlayer->SetMoveEnergy(0.f); // 점프 에너지 등 초기화
+
+                pPlayer->SetMoveEnergy(0.f); // 운동 에너지 초기화
 
                 // 땅 위가 아님 상태 설정
                 pPlayer->SetOnGround(false);
                 pPlayer->SetWallClimbing(false);
-                pOtherObj->GetGravity()->SetApplyGravity(true); // 중력 적용
             }
         }
         // 수평 충돌 (MTV가 왼쪽/오른쪽 방향에 가까움)
@@ -190,7 +189,8 @@ void CGround::OnCollision(CCollider* _pOther)
             pOtherObj->SetWorldPos(vObjPos);
 
             // 벽에 부딪히는 수평 속도 제거
-            if (playerRigidBody) {
+            if (playerRigidBody)
+            {
                 Vec2 velocity = playerRigidBody->GetVelocity();
                 // MTV 방향(법선)으로의 속도 성분 계산
                 Vec2 normalVelocity = mtvDirection * velocity.Dot(mtvDirection);
@@ -205,15 +205,18 @@ void CGround::OnCollision(CCollider* _pOther)
 
             if (horizontalDot > 0.5f)
             { // MTV가 오른쪽을 향함 -> 왼쪽 벽 충돌
-                pPlayer->SetDir(-1); // 플레이어 방향 설정 (필요시)
-                 if (canClimb) pPlayer->SetWallClimbing(true);
-                 else pPlayer->SetWallClimbing(false);
+                if (canClimb) pPlayer->SetWallClimbing(true);
+                else pPlayer->SetWallClimbing(false);
+                
+                if (pPlayer->GetState() != PLAYER_STATE::SWING)
+                    pPlayer->SetDir(-1);
             }
             else if (horizontalDot < -0.5f)
             { // MTV가 왼쪽을 향함 -> 오른쪽 벽 충돌
-                pPlayer->SetDir(1); // 플레이어 방향 설정 (필요시)
                 if (canClimb) pPlayer->SetWallClimbing(true);
                 else pPlayer->SetWallClimbing(false);
+                if (pPlayer->GetState() != PLAYER_STATE::SWING)
+                    pPlayer->SetDir(1);
             }
             else
             {
@@ -224,34 +227,35 @@ void CGround::OnCollision(CCollider* _pOther)
             pPlayer->SetOnGround(false);
         }
         // Case 3: 대각선/모서리 충돌 (MTV 방향이 애매함)
-        else
-        {
-            // 단순 처리: MTV 방향대로 밀어낸다.
-            vObjPos += mtvDirection * mtvDepth;
-            pOtherObj->SetWorldPos(vObjPos);
-
-            // 모서리 착지 가능성 고려: 플레이어가 하강 중이고 MTV가 약간이라도 위쪽 성분을 가지면 착지로 간주 시도
-            if (playerRigidBody && playerRigidBody->GetVelocity().y >= 0.f && verticalDot > 0.1f) // verticalDot >0.1f는 MTV가 조금이라도 위쪽 성분을 가짐을 의미
-            {
-                 playerRigidBody->SetVelocityY(0.f);
-                 pOtherObj->GetGravity()->SetApplyGravity(false);
-                 pPlayer->SetOnGround(true);
-                 pPlayer->SetWallClimbing(false);
-            }
-            else // 그 외 모서리 충돌은 벽 충돌과 유사하게 처리
-            {
-                 // 충돌 법선 방향 속도 제거
-                 if (playerRigidBody) {
-                    Vec2 velocity = playerRigidBody->GetVelocity();
-                    Vec2 normalVelocity = mtvDirection * velocity.Dot(mtvDirection);
-                    playerRigidBody->SetVelocity(velocity - normalVelocity);
-                 }
-                 // 상태 설정
-                 pPlayer->SetOnGround(false);
-                 pPlayer->SetWallClimbing(false);
-                 pOtherObj->GetGravity()->SetApplyGravity(true);
-            }
-        }
+        // else
+        // {
+        //     // 단순 처리: MTV 방향대로 밀어낸다.
+        //     vObjPos += mtvDirection * mtvDepth;
+        //     pOtherObj->SetWorldPos(vObjPos);
+        //
+        //     // 모서리 착지 가능성 고려: 플레이어가 하강 중이고 MTV가 약간이라도 위쪽 성분을 가지면 착지로 간주 시도
+        //     if (playerRigidBody && playerRigidBody->GetVelocity().y >= 0.f && verticalDot > 0.1f) // verticalDot >0.1f는 MTV가 조금이라도 위쪽 성분을 가짐을 의미
+        //     {
+        //          playerRigidBody->SetVelocityY(0.f);
+        //          pOtherObj->GetGravity()->SetApplyGravity(false);
+        //          pPlayer->SetOnGround(true);
+        //          pPlayer->SetWallClimbing(false);
+        //     }
+        //     else // 그 외 모서리 충돌은 벽 충돌과 유사하게 처리
+        //     {
+        //          // 충돌 법선 방향 속도 제거
+        //          if (playerRigidBody)
+        //          {
+        //             Vec2 velocity = playerRigidBody->GetVelocity();
+        //             Vec2 normalVelocity = mtvDirection * velocity.Dot(mtvDirection);
+        //             playerRigidBody->SetVelocity(velocity - normalVelocity);
+        //          }
+        //          // 상태 설정
+        //          pPlayer->SetOnGround(false);
+        //          pPlayer->SetWallClimbing(false);
+        //          pOtherObj->GetGravity()->SetApplyGravity(true);
+        //     }
+        // }
     }
 }
 

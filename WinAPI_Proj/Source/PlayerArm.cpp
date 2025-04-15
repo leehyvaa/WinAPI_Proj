@@ -105,67 +105,7 @@ void PlayerArm::Update()
     }
 
     
-    // if (player)
-    // {
-    //     m_iDir = player->GetDir();
-    //     m_eCurState = player->GetState();
-    //     
-    //     // SWING 상태에서의 특별한 처리
-    //     if (m_eCurState == PLAYER_STATE::SWING && player->GetPlayerHook())
-    //     { 
-    //         CHook* hook = player->GetPlayerHook();
-    //         
-    //         // 1. 부모의 회전 각도 가져오기
-    //         float parentRotation = player->GetWorldRotation();
-    //         float parentRotRad = parentRotation * (3.14159f / 180.f); // 라디안 변환
-    //         
-    //         // 2. 기본 오프셋 (부모가 회전하지 않았을 때 원하는 위치)
-    //         float armLength = 80.f;
-    //         Vec2 baseOffset = Vec2(0.f, -armLength);
-    //         
-    //         // 3. 부모 회전에 맞게 기본 오프셋을 회전시킴
-    //         Vec2 rotatedOffset;
-    //         rotatedOffset.x = baseOffset.x * cosf(parentRotRad) - baseOffset.y * sinf(parentRotRad);
-    //         rotatedOffset.y = baseOffset.x * sinf(parentRotRad) + baseOffset.y * cosf(parentRotRad);
-    //         
-    //         // 4. 회전된 오프셋을 로컬 위치로 설정
-    //         SetLocalPos(rotatedOffset);
-    //         
-    //         // 5. 갈고리 방향을 향하는 자신만의 로컬 회전 계산
-    //         Vec2 hookDir = hook->GetWorldPos() - player->GetWorldPos();
-    //         float selfRotation = atan2f(hookDir.y, hookDir.x) * (180.f / 3.14159f) + 90.f;
-    //         
-    //         // 6. 부모 회전을 상쇄하는 로컬 회전 계산
-    //         float localRotation = selfRotation - parentRotation;
-    //         
-    //         // 7. 계산된 로컬 회전 적용
-    //         SetLocalRotation(localRotation);
-    //     }
-    //     else
-    //     {
-    //         // 일반 상태에서는 기본 위치와 회전 사용
-    //         // 여기서도 부모 회전을 고려해야 할 수 있음
-    //         float parentRotation = player->GetWorldRotation();
-    //         if (abs(parentRotation) > 0.1f) // 회전이 있는 경우
-    //         {
-    //             float parentRotRad = parentRotation * (3.14159f / 180.f);
-    //             float armLength = 80.f;
-    //             Vec2 baseOffset = Vec2(0.f, -armLength);
-    //             
-    //             Vec2 rotatedOffset;
-    //             rotatedOffset.x = baseOffset.x * cosf(parentRotRad) - baseOffset.y * sinf(parentRotRad);
-    //             rotatedOffset.y = baseOffset.x * sinf(parentRotRad) + baseOffset.y * cosf(parentRotRad);
-    //             
-    //             SetLocalPos(rotatedOffset);
-    //         }
-    //         else
-    //         {
-    //             SetLocalPos(Vec2(0.f, -80.f));
-    //         }
-    //         SetLocalRotation(0.f);
-    //     }
-    // }
-
+   
     
 	Update_ClimbAnimation();
 	Update_Animation();
@@ -226,15 +166,6 @@ void PlayerArm::Update_Animation()
 			GetAnimator()->Play(L"SNB_ARM_RIGHT_CLIMBSTOP", true);
 		break;
 	case PLAYER_STATE::SWING:
-		// LookAt 고쳐야함 기준방향으로부터의 회전으로
-		    // if (currentHook != nullptr)
-		    // {
-		    //     LookAt(currentHook->GetWorldPos()); // 이건 갈고리 방향으로 바라보게 함
-      //       
-		    //     // 왼쪽으로 90도 추가 회전
-		    //     float currentRotation = GetLocalRotation();
-		    //     SetLocalRotation(currentRotation - 90.0f);
-		    // }
 		        SetLocalRotation(-90.f);
 		if (m_iDir == -1)
 			GetAnimator()->Play(L"SNB_ARM_LEFT_SWING", true);

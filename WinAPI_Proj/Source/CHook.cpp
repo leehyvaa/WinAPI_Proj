@@ -13,6 +13,12 @@
 #include "CKeyMgr.h"
 #include "CObjectPool.h"
 #include "PlayerArm.h"
+#include <gdiplus.h>
+
+#include "CTexture.h"
+using namespace Gdiplus;
+#pragma comment (lib,"Gdiplus.lib")
+
 CHook::CHook()
 	:m_fSpeed(2000)
 
@@ -28,7 +34,8 @@ CHook::CHook()
 	//텍스쳐 로딩
 	CTexture* pTexRight = CResMgr::GetInst()->LoadTexture(L"GrabTex_Right", L"texture\\player\\Grab_Right.bmp");
 	CTexture* pTexLeft = CResMgr::GetInst()->LoadTexture(L"GrabTex_Left", L"texture\\player\\Grab_Left.bmp");
-
+	pChainTex= CResMgr::GetInst()->LoadTexture(L"Chain", L"texture\\player\\Chain.bmp");
+	
 
 	//애니메이션 로딩
 	//GetAnimator()->LoadAnimation(L"animation\\player_right_idle.anim");
@@ -120,7 +127,7 @@ void CHook::Reset()
     if (GetCollider())
     {
         GetCollider()->SetActive(true);
-        // 필요하다면 충돌체 크기와 오프셋 재설정
+        // 충돌체 크기와 오프셋 재설정
         GetCollider()->SetOffsetPos(Vec2());
         GetCollider()->SetScale(Vec2(20.f, 20.f));
     }
@@ -219,7 +226,7 @@ void CHook::Update_Move()
 		vPos.x = vPos.x + m_fSpeed * GetDir().x * fDT * 2;
 		vPos.y = vPos.y + m_fSpeed * GetDir().y * fDT * 2;
         m_fMaxRange = player->GetWireMaxRange();
-		//거리가 제한거리이상 벗어나면 without리턴으로 변환
+		// 거리가 제한거리이상 벗어나면 without리턴으로 변환
 		if ((GetWorldPos() - pArm->GetWorldPos()).Length() > m_fMaxRange)
 		{
 			hookState = HOOK_STATE::RETURN_WITHOUT;
@@ -244,7 +251,7 @@ void CHook::Update_Move()
 		vPos.x = vPos.x + m_fSpeed * newDir.x * fDT * 3;
 		vPos.y = vPos.y + m_fSpeed * newDir.y * fDT * 3;
 
-		//플레이어한테 도달하면 삭제
+		// 플레이어한테 도달하면 삭제
 		if ((GetWorldPos() - pArm->GetWorldPos()).Length() < 30.f && !IsDead())
 		{
 		    ReturnToPool();
@@ -261,7 +268,7 @@ void CHook::Update_Move()
 		vPos.x = vPos.x + m_fSpeed * newDir.x * fDT * 3;
 		vPos.y = vPos.y + m_fSpeed * newDir.y * fDT * 3;
 
-		//플레이어한테 도달하면 삭제
+		// 플레이어한테 도달하면 삭제
 		if ((GetWorldPos() - pArm->GetWorldPos()).Length() < 30.f && !IsDead())
 		{
 		    ReturnToPool();
@@ -295,23 +302,108 @@ void CHook::Update()
 
 void CHook::Render(HDC _dc)
 {
-	Vec2 vPos = GetWorldPos();
-	Vec2 vScale = GetScale();
-
-
-
 	Component_Render(_dc);
 
+    // 체인 그리기
+    if (!m_pOwnerArm) return;
+    
+    // 필요한 정보 세팅
+    Vec2 vHookWorldPos = GetWorldPos();
+    Vec2 vArmWorldPos = m_pOwnerArm->GetWorldPos();
 
-    // 부모 대신 소유자 참조
-    Vec2 pos1 = CCamera::GetInst()->GetRenderPos(GetWorldPos());
-    Vec2 pos2 = CCamera::GetInst()->GetRenderPos(m_pOwnerArm->GetWorldPos());
+    Vec2 vHookRenderPos = CCamera::GetInst()->GetRenderPos(vHookWorldPos);
+    Vec2 vArmRenderPos = CCamera::GetInst()->GetRenderPos(vArmWorldPos);
 
+    Vec2 vDir = vHookRenderPos - vArmRenderPos;
+    float fDistance = vDir.Length();
 
-	SelectGDI p(_dc, PEN_TYPE::BLUE);
+    
+    if (fDistance < 1.f) return; // 거리가 매우 짧으면 그리지 않음
+    if (!pChainTex) return; // 텍스처 없으면 그리지 않음
 
-	MoveToEx(_dc, pos1.x, pos1.y, nullptr);
-	LineTo(_dc, pos2.x, pos2.y);
+    vDir.Normalize();
+    
+    
+    float fLinkWidth = static_cast<float>(pChainTex->Width());
+    float fLinkHeight = static_cast<float>(pChainTex->Height());
+    
+    // 쇠사슬 길이 : 너비 방향
+    float fLinkLength = fLinkWidth;
+
+    if (fLinkLength <= 0) return; // 링크 길이가 0 이하면 그리지 않음
+
+    // 회전각도 라디안 -> 각도
+    float fAngleRad = atan2(vDir.y, vDir.x);
+    float fAngleDeg = fAngleRad * (180.f / 3.1415926535f);
+    
+    // GDI+ 세팅
+    Graphics graphics(_dc);
+    graphics.SetInterpolationMode(InterpolationModeNearestNeighbor);
+    graphics.SetPixelOffsetMode(PixelOffsetModeHalf);
+
+    // GDI+ Bitmap 객체
+    Bitmap chainBitmap(pChainTex->GetHBITMAP(), nullptr);
+    ImageAttributes imgAttr;
+    
+    // 마젠타 색상
+    Color magenta(255, 0, 255);
+    imgAttr.SetColorKey(magenta, magenta, ColorAdjustTypeBitmap);
+    
+    // 밝기 조절 RGB 1.2배 밝게, 전체밝기 0.15 추가
+    ColorMatrix colorMatrix = {
+        1.2f, 0.0f, 0.0f, 0.0f, 0.0f,  
+        0.0f, 1.2f, 0.0f, 0.0f, 0.0f, 
+        0.0f, 0.0f, 1.2f, 0.0f, 0.0f, 
+        0.0f, 0.0f, 0.0f, 1.0f, 0.0f,  
+        0.15f, 0.15f, 0.15f, 0.0f, 1.0f 
+    };
+    
+    // ColorMatrix를 ImageAttributes에 적용
+    imgAttr.SetColorMatrix(&colorMatrix, ColorMatrixFlagsDefault, ColorAdjustTypeBitmap);
+    
+    // 사슬 크기 배율
+    const float fScaleFactor = 0.3f;
+    
+    // 배율에 맞춰 크기 재계산
+    float fScaledLinkWidth = fLinkWidth * fScaleFactor;
+    float fScaledLinkHeight = fLinkHeight * fScaleFactor;
+    
+    // 체인 간격을 위한 링크 길이 계산
+    float fScaledLinkLength = fLinkLength * fScaleFactor;
+    
+    // 축소된 크기로 그릴 링크 개수 다시 계산
+    int iNumLinks = static_cast<int>(fDistance / fScaledLinkLength);
+
+    // 링크 반복문
+    for (int i = 0; i < iNumLinks; ++i)
+    {
+        // 현재 링크의 중심 위치 계산 - 축소된 길이 기준으로 계산
+        // 팔 위치에서 시작해서 방향 * 축소된 링크 길이 * (i + 0.5) 만큼 이동
+        Vec2 vLinkCenterPos = vArmRenderPos + vDir * (fScaledLinkLength * (static_cast<float>(i) + 0.5f));
+        
+        PointF centerPt(vLinkCenterPos.x, vLinkCenterPos.y);
+
+        // 링크 중심으로 회전
+        Matrix transformMatrix;
+        transformMatrix.RotateAt(fAngleDeg, centerPt);
+        graphics.SetTransform(&transformMatrix);
+
+        // DrawImage는 좌상단 좌표 기준이므로, 중심점에서 축소된 너비/높이의 절반을 빼서 계산
+        float fDrawX = vLinkCenterPos.x - fScaledLinkWidth / 2.f;
+        float fDrawY = vLinkCenterPos.y - fScaledLinkHeight / 2.f;
+
+        // 이미지 그리기
+        graphics.DrawImage(
+            &chainBitmap,
+            RectF(fDrawX, fDrawY, fScaledLinkWidth, fScaledLinkHeight), // 그릴 위치와 크기
+            0, 0, fLinkWidth, fLinkHeight, // 원본 이미지에서 가져올 영역
+            UnitPixel,
+            &imgAttr // 투명 처리
+        );
+
+        // 다음 그리기를 위한 리셋
+        graphics.ResetTransform();
+    }
 
 }
 
