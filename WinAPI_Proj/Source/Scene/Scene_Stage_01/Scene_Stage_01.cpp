@@ -195,13 +195,10 @@ void Scene_Stage_01::Enter()
 
 void Scene_Stage_01::Exit()
 {
-    CScene::Exit();
-	DeleteAll();
 	CCollisionMgr::GetInst()->Reset();
 	ShowCursor(true);
     CCamera::GetInst()->SetTarget(nullptr);
-
-
+    CScene::Exit();
 }
 
 

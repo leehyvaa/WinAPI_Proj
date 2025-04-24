@@ -104,10 +104,7 @@ void CScene_Title::Enter()
 void CScene_Title::Exit()
 {
 	CCollisionMgr::GetInst()->Reset();
-
-	DeleteAll();
-
-
+    CScene::Exit();
 }
 
 

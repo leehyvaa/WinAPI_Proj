@@ -956,7 +956,7 @@ void SPlayer::CreateHook()
 	else
 		m_iDir = 1;
 
-
+    
     // Ray가 아무것도 맞추지 못했을 경우
 	if (m_vRayHitPos.IsZero())
 	{
@@ -965,7 +965,7 @@ void SPlayer::CreateHook()
 	else // Ray의 거리가 오브젝트에 닿았을 경우
 	{
 		m_pPlayerHook->LookAt(m_vRayHitPos);
-
+        m_pPlayerHook->SetTargetPos(m_vRayHitPos);
 	    // Ray에 충돌한 물체가 GROUND일 경우
 		if (m_pRayHitCollider->GetObj()->GetGroup() == GROUP_TYPE::GROUND)
 		{

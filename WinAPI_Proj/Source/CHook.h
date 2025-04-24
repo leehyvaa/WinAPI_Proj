@@ -24,6 +24,7 @@ private:
     float m_fMaxRange;
     int dir;
     int prevDir;
+    Vec2 m_vTargetPos;
     CTexture* pChainTex;
     PLAYER_STATE curState;
     PLAYER_STATE prevState;
@@ -53,6 +54,7 @@ public:
     void SetState(PLAYER_STATE _state) { curState = _state; }
     void SetPrevState(PLAYER_STATE _state) { prevState = _state; }
 
+    void SetTargetPos(Vec2 _pos) { m_vTargetPos = _pos; }
     
     void ReturnToPool();
     virtual void Reset() override;

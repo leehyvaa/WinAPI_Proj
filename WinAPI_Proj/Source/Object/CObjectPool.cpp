@@ -39,12 +39,18 @@ GameObject* CObjectPool::GetPoolObject(const wstring& _strKey)
     }
     
     // 모든 오브젝트가 사용 중이면 새로 생성
-    GameObject* pPrototype = pool[0]; // 첫 번째 오브젝트를 프로토타입으로 사용
-    GameObject* pNewObj = pPrototype->Clone(); // 복제
-    pNewObj->SetActive(true);
-    pool.push_back(pNewObj); // 풀에 추가
+    if (!pool.empty())
+    {
+        GameObject* pPrototype = pool[0]; 
+        GameObject* pNewObj = pPrototype->Clone(); 
+        pNewObj->SetActive(true); // 새로 만든 객체도 활성화
+        pNewObj->SetManagedByPool(true); // 풀 관리 객체임을 명시 (Clone 시 복사되지 않을 경우 대비)
+        pool.push_back(pNewObj); // 풀에 추가
+        return pNewObj;
+    }
+
     
-    return pNewObj;
+    return nullptr;
 }
 
 void CObjectPool::ReturnObject(GameObject* _pObj)
@@ -65,6 +71,7 @@ void CObjectPool::ClearPool()
     {
         for (GameObject* pObj : pair.second)
         {
+            pObj->SetManagedByPool(false);
             DeleteObject(pObj);
         }
         pair.second.clear();
@@ -73,6 +80,7 @@ void CObjectPool::ClearPool()
     m_mapPools.clear();
 }
 
+// 소멸자에서 쓰여선 안됨
 void CObjectPool::ClearPoolByKey(const wstring& _strKey)
 {
     auto iter = m_mapPools.find(_strKey);
@@ -80,6 +88,7 @@ void CObjectPool::ClearPoolByKey(const wstring& _strKey)
     {
         for (GameObject* pObj : iter->second)
         {
+            pObj->SetManagedByPool(false);
             DeleteObject(pObj);
         }
         iter->second.clear();

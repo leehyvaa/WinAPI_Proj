@@ -92,6 +92,8 @@ void CScene::Enter()
 
 void CScene::Exit()
 {
+    // 씬 종료 시 오브젝트 풀 제외한 모든 씬 내의 오브젝트를 삭제
+    DeleteAll();
 }
 
 
@@ -375,15 +377,34 @@ void CScene::AddObject(GameObject* _pObj, GROUP_TYPE _eType)
 }
 
 
-//지정된 그룹의 벡터를 지우는 함수
+// 지정된 그룹의 벡터를 지우는 함수
 void CScene::DeleteGroup(GROUP_TYPE _eTarget)
 {
-	Safe_Delete_Vec<GameObject*>(m_arrObj[static_cast<UINT>(_eTarget)]);
+    vector<GameObject*>& vecObjects = m_arrObj[static_cast<UINT>(_eTarget)];
+
+    // 벡터를 순회하면서 삭제 로직 적용
+    for (size_t i = 0; i < vecObjects.size(); ++i)
+    {
+        if (vecObjects[i] != nullptr)
+        {
+            // 풀에서 관리되지 않는 객체만 delete 호출
+            if (!vecObjects[i]->IsManagedByPool())
+            {
+                delete vecObjects[i];
+            }
+            // 풀에서 관리되는 객체는 delete 하지 않음
+            // (포인터는 아래 clear()에서 제거됨)
+        }
+    }
+
+    // 벡터 자체를 비움 (포인터들을 제거)
+    vecObjects.clear();
 }
 
 void CScene::DeleteAll()
 {
     m_pPlayerText = nullptr;
+    m_pPoolDebugText = nullptr; 
 	for (UINT i = 0; i < static_cast<UINT>(GROUP_TYPE::END); i++)
 	{
 		DeleteGroup(static_cast<GROUP_TYPE>(i));

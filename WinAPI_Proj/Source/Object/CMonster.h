@@ -18,26 +18,23 @@ class CMonster :
 {
 private:
     tMonInfo m_tInfo;
-    
-
     AI* m_pAI;
-
-
+    
 public:
     float GetSpeed() { return m_tInfo.fSpeed; }
-    const tMonInfo& GetInfo() { return m_tInfo; }
     void SetSpeed(float _f) { m_tInfo.fSpeed = _f; }
+    const tMonInfo& GetInfo() { return m_tInfo; }
     void SetAI(AI* _AI);
-
+    
 private:
     void SetMonInfo(const tMonInfo& _info){m_tInfo = _info;}
-
+    
 public:
     virtual void OnCollisionEnter(CCollider* _pOther);
 
     virtual void Update();
 
-    CLONE(CMonster);
+    CLONE(CMonster)
 
     CMonster();
     ~CMonster();

@@ -44,28 +44,28 @@ CHook::CHook()
 
 	//RIGHT 애니메이션 생성
 	GetAnimator()->CreateAnimation(L"SNB_GRAB_RIGHT_GRAB", pTexRight,
-		Vec2(0.f, 0.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 1, 2.f, Vec2(0.f, 0.f));
+		Vec2(0.f, 0.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 1, 1.5f, Vec2(0.f, 0.f));
 	GetAnimator()->CreateAnimation(L"SNB_GRAB_RIGHT_GRABBING", pTexRight,
-		Vec2(0.f, 200.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 12, 2.f, Vec2(0.f, 0.f));
+		Vec2(0.f, 200.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 12, 1.5f, Vec2(0.f, 0.f));
 	GetAnimator()->CreateAnimation(L"SNB_GRAB_RIGHT_RETURN_WITHGRAB", pTexRight,
-		Vec2(0.f, 400.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 3, 2.f, Vec2(0.f, 0.f));
+		Vec2(0.f, 400.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 3, 1.5f, Vec2(0.f, 0.f));
 	GetAnimator()->CreateAnimation(L"SNB_GRAB_RIGHT_RETURN_WITHOUTGRAB", pTexRight,
-		Vec2(0.f, 600.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 3, 2.f, Vec2(0.f, 0.f));
+		Vec2(0.f, 600.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 3, 1.5f, Vec2(0.f, 0.f));
 	GetAnimator()->CreateAnimation(L"SNB_GRAB_RIGHT_FLYING", pTexRight,
-		Vec2(0.f, 800.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 1, 2.f, Vec2(0.f, 0.f));
+		Vec2(0.f, 800.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 1, 1.7f, Vec2(0.f, 0.f));
 
 
 	//LEFT 애니메이션 생성
 	GetAnimator()->CreateAnimation(L"SNB_GRAB_LEFT_GRAB", pTexLeft,
-		Vec2(0.f, 0.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 1, 2.f, Vec2(0.f, 0.f));
+		Vec2(0.f, 0.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 1, 1.5f, Vec2(0.f, 0.f));
 	GetAnimator()->CreateAnimation(L"SNB_GRAB_LEFT_GRABBING", pTexLeft,
-		Vec2(0.f, 200.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 12, 2.f, Vec2(0.f, 0.f));
+		Vec2(0.f, 200.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 12, 1.5f, Vec2(0.f, 0.f));
 	GetAnimator()->CreateAnimation(L"SNB_GRAB_LEFT_RETURN_WITHGRAB", pTexLeft,
-		Vec2(0.f, 400.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 3, 2.f, Vec2(0.f, 0.f));
+		Vec2(0.f, 400.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 3, 1.5f, Vec2(0.f, 0.f));
 	GetAnimator()->CreateAnimation(L"SNB_GRAB_LEFT_RETURN_WITHOUTGRAB", pTexLeft,
-		Vec2(0.f, 600.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 3, 2.f, Vec2(0.f, 0.f));
+		Vec2(0.f, 600.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 3, 1.5f, Vec2(0.f, 0.f));
 	GetAnimator()->CreateAnimation(L"SNB_GRAB_LEFT_FLYING", pTexLeft,
-		Vec2(0.f, 800.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 1, 2.f, Vec2(0.f, 0.f));
+		Vec2(0.f, 800.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 1, 1.7f, Vec2(0.f, 0.f));
 
 
 
@@ -132,20 +132,20 @@ void CHook::Reset()
         GetCollider()->SetScale(Vec2(20.f, 20.f));
     }
     
-    if (GetParent())
-    {
-        SetWorldPos(GetParent()->GetWorldPos());
-        
-        // PlayerArm의 방향에 따라 Hook 방향 설정
-        PlayerArm* pArm = dynamic_cast<PlayerArm*>(GetParent());
-        if (pArm) {
-            SPlayer* pPlayer = dynamic_cast<SPlayer*>(pArm->GetParent());
-            if (pPlayer) {
-                dir = pPlayer->GetDir();
-                curState = pPlayer->GetState();
-            }
-        }
-    }
+    // if (GetParent())
+    // {
+    //     SetWorldPos(GetParent()->GetWorldPos());
+    //     
+    //     // PlayerArm의 방향에 따라 Hook 방향 설정
+    //     PlayerArm* pArm = dynamic_cast<PlayerArm*>(GetParent());
+    //     if (pArm) {
+    //         SPlayer* pPlayer = dynamic_cast<SPlayer*>(pArm->GetParent());
+    //         if (pPlayer) {
+    //             dir = pPlayer->GetDir();
+    //             curState = pPlayer->GetState();
+    //         }
+    //     }
+    // }
     
     // 방향 초기화 (기본 위쪽 방향)
     SetDir(-1.f);
@@ -250,9 +250,10 @@ void CHook::Update_Move()
 
 		vPos.x = vPos.x + m_fSpeed * newDir.x * fDT * 3;
 		vPos.y = vPos.y + m_fSpeed * newDir.y * fDT * 3;
+	    LookAt(m_vTargetPos);
 
 		// 플레이어한테 도달하면 삭제
-		if ((GetWorldPos() - pArm->GetWorldPos()).Length() < 30.f && !IsDead())
+		if ((GetWorldPos() - pArm->GetWorldPos()).Length() < 70.f && !IsDead())
 		{
 		    ReturnToPool();
 		    SetDead(true);
@@ -267,9 +268,8 @@ void CHook::Update_Move()
 
 		vPos.x = vPos.x + m_fSpeed * newDir.x * fDT * 3;
 		vPos.y = vPos.y + m_fSpeed * newDir.y * fDT * 3;
-
 		// 플레이어한테 도달하면 삭제
-		if ((GetWorldPos() - pArm->GetWorldPos()).Length() < 30.f && !IsDead())
+		if ((GetWorldPos() - pArm->GetWorldPos()).Length() < 100.f && !IsDead())
 		{
 		    ReturnToPool();
 		    SetDead(true);
@@ -350,16 +350,16 @@ void CHook::Render(HDC _dc)
     imgAttr.SetColorKey(magenta, magenta, ColorAdjustTypeBitmap);
     
     // 밝기 조절 RGB 1.2배 밝게, 전체밝기 0.15 추가
-    ColorMatrix colorMatrix = {
-        1.2f, 0.0f, 0.0f, 0.0f, 0.0f,  
-        0.0f, 1.2f, 0.0f, 0.0f, 0.0f, 
-        0.0f, 0.0f, 1.2f, 0.0f, 0.0f, 
-        0.0f, 0.0f, 0.0f, 1.0f, 0.0f,  
-        0.15f, 0.15f, 0.15f, 0.0f, 1.0f 
-    };
+    // ColorMatrix colorMatrix = {
+    //     1.2f, 0.0f, 0.0f, 0.0f, 0.0f,  
+    //     0.0f, 1.2f, 0.0f, 0.0f, 0.0f, 
+    //     0.0f, 0.0f, 1.2f, 0.0f, 0.0f, 
+    //     0.0f, 0.0f, 0.0f, 1.0f, 0.0f,  
+    //     0.15f, 0.15f, 0.15f, 0.0f, 1.0f 
+    // };
     
     // ColorMatrix를 ImageAttributes에 적용
-    imgAttr.SetColorMatrix(&colorMatrix, ColorMatrixFlagsDefault, ColorAdjustTypeBitmap);
+    //imgAttr.SetColorMatrix(&colorMatrix, ColorMatrixFlagsDefault, ColorAdjustTypeBitmap);
     
     // 사슬 크기 배율
     const float fScaleFactor = 0.3f;

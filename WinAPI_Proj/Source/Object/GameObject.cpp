@@ -102,6 +102,7 @@ void GameObject::Reset()
     m_bAlive = true;
     m_vDir = Vec2(0.f, 0.f);
     m_fLocalRotation = 0.f;
+    m_pParent = nullptr;
     
     // 컴포넌트들 초기화
     if (m_pCollider)
