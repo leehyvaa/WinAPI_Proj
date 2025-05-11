@@ -94,11 +94,12 @@ enum class EVENT_TYPE
 
 enum class MON_STATE
 {
+    SPAWNING,
 	IDLE,
 	PATROL,
+    AIMING,
 	TRACE,
 	ATTACK,
-	RUN,
 	DEAD,
 	END,
 };

@@ -1,7 +1,4 @@
 
-#include "C:\WinAPIProject\WinAPI_Proj\Source\Module\SelectGDI.cpp"
-
-
 #include "C:\WinAPIProject\WinAPI_Proj\Source\Object\CMonster.cpp"
 
 
@@ -21,4 +18,10 @@
 
 
 #include "C:\WinAPIProject\WinAPI_Proj\Source\Object\UI\BtnUI\CBtnUI.cpp"
+
+
+#include "C:\WinAPIProject\WinAPI_Proj\Source\Object\UI\CUI.cpp"
+
+
+#include "C:\WinAPIProject\WinAPI_Proj\Source\Object\UI\PanelUI\CPanelUI.cpp"
 

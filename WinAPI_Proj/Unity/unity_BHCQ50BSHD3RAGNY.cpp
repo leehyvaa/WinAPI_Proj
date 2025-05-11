@@ -1,4 +1,7 @@
 
+#include "C:\WinAPIProject\WinAPI_Proj\Source\Component\RigidBody\CRigidBody.cpp"
+
+
 #include "C:\WinAPIProject\WinAPI_Proj\Source\Core\CCore.cpp"
 
 

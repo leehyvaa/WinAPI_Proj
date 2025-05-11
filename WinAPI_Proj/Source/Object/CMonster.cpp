@@ -19,10 +19,29 @@ CMonster::~CMonster()
 }
 
 
+void CMonster::Start()
+{
+    GameObject::Start();
+}
+
 void CMonster::Update()
 {
 	if(nullptr != m_pAI)
 		m_pAI->Update();
+}
+
+void CMonster::Render(HDC _dc)
+{
+    GameObject::Render(_dc);
+}
+
+void CMonster::FinalUpdata()
+{
+}
+
+void CMonster::Reset()
+{
+    GameObject::Reset();
 }
 
 void CMonster::SetAI(AI* _AI)
@@ -41,4 +60,14 @@ void CMonster::OnCollisionEnter(CCollider* _pOther)
 		if(m_tInfo.fHP <=0)
 			DeleteObject(this);
 	}
+}
+
+void CMonster::OnCollision(CCollider* _pOther)
+{
+    GameObject::OnCollision(_pOther);
+}
+
+void CMonster::OnCollisionExit(CCollider* _pOther)
+{
+    GameObject::OnCollisionExit(_pOther);
 }

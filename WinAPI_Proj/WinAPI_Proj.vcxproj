@@ -163,7 +163,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Module\AI\State\Shooter\CAimingState.h" />
     <ClInclude Include="Source\Object\CObjectPool.h" />
+    <ClInclude Include="Source\Object\Monster\CShooterMonster.h" />
     <ClInclude Include="Source\Object\UI\ChatUI\CTextUI.h" />
     <ClInclude Include="Source\CHook.h" />
     <ClInclude Include="Source\Component\Animator\Animation\CAnimation.h" />
@@ -225,7 +227,9 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Module\AI\State\Shooter\CAimingState.cpp" />
     <ClCompile Include="Source\Object\CObjectPool.cpp" />
+    <ClCompile Include="Source\Object\Monster\CShooterMonster.cpp" />
     <ClCompile Include="Source\Object\UI\ChatUI\CTextUI.cpp" />
     <ClCompile Include="Source\CHook.cpp" />
     <ClCompile Include="Source\Component\Animator\Animation\CAnimation.cpp" />

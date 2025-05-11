@@ -8,20 +8,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e174ba9b-dad2-4293-bc5f-8669e5f5e6a8" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.WinAPI_Proj/.idea/projectSettingsUpdater.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.WinAPI_Proj/.idea/projectSettingsUpdater.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.WinAPI_Proj/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.WinAPI_Proj/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Output/bin_debug/WinAPI_Proj.exe" beforeDir="false" afterPath="$PROJECT_DIR$/Output/bin_debug/WinAPI_Proj.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/CHook.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/CHook.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/CHook.h" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/CHook.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/CMonster.h" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/CMonster.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/CObjectPool.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/CObjectPool.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/GameObject.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/GameObject.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/SPlayer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/SPlayer.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Scene/CScene.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Scene/CScene.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Scene/Scene_Stage_01/Scene_Stage_01.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Scene/Scene_Stage_01/Scene_Stage_01.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Scene/Scene_Title/CScene_Title.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Scene/Scene_Title/CScene_Title.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Scene/Scene_Tool/CScene_Tool.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Scene/Scene_Tool/CScene_Tool.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/자료/2D 일정.txt" beforeDir="false" afterPath="$PROJECT_DIR$/자료/2D 일정.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -206,7 +194,18 @@
       <workItem from="1745305978687" duration="9287000" />
       <workItem from="1745322465865" duration="623000" />
       <workItem from="1745388502574" duration="3085000" />
-      <workItem from="1745515556235" duration="815000" />
+      <workItem from="1745515556235" duration="1412000" />
+      <workItem from="1745662773842" duration="595000" />
+      <workItem from="1745862839761" duration="835000" />
+      <workItem from="1745960168919" duration="603000" />
+      <workItem from="1745994688144" duration="1550000" />
+      <workItem from="1746180480643" duration="1549000" />
+      <workItem from="1746233850467" duration="3467000" />
+      <workItem from="1746313918974" duration="4579000" />
+      <workItem from="1746444962371" duration="2034000" />
+      <workItem from="1746526249669" duration="6340000" />
+      <workItem from="1746785763095" duration="1869000" />
+      <workItem from="1746887509171" duration="3866000" />
     </task>
     <servers />
   </component>

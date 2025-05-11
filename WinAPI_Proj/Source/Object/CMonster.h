@@ -9,6 +9,7 @@ struct tMonInfo
     float fDetectRange;
     float fAttRange;
     float fAtt;
+    float fAttackCooldown; 
     int iDir;
 };
 
@@ -19,6 +20,14 @@ class CMonster :
 private:
     tMonInfo m_tInfo;
     AI* m_pAI;
+    bool m_bOnGround;
+    float m_fLastAttackTime; // 초기값 설정 (게임 시작 시 바로 공격 가능하도록)
+
+
+private:
+    void SetMonInfo(const tMonInfo& _info){m_tInfo = _info;}
+
+
     
 public:
     float GetSpeed() { return m_tInfo.fSpeed; }
@@ -26,14 +35,18 @@ public:
     const tMonInfo& GetInfo() { return m_tInfo; }
     void SetAI(AI* _AI);
     
-private:
-    void SetMonInfo(const tMonInfo& _info){m_tInfo = _info;}
-    
-public:
-    virtual void OnCollisionEnter(CCollider* _pOther);
 
+    virtual void Start();
     virtual void Update();
+    virtual void Render(HDC _dc);
+    virtual void FinalUpdata();
+    virtual void Reset();
 
+
+    virtual void OnCollisionEnter(CCollider* _pOther);
+    virtual void OnCollision(CCollider* _pOther);
+    virtual void OnCollisionExit(CCollider* _pOther);
+    
     CLONE(CMonster)
 
     CMonster();
