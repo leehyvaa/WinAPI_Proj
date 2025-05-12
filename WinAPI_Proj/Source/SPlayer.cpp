@@ -34,7 +34,6 @@ SPlayer::SPlayer()
 #pragma region 플레이어 애니메이션
 	// 텍스쳐 로딩
 	CTexture *pTexRight = CResMgr::GetInst()->LoadTexture(L"PlayerTex_Right", L"texture\\player\\Player_Right.bmp");
-	CTexture *pTexLeft = CResMgr::GetInst()->LoadTexture(L"PlayerTex_Left", L"texture\\player\\Player_Right.bmp");
 
 	// 애니메이션 로딩
 	// GetAnimator()->LoadAnimation(L"animation\\player_right_idle.anim");
@@ -59,25 +58,6 @@ SPlayer::SPlayer()
 	GetAnimator()->CreateAnimation(L"SNB_RIGHT_SWING", pTexRight,
 								   Vec2(0.f, 2300.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.2f, 15, 3.f, Vec2(-13.f, -57.f));
 
-	// LEFT 애니메이션 생성
-	GetAnimator()->CreateAnimation(L"SNB_LEFT_IDLE", pTexLeft,
-								   Vec2(0.f, 900.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 8, 3.f, Vec2(0.f, -57.f));
-	GetAnimator()->CreateAnimation(L"SNB_LEFT_RUN", pTexLeft,
-								   Vec2(0.f, 1400.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.07f, 20, 3.f, Vec2(0.f, -57.f));
-	GetAnimator()->CreateAnimation(L"SNB_LEFT_JUMP", pTexLeft,
-								   Vec2(0.f, 1000.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 6, 3.f, Vec2(0.f, -57.f));
-	GetAnimator()->CreateAnimation(L"SNB_LEFT_FALLING", pTexLeft,
-								   Vec2(0.f, 600.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 3, 3.f, Vec2(0.f, -57.f));
-	GetAnimator()->CreateAnimation(L"SNB_LEFT_LAND", pTexLeft,
-								   Vec2(0.f, 1100.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 3, 3.f, Vec2(0.f, -57.f));
-	GetAnimator()->CreateAnimation(L"SNB_LEFT_CLIMBUP", pTexLeft,
-								   Vec2(0.f, 2800.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.06f, 10, 3.f, Vec2(-13.f, -57.f));
-	GetAnimator()->CreateAnimation(L"SNB_LEFT_CLIMBDOWN", pTexLeft,
-								   Vec2(0.f, 2700.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.06f, 7, 3.f, Vec2(-13.f, -57.f));
-	GetAnimator()->CreateAnimation(L"SNB_LEFT_CLIMBSTOP", pTexLeft,
-								   Vec2(0.f, 2900.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.2f, 11, 3.f, Vec2(-13.f, -57.f));
-	GetAnimator()->CreateAnimation(L"SNB_LEFT_SWING", pTexLeft,
-								   Vec2(0.f, 2300.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.2f, 15, 3.f, Vec2(-13.f, -57.f));
 
 	// RIGHT 애니메이션 저장
 	GetAnimator()->FindAnimation(L"SNB_RIGHT_IDLE")->Save(L"animation\\player_right_idle.anim");
@@ -90,16 +70,6 @@ SPlayer::SPlayer()
 	GetAnimator()->FindAnimation(L"SNB_RIGHT_CLIMBSTOP")->Save(L"animation\\player_right_climbstop.anim");
 	GetAnimator()->FindAnimation(L"SNB_RIGHT_SWING")->Save(L"animation\\player_right_swing.anim");
 
-	// LEFT 애니메이션 저장
-	GetAnimator()->FindAnimation(L"SNB_LEFT_IDLE")->Save(L"animation\\player_left_idle.anim");
-	GetAnimator()->FindAnimation(L"SNB_LEFT_RUN")->Save(L"animation\\player_left_run.anim");
-	GetAnimator()->FindAnimation(L"SNB_LEFT_JUMP")->Save(L"animation\\player_left_jump.anim");
-	GetAnimator()->FindAnimation(L"SNB_LEFT_FALLING")->Save(L"animation\\player_left_falling.anim");
-	GetAnimator()->FindAnimation(L"SNB_LEFT_LAND")->Save(L"animation\\player_left_land.anim");
-	GetAnimator()->FindAnimation(L"SNB_LEFT_CLIMBUP")->Save(L"animation\\player_left_climbup.anim");
-	GetAnimator()->FindAnimation(L"SNB_LEFT_CLIMBDOWN")->Save(L"animation\\player_left_climbdown.anim");
-	GetAnimator()->FindAnimation(L"SNB_LEFT_CLIMBSTOP")->Save(L"animation\\player_left_climbstop.anim");
-	GetAnimator()->FindAnimation(L"SNB_LEFT_SWING")->Save(L"animation\\player_left_swing.anim");
 
 	GetAnimator()->Play(L"SNB_RIGHT_RUN", true);
 #pragma endregion
@@ -460,15 +430,9 @@ void SPlayer::Update_Animation()
 	switch (m_eCurState)
 	{
 	case PLAYER_STATE::IDLE:
-		if (m_bIsFacingRight == false)
-			GetAnimator()->Play(L"SNB_LEFT_IDLE", true);
-		else
 			GetAnimator()->Play(L"SNB_RIGHT_IDLE", true);
 		break;
 	case PLAYER_STATE::RUN:
-		if (m_bIsFacingRight == false)
-			GetAnimator()->Play(L"SNB_LEFT_RUN", true);
-		else
 			GetAnimator()->Play(L"SNB_RIGHT_RUN", true);
 		break;
 	case PLAYER_STATE::ATTACK:
@@ -476,21 +440,12 @@ void SPlayer::Update_Animation()
 		break;
 
 	case PLAYER_STATE::JUMP:
-		if (m_bIsFacingRight == false)
-			GetAnimator()->Play(L"SNB_LEFT_JUMP", true);
-		else
 			GetAnimator()->Play(L"SNB_RIGHT_JUMP", true);
 		break;
 	case PLAYER_STATE::FALL:
-	    if (m_bIsFacingRight == false)
-	        GetAnimator()->Play(L"SNB_LEFT_JUMP", true);
-	    else
 	        GetAnimator()->Play(L"SNB_RIGHT_JUMP", true);
 	    break;
 	case PLAYER_STATE::CLIMB:
-		if (m_bIsFacingRight == false)
-			GetAnimator()->Play(L"SNB_LEFT_CLIMBSTOP", true);
-		else
 			GetAnimator()->Play(L"SNB_RIGHT_CLIMBSTOP", true);
 		break;
 	case PLAYER_STATE::SWING:
@@ -498,9 +453,6 @@ void SPlayer::Update_Animation()
 	    {
 	        LookAt(m_pPlayerHook->GetWorldPos());
 	    }
-	    if (m_bIsFacingRight == false)
-	        GetAnimator()->Play(L"SNB_LEFT_SWING", true);
-	    else
 	        GetAnimator()->Play(L"SNB_RIGHT_SWING", true);
 	    break;
 	case PLAYER_STATE::DAMAGED:
@@ -567,21 +519,12 @@ void SPlayer::ClimbAnimationUpdate()
 		switch (m_eClimbState)
 		{
 		case PLAYER_CLIMB_STATE::NONE:
-			if (m_bIsFacingRight == false)
-				GetAnimator()->Play(L"SNB_LEFT_CLIMBSTOP", true);
-			else
 				GetAnimator()->Play(L"SNB_RIGHT_CLIMBSTOP", true);
 			break;
 		case PLAYER_CLIMB_STATE::UP:
-			if (m_bIsFacingRight == false)
-				GetAnimator()->Play(L"SNB_LEFT_CLIMBUP", true);
-			else
 				GetAnimator()->Play(L"SNB_RIGHT_CLIMBUP", true);
 			break;
 		case PLAYER_CLIMB_STATE::DOWN:
-			if (m_bIsFacingRight == false)
-				GetAnimator()->Play(L"SNB_LEFT_CLIMBDOWN", true);
-			else
 				GetAnimator()->Play(L"SNB_RIGHT_CLIMBDOWN", true);
 			break;
 		default:

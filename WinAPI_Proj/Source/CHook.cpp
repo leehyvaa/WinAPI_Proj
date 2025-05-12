@@ -33,7 +33,6 @@ CHook::CHook()
 #pragma region 후크 애니메이션
 	//텍스쳐 로딩
 	CTexture* pTexRight = CResMgr::GetInst()->LoadTexture(L"GrabTex_Right", L"texture\\player\\Grab_Right.bmp");
-	CTexture* pTexLeft = CResMgr::GetInst()->LoadTexture(L"GrabTex_Left", L"texture\\player\\Grab_Right.bmp");
 	pChainTex= CResMgr::GetInst()->LoadTexture(L"Chain", L"texture\\player\\Chain.bmp");
 	
 
@@ -54,21 +53,7 @@ CHook::CHook()
 	GetAnimator()->CreateAnimation(L"SNB_GRAB_RIGHT_FLYING", pTexRight,
 		Vec2(0.f, 800.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 1, 1.7f, Vec2(0.f, 0.f));
 
-
-	//LEFT 애니메이션 생성
-	GetAnimator()->CreateAnimation(L"SNB_GRAB_LEFT_GRAB", pTexLeft,
-		Vec2(0.f, 0.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 1, 1.5f, Vec2(0.f, 0.f));
-	GetAnimator()->CreateAnimation(L"SNB_GRAB_LEFT_GRABBING", pTexLeft,
-		Vec2(0.f, 200.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 12, 1.5f, Vec2(0.f, 0.f));
-	GetAnimator()->CreateAnimation(L"SNB_GRAB_LEFT_RETURN_WITHGRAB", pTexLeft,
-		Vec2(0.f, 400.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 3, 1.5f, Vec2(0.f, 0.f));
-	GetAnimator()->CreateAnimation(L"SNB_GRAB_LEFT_RETURN_WITHOUTGRAB", pTexLeft,
-		Vec2(0.f, 600.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 3, 1.5f, Vec2(0.f, 0.f));
-	GetAnimator()->CreateAnimation(L"SNB_GRAB_LEFT_FLYING", pTexLeft,
-		Vec2(0.f, 800.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 1, 1.7f, Vec2(0.f, 0.f));
-
-
-
+    
 
 	//RIGHT 애니메이션 저장
 	GetAnimator()->FindAnimation(L"SNB_GRAB_RIGHT_GRAB")->Save(L"animation\\grab_right_grab.anim");
@@ -76,18 +61,9 @@ CHook::CHook()
 	GetAnimator()->FindAnimation(L"SNB_GRAB_RIGHT_RETURN_WITHGRAB")->Save(L"animation\\grab_right_return_withgrab.anim");
 	GetAnimator()->FindAnimation(L"SNB_GRAB_RIGHT_RETURN_WITHOUTGRAB")->Save(L"animation\\grab_right_return_withoutgrab.anim");
 	GetAnimator()->FindAnimation(L"SNB_GRAB_RIGHT_FLYING")->Save(L"animation\\grab_right_flying.anim");
+    
 
-
-	//LEFT 애니메이션 저장
-	GetAnimator()->FindAnimation(L"SNB_GRAB_LEFT_GRAB")->Save(L"animation\\player_left_grab.anim");
-	GetAnimator()->FindAnimation(L"SNB_GRAB_LEFT_GRABBING")->Save(L"animation\\grab_left_grabbing.anim");
-	GetAnimator()->FindAnimation(L"SNB_GRAB_LEFT_RETURN_WITHGRAB")->Save(L"animation\\grab_left_return_withgrab.anim");
-	GetAnimator()->FindAnimation(L"SNB_GRAB_LEFT_RETURN_WITHOUTGRAB")->Save(L"animation\\grab_left_return_withoutgrab.anim");
-	GetAnimator()->FindAnimation(L"SNB_GRAB_LEFT_FLYING")->Save(L"animation\\grab_left_flying.anim");
-
-
-
-	GetAnimator()->Play(L"SNB_GRAB_LEFT_FLYING", true);
+	GetAnimator()->Play(L"SNB_GRAB_RIGHT_FLYING", true);
 #pragma endregion
 
 
@@ -117,10 +93,7 @@ void CHook::Reset()
     // 애니메이션 초기화
     if (GetAnimator())
     {
-        if (m_bIsFacingRight == false)
-            GetAnimator()->Play(L"SNB_GRAB_LEFT_FLYING", true);
-        else
-            GetAnimator()->Play(L"SNB_GRAB_RIGHT_FLYING", true);
+        GetAnimator()->Play(L"SNB_GRAB_RIGHT_FLYING", true);
     }
     
     // 충돌체 상태 초기화 (충돌 기록 제거)
@@ -168,33 +141,18 @@ void CHook::Update_Animation()
 	switch (hookState)
 	{
 	case HOOK_STATE::FLYING:
-		if (m_bIsFacingRight == false)
-			GetAnimator()->Play(L"SNB_GRAB_LEFT_FLYING", true);
-		else
 			GetAnimator()->Play(L"SNB_GRAB_RIGHT_FLYING", true);
 		break;
 	case HOOK_STATE::GRAB:
-		if (m_bIsFacingRight == false)
-			GetAnimator()->Play(L"SNB_GRAB_LEFT_GRAB", true);
-		else
 			GetAnimator()->Play(L"SNB_GRAB_RIGHT_GRAB", true);
 		break;
 	case HOOK_STATE::GRABBING:
-		if (m_bIsFacingRight == false)
-			GetAnimator()->Play(L"SNB_GRAB_LEFT_GRABBING", true);
-		else
 			GetAnimator()->Play(L"SNB_GRAB_RIGHT_GRABBING", true);
 		break;
 	case HOOK_STATE::RETURN_WITH:
-		if (m_bIsFacingRight == false)
-			GetAnimator()->Play(L"SNB_GRAB_LEFT_RETURN_WITHGRAB", true);
-		else
 			GetAnimator()->Play(L"SNB_GRAB_RIGHT_RETURN_WITHGRAB", true);
 		break;
 	case HOOK_STATE::RETURN_WITHOUT:
-		if (m_bIsFacingRight == false)
-			GetAnimator()->Play(L"SNB_GRAB_LEFT_RETURN_WITHOUTGRAB", true);
-		else
 			GetAnimator()->Play(L"SNB_GRAB_RIGHT_RETURN_WITHOUTGRAB", true);
 		break;
 	default:
