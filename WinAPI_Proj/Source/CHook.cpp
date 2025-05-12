@@ -117,7 +117,7 @@ void CHook::Reset()
     // 애니메이션 초기화
     if (GetAnimator())
     {
-        if (dir == -1)
+        if (m_bIsFacingRight == false)
             GetAnimator()->Play(L"SNB_GRAB_LEFT_FLYING", true);
         else
             GetAnimator()->Play(L"SNB_GRAB_RIGHT_FLYING", true);
@@ -148,10 +148,10 @@ void CHook::Reset()
     // }
     
     // 방향 초기화 (기본 위쪽 방향)
-    SetDir(-1.f);
+    //SetIsFacingRight(false);
     
     // 상태 추적 변수 초기화
-    prevDir = dir;
+    m_bIsFacingRightPrev = m_bIsFacingRight;
     prevState = curState;
 }
 
@@ -168,31 +168,31 @@ void CHook::Update_Animation()
 	switch (hookState)
 	{
 	case HOOK_STATE::FLYING:
-		if (dir == -1)
+		if (m_bIsFacingRight == false)
 			GetAnimator()->Play(L"SNB_GRAB_LEFT_FLYING", true);
 		else
 			GetAnimator()->Play(L"SNB_GRAB_RIGHT_FLYING", true);
 		break;
 	case HOOK_STATE::GRAB:
-		if (dir == -1)
+		if (m_bIsFacingRight == false)
 			GetAnimator()->Play(L"SNB_GRAB_LEFT_GRAB", true);
 		else
 			GetAnimator()->Play(L"SNB_GRAB_RIGHT_GRAB", true);
 		break;
 	case HOOK_STATE::GRABBING:
-		if (dir == -1)
+		if (m_bIsFacingRight == false)
 			GetAnimator()->Play(L"SNB_GRAB_LEFT_GRABBING", true);
 		else
 			GetAnimator()->Play(L"SNB_GRAB_RIGHT_GRABBING", true);
 		break;
 	case HOOK_STATE::RETURN_WITH:
-		if (dir == -1)
+		if (m_bIsFacingRight == false)
 			GetAnimator()->Play(L"SNB_GRAB_LEFT_RETURN_WITHGRAB", true);
 		else
 			GetAnimator()->Play(L"SNB_GRAB_RIGHT_RETURN_WITHGRAB", true);
 		break;
 	case HOOK_STATE::RETURN_WITHOUT:
-		if (dir == -1)
+		if (m_bIsFacingRight == false)
 			GetAnimator()->Play(L"SNB_GRAB_LEFT_RETURN_WITHOUTGRAB", true);
 		else
 			GetAnimator()->Play(L"SNB_GRAB_RIGHT_RETURN_WITHOUTGRAB", true);
@@ -205,7 +205,7 @@ void CHook::Update_Animation()
 
 void CHook::Update_State()
 {
-	if (prevState == curState && prevDir == dir)
+	if (prevState == curState && m_bIsFacingRightPrev == m_bIsFacingRight)
 		return;
 
 

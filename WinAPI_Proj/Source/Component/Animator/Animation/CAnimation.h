@@ -11,7 +11,7 @@ class CTexture;
 struct tAnimFrm
 {
 	Vec2 vLT; 
-	Vec2 vSlice;//텍스쳐마다 크기가 다를 수 있으니 프레임마다 자를 사이즈
+	Vec2 vSlice; // 텍스쳐마다 크기가 다를 수 있으니 프레임마다 자를 사이즈
 	Vec2 vOffset;
 	float fDuration;
 };
@@ -22,11 +22,11 @@ private:
 	wstring m_strName;
 	CAnimator* m_pAnimator;
 
-	CTexture* m_pTex; //Animation이 사용하는 텍스쳐
-	vector<tAnimFrm> m_vecFrm; //모든 프레임 정보
-	int	m_iCurFrm; //현재프레임
-	float m_fAccTime; //시간 누적
-	bool m_bFinish; //재생 끝에 도달 여부
+	CTexture* m_pTex;          // Animation이 사용하는 텍스쳐
+	vector<tAnimFrm> m_vecFrm; // 모든 프레임 정보
+	int	m_iCurFrm;             // 현재프레임
+	float m_fAccTime;          // 시간 누적
+	bool m_bFinish;            // 재생 끝에 도달 여부
 	float m_fSizeMulti;
 	POINT* rotPos;
     

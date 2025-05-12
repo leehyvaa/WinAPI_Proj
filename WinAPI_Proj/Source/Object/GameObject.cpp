@@ -22,6 +22,8 @@ GameObject::GameObject()
     , m_pParent(nullptr)
     , m_bManagedByPool(false)
     , m_vLocalPos(0.f, 0.f)
+    , m_bIsFacingRight(true)
+    , m_bIsFacingRightPrev(true)
 {
 }
 GameObject::GameObject(const GameObject& _origin)
@@ -34,6 +36,8 @@ GameObject::GameObject(const GameObject& _origin)
 	, m_pGravity(nullptr)
 	, m_bAlive(true)
     , m_eGroup(GROUP_TYPE::END)
+    , m_bIsFacingRight(_origin.m_bIsFacingRight)
+    , m_bIsFacingRightPrev(_origin.m_bIsFacingRightPrev)
 {
 	if (_origin.m_pCollider)
 	{

@@ -15,8 +15,6 @@ class SPlayer : public GameObject
 {
 
 private:
-	int m_iDir;
-	int m_iPrevDir;
 	float m_fSpeed;
 	float m_fWireRange;
 	float m_fWireMaxRange;
@@ -44,14 +42,13 @@ public:
 	// 복사생성자가 문제가 되는 경우는 콜라이더처럼 자신의 owner를 가지고 있거나
 	// 고유한 id값을 가지고 있을때 얕은복사를 하면 문제가 됨
 	SPlayer(const SPlayer &_origin)
-		: GameObject(_origin), m_iDir(_origin.m_iDir), m_fSpeed(_origin.m_fSpeed), m_eCurState(_origin.m_eCurState), m_ePrevState(_origin.m_ePrevState), m_iPrevDir(_origin.m_iPrevDir), m_pPlayerArm(_origin.m_pPlayerArm), m_pPlayerRay(_origin.m_pPlayerRay), m_bOnGround(false), m_bClimbing(false), m_vRayHitPos(_origin.m_vRayHitPos), m_pRayHitCollider(nullptr), m_eClimbState(PLAYER_CLIMB_STATE::NONE)
+		: GameObject(_origin), m_fSpeed(_origin.m_fSpeed), m_eCurState(_origin.m_eCurState), m_ePrevState(_origin.m_ePrevState), m_pPlayerArm(_origin.m_pPlayerArm), m_pPlayerRay(_origin.m_pPlayerRay), m_bOnGround(false), m_bClimbing(false), m_vRayHitPos(_origin.m_vRayHitPos), m_pRayHitCollider(nullptr), m_eClimbState(PLAYER_CLIMB_STATE::NONE)
 	{
 	}
 	virtual ~SPlayer();
 
-	void SetDir(int _dir) { m_iDir = _dir; }
-	int GetDir() { return m_iDir; }
-	int GetPrevDir() { return m_iPrevDir; }
+
+	
 	Vec2 GetTargetPos() { return m_vRayHitPos; }
 	float GetMoveEnergy() { return m_fMoveEnergy; }
     float GetPosEnergy() { return m_fPosEnergy; }

@@ -100,7 +100,7 @@ void PlayerArm::Update()
     SPlayer* player = static_cast<SPlayer*>(GetParent());
     if (player)
     {
-        m_iDir = player->GetDir();
+        m_bIsFacingRight = player->GetIsFacingRight();
         m_eCurState = player->GetState();
     }
 
@@ -111,7 +111,7 @@ void PlayerArm::Update()
 	Update_Animation();
 	GetAnimator()->Update();
 
-	m_iPrevDir = m_iDir;
+	m_bIsFacingRightPrev = m_bIsFacingRight;
 	m_ePrevState = m_eCurState;
 }
 
@@ -123,7 +123,7 @@ void PlayerArm::Render(HDC _dc)
 
 void PlayerArm::Update_Animation()
 {
-	if (m_ePrevState == m_eCurState && m_iPrevDir == m_iDir)
+	if (m_ePrevState == m_eCurState && m_bIsFacingRightPrev == m_bIsFacingRight)
 		return;
     SPlayer* player = static_cast<SPlayer*>(GetParent());
     if (!player) return;
@@ -132,13 +132,13 @@ void PlayerArm::Update_Animation()
 	switch (m_eCurState)
 	{
 	case PLAYER_STATE::IDLE:
-		if (m_iDir == -1)
+		if (m_bIsFacingRight == false)
 			GetAnimator()->Play(L"SNB_ARM_LEFT_IDLE", true);
 		else
 			GetAnimator()->Play(L"SNB_ARM_RIGHT_IDLE", true);
 		break;
 	case PLAYER_STATE::RUN:
-		if (m_iDir == -1)
+		if (m_bIsFacingRight == false)
 			GetAnimator()->Play(L"SNB_ARM_LEFT_RUN", true);
 		else
 			GetAnimator()->Play(L"SNB_ARM_RIGHT_RUN", true);
@@ -148,26 +148,26 @@ void PlayerArm::Update_Animation()
 		break;
 
 	case PLAYER_STATE::JUMP:
-		if (m_iDir == -1)
+		if (m_bIsFacingRight == false)
 			GetAnimator()->Play(L"SNB_ARM_LEFT_JUMP", true);
 		else
 			GetAnimator()->Play(L"SNB_ARM_RIGHT_JUMP", true);
 		break;
 	case PLAYER_STATE::FALL:
-	    if (m_iDir == -1)
+	    if (m_bIsFacingRight == false)
 	        GetAnimator()->Play(L"SNB_ARM_LEFT_JUMP", true);
 	    else
 	        GetAnimator()->Play(L"SNB_ARM_RIGHT_JUMP", true);
 	    break;
 	case PLAYER_STATE::CLIMB:
-		if (m_iDir == -1)
+		if (m_bIsFacingRight == false)
 			GetAnimator()->Play(L"SNB_ARM_LEFT_CLIMBSTOP", true);
 		else
 			GetAnimator()->Play(L"SNB_ARM_RIGHT_CLIMBSTOP", true);
 		break;
 	case PLAYER_STATE::SWING:
 		        SetLocalRotation(-90.f);
-		if (m_iDir == -1)
+		if (m_bIsFacingRight == false)
 			GetAnimator()->Play(L"SNB_ARM_LEFT_SWING", true);
 		else
 			GetAnimator()->Play(L"SNB_ARM_RIGHT_SWING", true);
@@ -198,19 +198,19 @@ void PlayerArm::Update_ClimbAnimation()
 			switch (currentClimbState)
 			{
 			case PLAYER_CLIMB_STATE::NONE:
-				if (m_iDir == -1)
+				if (m_bIsFacingRight == false)
 					GetAnimator()->Play(L"SNB_ARM_LEFT_CLIMBSTOP", true);
 				else
 					GetAnimator()->Play(L"SNB_ARM_RIGHT_CLIMBSTOP", true);
 				break;
 			case PLAYER_CLIMB_STATE::UP:
-				if (m_iDir == -1)
+				if (m_bIsFacingRight == false)
 					GetAnimator()->Play(L"SNB_ARM_LEFT_CLIMBUP", true);
 				else
 					GetAnimator()->Play(L"SNB_ARM_RIGHT_CLIMBUP", true);
 				break;
 			case PLAYER_CLIMB_STATE::DOWN:
-				if (m_iDir == -1)
+				if (m_bIsFacingRight == false)
 					GetAnimator()->Play(L"SNB_ARM_LEFT_CLIMBDOWN", true);
 				else
 					GetAnimator()->Play(L"SNB_ARM_RIGHT_CLIMBDOWN", true);

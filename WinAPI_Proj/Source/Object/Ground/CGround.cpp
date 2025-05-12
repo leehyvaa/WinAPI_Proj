@@ -209,14 +209,14 @@ void CGround::OnCollision(CCollider* _pOther)
                 else pPlayer->SetWallClimbing(false);
                 
                 if (pPlayer->GetState() != PLAYER_STATE::SWING)
-                    pPlayer->SetDir(-1);
+                    pPlayer->SetIsFacingRight(false);
             }
             else if (horizontalDot < -0.5f)
             { // MTV가 왼쪽을 향함 -> 오른쪽 벽 충돌
                 if (canClimb) pPlayer->SetWallClimbing(true);
                 else pPlayer->SetWallClimbing(false);
                 if (pPlayer->GetState() != PLAYER_STATE::SWING)
-                    pPlayer->SetDir(1);
+                    pPlayer->SetIsFacingRight(true);
             }
             else
             {

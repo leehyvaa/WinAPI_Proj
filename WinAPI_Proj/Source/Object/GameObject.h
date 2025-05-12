@@ -18,6 +18,8 @@ private:
     bool m_bAlive;
     bool m_bActive; // 활성화 상태 (풀링에서도 사용)
     bool m_bManagedByPool;
+
+
     
 	wstring m_strName;
 	Vec2 m_vDir;
@@ -36,11 +38,17 @@ private:
 protected:
     GROUP_TYPE m_eGroup;
     Vec2 m_vLocalPos;
+    bool m_bIsFacingRight;
+    bool m_bIsFacingRightPrev;
 public:
 	GameObject();
 	GameObject(const GameObject& _origin);
 	virtual ~GameObject();
 
+    void SetIsFacingRightPrev(bool _dir) { m_bIsFacingRightPrev = _dir; }
+    void SetIsFacingRight(bool _dir) { m_bIsFacingRight = _dir; }
+    bool GetIsFacingRightPrev() { return m_bIsFacingRightPrev; }
+    bool GetIsFacingRight() { return m_bIsFacingRight; }
 	virtual void LookAt(Vec2 _target);
 	void SetDir(Vec2 _dir) { m_vDir = _dir; }
     void SetWorldPos(Vec2 _vWorldPos);

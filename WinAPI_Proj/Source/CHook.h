@@ -22,8 +22,6 @@ class CHook :
 private:
     float m_fSpeed;
     float m_fMaxRange;
-    int dir;
-    int prevDir;
     Vec2 m_vTargetPos;
     CTexture* pChainTex;
     PLAYER_STATE curState;
@@ -44,10 +42,7 @@ public:
     void Update_Animation();
     void Update_State();
     void Update_Move();
-
-    void SetPrevDir(int _dir) { prevDir = _dir; }
-    void SetDir(int _dir) { dir = _dir; }
-
+    
     void SetHookState(HOOK_STATE _state) { hookState = _state; }
     HOOK_STATE GetHookState() { return hookState; }
 

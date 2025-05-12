@@ -18,7 +18,7 @@
 #include "CObjectPool.h"
 
 SPlayer::SPlayer()
-	: m_fSpeed(1000), m_iDir(1), m_iPrevDir(1), m_eCurState(PLAYER_STATE::IDLE), m_ePrevState(PLAYER_STATE::RUN), m_bOnGround(false), m_pPlayerArm(nullptr), m_pPlayerHook(nullptr), m_bClimbing(false), m_pRayHitCollider(nullptr), m_vRayHitPos(Vec2(0.f, 0.f)), m_fWireRange(-1.f), m_fWireMaxRange(700.f), m_fMoveEnergy(0.f), m_fPosEnergy(0.f), m_bCanBooster(false), m_eClimbState(PLAYER_CLIMB_STATE::NONE)
+	: m_fSpeed(1000), m_eCurState(PLAYER_STATE::IDLE), m_ePrevState(PLAYER_STATE::RUN), m_bOnGround(false), m_pPlayerArm(nullptr), m_pPlayerHook(nullptr), m_bClimbing(false), m_pRayHitCollider(nullptr), m_vRayHitPos(Vec2(0.f, 0.f)), m_fWireRange(-1.f), m_fWireMaxRange(700.f), m_fMoveEnergy(0.f), m_fPosEnergy(0.f), m_bCanBooster(false), m_eClimbState(PLAYER_CLIMB_STATE::NONE)
 {
 	// m_pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\sigong.bmp");
 	SetGroup(GROUP_TYPE::PLAYER);
@@ -210,12 +210,12 @@ void SPlayer::Update()
 
 	if (m_pPlayerHook != nullptr)
 	{
-		m_pPlayerHook->SetDir(m_iDir);
+		m_pPlayerHook->SetIsFacingRight(m_bIsFacingRight);
 		m_pPlayerHook->SetState(m_eCurState);
 	}
-	m_pPlayerArm->SetDir(m_iDir);
+	m_pPlayerArm->SetIsFacingRight(m_bIsFacingRight);
 	m_pPlayerArm->SetState(m_eCurState);
-	m_iPrevDir = m_iDir;
+	m_bIsFacingRightPrev = m_bIsFacingRight;
 }
 
 void SPlayer::Render(HDC _dc)
@@ -454,19 +454,19 @@ void SPlayer::Exit_State(PLAYER_STATE _eState)
 
 void SPlayer::Update_Animation()
 {
-	if (m_ePrevState == m_eCurState && m_iPrevDir == m_iDir)
+	if (m_ePrevState == m_eCurState && m_bIsFacingRightPrev == m_bIsFacingRight)
 		return;
 
 	switch (m_eCurState)
 	{
 	case PLAYER_STATE::IDLE:
-		if (m_iDir == -1)
+		if (m_bIsFacingRight == false)
 			GetAnimator()->Play(L"SNB_LEFT_IDLE", true);
 		else
 			GetAnimator()->Play(L"SNB_RIGHT_IDLE", true);
 		break;
 	case PLAYER_STATE::RUN:
-		if (m_iDir == -1)
+		if (m_bIsFacingRight == false)
 			GetAnimator()->Play(L"SNB_LEFT_RUN", true);
 		else
 			GetAnimator()->Play(L"SNB_RIGHT_RUN", true);
@@ -476,19 +476,19 @@ void SPlayer::Update_Animation()
 		break;
 
 	case PLAYER_STATE::JUMP:
-		if (m_iDir == -1)
+		if (m_bIsFacingRight == false)
 			GetAnimator()->Play(L"SNB_LEFT_JUMP", true);
 		else
 			GetAnimator()->Play(L"SNB_RIGHT_JUMP", true);
 		break;
 	case PLAYER_STATE::FALL:
-	    if (m_iDir == -1)
+	    if (m_bIsFacingRight == false)
 	        GetAnimator()->Play(L"SNB_LEFT_JUMP", true);
 	    else
 	        GetAnimator()->Play(L"SNB_RIGHT_JUMP", true);
 	    break;
 	case PLAYER_STATE::CLIMB:
-		if (m_iDir == -1)
+		if (m_bIsFacingRight == false)
 			GetAnimator()->Play(L"SNB_LEFT_CLIMBSTOP", true);
 		else
 			GetAnimator()->Play(L"SNB_RIGHT_CLIMBSTOP", true);
@@ -498,7 +498,7 @@ void SPlayer::Update_Animation()
 	    {
 	        LookAt(m_pPlayerHook->GetWorldPos());
 	    }
-	    if (m_iDir == -1)
+	    if (m_bIsFacingRight == false)
 	        GetAnimator()->Play(L"SNB_LEFT_SWING", true);
 	    else
 	        GetAnimator()->Play(L"SNB_RIGHT_SWING", true);
@@ -567,19 +567,19 @@ void SPlayer::ClimbAnimationUpdate()
 		switch (m_eClimbState)
 		{
 		case PLAYER_CLIMB_STATE::NONE:
-			if (m_iDir == -1)
+			if (m_bIsFacingRight == false)
 				GetAnimator()->Play(L"SNB_LEFT_CLIMBSTOP", true);
 			else
 				GetAnimator()->Play(L"SNB_RIGHT_CLIMBSTOP", true);
 			break;
 		case PLAYER_CLIMB_STATE::UP:
-			if (m_iDir == -1)
+			if (m_bIsFacingRight == false)
 				GetAnimator()->Play(L"SNB_LEFT_CLIMBUP", true);
 			else
 				GetAnimator()->Play(L"SNB_RIGHT_CLIMBUP", true);
 			break;
 		case PLAYER_CLIMB_STATE::DOWN:
-			if (m_iDir == -1)
+			if (m_bIsFacingRight == false)
 				GetAnimator()->Play(L"SNB_LEFT_CLIMBDOWN", true);
 			else
 				GetAnimator()->Play(L"SNB_RIGHT_CLIMBDOWN", true);
@@ -594,7 +594,7 @@ void SPlayer::ClimbAnimationUpdate()
 // 매달린 상태에서 점프 (반대방향으로 점프 혹은 위로 뛰어서 다시 위의 벽 잡기)
 void SPlayer::WallKickJump()
 {
-	if (m_iDir == 1)
+	if (m_bIsFacingRight == true)
 	{
 	    if (KEY_HOLD(KEY::D))
 	    {
@@ -604,7 +604,7 @@ void SPlayer::WallKickJump()
 	    }
         else
         {
-            m_iDir = -1;
+            m_bIsFacingRight = false;
             GetRigidBody()->AddForce(Vec2(-4000.f, -9500.f));
             //GetRigidBody()->SetVelocity(Vec2(-400.f, -950.f));
         }
@@ -617,7 +617,7 @@ void SPlayer::WallKickJump()
 	    }
 	    else
 	    {
-	        m_iDir = 1;
+	        m_bIsFacingRight = true;
 	        GetRigidBody()->AddForce(Vec2(4000.f, -9500.f));
 	        //GetRigidBody()->SetVelocity(Vec2(400.f, -950.f));
 	    }
@@ -632,13 +632,13 @@ void SPlayer::HorizontalMove()
 
 	if (KEY_HOLD(KEY::A))
 	{
-		m_iDir = -1;
+		m_bIsFacingRight = false;
 	    //pRigid->SetVelocity(Vec2(-600.f, pRigid->GetVelocity().y));
 	    pRigid->AddForce(Vec2(-MOVE_FORCE,0.f));
 	}
 	if (KEY_HOLD(KEY::D))
 	{
-		m_iDir = 1;
+		m_bIsFacingRight = true;
 	    //pRigid->SetVelocity(Vec2(600.f, pRigid->GetVelocity().y));
 	    pRigid->AddForce(Vec2(MOVE_FORCE,0.f));
 	}
@@ -952,9 +952,9 @@ void SPlayer::CreateHook()
     
     // 와이어 발사 방향으로 플레이어 바라보기
 	if (CCamera::GetInst()->GetRealPos(MOUSE_POS).x < GetWorldPos().x)
-		m_iDir = -1;
+		m_bIsFacingRight = false;
 	else
-		m_iDir = 1;
+		m_bIsFacingRight = true;
 
     
     // Ray가 아무것도 맞추지 못했을 경우
