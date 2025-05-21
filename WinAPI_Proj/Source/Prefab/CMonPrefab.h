@@ -3,8 +3,8 @@ class CMonster;
 
 enum class MON_TYPE
 {
-	NORMAL,
-	RANGE,
+	SHOOTER,
+	DEFENDER,
 
 };
 

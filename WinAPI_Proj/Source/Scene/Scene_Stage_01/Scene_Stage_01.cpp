@@ -45,11 +45,7 @@ void Scene_Stage_01::Update()
 
     if (KEY_TAP(KEY::O))
     {
-        GameObject* rifleman = new CShooterMonster();
-        rifleman->SetName(L"Monster");
-        rifleman->SetWorldPos(GetPlayer()->GetWorldPos()); //700,3000
-        //player->SetScale(Vec2(100.f, 100.f));
-        CreateObject(rifleman, GROUP_TYPE::MONSTER);
+        CMonPrefab::CreateMonster(MON_TYPE::SHOOTER, GetPlayer()->GetWorldPos());
     }
         
     

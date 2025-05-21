@@ -10,6 +10,9 @@
 #include "CShooterHead.h"
 #include "Shooter/CAimingState.h"
 #include "Spawning/CSpawningState.h"
+#include "SPlayer.h" // SPlayer 클래스를 사용하기 위해 추가
+#include "CSceneMgr.h" // CSceneMgr을 사용하기 위해 추가
+#include "CScene.h" // CScene을 사용하기 위해 추가
 
 CShooterMonster::CShooterMonster()
 {
@@ -31,9 +34,12 @@ CShooterMonster::CShooterMonster()
     GetAnimator()->CreateAnimation(L"RIFLEMAN_BULLET", pTex,
                                            Vec2(0.f, 1000.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 12, 2.f, Vec2(0.f, -64.f));
     GetAnimator()->CreateAnimation(L"RIFLEMAN_SHOT_BODY", pTex,
-                                           Vec2(0.f, 1200.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 4, 2.f, Vec2(0.f, -64.f));
+                                           Vec2(0.f, 1200.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 4, 2.f, Vec2(0.f, -54.f));
     GetAnimator()->CreateAnimation(L"RIFLEMAN_AIMING_BODY", pTex,
-                                           Vec2(0.f, 1800.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 3, 2.f, Vec2(0.f, -64.f));
+                                           Vec2(0.f, 1800.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 3, 2.f, Vec2(0.f, -54.f));
+    GetAnimator()->CreateAnimation(L"RIFLEMAN_AIMING_BODY_STOP", pTex,
+                                               Vec2(400.f, 1800.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 1, 2.f, Vec2(0.f, -54.f));
+   
     GetAnimator()->CreateAnimation(L"RIFLEMAN_SPAWNING", pTex,
                                            Vec2(0.f, 2200.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 21, 2.f, Vec2(0.f, -64.f));
 
@@ -47,8 +53,11 @@ CShooterMonster::CShooterMonster()
     GetAnimator()->FindAnimation(L"RIFLEMAN_BULLET")->Save(L"animation\\rifleman_bullet.anim");
     GetAnimator()->FindAnimation(L"RIFLEMAN_SHOT_BODY")->Save(L"animation\\rifleman_shot_body.anim");
     GetAnimator()->FindAnimation(L"RIFLEMAN_AIMING_BODY")->Save(L"animation\\rifleman_aiming_body.anim");
+    GetAnimator()->FindAnimation(L"RIFLEMAN_AIMING_BODY_STOP")->Save(L"animation\\rifleman_aiming_body_stop.anim");
     GetAnimator()->FindAnimation(L"RIFLEMAN_SPAWNING")->Save(L"animation\\rifleman_spawning.anim");
-	
+
+
+    // 회전시킬 헤드,총 이미지 오브젝트 추가
     m_pHead = new CShooterHead();
     m_pHead->SetName(L"MonsterHead");
     m_pHead->SetWorldPos(GetWorldPos());
@@ -56,24 +65,13 @@ CShooterMonster::CShooterMonster()
     m_pHead->SetParent(this);
     CreateObject(m_pHead, GROUP_TYPE::MONSTER_HEAD);
     
-    // 몬스터 info 구조체 설정 (ex 체력 등)
-    /*
-    * `SetAI()`를 통해 `AI` 객체를 설정하고, 해당 `AI` 객체에 몬스터 타입별로 필요한
-    * `CState` 파생 객체들을 `AddState()`로 추가하고, `SetCurState()`로 초기 상태를 지정합니다.
-        *   예를 들어, `CDefenderMonster`는 방어 관련 상태(`CBlockState` 등)를 추가할 수 있습니다.
-        *   `CShooterMonster`는 원거리 공격을 위한 조준 상태(`CAimState`),
-        *   발사 상태(`CFireState`) 등을 가질 수 있습니다.
-        *   `CFlyingMonster`는 공중 이동 패턴이나 특별한 공격 방식에 맞는 상태들
-        *   (예: `CFlyIdleState`, `CDiveAttackState`)을 가질 수 있습니다.
-
-     */
-
+    // AI State 세팅
     m_pAI->AddState(new CSpawningState);
     m_pAI->AddState(new CIdleState);
     m_pAI->AddState(new CAimingState);
     m_pAI->SetCurState(MON_STATE::IDLE);
     m_pAI->ChangeState(MON_STATE::SPAWNING);
-    //Enter_State(m_eCurState);
+    
 }
 
 CShooterMonster::~CShooterMonster()
@@ -93,7 +91,22 @@ void CShooterMonster::Start()
 
 void CShooterMonster::Update()
 {
-    CMonster::Update();
+    CMonster::Update(); // 기본 몬스터 업데이트 호출
+
+    // 플레이어 오브젝트를 찾습니다.
+    SPlayer* pPlayer = dynamic_cast<SPlayer*>(CSceneMgr::GetInst()->GetCurScene()->GetPlayer());
+    if (pPlayer)
+    {
+        // 플레이어의 수평 위치에 따라 몬스터 본체의 좌우 방향을 결정합니다.
+        if (pPlayer->GetWorldPos().x > GetWorldPos().x)
+        {
+            m_bIsFacingRight = true; // 플레이어가 오른쪽에 있으면 오른쪽을 바라봅니다.
+        }
+        else
+        {
+            m_bIsFacingRight = false; // 플레이어가 왼쪽에 있으면 왼쪽을 바라봅니다.
+        }
+    }
 }
 
 void CShooterMonster::Render(HDC _dc)

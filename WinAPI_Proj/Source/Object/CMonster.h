@@ -18,11 +18,11 @@ class CMonster :
     public GameObject
 {
 private:
-    tMonInfo m_tInfo;
     bool m_bOnGround;
     float m_fLastAttackTime; // 초기값 설정 (게임 시작 시 바로 공격 가능하도록)
 
 protected:
+    tMonInfo m_tInfo;
     AI* m_pAI;
 
 private:
