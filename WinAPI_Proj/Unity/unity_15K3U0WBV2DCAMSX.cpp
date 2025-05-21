@@ -1,4 +1,10 @@
 
+#include "C:\WinAPIProject\WinAPI_Proj\Source\Object\UI\CUI.cpp"
+
+
+#include "C:\WinAPIProject\WinAPI_Proj\Source\Object\UI\PanelUI\CPanelUI.cpp"
+
+
 #include "C:\WinAPIProject\WinAPI_Proj\Source\Prefab\CGroundPrefab.cpp"
 
 
@@ -18,10 +24,4 @@
 
 
 #include "C:\WinAPIProject\WinAPI_Proj\Source\Scene\Scene_Stage_01\Scene_Stage_01.cpp"
-
-
-#include "C:\WinAPIProject\WinAPI_Proj\Source\Scene\Scene_Title\CScene_Title.cpp"
-
-
-#include "C:\WinAPIProject\WinAPI_Proj\Source\Scene\Scene_Tool\CScene_Tool.cpp"
 

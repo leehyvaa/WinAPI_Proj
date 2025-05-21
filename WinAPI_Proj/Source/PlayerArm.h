@@ -7,7 +7,6 @@ class PlayerArm : public GameObject
 {
 
 private:
-    float m_fSpeed;
 
     PLAYER_STATE m_eCurState;
     PLAYER_STATE m_ePrevState;

@@ -8,8 +8,13 @@ CMonster::CMonster()
 	:m_tInfo{}
 {
 	CreateCollider();
+    CreateRigidBody();
+    CreateAnimator();
 	GetCollider()->SetScale(Vec2(100.f, 100.f));
     SetGroup(GROUP_TYPE::MONSTER);
+
+    AI* pAI = new AI;
+    SetAI(pAI);
 }
 
 CMonster::~CMonster()

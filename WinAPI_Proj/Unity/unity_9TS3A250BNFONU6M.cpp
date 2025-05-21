@@ -1,4 +1,10 @@
 
+#include "C:\WinAPIProject\WinAPI_Proj\Source\Component\Collider\CCollider.cpp"
+
+
+#include "C:\WinAPIProject\WinAPI_Proj\Source\Component\Gravity\CGravity.cpp"
+
+
 #include "C:\WinAPIProject\WinAPI_Proj\Source\Component\RigidBody\CRigidBody.cpp"
 
 
@@ -18,10 +24,4 @@
 
 
 #include "C:\WinAPIProject\WinAPI_Proj\Source\Manager\EventMgr\CEventMgr.cpp"
-
-
-#include "C:\WinAPIProject\WinAPI_Proj\Source\Manager\KeyMgr\CKeyMgr.cpp"
-
-
-#include "C:\WinAPIProject\WinAPI_Proj\Source\Manager\PathMgr\CPathMgr.cpp"
 

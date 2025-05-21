@@ -4,6 +4,8 @@
 #include "CScene.h"
 #include "SPlayer.h"
 #include "CMonster.h"
+#include "CAnimation.h"
+#include "CAnimator.h"
 CIdleState::CIdleState()
 	:CState(MON_STATE::IDLE)
 {
@@ -20,7 +22,7 @@ void CIdleState::Update()
 	SPlayer*  pPlayer = static_cast<SPlayer*>(CSceneMgr::GetInst()->GetCurScene()->GetPlayer());
 	Vec2 vPlayerPos = pPlayer->GetWorldPos();
 
-	//일정 범위 안에 들어오면 추적상태로 전환
+	//일정 범위 안에 들어오면 조준상태로 전환
 	CMonster* pMonster = GetMonster();
 	Vec2 vMonPos = pMonster->GetWorldPos();
 
@@ -29,7 +31,7 @@ void CIdleState::Update()
 
 	if (fLen < pMonster->GetInfo().fDetectRange)
 	{
-		ChangeAIState(GetAI(), MON_STATE::TRACE);
+		ChangeAIState(GetAI(), MON_STATE::AIMING);
 	}
 
 
@@ -37,6 +39,8 @@ void CIdleState::Update()
 
 void CIdleState::Enter()
 {
+    GetMonster()->GetAnimator()->Play(L"RIFLEMAN_IDLE", true);
+    
 }
 
 void CIdleState::Exit()

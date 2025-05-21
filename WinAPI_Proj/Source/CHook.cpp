@@ -266,14 +266,35 @@ void CHook::Render(HDC _dc)
     if (!m_pOwnerArm) return;
     
     // 필요한 정보 세팅
+    Vec2 dir = GetWorldPos() - GetOwnerArm()->GetWorldPos();
+    dir.Normalize();
+    
     Vec2 vHookWorldPos = GetWorldPos();
-    Vec2 vArmWorldPos = m_pOwnerArm->GetWorldPos();
+    Vec2 vArmWorldPos = m_pOwnerArm->GetWorldPos() + dir * 25.f;
 
     Vec2 vHookRenderPos = CCamera::GetInst()->GetRenderPos(vHookWorldPos);
-    Vec2 vArmRenderPos = CCamera::GetInst()->GetRenderPos(vArmWorldPos);
+    Vec2 vArmRenderPos;
 
+
+    if (hookState == HOOK_STATE::GRAB)
+    {
+        if (GetIsFacingRight())
+            vArmRenderPos = CCamera::GetInst()->GetRenderPos(vArmWorldPos) + Vec2(-7.f,0.f);
+        else
+            vArmRenderPos = CCamera::GetInst()->GetRenderPos(vArmWorldPos) + Vec2(7.f,0.f);
+    }
+    else
+    {
+        if (GetIsFacingRight())
+            vArmRenderPos = CCamera::GetInst()->GetRenderPos(vArmWorldPos) + Vec2(0.f,10.f);
+        else
+            vArmRenderPos = CCamera::GetInst()->GetRenderPos(vArmWorldPos) + Vec2(0.f,10.f);
+    }
+    
+
+        
     Vec2 vDir = vHookRenderPos - vArmRenderPos;
-    float fDistance = vDir.Length();
+    float fDistance = vDir.Length()-5.f;
 
     
     if (fDistance < 1.f) return; // 거리가 매우 짧으면 그리지 않음

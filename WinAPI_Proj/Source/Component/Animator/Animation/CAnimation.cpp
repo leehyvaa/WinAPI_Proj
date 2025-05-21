@@ -22,6 +22,7 @@ CAnimation::CAnimation()
 	,m_fSizeMulti(1)
 	,rotPos(nullptr)
     ,m_bCached(false)
+    ,m_EndFrameEvent(nullptr)
 {
 	rotPos = new POINT[4];
 }
@@ -52,6 +53,12 @@ void CAnimation::Update()
 			m_iCurFrm = -1;
 			m_bFinish = true;
 			m_fAccTime = 0.f;
+		    // 애니메이션이 끝났을 때 콜백 함수 호출
+		    if (m_EndFrameEvent)
+		    {
+		        m_EndFrameEvent();
+		        m_EndFrameEvent = nullptr; // 콜백은 한 번만 호출되도록 초기화
+		    }
 			return;
 		}
 

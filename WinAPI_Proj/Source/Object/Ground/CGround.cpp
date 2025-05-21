@@ -107,10 +107,11 @@ void CGround::OnCollisionEnter(CCollider *_pOther)
 void CGround::OnCollision(CCollider* _pOther)
 {
     GameObject* pOtherObj = _pOther->GetObj();
-    if (pOtherObj->GetGroup() != GROUP_TYPE::PLAYER) return;
+    if (pOtherObj->GetGroup() != GROUP_TYPE::PLAYER &&
+        pOtherObj->GetGroup() != GROUP_TYPE::MONSTER) return;
 
-    SPlayer* pPlayer = static_cast<SPlayer*>(pOtherObj);
-    CCollider* pPlayerCollider = _pOther;
+    //SPlayer* pPlayer = static_cast<SPlayer*>(pOtherObj);
+    CCollider* pOtherCollider = _pOther;
     CCollider* pGroundCollider = GetCollider();
 
     Vec2 mtvDirection;
@@ -118,14 +119,14 @@ void CGround::OnCollision(CCollider* _pOther)
     
     // Player를 Ground로부터 밀어내는 MTV 계산
     bool bColliding = CCollisionMgr::GetInst()->
-        CalculateCollisionInfo(pPlayerCollider, pGroundCollider, mtvDirection, mtvDepth);
+        CalculateCollisionInfo(pOtherCollider, pGroundCollider, mtvDirection, mtvDepth);
 
     if (bColliding)
     {
         Vec2 vObjPos = pOtherObj->GetWorldPos();
         // 땅 충돌체의 최종 월드 좌표 (중심점)
         Vec2 vGroundColPos = pGroundCollider->GetFinalPos();
-        CRigidBody* playerRigidBody = pOtherObj->GetRigidBody();
+        CRigidBody* pOtherRigidBody = pOtherObj->GetRigidBody();
 
         // 땅의 위쪽 방향 벡터 (Y+가 아래쪽이므로 위는 -Y)
         Vec2 groundUpNormal = Vec2(0.f, -1.f);
@@ -152,12 +153,16 @@ void CGround::OnCollision(CCollider* _pOther)
                 pOtherObj->SetWorldPos(vObjPos);
 
                 // 착지 처리 (플레이어가 아래로 이동 중이거나 정지 상태일 때)
-                if (playerRigidBody && playerRigidBody->GetVelocity().y >= 0.f)
+                if (pOtherRigidBody && pOtherRigidBody->GetVelocity().y >= 0.f)
                 {
-                    playerRigidBody->SetVelocityY(0.f); // Y 속도 0
+                    SPlayer* pPlayer = static_cast<SPlayer*>(pOtherObj);
+                    pOtherRigidBody->SetVelocityY(0.f); // Y 속도 0
                     pOtherObj->GetGravity()->SetApplyGravity(false); // 중력 비활성화
-                    pPlayer->SetOnGround(true); // 땅 위에 있음
-                    pPlayer->SetWallClimbing(false); // 벽타기 상태 해제
+                    if (pOtherObj->GetGroup() == GROUP_TYPE::PLAYER)
+                    {
+                        pPlayer->SetOnGround(true); // 땅 위에 있음
+                        pPlayer->SetWallClimbing(false); // 벽타기 상태 해제
+                    }
                 }
                 // 플레이어가 위로 점프하다가 윗면 모서리에 걸린 경우,
                 // 위치 보정만 하고 착지 처리는 하지 않음 (계속 상승 가능)
@@ -170,14 +175,19 @@ void CGround::OnCollision(CCollider* _pOther)
                 pOtherObj->SetWorldPos(vObjPos);
 
                 // 상승 중이었다면 Y축 속도를 0으로
-                if (playerRigidBody && playerRigidBody->GetVelocity().y < 0.f)
-                    playerRigidBody->SetVelocityY(0.f);
+                if (pOtherRigidBody && pOtherRigidBody->GetVelocity().y < 0.f)
+                    pOtherRigidBody->SetVelocityY(0.f);
 
-                pPlayer->SetMoveEnergy(0.f); // 운동 에너지 초기화
+                if (pOtherObj->GetGroup() == GROUP_TYPE::PLAYER)
+                {
+                    SPlayer* pPlayer = static_cast<SPlayer*>(pOtherObj);
+                    pPlayer->SetMoveEnergy(0.f); // 운동 에너지 초기화
 
-                // 땅 위가 아님 상태 설정
-                pPlayer->SetOnGround(false);
-                pPlayer->SetWallClimbing(false);
+                    // 땅 위가 아님 상태 설정
+                    pPlayer->SetOnGround(false);
+                    pPlayer->SetWallClimbing(false);
+                }
+                
             }
         }
         // 수평 충돌 (MTV가 왼쪽/오른쪽 방향에 가까움)
@@ -189,73 +199,49 @@ void CGround::OnCollision(CCollider* _pOther)
             pOtherObj->SetWorldPos(vObjPos);
 
             // 벽에 부딪히는 수평 속도 제거
-            if (playerRigidBody)
+            if (pOtherRigidBody)
             {
-                Vec2 velocity = playerRigidBody->GetVelocity();
+                Vec2 velocity = pOtherRigidBody->GetVelocity();
                 // MTV 방향(법선)으로의 속도 성분 계산
                 Vec2 normalVelocity = mtvDirection * velocity.Dot(mtvDirection);
                 // 원래 속도에서 법선 방향 속도 제거
-                playerRigidBody->SetVelocity(velocity - normalVelocity);
+                pOtherRigidBody->SetVelocity(velocity - normalVelocity);
             }
 
-            // 벽 상호작용 로직 (벽타기 등)
-            float wallClimbTopY = GetWorldPos().y + WALL_CLIMB_TOP_OFFSET;
-            float wallClimbBottomY = GetWorldPos().y + GetScale().y + WALL_CLIMB_BOT_OFFSET;
-            bool canClimb = (vObjPos.y > wallClimbTopY && vObjPos.y < wallClimbBottomY);
-
-            if (horizontalDot > 0.5f)
-            { // MTV가 오른쪽을 향함 -> 왼쪽 벽 충돌
-                if (canClimb) pPlayer->SetWallClimbing(true);
-                else pPlayer->SetWallClimbing(false);
-                
-                if (pPlayer->GetState() != PLAYER_STATE::SWING)
-                    pPlayer->SetIsFacingRight(false);
-            }
-            else if (horizontalDot < -0.5f)
-            { // MTV가 왼쪽을 향함 -> 오른쪽 벽 충돌
-                if (canClimb) pPlayer->SetWallClimbing(true);
-                else pPlayer->SetWallClimbing(false);
-                if (pPlayer->GetState() != PLAYER_STATE::SWING)
-                    pPlayer->SetIsFacingRight(true);
-            }
-            else
+            
+            if (pOtherObj->GetGroup() == GROUP_TYPE::PLAYER)
             {
-                pPlayer->SetWallClimbing(false);
-            }
+                SPlayer* pPlayer = static_cast<SPlayer*>(pOtherObj);
+                
+                // 벽 상호작용 로직 (벽타기 등)
+                float wallClimbTopY = GetWorldPos().y + WALL_CLIMB_TOP_OFFSET;
+                float wallClimbBottomY = GetWorldPos().y + GetScale().y + WALL_CLIMB_BOT_OFFSET;
+                bool canClimb = (vObjPos.y > wallClimbTopY && vObjPos.y < wallClimbBottomY);
 
-            // 땅 위가 아님 상태 설정
-            pPlayer->SetOnGround(false);
+                if (horizontalDot > 0.5f)
+                { // MTV가 오른쪽을 향함 -> 왼쪽 벽 충돌
+                    if (canClimb) pPlayer->SetWallClimbing(true);
+                    else pPlayer->SetWallClimbing(false);
+                
+                    if (pPlayer->GetState() != PLAYER_STATE::SWING)
+                        pPlayer->SetIsFacingRight(false);
+                }
+                else if (horizontalDot < -0.5f)
+                { // MTV가 왼쪽을 향함 -> 오른쪽 벽 충돌
+                    if (canClimb) pPlayer->SetWallClimbing(true);
+                    else pPlayer->SetWallClimbing(false);
+                    if (pPlayer->GetState() != PLAYER_STATE::SWING)
+                        pPlayer->SetIsFacingRight(true);
+                }
+                else
+                {
+                    pPlayer->SetWallClimbing(false);
+                }
+
+                // 땅 위가 아님 상태 설정
+                pPlayer->SetOnGround(false);
+            }
         }
-        // Case 3: 대각선/모서리 충돌 (MTV 방향이 애매함)
-        // else
-        // {
-        //     // 단순 처리: MTV 방향대로 밀어낸다.
-        //     vObjPos += mtvDirection * mtvDepth;
-        //     pOtherObj->SetWorldPos(vObjPos);
-        //
-        //     // 모서리 착지 가능성 고려: 플레이어가 하강 중이고 MTV가 약간이라도 위쪽 성분을 가지면 착지로 간주 시도
-        //     if (playerRigidBody && playerRigidBody->GetVelocity().y >= 0.f && verticalDot > 0.1f) // verticalDot >0.1f는 MTV가 조금이라도 위쪽 성분을 가짐을 의미
-        //     {
-        //          playerRigidBody->SetVelocityY(0.f);
-        //          pOtherObj->GetGravity()->SetApplyGravity(false);
-        //          pPlayer->SetOnGround(true);
-        //          pPlayer->SetWallClimbing(false);
-        //     }
-        //     else // 그 외 모서리 충돌은 벽 충돌과 유사하게 처리
-        //     {
-        //          // 충돌 법선 방향 속도 제거
-        //          if (playerRigidBody)
-        //          {
-        //             Vec2 velocity = playerRigidBody->GetVelocity();
-        //             Vec2 normalVelocity = mtvDirection * velocity.Dot(mtvDirection);
-        //             playerRigidBody->SetVelocity(velocity - normalVelocity);
-        //          }
-        //          // 상태 설정
-        //          pPlayer->SetOnGround(false);
-        //          pPlayer->SetWallClimbing(false);
-        //          pOtherObj->GetGravity()->SetApplyGravity(true);
-        //     }
-        // }
     }
 }
 
@@ -275,170 +261,6 @@ void CGround::OnCollisionExit(CCollider *_pOther)
 }
 
 
-
-// void CGround::NormalCollisionEnter(CCollider* _pOther)
-// {
-//     GameObject *pOtherObj = _pOther->GetObj();
-//     SPlayer *pPlayer = static_cast<SPlayer *>(pOtherObj);
-//     Vec2 vObjColPos = _pOther->GetFinalPos();
-//     Vec2 vObjColScale = _pOther->GetScale();
-//     Vec2 vGroundColPos = GetCollider()->GetFinalPos();
-//     Vec2 vGroundColScale = GetCollider()->GetScale();
-//     Vec2 vObjPos = pOtherObj->GetWorldPos();
-//
-//     
-//     // 위에서 충돌
-//     if (vObjPos.x + vObjColScale.x/2>= GetWorldPos().x &&
-//         vObjPos.x - vObjColScale.x/2<= GetWorldPos().x + GetScale().x &&
-//         vObjPos.y <= GetWorldPos().y+COLLISION_TOP_THRESHOLD)
-//     {
-//         float fLen = abs(vObjColPos.y - vGroundColPos.y);
-//         float fValue = (vObjColScale.y / 2.f + vGroundColScale.y / 2.f) - fLen;
-//         vObjPos.y -= (fValue);
-//         
-//         //플레이어가 하강 중이고, 점프 상태가 아닐 때 착지 처리
-//         if (pOtherObj->GetRigidBody()->GetVelocity().y > 0.f && pPlayer->GetState() != PLAYER_STATE::JUMP)
-//             static_cast<SPlayer *>(pOtherObj)->SetOnGround(true);
-//     }
-//
-//     
-//     // 왼쪽 충돌
-//     if (vObjPos.y > GetWorldPos().y &&
-//         vObjPos.x <= GetWorldPos().x + COLLISION_SIDE_THRESHOLD)
-//     {
-//         pPlayer->SetDir(1); 
-//         float fLen = abs(vObjColPos.x - vGroundColPos.x);
-//         float fValue = (vObjColScale.x / 2.f + vGroundColScale.x / 2.f) - fLen;
-//         vObjPos.x -= fValue;
-//         pOtherObj->GetRigidBody()->SetVelocity(Vec2(0.f, pOtherObj->GetRigidBody()->GetVelocity().y));
-//         
-//         // 벽 최상단, 자동 점프로 전환
-//         if (vObjPos.y <= GetWorldPos().y + WALL_CLIMB_TOP_OFFSET)
-//             pPlayer->SetWallClimbing(false);
-//         else if (vObjPos.y <= GetWorldPos().y + GetScale().y + WALL_CLIMB_BOT_OFFSET)// 벽타기 구간
-//             pPlayer->SetWallClimbing(true);
-//     }
-//     
-//     
-//     // 오른쪽 충돌
-//     if (vObjPos.y > GetWorldPos().y &&
-//         vObjPos.x >= GetWorldPos().x + GetScale().x - COLLISION_SIDE_THRESHOLD)
-//     {
-//         pPlayer->SetDir(-1); 
-//         float fLen = abs(vObjColPos.x - vGroundColPos.x);
-//         float fValue = (vObjColScale.x / 2.f + vGroundColScale.x / 2.f) - fLen;
-//         vObjPos.x += fValue;
-//         pOtherObj->GetRigidBody()->SetVelocity(Vec2(0.f, pOtherObj->GetRigidBody()->GetVelocity().y));
-//
-//         if (vObjPos.y <= GetWorldPos().y + WALL_CLIMB_TOP_OFFSET)
-//             pPlayer->SetWallClimbing(false);
-//         else if (vObjPos.y <= GetWorldPos().y + GetScale().y + WALL_CLIMB_BOT_OFFSET)
-//             pPlayer->SetWallClimbing(true);
-//     }
-// 		
-//
-//     //아래에서 충돌했을때
-//     if (vObjPos.x >= GetWorldPos().x &&
-//         vObjPos.x <= GetWorldPos().x + GetScale().x &&
-//         vObjPos.y-vObjColScale.y >= GetWorldPos().y +GetScale().y - COLLISION_BOT_THRESHOLD)
-//     {
-//         float fLen = abs(vObjColPos.y - vGroundColPos.y);
-//         float fValue = (vObjColScale.y / 2.f + vGroundColScale.y / 2.f) - fLen;
-//         vObjPos.y += fValue;
-//
-//         //static_cast<SPlayer *>(pOtherObj)->SetOnGround(true);
-//         pPlayer->SetMoveEnergy(0.f);
-//         pOtherObj->GetRigidBody()->SetVelocityY(0.f);
-//
-//     }
-//
-//     pOtherObj->SetWorldPos(vObjPos);
-// }
-//
-
-
-
-// void CGround::NormalCollision(CCollider* _pOther)
-// {
-//     GameObject *pOtherObj = _pOther->GetObj();
-//     SPlayer *pPlayer = static_cast<SPlayer *>(pOtherObj);
-//     Vec2 vObjColPos = _pOther->GetFinalPos();
-//     Vec2 vObjColScale = _pOther->GetScale();
-//     Vec2 vGroundColPos = GetCollider()->GetFinalPos();
-//     Vec2 vGroundColScale = GetCollider()->GetScale();
-//     Vec2 vObjPos = pOtherObj->GetWorldPos();
-//     
-//     
-//     //위에서 충돌
-//     if (vObjPos.x + vObjColScale.x/2>= GetWorldPos().x &&
-//         vObjPos.x - vObjColScale.x/2<= GetWorldPos().x + GetScale().x &&
-//         vObjPos.y <= GetWorldPos().y + COLLISION_TOP_THRESHOLD)
-//     {
-//         float fLen = abs(vObjColPos.y - vGroundColPos.y);
-//         float fValue = (vObjColScale.y / 2.f + vGroundColScale.y / 2.f) - fLen;
-//         vObjPos.y -= (fValue);
-//         
-//         // 플레이어가 하강중이고 벽타기 중이 아니면 착지 처리
-//         if (pOtherObj->GetRigidBody()->GetVelocity().y > 0.f && !pPlayer->IsWallClimbing())
-//         {
-//             pOtherObj->GetGravity()->SetApplyGravity(false);
-//             pOtherObj->GetRigidBody()->SetVelocityY(0.f);
-//         }
-//     }
-//
-//     
-//     //왼쪽 충돌
-//     if (vObjPos.y > GetWorldPos().y &&
-//         vObjPos.x <= GetWorldPos().x + COLLISION_SIDE_THRESHOLD)
-//     {
-//         pPlayer->SetDir(1); 
-//         float fLen = abs(vObjColPos.x - vGroundColPos.x);
-//         float fValue = (vObjColScale.x / 2.f + vGroundColScale.x / 2.f) - fLen;
-//         vObjPos.x -= fValue;
-//         pOtherObj->GetRigidBody()->SetVelocity(Vec2(0.f, pOtherObj->GetRigidBody()->GetVelocity().y));
-//
-//         // 벽 최상단, 자동점프 구간
-//         if (vObjPos.y <= GetWorldPos().y + WALL_CLIMB_TOP_OFFSET)
-//             pPlayer->SetWallClimbing(false);
-//         else if (vObjPos.y <= GetWorldPos().y + GetScale().y + WALL_CLIMB_BOT_OFFSET) // 벽타기 구간
-//             pPlayer->SetWallClimbing(true);
-//     }
-//   
-//
-//     // 오른쪽 충돌
-//     if (vObjPos.y > GetWorldPos().y &&
-//         vObjPos.x >= GetWorldPos().x + GetScale().x - COLLISION_SIDE_THRESHOLD)
-//     {
-//         pPlayer->SetDir(-1);
-//         float fLen = abs(vObjColPos.x - vGroundColPos.x);
-//         float fValue = (vObjColScale.x / 2.f + vGroundColScale.x / 2.f) - fLen;
-//         vObjPos.x += fValue;
-//         pOtherObj->GetRigidBody()->SetVelocity(Vec2(0.f, pOtherObj->GetRigidBody()->GetVelocity().y));
-//
-//         // 벽 최상단, 자동점프 구간
-//         if (vObjPos.y <= GetWorldPos().y + WALL_CLIMB_TOP_OFFSET)
-//             pPlayer->SetWallClimbing(false);
-//         else if (vObjPos.y <= GetWorldPos().y + GetScale().y + WALL_CLIMB_BOT_OFFSET) // 벽타기 구간
-//             pPlayer->SetWallClimbing(true); // 벽타기 상태 설정
-//     }
-//     
-//
-//     
-//     //아래에서 충돌했을때
-//     if (vObjPos.x >= GetWorldPos().x &&
-//         vObjPos.x <= GetWorldPos().x + GetScale().x &&
-//         vObjPos.y-vObjColScale.y >= GetWorldPos().y + GetScale().y - COLLISION_BOT_THRESHOLD)
-//     {
-//         float fLen = abs(vObjColPos.y - vGroundColPos.y);
-//         float fValue = (vObjColScale.y / 2.f + vGroundColScale.y / 2.f) - fLen;
-//         vObjPos.y += (fValue);
-//         //static_cast<SPlayer *>(pOtherObj)->SetOnGround(true); //이 부분 고려해봐야함
-//         pPlayer->SetMoveEnergy(0.f);
-//         pOtherObj->GetRigidBody()->SetVelocityY(0.f);
-//     }
-//
-//     pOtherObj->SetWorldPos(vObjPos);
-// }
 
 
 

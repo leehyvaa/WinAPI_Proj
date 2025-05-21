@@ -1,5 +1,5 @@
 ﻿#pragma once
-
+#include <functional>
 namespace Gdiplus
 {
     class Bitmap;
@@ -32,7 +32,7 @@ private:
     
     vector<Gdiplus::Bitmap*> m_vecFrameBitmaps; // 미리 처리된 프레임 비트맵들
     bool m_bCached; // 캐싱 여부
-
+    function<void()> m_EndFrameEvent;
     
 public:
 	const wstring& GetName() { return m_strName; }
@@ -56,6 +56,8 @@ public:
     
     // 현재 프레임 인덱스 반환
     int GetCurrentFrame() const {return m_iCurFrm;}
+
+    void SetEndFrameEvent(function<void()> _event) { m_EndFrameEvent = _event; }
 private:
 	void SetName(const wstring& _strName) { m_strName = _strName; }
     void CacheFrames();

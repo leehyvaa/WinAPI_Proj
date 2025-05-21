@@ -19,10 +19,11 @@ class CMonster :
 {
 private:
     tMonInfo m_tInfo;
-    AI* m_pAI;
     bool m_bOnGround;
     float m_fLastAttackTime; // 초기값 설정 (게임 시작 시 바로 공격 가능하도록)
 
+protected:
+    AI* m_pAI;
 
 private:
     void SetMonInfo(const tMonInfo& _info){m_tInfo = _info;}
@@ -50,7 +51,7 @@ public:
     CLONE(CMonster)
 
     CMonster();
-    ~CMonster();
+    virtual ~CMonster();
 
     friend class CMonPrefab;
 };

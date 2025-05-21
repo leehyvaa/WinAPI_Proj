@@ -264,11 +264,16 @@ void SPlayer::Enter_State(PLAYER_STATE _eState)
 		GetGravity()->SetApplyGravity(false);
 		break;
 	case PLAYER_STATE::SHOT:
+
+
 		break;
 	case PLAYER_STATE::SWING:
+	    if (GetIsFacingRight())
+	        m_pPlayerArm->SetLocalRotation(-90.f);
+	    else
+	        m_pPlayerArm->SetLocalRotation(90.f);
 	    GetGravity()->SetApplyGravity(false);
 	    GetRigidBody()->SetMaxSpeed(Vec2(1000.f, 1000.f));
-
 		break;
 	case PLAYER_STATE::DAMAGED:
 		break;
@@ -407,6 +412,7 @@ void SPlayer::Exit_State(PLAYER_STATE _eState)
 		m_eClimbState = PLAYER_CLIMB_STATE::NONE;
 		break;
 	case PLAYER_STATE::SHOT:
+	    m_pPlayerArm->SetLocalRotation(0.f);
 		break;
 	case PLAYER_STATE::SWING:
 	    GetGravity()->SetApplyGravity(true);
@@ -436,9 +442,7 @@ void SPlayer::Update_Animation()
 			GetAnimator()->Play(L"SNB_RIGHT_RUN", true);
 		break;
 	case PLAYER_STATE::ATTACK:
-
 		break;
-
 	case PLAYER_STATE::JUMP:
 			GetAnimator()->Play(L"SNB_RIGHT_JUMP", true);
 		break;

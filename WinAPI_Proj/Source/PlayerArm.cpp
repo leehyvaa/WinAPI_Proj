@@ -8,12 +8,12 @@
 #include "CHook.h"
 
 PlayerArm::PlayerArm()
-	: m_fSpeed(1000), m_ePrevClimbState(PLAYER_CLIMB_STATE::NONE)
+	: m_ePrevClimbState(PLAYER_CLIMB_STATE::NONE)
 {
 	SetGroup(GROUP_TYPE::PLAYER_ARM);
 	CreateAnimator();
 	CreateCollider();
-	GetCollider()->SetOffsetPos(Vec2(0.f, 5.f));
+	GetCollider()->SetOffsetPos(Vec2(0.f, 0.f));
 	GetCollider()->SetScale(Vec2(10.f, 10.f));
     
 
@@ -41,8 +41,10 @@ PlayerArm::PlayerArm()
 								   Vec2(0.f, 2700.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.06f, 7, 0.85f, Vec2(-5.f, 18.f));
 	GetAnimator()->CreateAnimation(L"SNB_ARM_RIGHT_CLIMBSTOP", pArmTexRight,
 								   Vec2(0.f, 2900.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.2f, 11, 0.85f, Vec2(0.f, 3.f));
+    GetAnimator()->CreateAnimation(L"SNB_ARM_RIGHT_SHOT", pArmTexRight,
+                               Vec2(0.f, 2300.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.2f, 3, 0.85f, Vec2(0.f, 3.f));
 	GetAnimator()->CreateAnimation(L"SNB_ARM_RIGHT_SWING", pArmTexRight,
-								   Vec2(0.f, 2300.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.2f, 3, 0.85f, Vec2(0.f, 3.f));
+								   Vec2(0.f, 2300.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.2f, 3, 0.85f, Vec2(0.f, -10.f));
     
 	// RIGHT 애니메이션 저장
 	GetAnimator()->FindAnimation(L"SNB_ARM_RIGHT_IDLE")->Save(L"animation\\playerArm_right_idle.anim");
@@ -54,6 +56,7 @@ PlayerArm::PlayerArm()
 	GetAnimator()->FindAnimation(L"SNB_ARM_RIGHT_CLIMBDOWN")->Save(L"animation\\playerArm_right_climbdown.anim");
 	GetAnimator()->FindAnimation(L"SNB_ARM_RIGHT_CLIMBSTOP")->Save(L"animation\\playerArm_right_climbstop.anim");
 	GetAnimator()->FindAnimation(L"SNB_ARM_RIGHT_SWING")->Save(L"animation\\playerArm_right_swing.anim");
+	GetAnimator()->FindAnimation(L"SNB_ARM_RIGHT_SHOT")->Save(L"animation\\playerArm_right_shot.anim");
 
 	GetAnimator()->Play(L"SNB_ARM_RIGHT_RUN", true);
 #pragma endregion
@@ -117,8 +120,29 @@ void PlayerArm::Update_Animation()
 	case PLAYER_STATE::CLIMB:
 			GetAnimator()->Play(L"SNB_ARM_RIGHT_CLIMBSTOP", true);
 		break;
+	case PLAYER_STATE::SHOT:
+	    {
+	        if (GetIsFacingRight())
+	        {
+	            Vec2 dir = (currentHook->GetWorldPos() + currentHook->GetDir() * 100.f) - GetWorldPos();
+	            dir.Normalize();
+	            Vec2 targetPos = GetWorldPos() + dir * 100.f;
+	            LookAt(targetPos);
+	            SetLocalRotation(GetLocalRotation() -90.f);
+	        }
+	        else
+	        {
+	            Vec2 dir = (currentHook->GetWorldPos() + currentHook->GetDir() * 100.f) - GetWorldPos();
+	            dir.Normalize();
+	            Vec2 targetPos = GetWorldPos() + dir * 100.f;
+	            LookAt(targetPos);
+	            SetLocalRotation(GetLocalRotation()  + 90.f);
+	        }
+	        GetAnimator()->Play(L"SNB_ARM_RIGHT_SHOT", true);
+	    }
+	    break;
 	case PLAYER_STATE::SWING:
-	        SetLocalRotation(-90.f);
+
 			GetAnimator()->Play(L"SNB_ARM_RIGHT_SWING", true);
 		break;
 	case PLAYER_STATE::DAMAGED:

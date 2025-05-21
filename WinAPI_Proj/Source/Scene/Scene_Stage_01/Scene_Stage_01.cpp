@@ -24,6 +24,7 @@
 #include "CBackGround.h"
 #include "CResMgr.h"
 #include "MouseCursor.h"
+#include "Monster/CShooterMonster.h"
 
 Scene_Stage_01::Scene_Stage_01()
 
@@ -42,7 +43,16 @@ void Scene_Stage_01::Update()
 	CScene::Update();
 
 
-
+    if (KEY_TAP(KEY::O))
+    {
+        GameObject* rifleman = new CShooterMonster();
+        rifleman->SetName(L"Monster");
+        rifleman->SetWorldPos(GetPlayer()->GetWorldPos()); //700,3000
+        //player->SetScale(Vec2(100.f, 100.f));
+        CreateObject(rifleman, GROUP_TYPE::MONSTER);
+    }
+        
+    
 
 	if (KEY_TAP(KEY::ESC))
 		ChangeScene(SCENE_TYPE::START);
@@ -163,8 +173,9 @@ void Scene_Stage_01::Enter()
 
 	//그룹간 충돌 체크
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::MONSTER);
-	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::MONSTER, GROUP_TYPE::HOOK);
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::GROUND);
+	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::MONSTER, GROUP_TYPE::HOOK);
+	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::MONSTER, GROUP_TYPE::GROUND);
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::GROUND, GROUP_TYPE::HOOK);
 
 
