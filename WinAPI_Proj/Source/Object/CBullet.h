@@ -16,7 +16,7 @@ private:
 
 public:
     CBullet();
-    virtual ~CBullet();
+    virtual ~CBullet() override;
 
     // 소유자 몬스터에 따라 총알의 속성을 설정합니다.
     void SetBulletInfo(GameObject* _pOwner);

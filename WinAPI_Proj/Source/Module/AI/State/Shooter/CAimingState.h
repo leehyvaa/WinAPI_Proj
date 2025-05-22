@@ -14,7 +14,7 @@ private:
     void FireBullet(); // 총알 발사 메서드
     
 public:
-    virtual void Enter();
-    virtual void Update();
-    virtual void Exit();
+    virtual void Enter() override;
+    virtual void Update() override;
+    virtual void Exit() override;
 };
