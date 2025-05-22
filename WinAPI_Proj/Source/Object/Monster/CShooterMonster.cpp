@@ -91,21 +91,17 @@ void CShooterMonster::Start()
 
 void CShooterMonster::Update()
 {
-    CMonster::Update(); // 기본 몬스터 업데이트 호출
+    CMonster::Update();
 
-    // 플레이어 오브젝트를 찾습니다.
+    // 플레이어 오브젝트
     SPlayer* pPlayer = dynamic_cast<SPlayer*>(CSceneMgr::GetInst()->GetCurScene()->GetPlayer());
     if (pPlayer)
     {
-        // 플레이어의 수평 위치에 따라 몬스터 본체의 좌우 방향을 결정합니다.
+        // 플레이어의 수평 위치에 따라 몬스터 본체의 좌우 방향을 결정
         if (pPlayer->GetWorldPos().x > GetWorldPos().x)
-        {
-            m_bIsFacingRight = true; // 플레이어가 오른쪽에 있으면 오른쪽을 바라봅니다.
-        }
+            m_bIsFacingRight = true; 
         else
-        {
-            m_bIsFacingRight = false; // 플레이어가 왼쪽에 있으면 왼쪽을 바라봅니다.
-        }
+            m_bIsFacingRight = false; 
     }
 }
 
