@@ -13,6 +13,8 @@
 #include "SPlayer.h" // SPlayer 클래스를 사용하기 위해 추가
 #include "CSceneMgr.h" // CSceneMgr을 사용하기 위해 추가
 #include "CScene.h" // CScene을 사용하기 위해 추가
+#include "CBullet.h" // CBullet 클래스를 사용하기 위해 추가
+#include "CObjectPool.h" // 오브젝트 풀을 사용하기 위해 추가
 
 CShooterMonster::CShooterMonster()
 {
@@ -71,7 +73,9 @@ CShooterMonster::CShooterMonster()
     m_pAI->AddState(new CAimingState);
     m_pAI->SetCurState(MON_STATE::IDLE);
     m_pAI->ChangeState(MON_STATE::SPAWNING);
-    
+
+    // 총알 오브젝트 풀 생성
+    CObjectPool::GetInst()->CreatePool<CBullet>(L"ShooterBullet", 10);
 }
 
 CShooterMonster::~CShooterMonster()
