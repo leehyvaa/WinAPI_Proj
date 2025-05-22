@@ -43,7 +43,7 @@ enum class GROUP_TYPE
     MONSTER_HEAD,
 	HOOK,
 	PROJ_MONSTER,
-
+    
 	Ray = 30,
 	UI = 31,
 	END = 32,

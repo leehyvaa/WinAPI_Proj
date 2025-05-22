@@ -33,9 +33,7 @@ CShooterMonster::CShooterMonster()
                                            Vec2(0.f, 600.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 10, 2.f, Vec2(0.f, -64.f));
     GetAnimator()->CreateAnimation(L"RIFLEMAN_DEAD_PART", pTex,
                                            Vec2(0.f, 800.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 11, 2.f, Vec2(0.f, -64.f));
-    GetAnimator()->CreateAnimation(L"RIFLEMAN_BULLET", pTex,
-                                           Vec2(0.f, 1000.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 12, 2.f, Vec2(0.f, -64.f));
-    GetAnimator()->CreateAnimation(L"RIFLEMAN_SHOT_BODY", pTex,
+   GetAnimator()->CreateAnimation(L"RIFLEMAN_SHOT_BODY", pTex,
                                            Vec2(0.f, 1200.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 4, 2.f, Vec2(0.f, -54.f));
     GetAnimator()->CreateAnimation(L"RIFLEMAN_AIMING_BODY", pTex,
                                            Vec2(0.f, 1800.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 3, 2.f, Vec2(0.f, -54.f));
@@ -46,13 +44,11 @@ CShooterMonster::CShooterMonster()
                                            Vec2(0.f, 2200.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 21, 2.f, Vec2(0.f, -64.f));
 
 
-
     GetAnimator()->FindAnimation(L"RIFLEMAN_IDLE")->Save(L"animation\\rifleman_idle.anim");
     GetAnimator()->FindAnimation(L"RIFLEMAN_EXC_START")->Save(L"animation\\rifleman_exc_start.anim");
     GetAnimator()->FindAnimation(L"RIFLEMAN_EXC_BACK")->Save(L"animation\\rifleman_exc_back.anim");
     GetAnimator()->FindAnimation(L"RIFLEMAN_DEAD")->Save(L"animation\\rifleman_dead.anim");
     GetAnimator()->FindAnimation(L"RIFLEMAN_DEAD_PART")->Save(L"animation\\rifleman_dead_part.anim");
-    GetAnimator()->FindAnimation(L"RIFLEMAN_BULLET")->Save(L"animation\\rifleman_bullet.anim");
     GetAnimator()->FindAnimation(L"RIFLEMAN_SHOT_BODY")->Save(L"animation\\rifleman_shot_body.anim");
     GetAnimator()->FindAnimation(L"RIFLEMAN_AIMING_BODY")->Save(L"animation\\rifleman_aiming_body.anim");
     GetAnimator()->FindAnimation(L"RIFLEMAN_AIMING_BODY_STOP")->Save(L"animation\\rifleman_aiming_body_stop.anim");

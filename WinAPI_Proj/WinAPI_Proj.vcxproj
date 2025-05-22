@@ -165,6 +165,7 @@
   <ItemGroup>
     <ClInclude Include="Source\Module\AI\State\Shooter\CAimingState.h" />
     <ClInclude Include="Source\Module\AI\State\Spawning\CSpawningState.h" />
+    <ClInclude Include="Source\Object\CBullet.h" />
     <ClInclude Include="Source\Object\CObjectPool.h" />
     <ClInclude Include="Source\Object\Monster\CShooterHead.h" />
     <ClInclude Include="Source\Object\Monster\CShooterMonster.h" />
@@ -231,6 +232,7 @@
   <ItemGroup>
     <ClCompile Include="Source\Module\AI\State\Shooter\CAimingState.cpp" />
     <ClCompile Include="Source\Module\AI\State\Spawning\CSpawningState.cpp" />
+    <ClCompile Include="Source\Object\CBullet.cpp" />
     <ClCompile Include="Source\Object\CObjectPool.cpp" />
     <ClCompile Include="Source\Object\Monster\CShooterHead.cpp" />
     <ClCompile Include="Source\Object\Monster\CShooterMonster.cpp" />

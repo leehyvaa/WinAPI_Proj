@@ -1,25 +1,37 @@
 ﻿#include "pch.h"
 #include "CBullet.h"
+
+#include "CAnimation.h"
 #include "CCollider.h"
 #include "CAnimator.h"
 #include "CResMgr.h"
 #include "CTexture.h"
 #include "CEventMgr.h"
-#include "SPlayer.h" // 플레이어와 충돌 처리 위함
-#include "CShooterMonster.h" // CShooterMonster로부터 속성 설정 위함
-#include "CTimeMgr.h" // fDT 사용 위함
+#include "CScene.h"
+#include "CSceneMgr.h"
+#include "SPlayer.h" 
+#include "Monster/CShooterMonster.h" 
+#include "CTimeMgr.h" 
+#include "Monster/CShooterHead.h"
 
 CBullet::CBullet()
     : m_fSpeed(0.f)
     , m_fRange(0.f)
     , m_iDamage(0)
-    , m_pBulletTex(nullptr)
     , m_pOwnerMonster(nullptr)
     , m_fDistanceTraveled(0.f)
 {
-    SetGroup(GROUP_TYPE::PROJECTILE);
+    SetGroup(GROUP_TYPE::PROJ_MONSTER);
     CreateCollider();
-    CreateAnimator(); // 애니메이터는 나중에 필요시 사용
+    CreateAnimator();
+
+    CTexture *pTex = CResMgr::GetInst()->LoadTexture(L"RifleManTex", L"texture\\enemy\\rifleman\\RifleMan.bmp");
+
+    GetAnimator()->CreateAnimation(L"RIFLEMAN_BULLET", pTex,
+                                               Vec2(0.f, 1000.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 12, 2.f, Vec2(0.f, 20.f));
+
+    GetAnimator()->FindAnimation(L"RIFLEMAN_BULLET")->Save(L"animation\\rifleman_bullet.anim");
+    
 }
 
 CBullet::~CBullet()
@@ -33,17 +45,16 @@ void CBullet::SetBulletInfo(GameObject* _pOwner)
     m_pOwnerMonster = dynamic_cast<CMonster*>(_pOwner); // 소유자 몬스터 저장
 
     // 기본 총알 속성 (다른 몬스터 타입에서 기본값으로 사용 가능)
-    m_fSpeed = 500.f;
-    m_fRange = 800.f;
+    m_fSpeed = 200.f;
+    m_fRange = 3000.f;
     m_iDamage = 10;
-    m_pBulletTex = nullptr; // 기본 텍스처 없음
 
     // 소유자 몬스터 타입에 따라 총알 속성 설정
     if (CShooterMonster* pShooter = dynamic_cast<CShooterMonster*>(_pOwner))
     {
-        m_pBulletTex = CResMgr::GetInst()->LoadTexture(L"ShooterBulletTex", L"texture\\enemy\\rifleman\\bullet.bmp");
-        m_fSpeed = 800.f;
-        m_fRange = 1000.f;
+        //m_pBulletTex = CResMgr::GetInst()->LoadTexture(L"RIFLEMAN_BULLET", L"texture\\enemy\\rifleman\\bullet.bmp");
+        m_fSpeed = 200.f;
+        m_fRange = 3000.f;
         m_iDamage = 20;
         
         // 충돌체 스케일 조정
@@ -57,7 +68,7 @@ void CBullet::SetBulletInfo(GameObject* _pOwner)
             Vec2 dir = pPlayer->GetWorldPos() - pShooter->GetHead()->GetWorldPos();
             dir.Normalize();
             SetDir(dir);
-            LookAt(pPlayer->GetWorldPos()); // 총알이 플레이어를 바라보도록 회전
+            LookAt(pPlayer->GetWorldPos() + Vec2(0.0,-60.f)); // 총알이 플레이어를 바라보도록 회전
         }
         else
         {
@@ -75,6 +86,7 @@ void CBullet::SetBulletInfo(GameObject* _pOwner)
     //     m_iDamage = 15;
     //     GetCollider()->SetScale(Vec2(15.f, 15.f));
     // }
+    GetAnimator()->Play(L"RIFLEMAN_BULLET",true);
 
     m_fDistanceTraveled = 0.f; // 이동 거리 초기화
     SetActive(true); // 활성화
@@ -82,11 +94,7 @@ void CBullet::SetBulletInfo(GameObject* _pOwner)
 
 void CBullet::ReturnToPool()
 {
-    // 풀로 반환 요청 이벤트 추가
-    tEvent evn = {};
-    evn.eEvent = EVENT_TYPE::RETURN_TO_POOL;
-    evn.lParam = (DWORD_PTR)this;
-    CEventMgr::GetInst()->AddEvent(evn);
+    DeleteObject(this);
 }
 
 void CBullet::Update()
@@ -106,9 +114,7 @@ void CBullet::Update()
     m_fDistanceTraveled += moveAmount;
 
     // 사정거리 초과 또는 화면 밖으로 나갔는지 체크
-    if (m_fDistanceTraveled >= m_fRange ||
-        vPos.x < 0 || vPos.x > CCore::GetInst()->GetResolution().x ||
-        vPos.y < 0 || vPos.y > CCore::GetInst()->GetResolution().y)
+    if (m_fDistanceTraveled >= m_fRange)
     {
         ReturnToPool();
     }
@@ -116,31 +122,10 @@ void CBullet::Update()
 
 void CBullet::Render(HDC _dc)
 {
-    if (!IsActive() || !m_pBulletTex)
+    if (!IsActive())
         return;
-
-    Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(GetWorldPos());
-    float width = static_cast<float>(m_pBulletTex->Width());
-    float height = static_cast<float>(m_pBulletTex->Height());
-
-    BLENDFUNCTION bf = {};
-    bf.BlendOp = AC_SRC_OVER;
-    bf.BlendFlags = 0;
-    bf.AlphaFormat = AC_SRC_ALPHA;
-    bf.SourceConstantAlpha = 255; // 전역 알파 (255 = 불투명)
-
-    AlphaBlend(_dc,
-        static_cast<int>(vRenderPos.x - width / 2.f),
-        static_cast<int>(vRenderPos.y - height / 2.f),
-        static_cast<int>(width),
-        static_cast<int>(height),
-        m_pBulletTex->GetDC(),
-        0, 0,
-        static_cast<int>(width),
-        static_cast<int>(height),
-        bf);
-
-    Component_Render(_dc); // 콜라이더 렌더링
+    
+    Component_Render(_dc);
 }
 
 void CBullet::OnCollisionEnter(CCollider* _pOther)
@@ -178,7 +163,6 @@ void CBullet::Reset()
     m_fSpeed = 0.f;
     m_fRange = 0.f;
     m_iDamage = 0;
-    m_pBulletTex = nullptr; // 텍스처 포인터 초기화 (SetBulletInfo에서 다시 설정)
     m_pOwnerMonster = nullptr;
     m_fDistanceTraveled = 0.f;
 

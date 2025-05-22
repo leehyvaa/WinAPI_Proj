@@ -1,4 +1,7 @@
 
+#include "C:\WinAPIProject\WinAPI_Proj\Source\Component\Animator\CAnimator.cpp"
+
+
 #include "C:\WinAPIProject\WinAPI_Proj\Source\Component\Collider\CCollider.cpp"
 
 
@@ -21,7 +24,4 @@
 
 
 #include "C:\WinAPIProject\WinAPI_Proj\Source\Manager\CSoundMgr\CSoundMgr.cpp"
-
-
-#include "C:\WinAPIProject\WinAPI_Proj\Source\Manager\EventMgr\CEventMgr.cpp"
 

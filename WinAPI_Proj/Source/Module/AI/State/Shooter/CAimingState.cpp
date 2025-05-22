@@ -60,13 +60,13 @@ void CAimingState::Update()
             FireBullet();
             m_fShotTimer = 0.f; // 타이머 리셋
             // 발사 후 IDLE 상태로 전환 (또는 다른 상태)
-            ChangeAIState(GetMonster()->GetAI(), MON_STATE::IDLE);
+            //ChangeAIState(GetAI(), MON_STATE::IDLE);
         }
     }
     else
     {
         // 플레이어가 없거나 몬스터 헤드가 없으면 IDLE 상태로 전환
-        ChangeAIState(GetMonster()->GetAI(), MON_STATE::IDLE);
+        //ChangeAIState(GetAI(), MON_STATE::IDLE);
     }
 }
 
@@ -85,7 +85,7 @@ void CAimingState::FireBullet()
             pBullet->SetBulletInfo(pMonster);
             
             // 씬에 총알 추가
-            CreateObject(pBullet, GROUP_TYPE::PROJECTILE);
+            CreateObject(pBullet, GROUP_TYPE::PROJ_MONSTER);
         }
         else
         {
@@ -100,12 +100,12 @@ void CAimingState::Exit()
 {
     // 상태 종료 시 필요한 정리 작업
     // 예: 애니메이션 종료 이벤트 해제 등
-    if (GetMonster()->GetAnimator()->FindAnimation(L"RIFLEMAN_AIMING_BODY"))
-    {
-        GetMonster()->GetAnimator()->FindAnimation(L"RIFLEMAN_AIMING_BODY")->SetEndFrameEvent(nullptr);
-    }
-    if (dynamic_cast<CShooterMonster*>(GetMonster())->GetHead()->GetAnimator()->FindAnimation(L"RIFLEMAN_AIMING_HEAD_TOP"))
-    {
-        dynamic_cast<CShooterMonster*>(GetMonster())->GetHead()->GetAnimator()->FindAnimation(L"RIFLEMAN_AIMING_HEAD_TOP")->SetEndFrameEvent(nullptr);
-    }
+    // if (GetMonster()->GetAnimator()->FindAnimation(L"RIFLEMAN_AIMING_BODY"))
+    // {
+    //     GetMonster()->GetAnimator()->FindAnimation(L"RIFLEMAN_AIMING_BODY")->SetEndFrameEvent(nullptr);
+    // }
+    // if (dynamic_cast<CShooterMonster*>(GetMonster())->GetHead()->GetAnimator()->FindAnimation(L"RIFLEMAN_AIMING_HEAD_TOP"))
+    // {
+    //     dynamic_cast<CShooterMonster*>(GetMonster())->GetHead()->GetAnimator()->FindAnimation(L"RIFLEMAN_AIMING_HEAD_TOP")->SetEndFrameEvent(nullptr);
+    // }
 }
