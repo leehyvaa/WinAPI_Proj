@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "CAimingState.h"
 
+#include "AI.h"
 #include "CAnimation.h"
 #include "CAnimator.h"
 #include "CSceneMgr.h"
@@ -79,8 +80,12 @@ void CAimingState::FireBullet()
         if (pMonster && pMonster->GetHead())
         {
             // 총알의 초기 위치를 몬스터 헤드의 위치로 설정
-            pBullet->SetWorldPos(pMonster->GetHead()->GetWorldPos());
-            
+            if (GetAI()->GetOwner()->GetIsFacingRight())
+                pBullet->SetWorldPos(pMonster->GetHead()->GetWorldPos()+Vec2(50.f,5.0f));
+            else
+                pBullet->SetWorldPos(pMonster->GetHead()->GetWorldPos()+Vec2(-50.f,5.0f));
+
+                
             // 총알의 속성을 소유자 몬스터에 따라 설정 (속도, 데미지, 텍스처 등)
             pBullet->SetBulletInfo(pMonster);
             
