@@ -16,9 +16,11 @@
 #include "Raycast.h"
 #include "CHook.h"
 #include "CObjectPool.h"
+#include "CMonster.h"
+#include "AI.h"
 
 SPlayer::SPlayer()
-	: m_fSpeed(1000), m_eCurState(PLAYER_STATE::IDLE), m_ePrevState(PLAYER_STATE::RUN), m_bOnGround(false), m_pPlayerArm(nullptr), m_pPlayerHook(nullptr), m_bClimbing(false), m_pRayHitCollider(nullptr), m_vRayHitPos(Vec2(0.f, 0.f)), m_fWireRange(-1.f), m_fWireMaxRange(700.f), m_fMoveEnergy(0.f), m_fPosEnergy(0.f), m_bCanBooster(false), m_eClimbState(PLAYER_CLIMB_STATE::NONE)
+	: m_fSpeed(1000), m_eCurState(PLAYER_STATE::IDLE), m_ePrevState(PLAYER_STATE::RUN), m_bOnGround(false), m_pPlayerArm(nullptr), m_pPlayerHook(nullptr), m_bClimbing(false), m_pRayHitCollider(nullptr), m_vRayHitPos(Vec2(0.f, 0.f)), m_fWireRange(-1.f), m_fWireMaxRange(700.f), m_fMoveEnergy(0.f), m_fPosEnergy(0.f), m_bCanBooster(false), m_eClimbState(PLAYER_CLIMB_STATE::NONE), m_pSubduedMonster(nullptr), m_bIsSubduing(false), m_fSubdueRange(700.f), m_bIsMovingToTarget(false), m_vMoveStartPos(Vec2(0.f, 0.f)), m_vMoveTargetPos(Vec2(0.f, 0.f)), m_fMoveProgress(0.f), m_fMoveSpeed(2000.f)
 {
 	// m_pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\sigong.bmp");
 	SetGroup(GROUP_TYPE::PLAYER);
@@ -129,6 +131,18 @@ void SPlayer::Reset()
     m_fMoveEnergy = 0.f;
     m_fPosEnergy = 0.f;
     
+    // 제압 시스템 초기화
+    m_pSubduedMonster = nullptr;
+    m_bIsSubduing = false;
+    m_fSubdueRange = 700.f; // 갈고리 최대 범위와 동일하게 설정
+    
+    // 플레이어 이동 시스템 초기화
+    m_bIsMovingToTarget = false;
+    m_vMoveStartPos = Vec2(0.f, 0.f);
+    m_vMoveTargetPos = Vec2(0.f, 0.f);
+    m_fMoveProgress = 0.f;
+    m_fMoveSpeed = 2000.f;
+    
     // 필요한 경우 Raycast 포인터도 초기화
     m_pRayHitCollider = nullptr;
     m_vRayHitPos = Vec2(0.f, 0.f);
@@ -152,6 +166,12 @@ void SPlayer::Reset()
 void SPlayer::Update()
 {
 	RayCasting();
+	
+	// 플레이어 이동 업데이트
+	UpdateMoveToTarget();
+	
+	// 제압 시스템 업데이트
+	UpdateSubdue();
 
 	Update_State();
 
@@ -244,7 +264,7 @@ void SPlayer::Enter_State(PLAYER_STATE _eState)
 	case PLAYER_STATE::RUN:
 	    GetRigidBody()->SetMaxSpeed(Vec2(850.f, 1000.f));
 		break;
-	case PLAYER_STATE::ATTACK:
+	case PLAYER_STATE::EXECUTE:
 		break;
 	case PLAYER_STATE::JUMP:
 	    GetRigidBody()->SetMaxSpeed(Vec2(780.f, 1000.f));
@@ -316,7 +336,9 @@ void SPlayer::Update_State()
 	    if (!m_bOnGround && GetRigidBody()->GetVelocity().y > 0.f)
 	        eNextState = PLAYER_STATE::FALL;
 		break;
-	case PLAYER_STATE::ATTACK:
+	case PLAYER_STATE::EXECUTE:
+		HorizontalMove();
+	    
 		break;
 	case PLAYER_STATE::JUMP:
 		HorizontalMove();
@@ -368,17 +390,46 @@ void SPlayer::Update_State()
 		break;
 	}
 
-	// 와이어 발사
+	// 와이어 발사 또는 제압 시작
 	if (KEY_TAP(KEY::LBUTTON))
 	{
-		CreateHook();
-	    eNextState = PLAYER_STATE::SHOT;
+		// 레이캐스트 결과 확인 - 몬스터가 감지되면 제압 시도
+		if (m_pRayHitCollider != nullptr && m_pRayHitCollider->GetObj()->GetGroup() == GROUP_TYPE::MONSTER)
+		{
+			CMonster* pMonster = static_cast<CMonster*>(m_pRayHitCollider->GetObj());
+			float distance = (m_vRayHitPos - GetWorldPos()).Length();
+			
+			// 제압 가능 거리 내에 있는지 확인
+			if (distance <= m_fSubdueRange)
+			{
+				StartSubdue(pMonster);
+			}
+			else
+			{
+				// 거리가 멀면 와이어 발사
+				CreateHook();
+				eNextState = PLAYER_STATE::SHOT;
+			}
+		}
+		else
+		{
+			// 몬스터가 아니면 일반 와이어 발사
+			CreateHook();
+			eNextState = PLAYER_STATE::SHOT;
+		}
 	}
 
-	// 와이어 해제
+	// 와이어 해제 또는 제압 해제
 	if (KEY_AWAY(KEY::LBUTTON))
 	{
-		if (m_pPlayerHook != nullptr && m_pPlayerHook->GetHookState() == HOOK_STATE::GRAB)
+		// 제압 중이면 제압 해제 (CSubduedState에서 처형 처리)
+		if (m_bIsSubduing && m_pSubduedMonster)
+		{
+			// 제압 해제 - CSubduedState::Update()에서 처형 여부 결정
+			EndSubdue();
+		}
+		// 와이어가 걸려있으면 해제
+		else if (m_pPlayerHook != nullptr && m_pPlayerHook->GetHookState() == HOOK_STATE::GRAB)
 		{
 			// 바로 삭제하지 않고 회수모션으로 전환 후 회수되면 삭제
 			m_pPlayerHook->SetHookState(HOOK_STATE::RETURN_WITH);
@@ -402,7 +453,7 @@ void SPlayer::Exit_State(PLAYER_STATE _eState)
 		break;
 	case PLAYER_STATE::RUN:
 		break;
-	case PLAYER_STATE::ATTACK:
+	case PLAYER_STATE::EXECUTE:
 		break;
 	case PLAYER_STATE::JUMP:
 	    break;
@@ -441,7 +492,7 @@ void SPlayer::Update_Animation()
 	case PLAYER_STATE::RUN:
 			GetAnimator()->Play(L"SNB_RIGHT_RUN", true);
 		break;
-	case PLAYER_STATE::ATTACK:
+	case PLAYER_STATE::EXECUTE:
 		break;
 	case PLAYER_STATE::JUMP:
 			GetAnimator()->Play(L"SNB_RIGHT_JUMP", true);
@@ -943,10 +994,178 @@ void SPlayer::CreateHook()
  
 }
 
-// RayCast를 진행 후 Ray와 충돌한 충돌체를 onCollisionRay에 저장하고 충돌 지점을 targetPos에 저장 
+// RayCast를 진행 후 Ray와 충돌한 충돌체를 onCollisionRay에 저장하고 충돌 지점을 targetPos에 저장
 void SPlayer::RayCasting()
 {
 	m_pPlayerRay->SetWorldPos(m_pPlayerArm->GetWorldPos());
 	m_pRayHitCollider = m_pPlayerRay->GetCollisionRay();
 	m_vRayHitPos = m_pPlayerRay->GetTargetPos();
+}
+
+// 제압 시작
+void SPlayer::StartSubdue(CMonster* _pMonster)
+{
+	// NULL 포인터 체크 및 중복 제압 방지
+	if (!_pMonster || m_bIsSubduing)
+		return;
+	
+	// 몬스터가 이미 죽었는지 확인
+	if (_pMonster->GetAI() && _pMonster->GetAI()->GetCurState() == MON_STATE::DEAD)
+		return;
+		
+	m_pSubduedMonster = _pMonster;
+	m_bIsSubduing = true;
+	
+	// 플레이어가 몬스터 위치로 빠르게 이동 시작
+	Vec2 monsterPos = m_pSubduedMonster->GetWorldPos();
+	Vec2 targetPos = monsterPos + Vec2(0.f, 0.f); // 몬스터와 같은 위치로 이동
+	StartMoveToTarget(targetPos);
+	
+	// 몬스터를 제압 상태로 전환
+	if (m_pSubduedMonster->GetAI())
+	{
+		m_pSubduedMonster->GetAI()->ChangeState(MON_STATE::SUBDUED);
+	}
+	
+	// 플레이어 방향 설정
+	if (m_pSubduedMonster->GetWorldPos().x < GetWorldPos().x)
+		m_bIsFacingRight = false;
+	else
+		m_bIsFacingRight = true;
+}
+
+// 제압 업데이트
+void SPlayer::UpdateSubdue()
+{
+	// NULL 포인터 체크
+	if (!m_bIsSubduing || !m_pSubduedMonster)
+		return;
+	
+	// 몬스터가 유효한지 확인 (삭제되었을 수 있음)
+	if (!m_pSubduedMonster->GetAI())
+	{
+		EndSubdue();
+		return;
+	}
+	
+	// 몬스터가 이미 죽었거나 처형된 상태면 제압 해제
+	MON_STATE currentState = m_pSubduedMonster->GetAI()->GetCurState();
+	if (currentState == MON_STATE::DEAD || currentState == MON_STATE::EXECUTED)
+	{
+		EndSubdue();
+		return;
+	}
+	
+	// 제압 중인 몬스터를 플레이어 근처로 이동
+	Vec2 playerPos = GetWorldPos();
+	Vec2 offsetPos = m_bIsFacingRight ? Vec2(50.f, 0.f) : Vec2(-50.f, 0.f);
+	Vec2 targetPos = playerPos + offsetPos;
+	
+	// 몬스터 위치를 부드럽게 이동
+	Vec2 currentMonsterPos = m_pSubduedMonster->GetWorldPos();
+	Vec2 moveDir = targetPos - currentMonsterPos;
+	float moveSpeed = 800.f * fDT;
+	
+	if (moveDir.Length() > moveSpeed)
+	{
+		moveDir.Normalize();
+		m_pSubduedMonster->SetWorldPos(currentMonsterPos + moveDir * moveSpeed);
+	}
+	else
+	{
+		m_pSubduedMonster->SetWorldPos(targetPos);
+	}
+}
+
+// 제압 해제
+void SPlayer::EndSubdue()
+{
+	if (!m_bIsSubduing)
+		return;
+		
+	m_bIsSubduing = false;
+	m_pSubduedMonster = nullptr;
+}
+
+// 안전한 제압 해제 (포인터 정리 포함)
+void SPlayer::SafeEndSubdue()
+{
+	if (m_bIsSubduing && m_pSubduedMonster)
+	{
+		// 몬스터가 아직 유효하면 IDLE 상태로 복원
+		if (m_pSubduedMonster->GetAI() &&
+			m_pSubduedMonster->GetAI()->GetCurState() == MON_STATE::SUBDUED)
+		{
+			m_pSubduedMonster->GetAI()->ChangeState(MON_STATE::IDLE);
+		}
+	}
+	
+	m_bIsSubduing = false;
+	m_pSubduedMonster = nullptr;
+}
+
+// 플레이어 사망 시 제압 정리
+void SPlayer::CleanupSubdueOnDeath()
+{
+	if (m_bIsSubduing && m_pSubduedMonster)
+	{
+		// 플레이어가 죽으면 제압된 몬스터를 IDLE 상태로 복원
+		if (m_pSubduedMonster->GetAI())
+		{
+			m_pSubduedMonster->GetAI()->ChangeState(MON_STATE::IDLE);
+		}
+		
+		EndSubdue();
+	}
+}
+
+// 목표 위치로 빠른 이동 시작
+void SPlayer::StartMoveToTarget(const Vec2& _targetPos)
+{
+	m_bIsMovingToTarget = true;
+	m_vMoveStartPos = GetWorldPos();
+	m_vMoveTargetPos = _targetPos;
+	m_fMoveProgress = 0.f;
+	
+	// 중력 비활성화 및 물리 정지
+	GetGravity()->SetApplyGravity(false);
+	GetRigidBody()->SetVelocity(Vec2(0.f, 0.f));
+}
+
+// 이동 업데이트
+void SPlayer::UpdateMoveToTarget()
+{
+	if (!m_bIsMovingToTarget)
+		return;
+		
+	// 이동 진행도 업데이트
+	m_fMoveProgress += m_fMoveSpeed * fDT / (m_vMoveTargetPos - m_vMoveStartPos).Length();
+	
+	if (m_fMoveProgress >= 1.f)
+	{
+		// 이동 완료
+		CompleteMoveToTarget();
+		return;
+	}
+	
+	// 선형 보간으로 플레이어 위치 업데이트
+	Vec2 currentPos = m_vMoveStartPos + (m_vMoveTargetPos - m_vMoveStartPos) * m_fMoveProgress;
+	SetWorldPos(currentPos);
+	
+	// 물리 속도 초기화 (물리 시뮬레이션 무시)
+	GetRigidBody()->SetVelocity(Vec2(0.f, 0.f));
+}
+
+// 이동 완료 처리
+void SPlayer::CompleteMoveToTarget()
+{
+	m_bIsMovingToTarget = false;
+	m_fMoveProgress = 0.f;
+	
+	// 목표 위치로 정확히 이동
+	SetWorldPos(m_vMoveTargetPos);
+	
+	// 물리 상태 복원
+	GetGravity()->SetApplyGravity(true);
+	GetRigidBody()->SetVelocity(Vec2(0.f, 0.f));
 }

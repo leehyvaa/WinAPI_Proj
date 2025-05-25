@@ -1,4 +1,7 @@
 
+#include "C:\WinAPIProject\WinAPI_Proj\Source\Component\Animator\Animation\CAnimation.cpp"
+
+
 #include "C:\WinAPIProject\WinAPI_Proj\Source\Component\Animator\CAnimator.cpp"
 
 

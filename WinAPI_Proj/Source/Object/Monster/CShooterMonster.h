@@ -28,7 +28,7 @@ public:
     virtual void Update();
     virtual void Render(HDC _dc);
     virtual void FinalUpdata();
-    virtual void Reset();
+    virtual void Reset() override;
 
     CShooterHead* GetHead(){return m_pHead;}
     CLONE(CShooterMonster)

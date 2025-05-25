@@ -31,8 +31,7 @@ void CMonster::Start()
 
 void CMonster::Update()
 {
-	if(nullptr != m_pAI)
-		m_pAI->Update();
+
 }
 
 void CMonster::Render(HDC _dc)

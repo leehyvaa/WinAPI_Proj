@@ -43,6 +43,19 @@ CState* AI::GetState(MON_STATE _eState)
 	return iter->second;
 }
 
+MON_STATE AI::GetCurState()
+{
+    for (auto iter = m_mapState.begin(); iter != m_mapState.end(); ++iter)
+    {
+        if (iter->second == m_pCurState)
+        {
+            return iter->first;
+        }
+    }
+	
+	return MON_STATE::END;
+}
+
 void AI::SetCurState(MON_STATE _eState)
 {
 	m_pCurState = GetState(_eState);

@@ -10,11 +10,13 @@
 #include "CShooterHead.h"
 #include "Shooter/CAimingState.h"
 #include "Spawning/CSpawningState.h"
-#include "SPlayer.h" // SPlayer 클래스를 사용하기 위해 추가
-#include "CSceneMgr.h" // CSceneMgr을 사용하기 위해 추가
-#include "CScene.h" // CScene을 사용하기 위해 추가
-#include "CBullet.h" // CBullet 클래스를 사용하기 위해 추가
-#include "CObjectPool.h" // 오브젝트 풀을 사용하기 위해 추가
+#include "Subdued/CSubduedState.h"
+#include "SPlayer.h"
+#include "CSceneMgr.h" 
+#include "CScene.h" 
+#include "CBullet.h" 
+#include "CObjectPool.h"
+#include "Dead/CDeadState.h"
 
 CShooterMonster::CShooterMonster()
 {
@@ -56,26 +58,33 @@ CShooterMonster::CShooterMonster()
 
 
     // 회전시킬 헤드,총 이미지 오브젝트 추가
-    m_pHead = new CShooterHead();
-    m_pHead->SetName(L"MonsterHead");
-    m_pHead->SetWorldPos(GetWorldPos());
-    m_pHead->SetLocalPos(Vec2(0.f, -80.f));
-    m_pHead->SetParent(this);
-    CreateObject(m_pHead, GROUP_TYPE::MONSTER_HEAD);
+    m_pHead = static_cast<CShooterHead*>(CObjectPool::GetInst()->GetPoolObject(L"ShooterHeadPool"));
+    if (m_pHead) {
+        m_pHead->SetName(L"MonsterHead");
+        // m_pHead->SetWorldPos(GetWorldPos()); // SetParent 이후에 위치가 결정되므로 주석 처리 또는 제거 가능
+        m_pHead->SetLocalPos(Vec2(0.f, -80.f));
+        m_pHead->SetParent(this);
+        CreateObject(m_pHead, GROUP_TYPE::MONSTER_HEAD); // 씬에 추가
+        m_pHead->SetActive(true); // 풀에서 가져온 객체는 기본적으로 비활성이므로 활성화
+    }
     
     // AI State 세팅
     m_pAI->AddState(new CSpawningState);
     m_pAI->AddState(new CIdleState);
     m_pAI->AddState(new CAimingState);
+    m_pAI->AddState(new CSubduedState);
+    m_pAI->AddState(new CDeadState);
+    
     m_pAI->SetCurState(MON_STATE::IDLE);
     m_pAI->ChangeState(MON_STATE::SPAWNING);
-
+    
     // 총알 오브젝트 풀 생성
     CObjectPool::GetInst()->CreatePool<CBullet>(L"ShooterBullet", 10);
 }
 
 CShooterMonster::~CShooterMonster()
 {
+    
 }
 
 void CShooterMonster::Update_Gravity()
@@ -103,6 +112,28 @@ void CShooterMonster::Update()
         else
             m_bIsFacingRight = false; 
     }
+    
+    if(nullptr != m_pAI)
+    {
+        m_pAI->Update();
+		
+        // DEAD 상태일 때 몬스터 삭제 처리
+        if (m_pAI->GetCurState() == MON_STATE::DEAD)
+        {
+            if (m_pHead && m_pHead->IsActive()) { // 헤드가 존재하고 활성 상태일 때만 반환
+                CObjectPool::GetInst()->ReturnObject(m_pHead);
+                if (m_pHead->IsManagedByPool()) { // 풀에서 관리되는 객체만 SetDead 처리
+                    m_pHead->SetDead(true);
+                }
+            }
+            m_pHead = nullptr; // 참조 제거
+
+            CObjectPool::GetInst()->ReturnObject(this);
+            if (IsManagedByPool()) { // 풀에서 관리되는 객체만 SetDead 처리
+                SetDead(true);
+            }
+        }
+    }
 }
 
 void CShooterMonster::Render(HDC _dc)
@@ -117,7 +148,18 @@ void CShooterMonster::FinalUpdata()
 
 void CShooterMonster::Reset()
 {
-    CMonster::Reset();
+    CMonster::Reset(); // 부모 클래스의 Reset 호출
+    if (m_pAI) {
+        m_pAI->SetCurState(MON_STATE::IDLE); // 또는 SPAWNING 등 초기 상태
+        m_pAI->ChangeState(MON_STATE::SPAWNING); // 초기 상태로 강제 전환
+    }
+    if (m_pHead) {
+        m_pHead->Reset();
+        m_pHead->SetActive(true); // 헤드도 활성화
+    }
+    SetManagedByPool(true); // 풀에서 관리됨을 명시
+    // 체력 등 몬스터 특성 초기화
+    m_tInfo.fHP = 100.f; // 예시: 초기 체력 설정
 }
 
 void CShooterMonster::OnCollisionEnter(CCollider* _pOther)

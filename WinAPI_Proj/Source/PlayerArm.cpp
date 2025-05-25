@@ -108,7 +108,7 @@ void PlayerArm::Update_Animation()
 	case PLAYER_STATE::RUN:
 			GetAnimator()->Play(L"SNB_ARM_RIGHT_RUN", true);
 		break;
-	case PLAYER_STATE::ATTACK:
+	case PLAYER_STATE::EXECUTE:
 		break;
 
 	case PLAYER_STATE::JUMP:

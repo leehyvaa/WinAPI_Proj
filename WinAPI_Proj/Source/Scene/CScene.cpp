@@ -104,7 +104,9 @@ void CScene::Update()
 		for (size_t j = 0; j < m_arrObj[i].size(); j++)
 		{
 			if(!m_arrObj[i][j]->IsDead() && m_arrObj[i][j]->IsActive())
+			{
 				m_arrObj[i][j]->Update();
+			}
 		}
 	}
 
@@ -207,8 +209,8 @@ void CScene::Update()
             case PLAYER_STATE::SHOT:
                 state = L"SHOT";
                 break;
-            case PLAYER_STATE::ATTACK:
-                state = L"ATTACK";
+            case PLAYER_STATE::EXECUTE:
+                state = L"EXECUTE";
                 break;
             case PLAYER_STATE::DAMAGED:
                 state = L"DAMAGED";

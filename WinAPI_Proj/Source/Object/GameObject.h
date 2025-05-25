@@ -108,8 +108,8 @@ public:
 
 	virtual GameObject* Clone() = 0;
 
-protected:
 	void SetDead(bool _bDead) { m_bAlive = _bDead; }
+protected:
 
 	friend class CEventMgr;
 };

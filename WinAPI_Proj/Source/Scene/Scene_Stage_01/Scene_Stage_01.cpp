@@ -22,6 +22,7 @@
 #include "CTimeMgr.h"
 #include "CGround.h"
 #include "CBackGround.h"
+#include "CObjectPool.h"
 #include "CResMgr.h"
 #include "MouseCursor.h"
 #include "Monster/CShooterMonster.h"
@@ -45,6 +46,9 @@ void Scene_Stage_01::Update()
 
     if (KEY_TAP(KEY::O))
     {
+        CObjectPool::GetInst()->CreatePool<CShooterHead>(L"ShooterHeadPool", 5);
+        CObjectPool::GetInst()->CreatePool<CShooterMonster>(L"ShooterMonsterPool", 5);
+
         CMonPrefab::CreateMonster(MON_TYPE::SHOOTER, GetPlayer()->GetWorldPos());
     }
         

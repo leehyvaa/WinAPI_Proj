@@ -365,3 +365,9 @@ FodyWeavers.xsd
 CLAUDE.md
 project_overview.txt
 project_bigOverview.txt
+
+
+# memory-bank 폴더와 그 안의 모든 내용을 무시
+memory-bank/
+
+code_review_and_improvement_plan.md

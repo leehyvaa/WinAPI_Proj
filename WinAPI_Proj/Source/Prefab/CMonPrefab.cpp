@@ -2,6 +2,7 @@
 #include "CMonPrefab.h"
 #include "CMonster.h"
 #include "AI.h"
+#include "CObjectPool.h"
 
 #include"CIdleState.h"
 #include"CTraceState.h"
@@ -18,19 +19,22 @@ CMonster* CMonPrefab::CreateMonster(MON_TYPE _eType, Vec2 _vPos)
 	{
 	case MON_TYPE::SHOOTER:
 	{
-		    pMon = new CShooterMonster;
-		    pMon->SetWorldPos(_vPos);
-		    tMonInfo info = {};
-		    info.fAtt = 1.f;
-		    info.fAttRange = 2000.f;
-		    info.fDetectRange = 2000.f;
-		    info.fHP = 1.f;
-		    info.fSpeed = 0.f;
-		    info.iDir = 0;
-	        
-		    pMon->SetMonInfo(info);
-	        pMon->SetName(L"Monster");
-	        
+		    pMon = dynamic_cast<CShooterMonster*>(CObjectPool::GetInst()->GetPoolObject(L"ShooterMonsterPool"));
+		          if (pMon)
+		          {
+		              pMon->SetWorldPos(_vPos);
+		              tMonInfo info = {};
+		              info.fAtt = 1.f;
+		              info.fAttRange = 2000.f;
+		              info.fDetectRange = 2000.f;
+		              info.fHP = 1.f;
+		              info.fSpeed = 0.f;
+		              info.iDir = 0;
+		              
+		              pMon->SetMonInfo(info);
+		              pMon->SetName(L"Monster");
+		              pMon->SetActive(true);
+		          }
 	}
 		break;
 

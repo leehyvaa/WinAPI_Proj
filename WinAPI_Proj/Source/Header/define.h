@@ -100,6 +100,8 @@ enum class MON_STATE
     AIMING,
 	TRACE,
 	ATTACK,
+	SUBDUED,
+	EXECUTED,
 	DEAD,
 	END,
 };
@@ -135,7 +137,7 @@ enum class PLAYER_STATE
 {
 	IDLE,
 	RUN,
-	ATTACK,
+	EXECUTE,
 	JUMP,
 	FALL,
 	CLIMB,

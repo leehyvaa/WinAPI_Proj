@@ -5,13 +5,14 @@
 #include "CAnimator.h"
 #include "CMonster.h"
 #include "CResMgr.h"
-#include "SPlayer.h" 
-#include "CSceneMgr.h" 
-#include "CScene.h" 
+#include "SPlayer.h"
+#include "CSceneMgr.h"
+#include "CScene.h"
+#include "CObjectPool.h"
 
 CShooterHead::CShooterHead()
 {
-    SetGroup(GROUP_TYPE::MONSTER_HEAD); 
+    SetGroup(GROUP_TYPE::MONSTER_HEAD);
     CreateAnimator();
     CTexture *pTex = CResMgr::GetInst()->LoadTexture(L"RifleManTex", L"texture\\enemy\\rifleman\\RifleMan.bmp");
 
@@ -84,4 +85,17 @@ void CShooterHead::Update()
 void CShooterHead::Render(HDC _dc)
 {
     GameObject::Render(_dc);
+}
+
+void CShooterHead::Reset()
+{
+    GameObject::Reset(); // 부모 클래스의 Reset 호출
+    SetManagedByPool(true); // 풀에서 관리됨을 명시
+    // CShooterHead 특성 초기화 (예: 회전, 애니메이션 상태 등)
+    SetLocalRotation(0.f); // 초기 회전값
+    if (GetAnimator()) {
+        // 초기 애니메이션 상태 설정 (예: IDLE 또는 특정 기본 애니메이션)
+        // GetAnimator()->Play(L"RIFLEMAN_AIMING_HEAD_TOP_STOP", true); // 예시
+    }
+    m_bIsFacingRight = false; // 기본 방향 설정
 }

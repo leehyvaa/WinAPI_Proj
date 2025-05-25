@@ -9,6 +9,8 @@ public:
     CShooterHead();
     ~CShooterHead();
 
+    virtual void Reset() override;
+
     virtual void Update() override;
     virtual void Render(HDC _dc) override;
 
