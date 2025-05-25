@@ -28,8 +28,8 @@
 #include "Monster/CShooterMonster.h"
 
 Scene_Stage_01::Scene_Stage_01()
-
 {
+
 }
 
 Scene_Stage_01::~Scene_Stage_01()
@@ -46,9 +46,7 @@ void Scene_Stage_01::Update()
 
     if (KEY_TAP(KEY::O))
     {
-        CObjectPool::GetInst()->CreatePool<CShooterHead>(L"ShooterHeadPool", 5);
-        CObjectPool::GetInst()->CreatePool<CShooterMonster>(L"ShooterMonsterPool", 5);
-
+        
         CMonPrefab::CreateMonster(MON_TYPE::SHOOTER, GetPlayer()->GetWorldPos());
     }
         
@@ -81,27 +79,15 @@ void Scene_Stage_01::Enter()
 
 
 	//오브젝트 추가
-	/*GObject* pObj = new GObject;
-
-	pObj->SetPos(Vec2(640.f, 384.f));
-	pObj->SetScale(Vec2(100.f, 100.f));
-	AddObject(pObj, GROUP_TYPE::DEFAULT);*/
-	
 	GameObject* player = new SPlayer();
 	player->SetName(L"Player");
 	player->SetWorldPos(Vec2(0.f,0.f)); //700,3000
-	//player->SetScale(Vec2(100.f, 100.f));
 	AddObject(player, GROUP_TYPE::PLAYER);
 	RegisterPlayer(player);
 
 
 
-
-
-
-
-
-	//마우스커서
+	// 마우스커서 추가
 	ShowCursor(false);
 
 	GameObject* cursor = new MouseCursor();
@@ -109,6 +95,11 @@ void Scene_Stage_01::Enter()
 	cursor->SetWorldPos(player->GetWorldPos());
 	AddObject(cursor, GROUP_TYPE::Ray);
 
+
+
+    // 몬스터 오브젝트 풀 생성
+    CObjectPool::GetInst()->CreatePool<CShooterHead>(L"ShooterHeadPool", 5);
+    CObjectPool::GetInst()->CreatePool<CShooterMonster>(L"ShooterMonsterPool", 5);
 
 
 	//클론함수 없이 만든 오브젝트 복사 만약 플레이어를 복사한다면 아래와 같이 사용
@@ -148,12 +139,7 @@ void Scene_Stage_01::Enter()
 	AddObject(pOtherMonster, GROUP_TYPE::MONSTER);*/
 
 
-	//프리팹 몬스터 배치
-	//CMonster* pMon = CMonPrefab::CreateMonster(MON_TYPE::NORMAL, vResolution / 2.f - Vec2(0.f, 300.f));
-	//CreateObject((GameObject*)pMon, GROUP_TYPE::MONSTER);
-	//AddObject(pMon, GROUP_TYPE::MONSTER);
-
-
+	
 
 	//땅 물체 배치
 	/*GameObject* pGround = new CGround;
@@ -186,7 +172,7 @@ void Scene_Stage_01::Enter()
 
 
 
-
+    // 백그라운드 설정
 	CBackGround* backGround = new CBackGround;
 	backGround->SetWorldPos(Vec2(0, 0));
 	CTexture* back = CResMgr::GetInst()->LoadTexture(L"TutorialBack", L"texture\\background\\Forest_Mountain2.bmp");
@@ -197,8 +183,6 @@ void Scene_Stage_01::Enter()
 	AddObject((GameObject*)backGround, GROUP_TYPE::BACKGROUND);
 
 	SetBackGround(backGround);
-
-
 
 
 	//스타트 함수 호출

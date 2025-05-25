@@ -10,7 +10,7 @@ private:
     float m_fSpeed;
     float m_fRange;
     int m_iDamage;
-    CMonster* m_pOwnerMonster; // 총알 소유자
+    CMonster* m_pOwnerMonster;
     float m_fDistanceTraveled; // 총알이 이동한 거리
 
 public:

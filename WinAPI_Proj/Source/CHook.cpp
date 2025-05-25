@@ -105,24 +105,6 @@ void CHook::Reset()
         GetCollider()->SetScale(Vec2(20.f, 20.f));
     }
     
-    // if (GetParent())
-    // {
-    //     SetWorldPos(GetParent()->GetWorldPos());
-    //     
-    //     // PlayerArm의 방향에 따라 Hook 방향 설정
-    //     PlayerArm* pArm = dynamic_cast<PlayerArm*>(GetParent());
-    //     if (pArm) {
-    //         SPlayer* pPlayer = dynamic_cast<SPlayer*>(pArm->GetParent());
-    //         if (pPlayer) {
-    //             dir = pPlayer->GetDir();
-    //             curState = pPlayer->GetState();
-    //         }
-    //     }
-    // }
-    
-    // 방향 초기화 (기본 위쪽 방향)
-    //SetIsFacingRight(false);
-    
     // 상태 추적 변수 초기화
     m_bIsFacingRightPrev = m_bIsFacingRight;
     prevState = curState;

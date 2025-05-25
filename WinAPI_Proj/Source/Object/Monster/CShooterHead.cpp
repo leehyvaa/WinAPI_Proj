@@ -43,14 +43,12 @@ void CShooterHead::Update()
     SPlayer* pPlayer = dynamic_cast<SPlayer*>(CSceneMgr::GetInst()->GetCurScene()->GetPlayer());
     if (pPlayer)
     {
-        Vec2 headPos = GetWorldPos(); // Head의 월드 위치
-        Vec2 playerPos = pPlayer->GetWorldPos(); // 플레이어의 월드 위치
+        Vec2 headPos = GetWorldPos(); 
+        Vec2 playerPos = pPlayer->GetWorldPos();
 
-        // 플레이어의 위치에 따라 Head의 좌우 방향을 결정
+        // 플레이어의 위치에 따라 Head의 좌우 결정
         if (playerPos.x > headPos.x)
-        {
             m_bIsFacingRight = true;
-        }
         else
             m_bIsFacingRight = false; 
 
@@ -58,10 +56,8 @@ void CShooterHead::Update()
         Vec2 dirToPlayer = playerPos+Vec2(0.f,-60.f) - headPos;
         dirToPlayer.Normalize();
 
-        // 플레이어 방향 벡터와 양의 X축 사이의 각도를 라디안으로 계산
+        // 플레이어 방향 벡터와 양의 X축 사이의 각도를 라디안으로 계산 후 디그리로 변환
         float angleRad = atan2f(dirToPlayer.y, dirToPlayer.x);
-        
-        // 라디안을 도로 변환
         float angleDeg = angleRad * (180.f / 3.14159);
 
 
@@ -89,13 +85,7 @@ void CShooterHead::Render(HDC _dc)
 
 void CShooterHead::Reset()
 {
-    GameObject::Reset(); // 부모 클래스의 Reset 호출
-    SetManagedByPool(true); // 풀에서 관리됨을 명시
-    // CShooterHead 특성 초기화 (예: 회전, 애니메이션 상태 등)
-    SetLocalRotation(0.f); // 초기 회전값
-    if (GetAnimator()) {
-        // 초기 애니메이션 상태 설정 (예: IDLE 또는 특정 기본 애니메이션)
-        // GetAnimator()->Play(L"RIFLEMAN_AIMING_HEAD_TOP_STOP", true); // 예시
-    }
-    m_bIsFacingRight = false; // 기본 방향 설정
+    GameObject::Reset(); 
+    SetLocalRotation(0.f);
+    m_bIsFacingRight = false;
 }

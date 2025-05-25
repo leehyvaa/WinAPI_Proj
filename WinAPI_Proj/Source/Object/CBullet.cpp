@@ -42,7 +42,7 @@ void CBullet::SetBulletInfo(GameObject* _pOwner)
 {
     Reset(); // 풀에서 가져올 때마다 초기화
 
-    m_pOwnerMonster = dynamic_cast<CMonster*>(_pOwner); // 소유자 몬스터 저장
+    m_pOwnerMonster = dynamic_cast<CMonster*>(_pOwner); // 오너 저장
 
     // 기본 총알 속성
     m_fSpeed = 200.f;
@@ -132,20 +132,9 @@ void CBullet::OnCollisionEnter(CCollider* _pOther)
     // 플레이어와 충돌 시
     if (pOtherObj->GetGroup() == GROUP_TYPE::PLAYER)
     {
-        // TODO: 플레이어에게 데미지 적용
-        // SPlayer* pPlayer = dynamic_cast<SPlayer*>(pOtherObj);
-        // if (pPlayer) {
-        //     pPlayer->TakeDamage(m_iDamage);
-        // }
+        // 여기서 데미지 적용
         
         ReturnToPool();
-    }
-    // 다른 몬스터와 충돌 방지 (자신을 발사한 몬스터 포함)
-    else if (pOtherObj->GetGroup() == GROUP_TYPE::MONSTER || pOtherObj->GetGroup() == GROUP_TYPE::MONSTER_HEAD)
-    {
-        // 몬스터가 발사한 총알이 다른 몬스터와 충돌하는 것을 막거나,
-        // 자신을 발사한 몬스터와 충돌하는 것을 막기 위해 추가 로직 필요
-        // 현재는 아무것도 하지 않음 (통과)
     }
     // 지형과 충돌 시
     else if (pOtherObj->GetGroup() == GROUP_TYPE::GROUND)
@@ -156,8 +145,7 @@ void CBullet::OnCollisionEnter(CCollider* _pOther)
 
 void CBullet::Reset()
 {
-    GameObject::Reset(); // GameObject의 Reset 호출
-    // 애니메이터 초기화는 GameObject::Reset()에서 처리됨
+    GameObject::Reset();
     m_fSpeed = 0.f;
     m_fRange = 0.f;
     m_iDamage = 0;

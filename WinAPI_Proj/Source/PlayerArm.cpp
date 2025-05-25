@@ -160,7 +160,7 @@ void PlayerArm::Update_ClimbAnimation()
 {
     SPlayer* player = static_cast<SPlayer*>(GetParent());
 
-	// 플레이어 오너로부터 현재 클라임 상태를 가져옴
+	// 플레이어로부터 현재 클라임 상태를 가져옴
 	PLAYER_CLIMB_STATE currentClimbState = player->GetClimbState();
 
 	// 이전 클라임 상태와 다르면 애니메이션 전환

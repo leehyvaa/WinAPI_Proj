@@ -147,20 +147,7 @@ void SPlayer::Reset()
     m_pRayHitCollider = nullptr;
     m_vRayHitPos = Vec2(0.f, 0.f);
     
-    // 필요시 새 Hook 생성
-    // if (m_pPlayerHook == nullptr)
-    // {
-    //     m_pPlayerHook = dynamic_cast<CHook*>(CObjectPool::GetInst()->GetObject(L"Hook"));
-    //     if (m_pPlayerHook) {
-    //         m_pPlayerHook->SetName(L"Hook");
-    //         m_pPlayerHook->SetPos(m_pPlayerArm->GetPos());
-    //         m_pPlayerHook->SetScale(Vec2(11.f, 11.f));
-    //         m_pPlayerHook->SetDir(-1.f);
-    //         m_pPlayerHook->SetParent(m_pPlayerArm);
-    //         // CreateObject는 필요 없음 - 비활성화 상태로 유지
-    //         CObjectPool::GetInst()->ReturnObject(m_pPlayerHook);
-    //     }
-    // }
+
 }
 
 void SPlayer::Update()
@@ -210,44 +197,6 @@ void SPlayer::Update()
 
 void SPlayer::Render(HDC _dc)
 {
-	// Vec2 vPos(GetPos().x, GetPos().y);
-	// Vec2 vScale(GetScale().x, GetScale().y);
-
-	/*
-	int iWidth = (int)m_pTex->Width();
-	int iHeight = (int)m_pTex->Height();*/
-
-	/*TransparentBlt(_dc
-		, int(vPos.x - (float)(iWidth / 2))
-		, int(vPos.y - (float)(iHeight / 2))
-		, iWidth, iHeight
-		, m_pTex->GetDC()
-		, 0, 0, iWidth, iHeight, RGB(255, 0, 255));*/
-
-	// CTexture* pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\sigong.bmp");
-
-	// 알파블렌드를 사용한 랜더링
-	// CTexture* pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex1", L"texture\\Sail_Fish.bmp");
-
-	// Vec2 vPos = GetPos();
-	// vPos = CCamera::GetInst()->GetRenderPos(vPos);
-	// float width = (float)pTex->Width();
-	// float height = (float)pTex->Height();
-
-	// BLENDFUNCTION bf = {};
-	// bf.BlendOp = AC_SRC_OVER;
-	// bf.BlendFlags = 0;
-	// bf.AlphaFormat = AC_SRC_ALPHA;
-	// bf.SourceConstantAlpha = 127; //전역적으로 적용되는 알파
-
-	// AlphaBlend(_dc
-	//	, int(vPos.x - width / 2.f)
-	//	, int(vPos.y - height / 2.f)
-	//	, int(width), int(height)
-	//	, pTex->GetDC()
-	//	, 0, 0, int(width), int(height)
-	//	, bf);
-
 	Component_Render(_dc);
 }
 
@@ -318,13 +267,7 @@ void SPlayer::Update_State()
 			eNextState = PLAYER_STATE::RUN;
 	    if (!m_bOnGround && GetRigidBody()->GetVelocity().y > 0.f)
 	        eNextState = PLAYER_STATE::FALL;
-		// 정지 상태에서의 방향전환
-		if (KEY_HOLD(KEY::A) && !m_bClimbing && m_eCurState != PLAYER_STATE::SWING)
-		{
-		}
-		if (KEY_HOLD(KEY::D) && !m_bClimbing && m_eCurState != PLAYER_STATE::SWING)
-		{
-		}
+
 		break;
 	case PLAYER_STATE::RUN:
 		HorizontalMove();
@@ -419,13 +362,12 @@ void SPlayer::Update_State()
 		}
 	}
 
-	// 와이어 해제 또는 제압 해제
+	// 와이어 해제 또는 몬스터 처형
 	if (KEY_AWAY(KEY::LBUTTON))
 	{
-		// 제압 중이면 제압 해제 (CSubduedState에서 처형 처리)
+		// 제압 중이면 몬스터 처형 (CSubduedState에서 처형 처리)
 		if (m_bIsSubduing && m_pSubduedMonster)
 		{
-			// 제압 해제 - CSubduedState::Update()에서 처형 여부 결정
 			EndSubdue();
 		}
 		// 와이어가 걸려있으면 해제
@@ -631,13 +573,11 @@ void SPlayer::HorizontalMove()
 	if (KEY_HOLD(KEY::A))
 	{
 		m_bIsFacingRight = false;
-	    //pRigid->SetVelocity(Vec2(-600.f, pRigid->GetVelocity().y));
 	    pRigid->AddForce(Vec2(-MOVE_FORCE,0.f));
 	}
 	if (KEY_HOLD(KEY::D))
 	{
 		m_bIsFacingRight = true;
-	    //pRigid->SetVelocity(Vec2(600.f, pRigid->GetVelocity().y));
 	    pRigid->AddForce(Vec2(MOVE_FORCE,0.f));
 	}
 
@@ -734,7 +674,7 @@ void SPlayer::ApplySwingVelocity()
 
     // 이 점을 회전시켜 다음 위치 계산
     Vec2 nextPos;
-    // 이 위치는 부스터 쓸때만 써야할듯?, 갈고리 박고 4초간 덜덜 떨리는 현상 발생
+    // 이 위치는 부스터 쓸때만 써야할듯?, 갈고리 박고 4초간 떨리는 현상 발생
     //nextPos.x = (curMaxPos.x - hookPos.x) * cos(radian) - (curMaxPos.y - hookPos.y) * sin(radian) + hookPos.x;
     //nextPos.y = (curMaxPos.x - hookPos.x) * sin(radian) + (curMaxPos.y - hookPos.y) * cos(radian) + hookPos.y;
     nextPos.x = (m_pPlayerArm->GetWorldPos().x - hookPos.x) * cos(radian) - (m_pPlayerArm->GetWorldPos().y - hookPos.y) *
@@ -756,14 +696,14 @@ void SPlayer::ApplySwingVelocity()
     //갈고리와 플레이어 사이의 거리가 와이어 거리를 넘어가지 않도록 제한
     if (m_fHookDistance > m_fWireRange)
     {
-        // 현재 위치와 원하는 위치의 차이 (보정 벡터)
+        // 현재 위치와 원하는 위치의 차이
         Vec2 correction = curMaxPos - m_pPlayerArm->GetWorldPos();
 
-        // 스프링 힘 계산 (강성계수 k 값 조절로 탄성 조절)
+        // 스프링 힘 계산 , k 값 조절로 탄성 조절
         float k = 1000.0f; 
         Vec2 springForce = correction * k;
 
-        // 리지드바디에 힘 적용
+
         pRigid->AddForce(springForce);
 
         // 접선 방향으로만 속도 유지
@@ -1002,30 +942,27 @@ void SPlayer::RayCasting()
 	m_vRayHitPos = m_pPlayerRay->GetTargetPos();
 }
 
-// 제압 시작
+// 몬스터 제압 시작
 void SPlayer::StartSubdue(CMonster* _pMonster)
 {
-	// NULL 포인터 체크 및 중복 제압 방지
 	if (!_pMonster || m_bIsSubduing)
 		return;
-	
-	// 몬스터가 이미 죽었는지 확인
+    
 	if (_pMonster->GetAI() && _pMonster->GetAI()->GetCurState() == MON_STATE::DEAD)
 		return;
 		
 	m_pSubduedMonster = _pMonster;
 	m_bIsSubduing = true;
 	
-	// 플레이어가 몬스터 위치로 빠르게 이동 시작
+	// 플레이어가 몬스터 위치로 빠르게 이동
 	Vec2 monsterPos = m_pSubduedMonster->GetWorldPos();
 	Vec2 targetPos = monsterPos + Vec2(0.f, 0.f); // 몬스터와 같은 위치로 이동
 	StartMoveToTarget(targetPos);
 	
 	// 몬스터를 제압 상태로 전환
 	if (m_pSubduedMonster->GetAI())
-	{
 		m_pSubduedMonster->GetAI()->ChangeState(MON_STATE::SUBDUED);
-	}
+	
 	
 	// 플레이어 방향 설정
 	if (m_pSubduedMonster->GetWorldPos().x < GetWorldPos().x)
@@ -1034,14 +971,12 @@ void SPlayer::StartSubdue(CMonster* _pMonster)
 		m_bIsFacingRight = true;
 }
 
-// 제압 업데이트
+// 몬스터를 제압중인 상태
 void SPlayer::UpdateSubdue()
 {
-	// NULL 포인터 체크
 	if (!m_bIsSubduing || !m_pSubduedMonster)
 		return;
-	
-	// 몬스터가 유효한지 확인 (삭제되었을 수 있음)
+    
 	if (!m_pSubduedMonster->GetAI())
 	{
 		EndSubdue();
@@ -1087,22 +1022,6 @@ void SPlayer::EndSubdue()
 	m_pSubduedMonster = nullptr;
 }
 
-// 안전한 제압 해제 (포인터 정리 포함)
-void SPlayer::SafeEndSubdue()
-{
-	if (m_bIsSubduing && m_pSubduedMonster)
-	{
-		// 몬스터가 아직 유효하면 IDLE 상태로 복원
-		if (m_pSubduedMonster->GetAI() &&
-			m_pSubduedMonster->GetAI()->GetCurState() == MON_STATE::SUBDUED)
-		{
-			m_pSubduedMonster->GetAI()->ChangeState(MON_STATE::IDLE);
-		}
-	}
-	
-	m_bIsSubduing = false;
-	m_pSubduedMonster = nullptr;
-}
 
 // 플레이어 사망 시 제압 정리
 void SPlayer::CleanupSubdueOnDeath()
@@ -1114,12 +1033,11 @@ void SPlayer::CleanupSubdueOnDeath()
 		{
 			m_pSubduedMonster->GetAI()->ChangeState(MON_STATE::IDLE);
 		}
-		
 		EndSubdue();
 	}
 }
 
-// 목표 위치로 빠른 이동 시작
+// 목표 위치로 플레이어 빠른 이동
 void SPlayer::StartMoveToTarget(const Vec2& _targetPos)
 {
 	m_bIsMovingToTarget = true;
@@ -1127,7 +1045,7 @@ void SPlayer::StartMoveToTarget(const Vec2& _targetPos)
 	m_vMoveTargetPos = _targetPos;
 	m_fMoveProgress = 0.f;
 	
-	// 중력 비활성화 및 물리 정지
+	// 물리 상태 비활성화
 	GetGravity()->SetApplyGravity(false);
 	GetRigidBody()->SetVelocity(Vec2(0.f, 0.f));
 }
@@ -1138,21 +1056,19 @@ void SPlayer::UpdateMoveToTarget()
 	if (!m_bIsMovingToTarget)
 		return;
 		
-	// 이동 진행도 업데이트
+	// 이동 진행도
 	m_fMoveProgress += m_fMoveSpeed * fDT / (m_vMoveTargetPos - m_vMoveStartPos).Length();
-	
+    
 	if (m_fMoveProgress >= 1.f)
 	{
-		// 이동 완료
-		CompleteMoveToTarget();
+		CompleteMoveToTarget();    // 이동 완료
 		return;
 	}
 	
-	// 선형 보간으로 플레이어 위치 업데이트
+	// 보간으로 플레이어 위치 업데이트
 	Vec2 currentPos = m_vMoveStartPos + (m_vMoveTargetPos - m_vMoveStartPos) * m_fMoveProgress;
 	SetWorldPos(currentPos);
-	
-	// 물리 속도 초기화 (물리 시뮬레이션 무시)
+    
 	GetRigidBody()->SetVelocity(Vec2(0.f, 0.f));
 }
 
@@ -1162,10 +1078,10 @@ void SPlayer::CompleteMoveToTarget()
 	m_bIsMovingToTarget = false;
 	m_fMoveProgress = 0.f;
 	
-	// 목표 위치로 정확히 이동
+	// 목표 위치로 마무리 이동
 	SetWorldPos(m_vMoveTargetPos);
 	
-	// 물리 상태 복원
+	// 상태 복원
 	GetGravity()->SetApplyGravity(true);
 	GetRigidBody()->SetVelocity(Vec2(0.f, 0.f));
 }

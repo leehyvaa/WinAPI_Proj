@@ -11,8 +11,8 @@
 #include "CTimeMgr.h"
 #include "Monster/CShooterHead.h"
 #include "Monster/CShooterMonster.h"
-#include "CBullet.h" // 총알 클래스 추가
-#include "CObjectPool.h" // 오브젝트 풀 추가
+#include "CBullet.h"
+#include "CObjectPool.h"
 
 CAimingState::CAimingState() : CState(MON_STATE::AIMING)
     , m_fShotDelay(1.0f) // 1초마다 발사
@@ -35,17 +35,26 @@ void CAimingState::Enter()
     
 
     // 머리 애니메이션 설정
-    dynamic_cast<CShooterMonster*>(GetMonster())->GetHead()->GetAnimator()->Play(L"RIFLEMAN_AIMING_HEAD_TOP", false);
-    dynamic_cast<CShooterMonster*>(GetMonster())->GetHead()->GetAnimator()->FindAnimation(L"RIFLEMAN_AIMING_HEAD_TOP")->SetEndFrameEvent([this]() {
-           dynamic_cast<CShooterMonster*>(GetMonster())->GetHead()->GetAnimator()->Play(L"RIFLEMAN_AIMING_HEAD_TOP_STOP", true);
-    });
+    if (!dynamic_cast<CShooterMonster*>(GetMonster())->GetHead())
+    {
+        CShooterHead* pHead = static_cast<CShooterHead*>(CObjectPool::GetInst()->GetPoolObject(L"ShooterHeadPool"));
+        dynamic_cast<CShooterMonster*>(GetMonster())->SetHead(pHead);
 
+        pHead->GetAnimator()->Play(L"RIFLEMAN_AIMING_HEAD_TOP", false);
+        pHead->GetAnimator()->FindAnimation(L"RIFLEMAN_AIMING_HEAD_TOP")->SetEndFrameEvent([this]() {
+               dynamic_cast<CShooterMonster*>(GetMonster())->GetHead()->GetAnimator()->Play(L"RIFLEMAN_AIMING_HEAD_TOP_STOP", true);
+        });
+        pHead->SetParent(GetMonster());
+        pHead->SetWorldPos(GetMonster()->GetWorldPos()+Vec2(0.f, -80.f));
+        pHead->SetName(L"MonsterHead");
+        CreateObject(pHead, GROUP_TYPE::MONSTER_HEAD); // 씬에 추가
+        
+    }
     m_fShotTimer = 0.f; // 상태 진입 시 타이머 초기화
 }
 
 void CAimingState::Update()
 {
-    // 플레이어 객체 가져오기
     SPlayer* pPlayer = dynamic_cast<SPlayer*>(CSceneMgr::GetInst()->GetCurScene()->GetPlayer());
     CShooterMonster* pMonster = dynamic_cast<CShooterMonster*>(GetMonster());
 
@@ -60,8 +69,6 @@ void CAimingState::Update()
         {
             FireBullet();
             m_fShotTimer = 0.f; // 타이머 리셋
-            // 발사 후 IDLE 상태로 전환 (또는 다른 상태)
-            //ChangeAIState(GetAI(), MON_STATE::IDLE);
         }
     }
     else
@@ -103,14 +110,4 @@ void CAimingState::FireBullet()
 
 void CAimingState::Exit()
 {
-    // 상태 종료 시 필요한 정리 작업
-    // 예: 애니메이션 종료 이벤트 해제 등
-    // if (GetMonster()->GetAnimator()->FindAnimation(L"RIFLEMAN_AIMING_BODY"))
-    // {
-    //     GetMonster()->GetAnimator()->FindAnimation(L"RIFLEMAN_AIMING_BODY")->SetEndFrameEvent(nullptr);
-    // }
-    // if (dynamic_cast<CShooterMonster*>(GetMonster())->GetHead()->GetAnimator()->FindAnimation(L"RIFLEMAN_AIMING_HEAD_TOP"))
-    // {
-    //     dynamic_cast<CShooterMonster*>(GetMonster())->GetHead()->GetAnimator()->FindAnimation(L"RIFLEMAN_AIMING_HEAD_TOP")->SetEndFrameEvent(nullptr);
-    // }
 }

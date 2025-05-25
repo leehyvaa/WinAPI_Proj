@@ -23,6 +23,18 @@ y는 밑으로 갈수록 +임
 
 
 ㅡㅡㅡ 몬스터 ㅡㅡㅡㅡ
+Header/define.h: MON_STATE enum에 SUBDUED, EXECUTED 상태 추가
+Module/AI/State/Subdued/CSubduedState.h: 완전한 제압 상태 클래스 선언
+Module/AI/State/Subdued/CSubduedState.cpp: 제압 및 처형 로직 구현
+SPlayer.h: 제압 관련 멤버 변수 및 메서드 추가
+SPlayer.cpp: 레이캐스트 기반 제압 시스템 통합
+Object/Monster/CShooterMonster.cpp: AI에 CSubduedState 등록
+Object/CMonster.cpp: DEAD 상태 자동 삭제 처리
+
+** 처형시 몬스터 머리가 좀 더 늦게 사라짐
+** 몬스터 살아있는채로 씬 나갔다 들어오면 풀에서 그대로 활성화인 상태임
+
+
 몬스터클래스 추가한거 #include 할떄 경로 넣어줘야 할수도 이거 vs 설정에서 할 수 있음
 m_bOnGround 나중에 GameObejct쪽으로 빼야 할수도 플레이어 포함해서
 

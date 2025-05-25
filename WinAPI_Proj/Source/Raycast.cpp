@@ -55,7 +55,7 @@ void Raycast::CollisionCheck()
 	targetPos = Vec2(0.f, 0.f);
 
 	int i = 0;
-	while (1)
+	while (true)
 	{
 		offsetPos += dir * i*3;
 		GetCollider()->SetOffsetPos(offsetPos);

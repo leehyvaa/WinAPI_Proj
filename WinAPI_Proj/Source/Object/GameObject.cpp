@@ -126,7 +126,7 @@ void GameObject::Reset()
 void GameObject::LookAt(Vec2 _target)
 {
     Vec2 dir = _target - GetWorldPos();
-    dir.Normalize(); // 정규화는 한 번만 수행
+    dir.Normalize(); 
 
     float angle = atan2(dir.y, dir.x); // 라디안 값 반환
     // 라디안 -> 각도 변환 및 적절한 회전으로 보정
@@ -137,7 +137,8 @@ void GameObject::LookAt(Vec2 _target)
 
 void GameObject::SetWorldPos(Vec2 _vWorldPos)
 {
-    if (m_pParent) {
+    if (m_pParent)
+    {
         // 부모 기준 로컬 좌표로 변환
         Vec2 parentWorldPos = m_pParent->GetWorldPos();
         
@@ -152,7 +153,8 @@ void GameObject::SetWorldPos(Vec2 _vWorldPos)
         m_vLocalPos.x = relativePos.x * cosAngle - relativePos.y * sinAngle;
         m_vLocalPos.y = relativePos.x * sinAngle + relativePos.y * cosAngle;
     }
-    else {
+    else
+    {
         // 부모가 없으면 직접 위치 설정
         m_vPos = _vWorldPos;
         m_vLocalPos = _vWorldPos;
@@ -216,29 +218,28 @@ void GameObject::FinalUpdate()
 {
     if (!m_bActive)
         return;
-
-    // 1. 컴포넌트 업데이트 (RigidBody 먼저)
+    
     if (m_pGravity)
         m_pGravity->FinalUpdate();
     if (m_pRigidBody)
-        m_pRigidBody->FinalUpdate(); // RigidBody가 m_vPos/m_vLocalPos를 확정할 수 있음 (하지만 아래에서 재계산될수 있음)
+        m_pRigidBody->FinalUpdate(); 
 
-        // 2. 부모-자식 관계에 따른 최종 논리적 월드 위치(m_vPos) 및 회전 계산
+        // 부모-자식 관계에 따른 최종 논리적 월드 위치 및 회전 계산
         if (m_pParent)
         {
-            // --- 부모 정보 ---
+            // 부모 정보 
             Vec2 parentWorldPos = m_pParent->GetWorldPos(); // 부모 논리적 월드 위치
             float parentWorldRotation = m_pParent->GetWorldRotation(); // 부모 최종 월드 회전
             float parentRotationRad = parentWorldRotation * (3.14159f / 180.f);
             float cosParent = cosf(parentRotationRad);
             float sinParent = sinf(parentRotationRad);
 
-            // --- 자식 로컬 위치를 부모 회전에 맞춰 회전 (부모 기준 오프셋) ---
+            // 자식 로컬 위치를 부모 회전에 맞춰 회전 (부모 기준 오프셋)
             Vec2 rotatedLocalPosOffset;
             rotatedLocalPosOffset.x = m_vLocalPos.x * cosParent - m_vLocalPos.y * sinParent;
             rotatedLocalPosOffset.y = m_vLocalPos.x * sinParent + m_vLocalPos.y * cosParent;
 
-            // --- 최종 자식 논리적 위치 (m_vPos) 계산 ---
+            // 최종 자식 논리적 위치 계산
             // 부모의 논리적 위치 + 회전된 자식의 로컬 오프셋
             m_vPos = parentWorldPos + rotatedLocalPosOffset;
         }
@@ -248,11 +249,10 @@ void GameObject::FinalUpdate()
             m_vPos = m_vLocalPos;
         }
 
-    // 3. 나머지 컴포넌트 업데이트 (최종 논리적 위치/회전 기반)
     if (m_pAnimator)
-        m_pAnimator->FinalUpdate(); // 애니메이션 상태 업데이트 (시간 등)
+        m_pAnimator->FinalUpdate(); 
     if (m_pCollider)
-        m_pCollider->FinalUpdate(); // 콜라이더 위치 업데이트 (이제 순수 논리적 m_vPos 사용)
+        m_pCollider->FinalUpdate();
 }
 
 void GameObject::Render(HDC _dc)

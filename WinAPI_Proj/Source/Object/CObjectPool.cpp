@@ -1,6 +1,5 @@
 ﻿#include "pch.h"
 #include "CObjectPool.h"
-
 #include "CEventMgr.h"
 
 CObjectPool::CObjectPool()
@@ -14,7 +13,7 @@ CObjectPool::~CObjectPool()
 
 void CObjectPool::Init()
 {
-    // 초기화 코드
+    // 풀 초기화 로직
 }
 
 
@@ -44,7 +43,7 @@ GameObject* CObjectPool::GetPoolObject(const wstring& _strKey)
         GameObject* pPrototype = pool[0]; 
         GameObject* pNewObj = pPrototype->Clone(); 
         pNewObj->SetActive(true); // 새로 만든 객체도 활성화
-        pNewObj->SetManagedByPool(true); // 풀 관리 객체임을 명시 (Clone 시 복사되지 않을 경우 대비)
+        pNewObj->SetManagedByPool(true);
         pool.push_back(pNewObj); // 풀에 추가
         return pNewObj;
     }

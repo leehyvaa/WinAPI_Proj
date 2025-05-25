@@ -99,6 +99,7 @@ void CScene::Exit()
 
 void CScene::Update()
 {
+    // 씬 내의 오브젝트들 Update
 	for (UINT i = 0; i < static_cast<UINT>(GROUP_TYPE::END); i++)
 	{
 		for (size_t j = 0; j < m_arrObj[i].size(); j++)
@@ -109,42 +110,37 @@ void CScene::Update()
 			}
 		}
 	}
-
+ 
+    // 맵 그리드 확인
 	if (KEY_TAP(KEY::F5))
-	{
 		bDrawGrid= !bDrawGrid;
-	}
+    // 콜라이더 디버깅
 	if (KEY_TAP(KEY::F6))
-	{
 		bDrawCollider = !bDrawCollider;
-	}
+    // 그라운드 타입 디버깅 
 	if (KEY_TAP(KEY::F7))
-	{
 		bDrawGroundType = !bDrawGroundType;
-	}
+    // 그라운드 완성 처리 디버깅
     if (KEY_TAP(KEY::F8))
-    {
         bDrawCompleteGround = !bDrawCompleteGround;
-    }
+    // 오브젝트 풀 내의 오브젝트 활성화 여부 디버깅
     if (KEY_TAP(KEY::F9))
-    {
         TogglePoolDebugDisplay();
-    }
+
 	if (KEY_TAP(KEY::F12))
-	{
 		bDrawOutWindow = !bDrawOutWindow;
-	}
+    // 플레이어 정보 UI 디버깅 토글
     if (KEY_TAP(KEY::C))
-    {
         m_pPlayerText->SetActive(!m_pPlayerText->IsActive());
-    }
+
 
     // 풀 디버그 UI가 활성화된 경우 정보 업데이트
     if (m_pPoolDebugText && m_pPoolDebugText->IsActive())
     {
         UpdatePoolDebugInfo();
     }
-    
+
+    // 디버깅용 UI 업데이트
     if (m_pPlayerText != nullptr)
     {
         if(m_pPlayerText) m_pPlayerText->ClearLines();
@@ -542,37 +538,6 @@ void CScene::CreateGround()
                  pGround->SetCollideType(TILE_COLLIDE_TYPE::SOLID);
                  AddObject(pGround, GROUP_TYPE::GROUND);
                  
-                 // // 1. 상단 지형 (평지)
-                 // CGround* pTop = new CGround();
-                 // pTop->SetPos(Vec2(vPos1.x,vPos1.y));
-                 // pTop->SetGroundType(groundType);
-                 // pTop->SetScale(Vec2(vPos2.x - vPos1.x, vTileScale.y*2));
-                 // pTop->SetCollideType(TILE_COLLIDE_TYPE::TOP_PLATFORM);
-                 // AddObject(pTop, GROUP_TYPE::GROUND);
-                 //
-                 // // 2. 좌측 빗면
-                 // CGround* pLeft = new CGround();
-                 // pLeft->SetPos(Vec2(vPos1.x, vPos1.y));
-                 // pLeft->SetGroundType(groundType);
-                 // pLeft->SetScale(Vec2(vTileScale.x*2, vPos2.y - vPos1.y));
-                 // pLeft->SetCollideType(TILE_COLLIDE_TYPE::SLOPE_LEFT);
-                 // AddObject(pLeft, GROUP_TYPE::GROUND);
-                 //
-                 // // 3. 우측 빗면
-                 // CGround* pRight = new CGround();
-                 // pRight->SetPos(Vec2(vPos2.x - vTileScale.x, vPos1.y));
-                 // pRight->SetGroundType(groundType);
-                 // pRight->SetScale(Vec2(vTileScale.x*2, vPos2.y - vPos1.y));
-                 // pRight->SetCollideType(TILE_COLLIDE_TYPE::SLOPE_RIGHT);
-                 // AddObject(pRight, GROUP_TYPE::GROUND);
-                 //
-                 // // 4. 하단 지형
-                 // CGround* pBottom = new CGround();
-                 // pBottom->SetPos(Vec2(vPos1.x, vPos2.y - vTileScale.y));
-                 // pBottom->SetGroundType(groundType);
-                 // pBottom->SetScale(Vec2(vPos2.x - vPos1.x, vTileScale.y*2));
-                 // pBottom->SetCollideType(TILE_COLLIDE_TYPE::BOT_PLATFORM);
-                 // AddObject(pBottom, GROUP_TYPE::GROUND);
              }
              else // 이동불가/데미지/즉사 지형
              {
@@ -587,7 +552,7 @@ void CScene::CreateGround()
     }
 }
 
-
+// 오브젝트 풀 디버그 UI
 void CScene::UpdatePoolDebugInfo()
 {
     if (!m_pPoolDebugText)
@@ -598,7 +563,7 @@ void CScene::UpdatePoolDebugInfo()
     // 오브젝트 풀 정보 수집
     map<wstring, vector<GameObject*>>& pools = CObjectPool::GetInst()->GetPools();
     
-    // 헤더 라인 추가
+
     m_pPoolDebugText->AddLine(L"=== OBJECT POOLS ===");
     
     // 풀이 비어있는 경우
@@ -608,18 +573,17 @@ void CScene::UpdatePoolDebugInfo()
         return;
     }
     
-    // 각 풀의 정보 추가
+    // 활성/비활성 객체 수 계산해서 표시
     for (const auto& pool : pools)
     {
-        // 활성/비활성 객체 수 계산
+        
         int totalCount = (int)pool.second.size();
         int activeCount = 0;
         
         for (GameObject* obj : pool.second)
-        {
             if (obj->IsActive())
                 activeCount++;
-        }
+        
         
         // 풀 정보 문자열 생성
         wstring poolInfo = pool.first + L": " + 
@@ -628,8 +592,8 @@ void CScene::UpdatePoolDebugInfo()
         
         m_pPoolDebugText->AddLine(poolInfo);
     }
+
     
-    // 메모리 사용량 정보 추가 (옵션)
     m_pPoolDebugText->AddLine(L"");
     m_pPoolDebugText->AddLine(L"Press F9 to toggle this display");
 }

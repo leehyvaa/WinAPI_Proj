@@ -23,13 +23,15 @@ public:
     virtual void OnCollision(CCollider* _pOther);
     virtual void OnCollisionExit(CCollider* _pOther);
     
-
+    void SetHead(CShooterHead* head){m_pHead = head;}
+    CShooterHead* GetHead(){return m_pHead;}
+    
+    
     virtual void Start();
     virtual void Update();
     virtual void Render(HDC _dc);
     virtual void FinalUpdata();
     virtual void Reset() override;
 
-    CShooterHead* GetHead(){return m_pHead;}
     CLONE(CShooterMonster)
 };
