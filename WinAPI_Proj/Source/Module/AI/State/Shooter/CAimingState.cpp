@@ -13,10 +13,11 @@
 #include "Monster/CShooterMonster.h"
 #include "CBullet.h"
 #include "CObjectPool.h"
+#include "SelectGDI.h"
 
 CAimingState::CAimingState() : CState(MON_STATE::AIMING)
-    , m_fShotDelay(1.0f) // 1초마다 발사
-    , m_fShotTimer(0.f)
+                               , m_fShotDelay(1.0f) // 1초마다 발사
+                               , m_fShotTimer(0.f)
 {
     
 }
@@ -110,4 +111,28 @@ void CAimingState::FireBullet()
 
 void CAimingState::Exit()
 {
+}
+
+void CAimingState::Render(HDC _dc)
+{
+    SPlayer* pPlayer = dynamic_cast<SPlayer*>(CSceneMgr::GetInst()->GetCurScene()->GetPlayer());
+    CShooterMonster* pMonster = dynamic_cast<CShooterMonster*>(GetMonster());
+    
+    PEN_TYPE ePen = PEN_TYPE::RED;
+    SelectGDI p(_dc, ePen);
+    SelectGDI b(_dc, BRUSH_TYPE::HOLLOW);
+
+    Vec2 renderPos = pMonster->GetHead()->GetWorldPos();
+    if (GetAI()->GetOwner()->GetIsFacingRight())
+        renderPos = renderPos + Vec2(40.f,5.0f);
+    else
+        renderPos = renderPos + Vec2(-40.f,5.0f);
+    
+    
+    Vec2 dir = pPlayer->GetWorldPos()+Vec2(0.f,-55.f) - renderPos;
+    renderPos = CCamera::GetInst()->GetRenderPos(renderPos);
+    dir.Normalize();
+    MoveToEx(_dc, renderPos.x, renderPos.y,nullptr);
+    
+    LineTo(_dc, renderPos.x + dir.x * 1500 ,renderPos.y + dir.y*1500);
 }

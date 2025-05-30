@@ -10,6 +10,8 @@ y는 밑으로 갈수록 +임
 	//씬 진입 상황에서는 AddObject 해도 되지만 
 	//Update 상황에서는 CreateObject식으로 이벤트로 오브젝트 생성
 
+
+
 와이어 자연스럽게 떨어지기, 와이어 최대거리 고무줄처럼 안늘어나게 ,사슬 추가, 몬스터,전투 추가
 애니메이션 수정,맵툴 트리거, 몬스터프리팹 ,스테이지 만들기 
 
@@ -23,17 +25,10 @@ y는 밑으로 갈수록 +임
 
 
 ㅡㅡㅡ 몬스터 ㅡㅡㅡㅡ
-Header/define.h: MON_STATE enum에 SUBDUED, EXECUTED 상태 추가
-Module/AI/State/Subdued/CSubduedState.h: 완전한 제압 상태 클래스 선언
-Module/AI/State/Subdued/CSubduedState.cpp: 제압 및 처형 로직 구현
-SPlayer.h: 제압 관련 멤버 변수 및 메서드 추가
-SPlayer.cpp: 레이캐스트 기반 제압 시스템 통합
-Object/Monster/CShooterMonster.cpp: AI에 CSubduedState 등록
-Object/CMonster.cpp: DEAD 상태 자동 삭제 처리
 
-** 처형시 몬스터 머리가 좀 더 늦게 사라짐
+
 ** 몬스터 살아있는채로 씬 나갔다 들어오면 풀에서 그대로 활성화인 상태임
-
+** 제압상태 클래스 주석 정리 및 코드 정리 필요
 
 몬스터클래스 추가한거 #include 할떄 경로 넣어줘야 할수도 이거 vs 설정에서 할 수 있음
 m_bOnGround 나중에 GameObejct쪽으로 빼야 할수도 플레이어 포함해서

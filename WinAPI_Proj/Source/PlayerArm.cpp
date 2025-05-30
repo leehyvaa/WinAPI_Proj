@@ -32,7 +32,7 @@ PlayerArm::PlayerArm()
 	GetAnimator()->CreateAnimation(L"SNB_ARM_RIGHT_JUMP", pArmTexRight,
 								   Vec2(0.f, 1000.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 6, 0.85f, Vec2(-20.f, 28.f));
 	GetAnimator()->CreateAnimation(L"SNB_ARM_RIGHT_FALLING", pArmTexRight,
-								   Vec2(0.f, 600.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 3, 0.85f, Vec2(-20.f, 28.f));
+								   Vec2(0.f, 600.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 3, 0.85f, Vec2(-39.f, 33.f));
 	GetAnimator()->CreateAnimation(L"SNB_ARM_RIGHT_LAND", pArmTexRight,
 								   Vec2(0.f, 1100.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 3, 0.85f, Vec2(-20.f, 28.f));
 	GetAnimator()->CreateAnimation(L"SNB_ARM_RIGHT_CLIMBUP", pArmTexRight,
@@ -45,6 +45,9 @@ PlayerArm::PlayerArm()
                                Vec2(0.f, 2300.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.2f, 3, 0.85f, Vec2(0.f, 3.f));
 	GetAnimator()->CreateAnimation(L"SNB_ARM_RIGHT_SWING", pArmTexRight,
 								   Vec2(0.f, 2300.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.2f, 3, 0.85f, Vec2(0.f, -10.f));
+    GetAnimator()->CreateAnimation(L"SNB_ARM_RIGHT_EXC_BACK", pArmTexRight,
+                                   Vec2(0.f, 800.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.2f, 8, 0.6f, Vec2(0.f, 0.f));
+
     
 	// RIGHT 애니메이션 저장
 	GetAnimator()->FindAnimation(L"SNB_ARM_RIGHT_IDLE")->Save(L"animation\\playerArm_right_idle.anim");
@@ -57,6 +60,7 @@ PlayerArm::PlayerArm()
 	GetAnimator()->FindAnimation(L"SNB_ARM_RIGHT_CLIMBSTOP")->Save(L"animation\\playerArm_right_climbstop.anim");
 	GetAnimator()->FindAnimation(L"SNB_ARM_RIGHT_SWING")->Save(L"animation\\playerArm_right_swing.anim");
 	GetAnimator()->FindAnimation(L"SNB_ARM_RIGHT_SHOT")->Save(L"animation\\playerArm_right_shot.anim");
+	GetAnimator()->FindAnimation(L"SNB_ARM_RIGHT_EXC_BACK")->Save(L"animation\\playerArm_right_exc_back.anim");
 
 	GetAnimator()->Play(L"SNB_ARM_RIGHT_RUN", true);
 #pragma endregion
@@ -109,13 +113,13 @@ void PlayerArm::Update_Animation()
 			GetAnimator()->Play(L"SNB_ARM_RIGHT_RUN", true);
 		break;
 	case PLAYER_STATE::EXECUTE:
-		break;
-
+			GetAnimator()->Play(L"SNB_ARM_RIGHT_EXC_BACK", true);
+	    break;
 	case PLAYER_STATE::JUMP:
 			GetAnimator()->Play(L"SNB_ARM_RIGHT_JUMP", true);
 		break;
 	case PLAYER_STATE::FALL:
-	        GetAnimator()->Play(L"SNB_ARM_RIGHT_JUMP", true);
+	        GetAnimator()->Play(L"SNB_ARM_RIGHT_FALLING", true);
 	    break;
 	case PLAYER_STATE::CLIMB:
 			GetAnimator()->Play(L"SNB_ARM_RIGHT_CLIMBSTOP", true);

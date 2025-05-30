@@ -28,9 +28,9 @@ CShooterMonster::CShooterMonster()
     GetAnimator()->CreateAnimation(L"RIFLEMAN_IDLE", pTex,
                                        Vec2(0.f, 0.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 15, 2.f, Vec2(0.f, -64.f));
     GetAnimator()->CreateAnimation(L"RIFLEMAN_EXC_START", pTex,
-                                           Vec2(0.f, 200.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 4, 2.f, Vec2(0.f, -64.f));
+                                           Vec2(0.f, 200.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 4, 2.3f, Vec2(0.f, -65.f));
     GetAnimator()->CreateAnimation(L"RIFLEMAN_EXC_BACK", pTex,
-                                           Vec2(0.f, 400.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 8, 2.f, Vec2(0.f, -64.f));
+                                           Vec2(0.f, 400.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 8, 2.f, Vec2(0.f, -55.f));
     GetAnimator()->CreateAnimation(L"RIFLEMAN_DEAD", pTex,
                                            Vec2(0.f, 600.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 10, 2.f, Vec2(0.f, -64.f));
     GetAnimator()->CreateAnimation(L"RIFLEMAN_DEAD_PART", pTex,
@@ -123,6 +123,10 @@ void CShooterMonster::Update()
 void CShooterMonster::Render(HDC _dc)
 {
     CMonster::Render(_dc);
+    if(nullptr != m_pAI)
+    {
+        m_pAI->Render(_dc);
+    }
 }
 
 void CShooterMonster::FinalUpdata()

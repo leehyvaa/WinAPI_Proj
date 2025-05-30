@@ -20,6 +20,12 @@ void AI::Update()
 	    m_pCurState->Update();
 }
 
+void AI::Render(HDC _dc)
+{
+    if (m_pCurState)
+        m_pCurState->Render(_dc);
+}
+
 
 void AI::AddState(CState* _pState)
 {

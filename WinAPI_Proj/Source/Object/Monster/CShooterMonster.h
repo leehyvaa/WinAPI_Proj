@@ -14,7 +14,6 @@ public:
     }
 
 private:
-    CShooterHead* m_pHead;
 private:
     void Update_Gravity();
 
@@ -23,9 +22,7 @@ public:
     virtual void OnCollision(CCollider* _pOther);
     virtual void OnCollisionExit(CCollider* _pOther);
     
-    void SetHead(CShooterHead* head){m_pHead = head;}
-    CShooterHead* GetHead(){return m_pHead;}
-    
+
     
     virtual void Start();
     virtual void Update();

@@ -59,6 +59,8 @@ SPlayer::SPlayer()
 								   Vec2(0.f, 2900.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.2f, 11, 3.f, Vec2(-13.f, -57.f));
 	GetAnimator()->CreateAnimation(L"SNB_RIGHT_SWING", pTexRight,
 								   Vec2(0.f, 2300.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.2f, 15, 3.f, Vec2(-13.f, -57.f));
+    GetAnimator()->CreateAnimation(L"SNB_RIGHT_EXC_BACK", pTexRight,
+                                       Vec2(0.f, 800.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.2f, 8, 3.f, Vec2(0.f, -90.f));
 
 
 	// RIGHT 애니메이션 저장
@@ -71,6 +73,7 @@ SPlayer::SPlayer()
 	GetAnimator()->FindAnimation(L"SNB_RIGHT_CLIMBDOWN")->Save(L"animation\\player_right_climbdown.anim");
 	GetAnimator()->FindAnimation(L"SNB_RIGHT_CLIMBSTOP")->Save(L"animation\\player_right_climbstop.anim");
 	GetAnimator()->FindAnimation(L"SNB_RIGHT_SWING")->Save(L"animation\\player_right_swing.anim");
+	GetAnimator()->FindAnimation(L"SNB_RIGHT_EXC_BACK")->Save(L"animation\\player_right_exc_back.anim");
 
 
 	GetAnimator()->Play(L"SNB_RIGHT_RUN", true);
@@ -281,7 +284,8 @@ void SPlayer::Update_State()
 		break;
 	case PLAYER_STATE::EXECUTE:
 		HorizontalMove();
-	    
+	    if (!m_bIsSubduing)
+	        eNextState = PLAYER_STATE::IDLE; // 나중에 대쉬로 변경
 		break;
 	case PLAYER_STATE::JUMP:
 		HorizontalMove();
@@ -346,6 +350,7 @@ void SPlayer::Update_State()
 			if (distance <= m_fSubdueRange)
 			{
 				StartSubdue(pMonster);
+			    eNextState = PLAYER_STATE::EXECUTE;
 			}
 			else
 			{
@@ -435,12 +440,13 @@ void SPlayer::Update_Animation()
 			GetAnimator()->Play(L"SNB_RIGHT_RUN", true);
 		break;
 	case PLAYER_STATE::EXECUTE:
+			GetAnimator()->Play(L"SNB_RIGHT_EXC_BACK", true);
 		break;
 	case PLAYER_STATE::JUMP:
 			GetAnimator()->Play(L"SNB_RIGHT_JUMP", true);
 		break;
 	case PLAYER_STATE::FALL:
-	        GetAnimator()->Play(L"SNB_RIGHT_JUMP", true);
+	        GetAnimator()->Play(L"SNB_RIGHT_FALLING", true);
 	    break;
 	case PLAYER_STATE::CLIMB:
 			GetAnimator()->Play(L"SNB_RIGHT_CLIMBSTOP", true);
@@ -993,8 +999,7 @@ void SPlayer::UpdateSubdue()
 	
 	// 제압 중인 몬스터를 플레이어 근처로 이동
 	Vec2 playerPos = GetWorldPos();
-	Vec2 offsetPos = m_bIsFacingRight ? Vec2(50.f, 0.f) : Vec2(-50.f, 0.f);
-	Vec2 targetPos = playerPos + offsetPos;
+	Vec2 targetPos = playerPos;
 	
 	// 몬스터 위치를 부드럽게 이동
 	Vec2 currentMonsterPos = m_pSubduedMonster->GetWorldPos();

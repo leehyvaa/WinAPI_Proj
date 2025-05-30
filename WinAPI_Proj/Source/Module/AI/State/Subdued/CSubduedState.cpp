@@ -12,6 +12,7 @@
 #include "CKeyMgr.h"
 #include "CRigidBody.h"
 #include "CTimeMgr.h"
+#include "Monster/CShooterHead.h"
 
 CSubduedState::CSubduedState()
     : CState(MON_STATE::SUBDUED)
@@ -75,14 +76,14 @@ void CSubduedState::Enter()
     CMonster* pMonster = GetMonster();
     if (pMonster)
     {
-        // 제압 상태 애니메이션 재생 (추후 애니메이션 추가 시 활성화)
-        // GetMonster()->GetAnimator()->Play(L"RIFLEMAN_SUBDUED", true);
-
-        
-        if (pMonster->GetAnimator())
-            pMonster->GetAnimator()->Play(L"RIFLEMAN_IDLE", true);
-
-        
+        GetMonster()->GetAnimator()->Play(L"RIFLEMAN_EXC_START", false);
+        GetMonster()->GetAnimator()->FindAnimation(L"RIFLEMAN_EXC_START")->SetEndFrameEvent([this]() {
+                   GetMonster()->GetAnimator()->Play(L"RIFLEMAN_EXC_BACK", true);
+        });
+    
+        CShooterHead* pHead = pMonster->GetHead();
+        pHead->GetAnimator()->Reset();
+    
         if (pMonster->GetRigidBody())
             pMonster->GetRigidBody()->SetVelocity(Vec2(0.f, 0.f));
     }

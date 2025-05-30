@@ -17,7 +17,7 @@ public:
 	virtual void Update() = 0;
 	virtual void Enter() = 0;
 	virtual void Exit() = 0;
-
+    virtual void Render(HDC _dc);
 
 public:
 	CState(MON_STATE _eState);

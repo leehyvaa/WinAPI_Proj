@@ -11,7 +11,7 @@ private:
 
 public:
 	void Update();
-
+    void Render(HDC _dc);
 
 public:
 	void AddState(CState* _pState);
