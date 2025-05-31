@@ -13,6 +13,7 @@
 #include "CObjectPool.h"
 #include "CRigidBody.h"
 #include "CTextUI.h"
+#include "CTimeMgr.h"
 #include "SPlayer.h"
 
 CScene::CScene()
@@ -99,6 +100,7 @@ void CScene::Exit()
 
 void CScene::Update()
 {
+    CTimeMgr::StartTimer(L"Scene_Update");
     // 씬 내의 오브젝트들 Update
 	for (UINT i = 0; i < static_cast<UINT>(GROUP_TYPE::END); i++)
 	{
@@ -139,114 +141,16 @@ void CScene::Update()
     {
         UpdatePoolDebugInfo();
     }
-
-    // 디버깅용 UI 업데이트
-    if (m_pPlayerText != nullptr)
-    {
-        if(m_pPlayerText) m_pPlayerText->ClearLines();
-        const vector<GameObject*>& vecPlayer = GetGroupObject(GROUP_TYPE::PLAYER);
-        SPlayer* player;
-        if (vecPlayer.size() > 0)
-        {
-            player = static_cast<SPlayer*>(vecPlayer[0]);
-            static wstring state;
-            static wstring animation;
-            static wstring ongravity;
-            static wstring climbMove;
-            static wstring climb;
-            static wstring velocityX;
-            static wstring velocityY;
-            static wstring MoveEnergy;
-            static wstring PosEnergy;
-            static wstring wireDistance;
-            static wstring maxDistance;
-            
-            if (player->GetGravity()->IsApplyGravity())
-                ongravity = L"On Gravity";
-            else
-                ongravity = L"Off Gravity";
-            
-            if (player->IsWallClimbing())
-                climb = L"Climb";
-            else
-                climb = L"Not Climb";
-
     
-
-            if (player->GetClimbState() == PLAYER_CLIMB_STATE::NONE)
-                climbMove = L"Climb None";
-            else if (player->GetClimbState() == PLAYER_CLIMB_STATE::UP)
-                climbMove = L"Climb Up";
-            else if (player->GetClimbState() == PLAYER_CLIMB_STATE::DOWN)
-                climbMove = L"Climb Down";
-
-
-            player->GetState();
-            switch (player->GetState())
-            {
-            case PLAYER_STATE::IDLE:
-                state = L"IDLE";
-                break;
-            case PLAYER_STATE::RUN:
-                state = L"RUN";
-                break;
-            case PLAYER_STATE::JUMP:
-                state = L"JUMP";
-                break;
-            case PLAYER_STATE::SWING:
-                state = L"SWING";
-                break;
-            case PLAYER_STATE::FALL:
-                state = L"FALL";
-                break;
-            case PLAYER_STATE::CLIMB:
-                state = L"CLIMB";
-                break;
-            case PLAYER_STATE::SHOT:
-                state = L"SHOT";
-                break;
-            case PLAYER_STATE::EXECUTE:
-                state = L"EXECUTE";
-                break;
-            case PLAYER_STATE::DAMAGED:
-                state = L"DAMAGED";
-                break;
-            case PLAYER_STATE::DEAD:
-                state = L"DEAD";
-                break;
-            }
-            velocityX = to_wstring(player->GetRigidBody()->GetVelocity().x);
-            velocityY = to_wstring(player->GetRigidBody()->GetVelocity().y);
-            MoveEnergy=L"MoveEnergy : ";
-            MoveEnergy += to_wstring(player->GetMoveEnergy());
-            PosEnergy=L"PosEnergy : ";
-            PosEnergy += to_wstring(player->GetPosEnergy());
-            wireDistance = L"Wire Range : ";
-            wireDistance += to_wstring(player->GetWireRange());
-            maxDistance = L"Wire Distance : ";
-            maxDistance += to_wstring(player->GetHookDistance());
-            
-            vector<wstring> Texts =
-            {
-                state,
-                ongravity,
-                climb,
-                climbMove,
-                velocityX,
-                velocityY,
-                MoveEnergy,
-                PosEnergy,
-                wireDistance,
-                maxDistance
-            };
-
-            if (m_pPlayerText) m_pPlayerText->AddLines(Texts);
-        }
-    }
+    // 플레이어 정보 UI 업데이트
+    UpdateDebugUI();
+    
+    CTimeMgr::EndTimer(L"Scene_Update");
 }
 
 void CScene::FinalUpdate()
 {
+    CTimeMgr::StartTimer(L"Scene_FinalUpdate");
 	for (UINT i = 0; i < static_cast<UINT>(GROUP_TYPE::END); i++)
 	{
 		for (size_t j = 0; j < m_arrObj[i].size(); j++)
@@ -255,6 +159,7 @@ void CScene::FinalUpdate()
 			    m_arrObj[i][j]->FinalUpdate();
 		}
 	}
+    CTimeMgr::EndTimer(L"Scene_FinalUpdate");
 }
 
 void CScene::Render(HDC _dc)
@@ -284,7 +189,22 @@ void CScene::Render(HDC _dc)
 			}
 		}
 	}
+    // F10 키로 프로파일 정보 토글
+    if (KEY_HOLD(KEY::F10)) {
+        // 화면 상단에 검정 배경 렌더링
+        HBRUSH hBlack = CreateSolidBrush(RGB(0, 0, 0));
+        RECT rect = {0, 0, 800, 500};
+        FillRect(_dc, &rect, hBlack);
+        DeleteObject(hBlack);
 
+        // 흰색으로 프로파일 데이터 출력
+        SetTextColor(_dc, RGB(255, 255, 255));
+        SetBkMode(_dc, TRANSPARENT);
+        CTimeMgr::RenderProfileData(_dc, 10);
+    }
+
+    // 매 프레임 종료 시 리셋
+    CTimeMgr::ResetProfileData();
 
 }
 
@@ -603,6 +523,113 @@ void CScene::TogglePoolDebugDisplay()
     if (m_pPoolDebugText)
     {
         m_pPoolDebugText->SetActive(!m_pPoolDebugText->IsActive());
+    }
+}
+
+void CScene::UpdateDebugUI()
+{
+    // 디버깅용 UI 업데이트
+    if (m_pPlayerText != nullptr)
+    {
+        if(m_pPlayerText) m_pPlayerText->ClearLines();
+        const vector<GameObject*>& vecPlayer = GetGroupObject(GROUP_TYPE::PLAYER);
+        SPlayer* player;
+        if (vecPlayer.size() > 0)
+        {
+            player = static_cast<SPlayer*>(vecPlayer[0]);
+            static wstring state;
+            static wstring animation;
+            static wstring ongravity;
+            static wstring climbMove;
+            static wstring climb;
+            static wstring velocityX;
+            static wstring velocityY;
+            static wstring MoveEnergy;
+            static wstring PosEnergy;
+            static wstring wireDistance;
+            static wstring maxDistance;
+            
+            if (player->GetGravity()->IsApplyGravity())
+                ongravity = L"On Gravity";
+            else
+                ongravity = L"Off Gravity";
+            
+            if (player->IsWallClimbing())
+                climb = L"Climb";
+            else
+                climb = L"Not Climb";
+
+    
+
+            if (player->GetClimbState() == PLAYER_CLIMB_STATE::NONE)
+                climbMove = L"Climb None";
+            else if (player->GetClimbState() == PLAYER_CLIMB_STATE::UP)
+                climbMove = L"Climb Up";
+            else if (player->GetClimbState() == PLAYER_CLIMB_STATE::DOWN)
+                climbMove = L"Climb Down";
+
+
+            player->GetState();
+            switch (player->GetState())
+            {
+            case PLAYER_STATE::IDLE:
+                state = L"IDLE";
+                break;
+            case PLAYER_STATE::RUN:
+                state = L"RUN";
+                break;
+            case PLAYER_STATE::JUMP:
+                state = L"JUMP";
+                break;
+            case PLAYER_STATE::SWING:
+                state = L"SWING";
+                break;
+            case PLAYER_STATE::FALL:
+                state = L"FALL";
+                break;
+            case PLAYER_STATE::CLIMB:
+                state = L"CLIMB";
+                break;
+            case PLAYER_STATE::SHOT:
+                state = L"SHOT";
+                break;
+            case PLAYER_STATE::EXECUTE:
+                state = L"EXECUTE";
+                break;
+            case PLAYER_STATE::DAMAGED:
+                state = L"DAMAGED";
+                break;
+            case PLAYER_STATE::DEAD:
+                state = L"DEAD";
+                break;
+            }
+            velocityX = to_wstring(player->GetRigidBody()->GetVelocity().x);
+            velocityY = to_wstring(player->GetRigidBody()->GetVelocity().y);
+            MoveEnergy=L"MoveEnergy : ";
+            MoveEnergy += to_wstring(player->GetMoveEnergy());
+            PosEnergy=L"PosEnergy : ";
+            PosEnergy += to_wstring(player->GetPosEnergy());
+            wireDistance = L"Wire Range : ";
+            wireDistance += to_wstring(player->GetWireRange());
+            maxDistance = L"Wire Distance : ";
+            maxDistance += to_wstring(player->GetHookDistance());
+            
+            vector<wstring> Texts =
+            {
+                state,
+                ongravity,
+                climb,
+                climbMove,
+                velocityX,
+                velocityY,
+                MoveEnergy,
+                PosEnergy,
+                wireDistance,
+                maxDistance
+            };
+
+            if (m_pPlayerText) m_pPlayerText->AddLines(Texts);
+        }
     }
 }
 

@@ -4,6 +4,8 @@
 #include "CScene.h"
 #include "GameObject.h"
 #include "CCollider.h"
+#include "CTimeMgr.h"
+
 CCollisionMgr::CCollisionMgr()
 {
 
@@ -16,6 +18,7 @@ CCollisionMgr::~CCollisionMgr()
 
 void CCollisionMgr::Update()
 {
+    CTimeMgr::StartTimer(L"CollisionMgr");
 	for (UINT iRow = 0; iRow < static_cast<UINT>(GROUP_TYPE::END); iRow++)
 	{
 		m_arrCheck[iRow];
@@ -27,6 +30,7 @@ void CCollisionMgr::Update()
 			}
 		}
 	}
+    CTimeMgr::EndTimer(L"CollisionMgr");
 }
 
 
@@ -42,6 +46,8 @@ bool CCollisionMgr::CalculateCollisionInfo(CCollider* _pLeftCol, CCollider* _pRi
     {
         return false; // 자기 자신과는 충돌하지 않음
     }
+    
+    CTimeMgr::StartTimer(L"SAT(Collision)");
 
     // AABB 필터링
     AABB a = _pLeftCol->GetAABB();
@@ -130,7 +136,7 @@ bool CCollisionMgr::CalculateCollisionInfo(CCollider* _pLeftCol, CCollider* _pRi
     _outMtvDirection.Normalize();
 
     _outMtvDepth = minOverlap; // 계산된 최소 겹침(관통 깊이)
-
+    CTimeMgr::EndTimer(L"SAT(Collision)");
     return true; // 충돌 감지
 }
 
