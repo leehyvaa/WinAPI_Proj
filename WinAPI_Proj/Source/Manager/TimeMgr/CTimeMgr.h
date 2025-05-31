@@ -1,7 +1,19 @@
 ﻿#pragma once
+#include <unordered_map>
+
 class CTimeMgr
 {
 	SINGLE(CTimeMgr)
+
+public:
+    struct ProfileResult {
+        double dDuration;  // 누적 시간 (밀리초)
+        UINT iCount;       // 호출 횟수
+        double dAvgMs;     // 평균 소요시간
+    };
+    static unordered_map<wstring, ProfileResult> m_mapProfileData;
+
+
 private:
 	//FPS
 	//해당 컴퓨터에서 1프레임당 시간 Delta Time
@@ -21,5 +33,10 @@ public:
 
 	double GetDT() { return m_dDT; }
 	float GetfDT() { return static_cast<float>(m_dDT); }
+
+    static void StartTimer(const wstring& _strName);
+    static void EndTimer(const wstring& _strName);
+    static void RenderProfileData(HDC _dc, int _iOffsetY = 20);
+    static void ResetProfileData();
 };
 

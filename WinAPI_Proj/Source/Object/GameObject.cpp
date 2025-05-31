@@ -216,8 +216,7 @@ void GameObject::Update()
 
 void GameObject::FinalUpdate()
 {
-    if (!m_bActive)
-        return;
+    if (!m_bActive || !m_bAlive) return;
     
     if (m_pGravity)
         m_pGravity->FinalUpdate();

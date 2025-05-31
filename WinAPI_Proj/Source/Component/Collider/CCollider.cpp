@@ -64,6 +64,24 @@ void CCollider::FinalUpdate()
     // 3. 월드 회전값을 기반으로 로컬 축 벡터 계산 (정규화)
     m_vAxes[0] = Vec2(cosR, sinR); // 회전된 X축
     m_vAxes[1] = Vec2(-sinR, cosR); // 회전된 Y축 (X축에서 +90도 회전)
+
+    Vec2 halfExtents = GetHalfExtents();
+    const Vec2* axes = GetAxes();
+    
+    m_vCorners[0] = m_vFinalPos + (axes[0] * halfExtents.x) + (axes[1] * halfExtents.y);  // 우상단
+    m_vCorners[1] = m_vFinalPos + (axes[0] * -halfExtents.x) + (axes[1] * halfExtents.y);  // 좌상단
+    m_vCorners[2] = m_vFinalPos + (axes[0] * -halfExtents.x) + (axes[1] * -halfExtents.y);  // 좌하단
+    m_vCorners[3] = m_vFinalPos + (axes[0] * halfExtents.x) + (axes[1] * -halfExtents.y);  // 우하단
+
+    // AABB 계산 (최소/최대 값 갱신)
+    m_AABB.Min = m_vCorners[0];
+    m_AABB.Max = m_vCorners[0];
+    for (int i = 1; i < 4; ++i) {
+        if (m_vCorners[i].x < m_AABB.Min.x) m_AABB.Min.x = m_vCorners[i].x;
+        if (m_vCorners[i].y < m_AABB.Min.y) m_AABB.Min.y = m_vCorners[i].y;
+        if (m_vCorners[i].x > m_AABB.Max.x) m_AABB.Max.x = m_vCorners[i].x;
+        if (m_vCorners[i].y > m_AABB.Max.y) m_AABB.Max.y = m_vCorners[i].y;
+    }
     
 	assert(0 <= m_iCol);
 }
@@ -79,29 +97,12 @@ void CCollider::Render(HDC _dc)
 
     SelectGDI p(_dc, ePen);
     SelectGDI b(_dc, BRUSH_TYPE::HOLLOW);
-
-    // OBB의 네 꼭짓점 계산 (월드 좌표)
-    Vec2 halfExtents = GetHalfExtents();
-    const Vec2* axes = GetAxes(); // 미리 계산된 축 벡터 사용
-
-    // 로컬 좌표계 기준 꼭짓점 오프셋
-    Vec2 offset1 = axes[0] * halfExtents.x + axes[1] * halfExtents.y; // 우상단
-    Vec2 offset2 = axes[0] * -halfExtents.x + axes[1] * halfExtents.y; // 좌상단
-    Vec2 offset3 = axes[0] * -halfExtents.x + axes[1] * -halfExtents.y; // 좌하단
-    Vec2 offset4 = axes[0] * halfExtents.x + axes[1] * -halfExtents.y; // 우하단
-
-    // 월드 좌표계 꼭짓점
-    Vec2 corners[4];
-    corners[0] = GetFinalPos() + offset1;
-    corners[1] = GetFinalPos() + offset2;
-    corners[2] = GetFinalPos() + offset3;
-    corners[3] = GetFinalPos() + offset4;
-
+    
     // 카메라 적용된 렌더링 좌표 계산
     Vec2 renderCorners[4];
     for (int i = 0; i < 4; ++i)
     {
-        renderCorners[i] = CCamera::GetInst()->GetRenderPos(corners[i]);
+        renderCorners[i] = CCamera::GetInst()->GetRenderPos(m_vCorners[i]);
     }
 
     // OBB 그리기 (선 사용)

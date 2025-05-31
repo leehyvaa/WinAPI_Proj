@@ -43,6 +43,14 @@ bool CCollisionMgr::CalculateCollisionInfo(CCollider* _pLeftCol, CCollider* _pRi
         return false; // 자기 자신과는 충돌하지 않음
     }
 
+    // AABB 필터링
+    AABB a = _pLeftCol->GetAABB();
+    AABB b = _pRightCol->GetAABB();
+    if (a.Max.x < b.Min.x || a.Min.x > b.Max.x ||
+        a.Max.y < b.Min.y || a.Min.y > b.Max.y)
+        return false;
+
+
     // 두 OBB의 정보 가져오기
     Vec2 leftPos = _pLeftCol->GetFinalPos();
     Vec2 leftHalfExtents = _pLeftCol->GetHalfExtents();
@@ -222,54 +230,6 @@ void CCollisionMgr::CollisionGroupUpdate(GROUP_TYPE _eLeft, GROUP_TYPE _eRight)
 		}
 	}
 }
-
-// bool CCollisionMgr::IsCollision(CCollider* _pLeftCol, CCollider* _pRightCol)
-// {
-//     // 두 OBB의 정보 가져오기
-//     Vec2 leftPos = _pLeftCol->GetFinalPos();
-//     Vec2 leftHalfExtents = _pLeftCol->GetHalfExtents();
-//     Vec2* leftAxes = _pLeftCol->GetAxes();
-//
-//     Vec2 rightPos = _pRightCol->GetFinalPos();
-//     Vec2 rightHalfExtents = _pRightCol->GetHalfExtents();
-//     Vec2* rightAxes = _pRightCol->GetAxes();
-//
-//     // 두 OBB 중심 사이의 벡터
-//     Vec2 distVec = rightPos - leftPos;
-//
-//     // 분리축 후보 (총 4개)
-//     Vec2 axesToCheck[4] = {
-//         leftAxes[0],  // Left OBB의 X축
-//         leftAxes[1],  // Left OBB의 Y축
-//         rightAxes[0], // Right OBB의 X축
-//         rightAxes[1]  // Right OBB의 Y축
-//     };
-//
-//     // 각 축에 대해 투영하여 겹치는지 검사
-//     for (int i = 0; i < 4; ++i)
-//     {
-//         Vec2 currentAxis = axesToCheck[i];
-//         // currentAxis.Normalize(); // CCollider에서 이미 정규화됨
-//
-//         // 각 OBB를 현재 축에 투영했을 때의 반지름 계산
-//         float leftRadius = leftHalfExtents.x * abs(currentAxis.Dot(leftAxes[0])) +
-//                            leftHalfExtents.y * abs(currentAxis.Dot(leftAxes[1]));
-//         float rightRadius = rightHalfExtents.x * abs(currentAxis.Dot(rightAxes[0])) +
-//                             rightHalfExtents.y * abs(currentAxis.Dot(rightAxes[1]));
-//
-//         // 두 OBB 중심 사이의 거리를 현재 축에 투영
-//         float distProjection = abs(distVec.Dot(currentAxis));
-//
-//         // 투영된 거리가 두 반지름의 합보다 크면, 분리축이 존재 -> 충돌하지 않음
-//         if (distProjection > leftRadius + rightRadius)
-//         {
-//             return false;
-//         }
-//     }
-//
-//     // 모든 축에서 겹친 경우
-//     return true;
-// }
 
 
 

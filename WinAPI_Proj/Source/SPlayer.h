@@ -29,6 +29,8 @@ private:
 	PLAYER_CLIMB_STATE m_ePrevClimbState;
 	CHook* m_pPlayerHook;
 	PlayerArm* m_pPlayerArm;
+
+    // 와이어 액션 변수
 	Raycast* m_pPlayerRay;
 	CCollider* m_pRayHitCollider;
 	Vec2 m_vRayHitPos;
@@ -37,16 +39,17 @@ private:
 	float m_fHookDistance;
 	
 	// 제압 시스템 관련 변수
-	CMonster* m_pSubduedMonster;    // 현재 제압 중인 몬스터 포인터
-	bool m_bIsSubduing;             // 제압 상태 여부 플래그
+	CMonster* m_pSubduedMonster; 
+	bool m_bIsSubduing;     
 	float m_fSubdueRange;           // 제압 가능 거리
+    bool m_bIsExecuteDashing;
 	
 	// 플레이어 이동 관련 변수
-	bool m_bIsMovingToTarget;       // 목표 위치로 이동 중인지
-	Vec2 m_vMoveStartPos;          // 이동 시작 위치
-	Vec2 m_vMoveTargetPos;         // 이동 목표 위치
+	bool m_bIsMovingToTarget;      
+	Vec2 m_vMoveStartPos;         
+	Vec2 m_vMoveTargetPos;        
 	float m_fMoveProgress;         // 이동 진행도 (0.0 ~ 1.0)
-	float m_fMoveSpeed;            // 이동 속도
+	float m_fMoveSpeed;
 public:
 	SPlayer();
 

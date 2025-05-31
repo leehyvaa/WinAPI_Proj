@@ -110,9 +110,21 @@ CAnimation* CAnimator::FindAnimation(const wstring& _strName)
 
 void CAnimator::Play(const wstring& _strName, bool _bRepeat)
 {
-	m_pCurAnim = FindAnimation(_strName);
-	m_bRepeat = _bRepeat;
-
+    CAnimation* pAnim = FindAnimation(_strName);
+    
+    // 이미 같은 애니메이션이 재생 중이면 무시
+    if (m_pCurAnim == pAnim)
+        return;
+        
+    m_pCurAnim = pAnim;
+    m_bRepeat = _bRepeat;
+    
+    // 새로운 애니메이션 시작 시 초기화
+    if (m_pCurAnim)
+    {
+        m_pCurAnim->SetFrame(0);
+        m_pCurAnim->SetFinish(false);
+    }
 }
 
 

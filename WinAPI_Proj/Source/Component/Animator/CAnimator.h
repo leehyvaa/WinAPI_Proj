@@ -25,7 +25,8 @@ public:
  
 	CAnimation* FindAnimation(const wstring& _strName);
 	void Play(const wstring& _strName,bool _bRepeat);
-
+    CAnimation* GetCurAnimation(){return m_pCurAnim;}
+    
 	void Update();
 	void FinalUpdate();
 	void Render(HDC _dc);

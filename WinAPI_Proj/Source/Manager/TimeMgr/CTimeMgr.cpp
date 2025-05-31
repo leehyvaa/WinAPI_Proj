@@ -62,3 +62,51 @@ void CTimeMgr::Render()
 		SetWindowText(CCore::GetInst()->GetMainHwnd(), szBuffer);
 	}
 }
+unordered_map<wstring, CTimeMgr::ProfileResult> CTimeMgr::m_mapProfileData;
+
+void CTimeMgr::StartTimer(const wstring& _strName)
+{
+    LARGE_INTEGER start;
+    QueryPerformanceCounter(&start);
+    m_mapProfileData[_strName];
+    m_mapProfileData[_strName].dDuration -= start.QuadPart;
+}
+
+void CTimeMgr::EndTimer(const wstring& _strName)
+{
+    if (m_mapProfileData.find(_strName) == m_mapProfileData.end())
+        return;
+
+    LARGE_INTEGER end;
+    QueryPerformanceCounter(&end);
+    auto& data = m_mapProfileData[_strName];
+    data.dDuration += end.QuadPart;
+    data.iCount++;
+}
+
+void CTimeMgr::ResetProfileData()
+{
+    m_mapProfileData.clear();
+}
+
+void CTimeMgr::RenderProfileData(HDC _dc, int _iOffsetY)
+{
+    if (m_mapProfileData.empty())
+        return;
+
+    LARGE_INTEGER frequency;
+    QueryPerformanceFrequency(&frequency);
+    double dFreq = static_cast<double>(frequency.QuadPart);
+
+    int y = _iOffsetY;
+    for (auto& [name, data] : m_mapProfileData) {
+        double dMilliSec = (data.dDuration * 1000.0) / dFreq;
+        data.dAvgMs = dMilliSec / (data.iCount > 0 ? data.iCount : 1);
+
+        wchar_t szBuf[128];
+        swprintf_s(szBuf, L"%s: %.2fms (호출:%d, 평균:%.3fms)",
+                  name.c_str(), dMilliSec, data.iCount, data.dAvgMs);
+        TextOut(_dc, 10, y, szBuf, wcslen(szBuf));
+        y += 20;
+    }
+}

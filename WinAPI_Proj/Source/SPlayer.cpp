@@ -20,7 +20,7 @@
 #include "AI.h"
 
 SPlayer::SPlayer()
-	: m_fSpeed(1000), m_eCurState(PLAYER_STATE::IDLE), m_ePrevState(PLAYER_STATE::RUN), m_bOnGround(false), m_pPlayerArm(nullptr), m_pPlayerHook(nullptr), m_bClimbing(false), m_pRayHitCollider(nullptr), m_vRayHitPos(Vec2(0.f, 0.f)), m_fWireRange(-1.f), m_fWireMaxRange(700.f), m_fMoveEnergy(0.f), m_fPosEnergy(0.f), m_bCanBooster(false), m_eClimbState(PLAYER_CLIMB_STATE::NONE), m_pSubduedMonster(nullptr), m_bIsSubduing(false), m_fSubdueRange(700.f), m_bIsMovingToTarget(false), m_vMoveStartPos(Vec2(0.f, 0.f)), m_vMoveTargetPos(Vec2(0.f, 0.f)), m_fMoveProgress(0.f), m_fMoveSpeed(2000.f)
+	: m_fSpeed(1000), m_eCurState(PLAYER_STATE::IDLE), m_ePrevState(PLAYER_STATE::RUN), m_bOnGround(false), m_pPlayerArm(nullptr), m_pPlayerHook(nullptr), m_bClimbing(false), m_pRayHitCollider(nullptr), m_vRayHitPos(Vec2(0.f, 0.f)), m_fWireRange(-1.f), m_fWireMaxRange(700.f), m_fMoveEnergy(0.f), m_fPosEnergy(0.f), m_bCanBooster(false), m_eClimbState(PLAYER_CLIMB_STATE::NONE), m_pSubduedMonster(nullptr), m_bIsSubduing(false), m_fSubdueRange(700.f), m_bIsMovingToTarget(false), m_vMoveStartPos(Vec2(0.f, 0.f)), m_vMoveTargetPos(Vec2(0.f, 0.f)), m_fMoveProgress(0.f), m_fMoveSpeed(2000.f),m_bIsExecuteDashing(false)
 {
 	// m_pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\sigong.bmp");
 	SetGroup(GROUP_TYPE::PLAYER);
@@ -60,7 +60,9 @@ SPlayer::SPlayer()
 	GetAnimator()->CreateAnimation(L"SNB_RIGHT_SWING", pTexRight,
 								   Vec2(0.f, 2300.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.2f, 15, 3.f, Vec2(-13.f, -57.f));
     GetAnimator()->CreateAnimation(L"SNB_RIGHT_EXC_BACK", pTexRight,
-                                       Vec2(0.f, 800.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.2f, 8, 3.f, Vec2(0.f, -90.f));
+                                       Vec2(0.f, 800.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.1f, 8, 3.f, Vec2(0.f, -90.f));
+    GetAnimator()->CreateAnimation(L"SNB_RIGHT_EXC_DASH", pTexRight,
+                                           Vec2(0.f, 400.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.03f, 17, 2.0f, Vec2(0.f, -90.f));
 
 
 	// RIGHT 애니메이션 저장
@@ -74,6 +76,7 @@ SPlayer::SPlayer()
 	GetAnimator()->FindAnimation(L"SNB_RIGHT_CLIMBSTOP")->Save(L"animation\\player_right_climbstop.anim");
 	GetAnimator()->FindAnimation(L"SNB_RIGHT_SWING")->Save(L"animation\\player_right_swing.anim");
 	GetAnimator()->FindAnimation(L"SNB_RIGHT_EXC_BACK")->Save(L"animation\\player_right_exc_back.anim");
+	GetAnimator()->FindAnimation(L"SNB_RIGHT_EXC_DASH")->Save(L"animation\\player_right_exc_dash.anim");
 
 
 	GetAnimator()->Play(L"SNB_RIGHT_RUN", true);
@@ -127,6 +130,7 @@ void SPlayer::Reset()
     m_bClimbing = false;
     m_bRidingWire = false;
     m_bCanBooster = false;
+    m_bIsExecuteDashing = false;
     m_eCurState = PLAYER_STATE::IDLE;
     m_ePrevState = PLAYER_STATE::RUN;
     m_eClimbState = PLAYER_CLIMB_STATE::NONE;
@@ -284,8 +288,15 @@ void SPlayer::Update_State()
 		break;
 	case PLAYER_STATE::EXECUTE:
 		HorizontalMove();
-	    if (!m_bIsSubduing)
-	        eNextState = PLAYER_STATE::IDLE; // 나중에 대쉬로 변경
+	    if (!m_bIsSubduing && m_bIsExecuteDashing)
+	    {
+	        CAnimation* pCurAnim = GetAnimator()->GetCurAnimation();
+	        if (pCurAnim && pCurAnim->IsFinish())
+	        {
+	            m_bIsExecuteDashing = false; // 플래그 해제
+	            eNextState = PLAYER_STATE::FALL;
+	        }
+	    }
 		break;
 	case PLAYER_STATE::JUMP:
 		HorizontalMove();
@@ -374,6 +385,8 @@ void SPlayer::Update_State()
 		if (m_bIsSubduing && m_pSubduedMonster)
 		{
 			EndSubdue();
+            GetAnimator()->Play(L"SNB_RIGHT_EXC_DASH", false);
+		    m_bIsExecuteDashing = true;
 		}
 		// 와이어가 걸려있으면 해제
 		else if (m_pPlayerHook != nullptr && m_pPlayerHook->GetHookState() == HOOK_STATE::GRAB)
@@ -431,6 +444,7 @@ void SPlayer::Update_Animation()
 	if (m_ePrevState == m_eCurState && m_bIsFacingRightPrev == m_bIsFacingRight)
 		return;
 
+
 	switch (m_eCurState)
 	{
 	case PLAYER_STATE::IDLE:
@@ -440,7 +454,10 @@ void SPlayer::Update_Animation()
 			GetAnimator()->Play(L"SNB_RIGHT_RUN", true);
 		break;
 	case PLAYER_STATE::EXECUTE:
+	    if (m_bIsSubduing && m_pSubduedMonster)
+	    {
 			GetAnimator()->Play(L"SNB_RIGHT_EXC_BACK", true);
+	    }
 		break;
 	case PLAYER_STATE::JUMP:
 			GetAnimator()->Play(L"SNB_RIGHT_JUMP", true);
@@ -1017,16 +1034,33 @@ void SPlayer::UpdateSubdue()
 	}
 }
 
-// 제압 해제
+// 제압 해제 및 처형
 void SPlayer::EndSubdue()
 {
-	if (!m_bIsSubduing)
-		return;
-		
-	m_bIsSubduing = false;
-	m_pSubduedMonster = nullptr;
+    if (!m_bIsSubduing)
+        return;
+    
+    // 처형 시 마우스 방향으로 대쉬
+    Vec2 mouseWorldPos = CCamera::GetInst()->GetRealPos(MOUSE_POS);
+    Vec2 dashDir = mouseWorldPos - GetWorldPos();
+    dashDir.Normalize();
+    
+    // 대쉬 힘 적용
+    float dashForce = 10000.f; // 힘의 크기는 조절 가능
+    GetRigidBody()->SetVelocity(dashDir * 1500.f); // 즉시 속도 설정
+    GetRigidBody()->AddForce(dashDir * dashForce); // 추가 힘 적용
+    
+    GetGravity()->SetApplyGravity(true);
+    
+    // 처형 방향으로 플레이어 바라보기
+    if (mouseWorldPos.x < GetWorldPos().x)
+        m_bIsFacingRight = false;
+    else
+        m_bIsFacingRight = true;
+        
+    m_bIsSubduing = false;
+    m_pSubduedMonster = nullptr;
 }
-
 
 // 플레이어 사망 시 제압 정리
 void SPlayer::CleanupSubdueOnDeath()
