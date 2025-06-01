@@ -164,6 +164,7 @@ void CScene::FinalUpdate()
 
 void CScene::Render(HDC _dc)
 {
+    CTimeMgr::StartTimer(L"Scene_Render");
 	for (UINT i = 0; i < static_cast<UINT>(GROUP_TYPE::END); i++)
 	{
 		if (static_cast<UINT>(GROUP_TYPE::TILE) == i && !bDrawOutWindow)
@@ -189,6 +190,8 @@ void CScene::Render(HDC _dc)
 			}
 		}
 	}
+    CTimeMgr::EndTimer(L"Scene_Render");
+    
     // F10 키로 프로파일 정보 토글
     if (KEY_HOLD(KEY::F10)) {
         // 화면 상단에 검정 배경 렌더링
@@ -202,7 +205,7 @@ void CScene::Render(HDC _dc)
         SetBkMode(_dc, TRANSPARENT);
         CTimeMgr::RenderProfileData(_dc, 10);
     }
-
+    
     // 매 프레임 종료 시 리셋
     CTimeMgr::ResetProfileData();
 

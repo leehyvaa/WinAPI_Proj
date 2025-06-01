@@ -16,6 +16,8 @@ CRigidBody::~CRigidBody()
 
 void CRigidBody::FinalUpdate()
 {
+    CTimeMgr::StartTimer(L"RigidBodyComp_FinalUpdate");
+    
     // m_vForce: 외부에서 가해진 힘
 	float fForce = m_vForce.Length(); //힘의 크기
 	
@@ -84,11 +86,11 @@ void CRigidBody::FinalUpdate()
 	//가속도 초기화
 	m_vAccel = Vec2(0.f, 0.f);
 	m_vAccelA = Vec2(0.f, 0.f);
+    CTimeMgr::EndTimer(L"RigidBodyComp_FinalUpdate");
 }
 
 void CRigidBody::Reset()
 {
-    // 모든 물리 관련 벡터 초기화
     m_vForce = Vec2(0.f, 0.f);
     m_vAccel = Vec2(0.f, 0.f);
     m_vAccelA = Vec2(0.f, 0.f);

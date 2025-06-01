@@ -10,9 +10,12 @@ public:
         double dDuration;  // 누적 시간 (밀리초)
         UINT iCount;       // 호출 횟수
         double dAvgMs;     // 평균 소요시간
+        
+        ProfileResult() : dDuration(0.0), iCount(0), dAvgMs(0.0) {}
     };
+    
     static unordered_map<wstring, ProfileResult> m_mapProfileData;
-
+    static unordered_map<wstring, LARGE_INTEGER> m_mapStartTime;  // 시작 시간 
 
 private:
 	//FPS

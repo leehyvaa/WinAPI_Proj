@@ -62,31 +62,47 @@ void CTimeMgr::Render()
 		SetWindowText(CCore::GetInst()->GetMainHwnd(), szBuffer);
 	}
 }
+
 unordered_map<wstring, CTimeMgr::ProfileResult> CTimeMgr::m_mapProfileData;
+unordered_map<wstring, LARGE_INTEGER> CTimeMgr::m_mapStartTime;
 
 void CTimeMgr::StartTimer(const wstring& _strName)
 {
     LARGE_INTEGER start;
     QueryPerformanceCounter(&start);
-    m_mapProfileData[_strName];
-    m_mapProfileData[_strName].dDuration -= start.QuadPart;
+    m_mapStartTime[_strName] = start;  // 시작 시간 저장
 }
 
 void CTimeMgr::EndTimer(const wstring& _strName)
 {
-    if (m_mapProfileData.find(_strName) == m_mapProfileData.end())
+    // 시작 시간이 없으면 리턴
+    auto startIter = m_mapStartTime.find(_strName);
+    if (startIter == m_mapStartTime.end())
         return;
 
     LARGE_INTEGER end;
     QueryPerformanceCounter(&end);
+    
+    LARGE_INTEGER frequency;
+    QueryPerformanceFrequency(&frequency);
+    
+    // 경과 시간을 밀리초 단위로 계산
+    double elapsedMs = ((end.QuadPart - startIter->second.QuadPart) * 1000.0) / frequency.QuadPart;
+    
+    // ProfileResult 업데이트
     auto& data = m_mapProfileData[_strName];
-    data.dDuration += end.QuadPart;
+    data.dDuration += elapsedMs;
     data.iCount++;
+    data.dAvgMs = data.dDuration / data.iCount;
+    
+    // 시작 시간 제거
+    m_mapStartTime.erase(startIter);
 }
 
 void CTimeMgr::ResetProfileData()
 {
     m_mapProfileData.clear();
+    m_mapStartTime.clear();  // 시작 시간도 클리어
 }
 
 void CTimeMgr::RenderProfileData(HDC _dc, int _iOffsetY)
@@ -94,18 +110,14 @@ void CTimeMgr::RenderProfileData(HDC _dc, int _iOffsetY)
     if (m_mapProfileData.empty())
         return;
 
-    LARGE_INTEGER frequency;
-    QueryPerformanceFrequency(&frequency);
-    double dFreq = static_cast<double>(frequency.QuadPart);
-
     int y = _iOffsetY;
-    for (auto& [name, data] : m_mapProfileData) {
-        double dMilliSec = (data.dDuration * 1000.0) / dFreq;
-        data.dAvgMs = dMilliSec / (data.iCount > 0 ? data.iCount : 1);
-
+    for (auto iter = m_mapProfileData.begin(); iter != m_mapProfileData.end(); ++iter) {
+        const auto& name = iter->first;
+        const auto& data = iter->second;  // const로 변경 (수정 불필요)
+        
         wchar_t szBuf[128];
         swprintf_s(szBuf, L"%s: %.2fms (호출:%d, 평균:%.3fms)",
-                  name.c_str(), dMilliSec, data.iCount, data.dAvgMs);
+                  name.c_str(), data.dDuration, data.iCount, data.dAvgMs);
         TextOut(_dc, 10, y, szBuf, wcslen(szBuf));
         y += 20;
     }

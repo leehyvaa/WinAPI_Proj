@@ -71,6 +71,7 @@ public:
 	vector<GameObject*>& GetUIGroup() { return m_arrObj[static_cast<UINT>(GROUP_TYPE::UI)]; }
     void UpdatePoolDebugInfo(); // 오브젝트 풀 정보 업데이트 함수
     void TogglePoolDebugDisplay(); // 풀 디버그 표시 토글 함수
+    void UpdateDebugUI();
 public:
 	CScene();
 	virtual ~CScene();

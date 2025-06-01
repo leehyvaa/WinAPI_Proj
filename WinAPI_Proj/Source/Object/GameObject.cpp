@@ -24,6 +24,10 @@ GameObject::GameObject()
     , m_vLocalPos(0.f, 0.f)
     , m_bIsFacingRight(true)
     , m_bIsFacingRightPrev(true)
+    , m_cachedWorldRotation(0.f)
+    , m_worldRotationDirty(true)
+    , m_cachedParentWorldRotation(0.f)
+    , m_hasCachedParentInfo(false)
 {
 }
 GameObject::GameObject(const GameObject& _origin)
@@ -38,6 +42,10 @@ GameObject::GameObject(const GameObject& _origin)
     , m_eGroup(GROUP_TYPE::END)
     , m_bIsFacingRight(_origin.m_bIsFacingRight)
     , m_bIsFacingRightPrev(_origin.m_bIsFacingRightPrev)
+    , m_cachedWorldRotation(0.f)
+    , m_worldRotationDirty(true)
+    , m_cachedParentWorldRotation(0.f)
+    , m_hasCachedParentInfo(false)
 {
 	if (_origin.m_pCollider)
 	{
@@ -81,22 +89,42 @@ void GameObject::SetActive(bool _bActive)
 {
     m_bActive = _bActive;
     
-    // 비활성화 시 충돌체도 비활성화
     if (m_pCollider)
         m_pCollider->SetActive(_bActive);
 }
 
 float GameObject::GetWorldRotation()
 {
-    float finalRotation = m_fLocalRotation;
-    GameObject* currentParent = m_pParent; // const 사용
+    bool needsRecompute = m_worldRotationDirty;
 
-    while (currentParent != nullptr)
+    if (!needsRecompute && m_pParent)
     {
-        finalRotation += currentParent->GetLocalRotation(); // 부모의 로컬 회전 누적
-        currentParent = currentParent->GetParent();
+        float currentParentActualWorldRotation = m_pParent->GetWorldRotation();
+        if (!m_hasCachedParentInfo || m_cachedParentWorldRotation != currentParentActualWorldRotation)
+            needsRecompute = true;
     }
-    return finalRotation;
+    else if (!m_pParent && m_hasCachedParentInfo)
+        needsRecompute = true;
+
+    if (needsRecompute)
+    {
+        float parentActualWorldRotation = 0.f;
+        if (m_pParent)
+            parentActualWorldRotation = m_pParent->GetWorldRotation();
+        
+        m_cachedWorldRotation = parentActualWorldRotation + m_fLocalRotation; 
+        m_worldRotationDirty = false;
+
+        // 현재 계산에 사용된 부모의 월드 회전값을 캐시
+        if (m_pParent)
+        {
+            m_cachedParentWorldRotation = parentActualWorldRotation;
+            m_hasCachedParentInfo = true;
+        }
+        else
+            m_hasCachedParentInfo = false;
+    }
+    return m_cachedWorldRotation;
 }
 
 void GameObject::Reset()
@@ -126,12 +154,13 @@ void GameObject::Reset()
 void GameObject::LookAt(Vec2 _target)
 {
     Vec2 dir = _target - GetWorldPos();
-    dir.Normalize(); 
+    dir.Normalize();
 
     float angle = atan2(dir.y, dir.x); // 라디안 값 반환
-    // 라디안 -> 각도 변환 및 적절한 회전으로 보정
+    // 라디안 -> 각도 변환 및 보정
     m_fLocalRotation = angle * (180.f / 3.14159f) + 90.f;
-    // m_vDir에는 이미 정규화 된 방향 벡터 저장
+    m_worldRotationDirty = true; 
+    // m_vDir에 방향 벡터 저장
     m_vDir = dir;
 }
 

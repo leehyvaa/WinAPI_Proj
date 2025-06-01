@@ -69,6 +69,8 @@ void CAnimation::Update()
 
 void CAnimation::Render(HDC _dc)
 {
+    CTimeMgr::StartTimer(L"AnimationComp_Render");
+    
     if (m_bFinish || m_iCurFrm < 0 || m_iCurFrm >= m_vecFrameBitmaps.size())
         return;
 
@@ -109,10 +111,9 @@ void CAnimation::Render(HDC _dc)
     Bitmap* frameBitmap = m_vecFrameBitmaps[m_iCurFrm]; // 항상 오른쪽 이미지
     if (!frameBitmap) return;
 
-    float fSrcWidth = static_cast<float>(frameBitmap->GetWidth());
-    float fSrcHeight = static_cast<float>(frameBitmap->GetHeight());
-    float fDestWidth = fSrcWidth * m_fSizeMulti;
-    float fDestHeight = fSrcHeight * m_fSizeMulti;
+    float fDestWidth = static_cast<float>(frameBitmap->GetWidth());
+    float fDestHeight = static_cast<float>(frameBitmap->GetHeight());
+
     
     Matrix transformMatrix; // 단위 행렬로 시작
 
@@ -141,6 +142,7 @@ void CAnimation::Render(HDC _dc)
     graphics.SetTransform(&transformMatrix);
     graphics.DrawImage(frameBitmap, drawingRect);
     graphics.ResetTransform();
+    CTimeMgr::EndTimer(L"AnimationComp_Render");
 }
 
 // 프레임 캐싱 함수
@@ -148,18 +150,18 @@ void CAnimation::CacheFrames()
 {
     if (m_bCached || m_vecFrm.empty() || !m_pTex)
         return;
-        
+
     // 기존에 캐싱된 비트맵 해제
     for (auto& bitmap : m_vecFrameBitmaps)
     {
         delete bitmap;
     }
     m_vecFrameBitmaps.clear();
-    
+
     // 원본 비트맵 생성
     HBITMAP hBitmap = m_pTex->GetHBITMAP();
     Bitmap sourceBitmap(hBitmap, nullptr);
-    
+
     // 각 프레임별로 처리된 비트맵 생성 및 저장
     for (size_t i = 0; i < m_vecFrm.size(); i++)
     {
@@ -167,29 +169,33 @@ void CAnimation::CacheFrames()
         int srcY = static_cast<INT>(m_vecFrm[i].vLT.y);
         int srcWidth = static_cast<INT>(m_vecFrm[i].vSlice.x);
         int srcHeight = static_cast<INT>(m_vecFrm[i].vSlice.y);
-        
-        // 프레임 크기의 새 비트맵 생성
-        Bitmap* frameBitmap = new Bitmap(srcWidth, srcHeight, PixelFormat32bppARGB);
-        
-        // 원본에서 프레임 부분만 복사
+
+        // 확대/축소될 최종 너비와 높이 계산
+        int destWidth = static_cast<int>(srcWidth * m_fSizeMulti);
+        int destHeight = static_cast<int>(srcHeight * m_fSizeMulti);
+
+        // 확대/축소된 크기의 새 비트맵 생성
+        Bitmap* frameBitmap = new Bitmap(destWidth, destHeight, PixelFormat32bppARGB);
+
         Graphics frameGraphics(frameBitmap);
-        
-        // 투명 처리를 위한 이미지 속성 설정
+        // 확대/축소 시 보간 품질 설정 (필요에 따라 NearestNeighbor 외 다른 값 사용 가능)
+        frameGraphics.SetInterpolationMode(InterpolationModeNearestNeighbor);
+
         ImageAttributes imgAttr;
         imgAttr.SetColorKey(Color(255, 0, 255), Color(255, 0, 255), ColorAdjustTypeBitmap);
-        
-        // 원본 이미지의 해당 부분을 새 비트맵에 복사
+
+        // 원본 이미지의 해당 부분을 확대/축소하여 새 비트맵에 복사
         frameGraphics.DrawImage(
             &sourceBitmap,
-            Rect(0, 0, srcWidth, srcHeight), // 대상 사각형
-            srcX, srcY, srcWidth, srcHeight, // 소스 부분
+            Rect(0, 0, destWidth, destHeight), // 대상 사각형 (확대/축소된 크기)
+            srcX, srcY, srcWidth, srcHeight,   // 소스 부분 (원본 이미지에서 가져올 영역)
             UnitPixel,
             &imgAttr
         );
-        
+
         m_vecFrameBitmaps.push_back(frameBitmap);
     }
-    
+
     m_bCached = true;
 }
 

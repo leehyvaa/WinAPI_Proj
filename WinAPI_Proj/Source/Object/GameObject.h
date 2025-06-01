@@ -35,6 +35,12 @@ private:
 	CRigidBody* m_pRigidBody;
 	CGravity* m_pGravity;
 
+    // 로테이션 캐싱
+    float m_cachedWorldRotation;
+    bool m_worldRotationDirty;
+    float m_cachedParentWorldRotation;
+    bool m_hasCachedParentInfo;
+
 protected:
     GROUP_TYPE m_eGroup;
     Vec2 m_vLocalPos;
@@ -67,7 +73,7 @@ public:
     GROUP_TYPE GetGroup() { return m_eGroup; }
 
     
-    void SetLocalRotation(float _fRot) { m_fLocalRotation = _fRot; }
+    void SetLocalRotation(float _fRot) {  m_fLocalRotation = _fRot; m_worldRotationDirty = true; }
     float GetLocalRotation() {return m_fLocalRotation; }
     float GetWorldRotation();
 
