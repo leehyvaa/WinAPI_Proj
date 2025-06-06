@@ -70,7 +70,6 @@ void CAnimation::Update()
 void CAnimation::Render(HDC _dc)
 {
     CTimeMgr::StartTimer(L"AnimationComp_Render");
-    
     if (m_bFinish || m_iCurFrm < 0 || m_iCurFrm >= m_vecFrameBitmaps.size())
         return;
 
@@ -127,7 +126,7 @@ void CAnimation::Render(HDC _dc)
     // 회전 적용 (centerPoint가 원점이 된 상태에서 회전)
     if (abs(worldRotationAngle) > minRotationThreshold)
         transformMatrix.Rotate(worldRotationAngle, MatrixOrderPrepend); // 중심이 (0,0)으로 옮겨졌으므로 그냥 Rotate
-
+    
 
     // 좌우 반전 적용 (centerPoint가 원점이 된 상태에서 X축 스케일)
     if (!isFacingRight)
@@ -138,10 +137,11 @@ void CAnimation::Render(HDC _dc)
     // 이 (0,0)은 이미 centerPoint로 이동되었고, 회전/반전이 적용된 상태
     // DrawImage에 전달하는 좌표는 이미지의 로컬 중심을 (0,0)에 맞추는 값이어야 함
     RectF drawingRect(-fDestWidth / 2.f, -fDestHeight / 2.f, fDestWidth, fDestHeight);
-
     graphics.SetTransform(&transformMatrix);
     graphics.DrawImage(frameBitmap, drawingRect);
+ 
     graphics.ResetTransform();
+    
     CTimeMgr::EndTimer(L"AnimationComp_Render");
 }
 

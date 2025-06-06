@@ -1,7 +1,9 @@
 ﻿#include "pch.h"
 #include "CTexture.h"
 #include "CCore.h"
-
+#include <gdiplus.h>
+using namespace Gdiplus;
+#pragma comment (lib,"Gdiplus.lib")
 CTexture::CTexture()
 	:m_hBit(0)
 	,m_dc(0)
@@ -16,22 +18,15 @@ CTexture::~CTexture()
 
 void CTexture::Load(const wstring& _strFilePath)
 {
-	// 로딩한 데이터를 비트맵으로 생성
-	m_hBit = static_cast<HBITMAP>(LoadImage(nullptr, _strFilePath.c_str(), IMAGE_BITMAP, 0, 0,
-                                            LR_CREATEDIBSECTION | LR_LOADFROMFILE));
-	assert(m_hBit);
+    // GDI+로 마젠타 배경 보정된 핸들 생성
+    Gdiplus::Bitmap gdiBmp(_strFilePath.c_str());
+    Gdiplus::Color bgColor(255, 255, 0, 255); // RGB(255,0,255)
+    gdiBmp.GetHBITMAP(bgColor, &m_hBit);
 
-	//비트맵과 연결할 dc
-	m_dc = CreateCompatibleDC(CCore::GetInst()->GetMainDC());
-
-	//비트맵과 dc 연결
-	HBITMAP hPrevBit = static_cast<HBITMAP>(SelectObject(m_dc, m_hBit));
-	DeleteObject(hPrevBit);
-
-	//비트맵 정보를 구조체멤버에 저장
-	GetObject(m_hBit, sizeof(BITMAP), &m_bitInfo);
-
-	
+    // DC 생성 및 비트맵 연결
+    m_dc = CreateCompatibleDC(CCore::GetInst()->GetMainDC());
+    SelectObject(m_dc, m_hBit);
+    GetObject(m_hBit, sizeof(BITMAP), &m_bitInfo);
 
 	
 }
