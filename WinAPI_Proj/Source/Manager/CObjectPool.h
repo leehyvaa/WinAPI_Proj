@@ -22,12 +22,12 @@ public:
         
         vector<GameObject*>& pool = m_mapPools[_strKey];
     
-        // 요청된 수만큼 객체 생성하여 풀에 추가
+        // 객체 생성 후 풀에 추가
         for (int i = 0; i < _iPoolSize; ++i)
         {
             T* pObj = new T(); 
             pObj->SetName(_strKey); // 키를 이름으로 설정
-            pObj->SetActive(false); // 비활성화 상태로 설정
+            pObj->SetActive(false);
             pObj->SetManagedByPool(true);
             pool.push_back(pObj);
         }  

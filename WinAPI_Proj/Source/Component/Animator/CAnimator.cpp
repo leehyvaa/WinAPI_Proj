@@ -44,22 +44,17 @@ void CAnimator::FinalUpdate()
 	}
 }
 
-void CAnimator::Render(HDC _dc)
-{
-	if (nullptr != m_pCurAnim)
-		m_pCurAnim->Render(_dc);
-}
+// void CAnimator::Render(HDC _dc)
+// {
+// 	if (nullptr != m_pCurAnim)
+// 		m_pCurAnim->Render(_dc);
+// }
 
 void CAnimator::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
 {
 	if (nullptr != m_pCurAnim && nullptr != _pRenderTarget)
 	{
-		OutputDebugStringA("🎨 CAnimator Direct2D 렌더링 시작\n");
 		m_pCurAnim->RenderD2D(_pRenderTarget);
-	}
-	else
-	{
-		OutputDebugStringA("⚠️ CAnimator Direct2D 렌더링 조건 실패\n");
 	}
 }
 

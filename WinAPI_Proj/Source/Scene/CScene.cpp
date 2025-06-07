@@ -194,15 +194,13 @@ void CScene::Render(HDC _dc)
 	}
     CTimeMgr::EndTimer(L"Scene_Render");
     
-    // F10 키로 프로파일 정보 토글
+    // F10 키 - 프로파일 토글
     if (KEY_HOLD(KEY::F10)) {
-        // 화면 상단에 검정 배경 렌더링
         HBRUSH hBlack = CreateSolidBrush(RGB(0, 0, 0));
         RECT rect = {0, 0, 800, 500};
         FillRect(_dc, &rect, hBlack);
         DeleteObject(hBlack);
-
-        // 흰색으로 프로파일 데이터 출력
+        
         SetTextColor(_dc, RGB(255, 255, 255));
         SetBkMode(_dc, TRANSPARENT);
         CTimeMgr::RenderProfileData(_dc, 10);
@@ -213,13 +211,13 @@ void CScene::Render(HDC _dc)
 
 }
 
-// Direct2D 렌더링 - Animator 컴포넌트가 있는 오브젝트들만 렌더링
 void CScene::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
 {
+    CTimeMgr::StartTimer(L"Scene_D2D_Render");
+    
 	if (!_pRenderTarget)
 		return;
 
-	// 모든 그룹을 순회하면서 Animator 컴포넌트가 있는 오브젝트만 Direct2D로 렌더링
 	for (UINT i = 0; i < static_cast<UINT>(GROUP_TYPE::END); i++)
 	{
 		for (size_t j = 0; j < m_arrObj[i].size(); j++)
@@ -227,14 +225,12 @@ void CScene::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
 			GameObject* pObj = m_arrObj[i][j];
 			if (pObj && !pObj->IsDead() && pObj->IsActive())
 			{
-				// Animator 컴포넌트가 있는 오브젝트만 Direct2D로 렌더링
 				if (pObj->GetAnimator())
-				{
 					pObj->GetAnimator()->RenderD2D(_pRenderTarget);
-				}
 			}
 		}
 	}
+    CTimeMgr::EndTimer(L"Scene_D2D_Render");
 }
 
 // 해당 씬에서 그룹타입이 TILE인 모든 오브젝트를 그리는 함수
@@ -251,9 +247,6 @@ void CScene::Render_Tile(HDC _dc)
 
 	int iLTCol = static_cast<int>(vLeftTop.x) / iTileSize;
 	int iLTRow = static_cast<int>(vLeftTop.y) / iTileSize;
-
-
-
 
 
 	int iLTIdx = m_iTileX * iLTRow + iLTCol;
@@ -324,23 +317,20 @@ void CScene::AddObject(GameObject* _pObj, GROUP_TYPE _eType)
 }
 
 
-// 지정된 그룹의 벡터를 지우는 함수
+// 지정된 그룹의 오브젝트들을 삭제
 void CScene::DeleteGroup(GROUP_TYPE _eTarget)
 {
     vector<GameObject*>& vecObjects = m_arrObj[static_cast<UINT>(_eTarget)];
-
-    // 벡터를 순회하면서 삭제 로직 적용
+    
     for (size_t i = 0; i < vecObjects.size(); ++i)
     {
         if (vecObjects[i] != nullptr)
         {
-            // 풀에서 관리되지 않는 객체만 delete 호출
+            // 풀에서 관리되지 않는 객체만 delete
             if (!vecObjects[i]->IsManagedByPool())
             {
                 delete vecObjects[i];
             }
-            // 풀에서 관리되는 객체는 delete 하지 않음
-            // (포인터는 아래 clear()에서 제거됨)
         }
     }
 
@@ -513,12 +503,11 @@ void CScene::UpdatePoolDebugInfo()
     map<wstring, vector<GameObject*>>& pools = CObjectPool::GetInst()->GetPools();
     
 
-    m_pPoolDebugText->AddLine(L"=== OBJECT POOLS ===");
+    m_pPoolDebugText->AddLine(L"=== OBJECT POOL ===");
     
-    // 풀이 비어있는 경우
     if (pools.empty())
     {
-        m_pPoolDebugText->AddLine(L"No active pools");
+        m_pPoolDebugText->AddLine(L"No active");
         return;
     }
     
@@ -544,7 +533,7 @@ void CScene::UpdatePoolDebugInfo()
 
     
     m_pPoolDebugText->AddLine(L"");
-    m_pPoolDebugText->AddLine(L"Press F9 to toggle this display");
+    m_pPoolDebugText->AddLine(L"Press F9");
 }
 
 void CScene::TogglePoolDebugDisplay()

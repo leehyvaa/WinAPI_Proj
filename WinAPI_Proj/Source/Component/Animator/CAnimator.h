@@ -7,8 +7,8 @@ class CTexture;
 class CAnimator
 {
 private:
-	map<wstring, CAnimation*> m_mapAnim; //모든 Animation
-	CAnimation* m_pCurAnim; //현재 재생중 Animation
+	map<wstring, CAnimation*> m_mapAnim; // 모든 Animation
+	CAnimation* m_pCurAnim; // 현재 재생중 Animation
 	GameObject* m_pOwner;
 	bool m_bRepeat;
 	CTexture* tempTex;
@@ -31,7 +31,7 @@ public:
 	void Update();
 	void FinalUpdate();
 	void Render(HDC _dc);
-	void RenderD2D(ID2D1RenderTarget* _pRenderTarget); // 새로운 D2D 렌더링
+	void RenderD2D(ID2D1RenderTarget* _pRenderTarget); 
 
     void Reset();
 public:

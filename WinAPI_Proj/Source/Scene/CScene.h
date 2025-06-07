@@ -10,14 +10,14 @@ class CTextUI;
 class CScene
 {
 private:
-	//오브젝트를 저장 및 관리할 벡터를 그룹 개수만큼 선언
+	// 오브젝트를 저장 및 관리할 벡터를 그룹 개수만큼 선언
 	vector<GameObject*> m_arrObj[static_cast<UINT>(GROUP_TYPE::END)];
-	wstring			 m_strName;//씬 이름
+	wstring			 m_strName; //씬 이름
     CTextUI* m_pPlayerText;
     CTextUI* m_pPoolDebugText; // 오브젝트 풀 디버깅용 텍스트 UI
 
 
-	UINT m_iTileX; //타일 가로 개수
+	UINT m_iTileX; // 타일 가로 개수
 	UINT m_iTileY;
 	UINT m_iGroundCount;
 
@@ -50,7 +50,7 @@ public:
 	virtual void Update();
 	virtual void FinalUpdate();
 	virtual void Render(HDC _dc);
-	virtual void RenderD2D(ID2D1RenderTarget* _pRenderTarget); // Direct2D 렌더링 추가
+	virtual void RenderD2D(ID2D1RenderTarget* _pRenderTarget);
 	void Render_Tile(HDC _dc);
 
 	virtual void Enter();
@@ -61,7 +61,7 @@ public:
 	void RegisterPlayer(GameObject* _pPlayer) { m_pPlayer = _pPlayer; }
 
 
-	//벡터 레퍼런스를 반환하면서 const로 원본수정 불가능하게
+	// 벡터 레퍼런스를 반환하면서 const로 원본수정 불가능하게
 	const vector<GameObject*>& GetGroupObject(GROUP_TYPE _eType){return m_arrObj[static_cast<UINT>(_eType)];}
 	void DeleteGroup(GROUP_TYPE _eTarget);
 	void DeleteAll();
@@ -71,8 +71,8 @@ public:
 	void CreateGround();
 	
 	vector<GameObject*>& GetUIGroup() { return m_arrObj[static_cast<UINT>(GROUP_TYPE::UI)]; }
-    void UpdatePoolDebugInfo(); // 오브젝트 풀 정보 업데이트 함수
-    void TogglePoolDebugDisplay(); // 풀 디버그 표시 토글 함수
+    void UpdatePoolDebugInfo(); // 오브젝트 풀 정보 디버그
+    void TogglePoolDebugDisplay(); 
     void UpdateDebugUI();
 public:
 	CScene();

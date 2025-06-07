@@ -35,14 +35,13 @@ private:
 	float m_fSizeMulti;
 	POINT* rotPos;
     
-    // GDI+ 비트맵 (기존 호환성)
-    vector<Gdiplus::Bitmap*> m_vecFrameBitmaps; // 미리 처리된 프레임 비트맵들
+    // DX 비트맵
+    vector<ID2D1Bitmap*> m_vecD2DFrameBitmaps;
     
-    // Direct2D 비트맵 (새로운 D2D 렌더링용)
-    vector<ID2D1Bitmap*> m_vecD2DFrameBitmaps; // D2D 프레임 비트맵들
-    bool m_bD2DCached; // D2D 캐싱 여부
+    // 캐싱 여부
+    bool m_bD2DCached; 
+    bool m_bCached;
     
-    bool m_bCached; // 기존 캐싱 여부
     function<void()> m_EndFrameEvent;
     
 public:
@@ -71,13 +70,12 @@ public:
     void SetEndFrameEvent(function<void()> _event) { m_EndFrameEvent = _event; }
 private:
 	void SetName(const wstring& _strName) { m_strName = _strName; }
-    void CacheFrames();
+    //void CacheFrames();
     void CacheD2DFrames(ID2D1RenderTarget* _pRenderTarget);
     void ReleaseD2DFrames();
 public:
 	void Update();
-	void Render(HDC _dc);
-	void RenderD2D(ID2D1RenderTarget* _pRenderTarget); // 새로운 D2D 렌더링
+	void RenderD2D(ID2D1RenderTarget* _pRenderTarget);
 
 	void Create(CTexture* _pTex, Vec2 _vLT, Vec2 _vSliceSize, Vec2 _vStep,
 		float _fDuration,UINT _iFrameCount, float _fSizeMulti, Vec2 _vOffset);

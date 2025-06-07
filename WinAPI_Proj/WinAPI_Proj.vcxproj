@@ -163,12 +163,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Manager\CObjectPool.h" />
     <ClInclude Include="Source\Module\AI\State\Dead\CDeadState.h" />
     <ClInclude Include="Source\Module\AI\State\Shooter\CAimingState.h" />
     <ClInclude Include="Source\Module\AI\State\Spawning\CSpawningState.h" />
     <ClInclude Include="Source\Module\AI\State\Subdued\CSubduedState.h" />
     <ClInclude Include="Source\Object\CBullet.h" />
-    <ClInclude Include="Source\Object\CObjectPool.h" />
     <ClInclude Include="Source\Object\Monster\CShooterHead.h" />
     <ClInclude Include="Source\Object\Monster\CShooterMonster.h" />
     <ClInclude Include="Source\Object\UI\ChatUI\CTextUI.h" />
@@ -232,12 +232,95 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Manager\CObjectPool.cpp">
+      <RuntimeLibrary>MultiThreadedDebugDll</RuntimeLibrary>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <Optimization>Disabled</Optimization>
+      <SupportJustMyCode>true</SupportJustMyCode>
+      <AssemblerOutput>NoListing</AssemblerOutput>
+      <AssemblerListingLocation>x64\Debug\</AssemblerListingLocation>
+      <UndefineAllPreprocessorDefinitions>false</UndefineAllPreprocessorDefinitions>
+      <BrowseInformation>false</BrowseInformation>
+      <BrowseInformationFile>x64\Debug\</BrowseInformationFile>
+      <CompileAs>Default</CompileAs>
+      <ConformanceMode>true</ConformanceMode>
+      <DiagnosticsFormat>Column</DiagnosticsFormat>
+      <DisableLanguageExtensions>false</DisableLanguageExtensions>
+      <ErrorReporting>Prompt</ErrorReporting>
+      <ExpandAttributedSource>false</ExpandAttributedSource>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <EnableASAN>false</EnableASAN>
+      <EnableFuzzer>false</EnableFuzzer>
+      <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <EnableVectorLength>NotSet</EnableVectorLength>
+      <FloatingPointModel>Precise</FloatingPointModel>
+      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
+      <GenerateModuleDependencies>false</GenerateModuleDependencies>
+      <GenerateSourceDependencies>false</GenerateSourceDependencies>
+      <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <IgnoreStandardIncludePath>false</IgnoreStandardIncludePath>
+      <LanguageStandard>Default</LanguageStandard>
+      <LanguageStandard_C>Default</LanguageStandard_C>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ModuleDependenciesFile>x64\Debug\</ModuleDependenciesFile>
+      <ModuleOutputFile>x64\Debug\</ModuleOutputFile>
+      <OmitDefaultLibName>false</OmitDefaultLibName>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <ObjectFileName>x64\Debug\</ObjectFileName>
+      <CallingConvention>Cdecl</CallingConvention>
+      <ProgramDataBaseFileName>x64\Debug\vc143.pdb</ProgramDataBaseFileName>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>x64\Debug\WinAPI_Proj.pch</PrecompiledHeaderOutputFile>
+      <PreprocessToFile>false</PreprocessToFile>
+      <PreprocessKeepComments>false</PreprocessKeepComments>
+      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
+      <RemoveUnreferencedCodeData>true</RemoveUnreferencedCodeData>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+      <ShowIncludes>false</ShowIncludes>
+      <SourceDependenciesFile>x64\Debug\</SourceDependenciesFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <SmallerTypeCheck>false</SmallerTypeCheck>
+      <SpectreMitigation>false</SpectreMitigation>
+      <StructMemberAlignment>Default</StructMemberAlignment>
+      <TrackerLogDirectory>x64\Debug\WinAPI_Proj.tlog\</TrackerLogDirectory>
+      <TranslateIncludes>false</TranslateIncludes>
+      <MinimalRebuildFromTracking>true</MinimalRebuildFromTracking>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <UseFullPaths>true</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <XMLDocumentationFileName>x64\Debug\</XMLDocumentationFileName>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <IntelJCCErratum>false</IntelJCCErratum>
+      <BuildStlModules>false</BuildStlModules>
+      <TreatAngleIncludeAsExternal>false</TreatAngleIncludeAsExternal>
+      <ExternalWarningLevel>InheritWarningLevel</ExternalWarningLevel>
+      <TreatExternalTemplatesAsInternal>true</TreatExternalTemplatesAsInternal>
+      <DisableAnalyzeExternal>false</DisableAnalyzeExternal>
+      <IncludeInUnityFile>true</IncludeInUnityFile>
+      <UnityFilesDirectory>C:\WinAPIProject\WinAPI_Proj\\Unity\</UnityFilesDirectory>
+      <OrderInUnityFile>100</OrderInUnityFile>
+      <CombineFilesOnlyFromTheSameFolder>false</CombineFilesOnlyFromTheSameFolder>
+      <MinFilesInUnityFile>8</MinFilesInUnityFile>
+      <MaxFilesInUnityFile>0</MaxFilesInUnityFile>
+      <MinUnityFiles>1</MinUnityFiles>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_UNICODE;UNICODE;</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>C:\WinAPIProject\WinAPI_Proj\Source\Object\UI\ChatUI;C:\WinAPIProject\WinAPI_Proj\;C:\WinAPIProject\WinAPI_Proj\Source;C:\WinAPIProject\WinAPI_Proj\Source\Component;C:\WinAPIProject\WinAPI_Proj\Source\Core;C:\WinAPIProject\WinAPI_Proj\Source\Header;C:\WinAPIProject\WinAPI_Proj\Source\Manager;C:\WinAPIProject\WinAPI_Proj\Source\Module;C:\WinAPIProject\WinAPI_Proj\Source\Object;C:\WinAPIProject\WinAPI_Proj\Source\Prefab;C:\WinAPIProject\WinAPI_Proj\Source\Resource;C:\WinAPIProject\WinAPI_Proj\Source\Scene;C:\WinAPIProject\WinAPI_Proj\Source\Tool;C:\WinAPIProject\WinAPI_Proj\Source\Component\Animator;C:\WinAPIProject\WinAPI_Proj\Source\Component\Collider;C:\WinAPIProject\WinAPI_Proj\Source\Component\Gravity;C:\WinAPIProject\WinAPI_Proj\Source\Component\RigidBody;C:\WinAPIProject\WinAPI_Proj\Source\Component\Animator\Animation;C:\WinAPIProject\WinAPI_Proj\Source\Manager\Camera;C:\WinAPIProject\WinAPI_Proj\Source\Manager\CollisionMgr;C:\WinAPIProject\WinAPI_Proj\Source\Manager\CSoundMgr;C:\WinAPIProject\WinAPI_Proj\Source\Manager\EventMgr;C:\WinAPIProject\WinAPI_Proj\Source\Manager\KeyMgr;C:\WinAPIProject\WinAPI_Proj\Source\Manager\PathMgr;C:\WinAPIProject\WinAPI_Proj\Source\Manager\ResMgr;C:\WinAPIProject\WinAPI_Proj\Source\Manager\SceneMgr;C:\WinAPIProject\WinAPI_Proj\Source\Manager\TimeMgr;C:\WinAPIProject\WinAPI_Proj\Source\Manager\UIMgr;C:\WinAPIProject\WinAPI_Proj\Source\Module\AI;C:\WinAPIProject\WinAPI_Proj\Source\Module\AI\State;C:\WinAPIProject\WinAPI_Proj\Source\Module\AI\State\Idle;C:\WinAPIProject\WinAPI_Proj\Source\Module\AI\State\Trace;C:\WinAPIProject\WinAPI_Proj\Source\Object\Ground;C:\WinAPIProject\WinAPI_Proj\Source\Object\Tile;C:\WinAPIProject\WinAPI_Proj\Source\Object\UI;C:\WinAPIProject\WinAPI_Proj\Source\Object\UI\BtnUI;C:\WinAPIProject\WinAPI_Proj\Source\Object\UI\PanelUI;C:\WinAPIProject\WinAPI_Proj\Source\Resource\Sound;C:\WinAPIProject\WinAPI_Proj\Source\Resource\Texture;C:\WinAPIProject\WinAPI_Proj\Source\Scene\Scene_Stage_01;C:\WinAPIProject\WinAPI_Proj\Source\Scene\Scene_Title;C:\WinAPIProject\WinAPI_Proj\Source\Scene\Scene_Tool</AdditionalIncludeDirectories>
+      <LinkCompiled>true</LinkCompiled>
+    </ClCompile>
     <ClCompile Include="Source\Module\AI\State\Dead\CDeadState.cpp" />
     <ClCompile Include="Source\Module\AI\State\Shooter\CAimingState.cpp" />
     <ClCompile Include="Source\Module\AI\State\Spawning\CSpawningState.cpp" />
     <ClCompile Include="Source\Module\AI\State\Subdued\CSubduedState.cpp" />
     <ClCompile Include="Source\Object\CBullet.cpp" />
-    <ClCompile Include="Source\Object\CObjectPool.cpp" />
     <ClCompile Include="Source\Object\Monster\CShooterHead.cpp" />
     <ClCompile Include="Source\Object\Monster\CShooterMonster.cpp" />
     <ClCompile Include="Source\Object\UI\ChatUI\CTextUI.cpp" />

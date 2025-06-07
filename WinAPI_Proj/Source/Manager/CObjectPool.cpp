@@ -13,7 +13,6 @@ CObjectPool::~CObjectPool()
 
 void CObjectPool::Init()
 {
-    // 풀 초기화 로직
 }
 
 

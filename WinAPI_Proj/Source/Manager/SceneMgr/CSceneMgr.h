@@ -16,7 +16,7 @@ public:
 	void init();
 	void Update();
 	void Render(HDC _dc);
-	void RenderD2D(ID2D1RenderTarget* _pRenderTarget); // Direct2D 렌더링 추가
+	void RenderD2D(ID2D1RenderTarget* _pRenderTarget);
 	CScene* GetCurScene() { return m_pCurScene; }
 	CScene* GetArrScene() { return *m_arrScene; }
 

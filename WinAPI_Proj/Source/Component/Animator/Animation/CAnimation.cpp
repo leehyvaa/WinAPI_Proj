@@ -31,14 +31,7 @@ CAnimation::CAnimation()
 CAnimation::~CAnimation()
 {
 	delete[] rotPos;
-    // 캐싱된 GDI+ 비트맵들 해제
-    for (auto& bitmap : m_vecFrameBitmaps)
-    {
-        delete bitmap;
-    }
-    m_vecFrameBitmaps.clear();
-    
-    // Direct2D 비트맵들 해제
+
     ReleaseD2DFrames();
 }
 void CAnimation::Update()
@@ -70,137 +63,7 @@ void CAnimation::Update()
 	}
 }
 
-void CAnimation::Render(HDC _dc)
-{
-    CTimeMgr::StartTimer(L"AnimationComp_Render");
-    if (m_bFinish || m_iCurFrm < 0 || m_iCurFrm >= m_vecFrameBitmaps.size())
-        return;
 
-    // 이미지 캐싱
-    if (!m_bCached)
-        CacheFrames();
-    
-    
-    GameObject* pObj = m_pAnimator->GetObj();
-    Vec2 vLogicalPos = pObj->GetWorldPos();
-    bool isFacingRight = pObj->GetIsFacingRight();
-
-    tAnimFrm& curFrame = m_vecFrm[m_iCurFrm];
-    Vec2 vOffset = curFrame.vOffset; // 오른쪽 기준 오프셋
-
-    //    캐릭터가 왼쪽을 볼 경우 애니메이션 오프셋 X값 반전
-    if (!isFacingRight)
-        vOffset.x *= -1.f;
-
-    float worldRotationAngle = pObj->GetWorldRotation();
-    float rotationRad = worldRotationAngle * (3.14159f / 180.f);
-    float cosAngle = cosf(rotationRad);
-    float sinAngle = sinf(rotationRad);
-
-    Vec2 vRotatedOffset;
-    vRotatedOffset.x = vOffset.x * cosAngle - vOffset.y * sinAngle;
-    vRotatedOffset.y = vOffset.x * sinAngle + vOffset.y * cosAngle;
-
-    Vec2 vVisualPos = vLogicalPos + vRotatedOffset;
-    Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(vVisualPos); // 화면상 중심, 렌더링할 위치
-
-    float minRotationThreshold = 3.0f;
-
-    Graphics graphics(_dc);
-    graphics.SetInterpolationMode(InterpolationModeNearestNeighbor);
-    graphics.SetPixelOffsetMode(PixelOffsetModeHalf);
-
-    Bitmap* frameBitmap = m_vecFrameBitmaps[m_iCurFrm]; // 항상 오른쪽 이미지
-    if (!frameBitmap) return;
-
-    float fDestWidth = static_cast<float>(frameBitmap->GetWidth());
-    float fDestHeight = static_cast<float>(frameBitmap->GetHeight());
-
-    
-    Matrix transformMatrix; // 단위 행렬로 시작
-
-    // 변환의 중심 위치
-    PointF centerPoint(vRenderPos.x, vRenderPos.y);
-
-    //  최종 위치로 이동 (이동 행렬을 먼저 적용)
-    //  이렇게 하면 이후의 모든 변환(회전, 스케일)이 centerPoint를 기준으로 적용됨
-    transformMatrix.Translate(centerPoint.X, centerPoint.Y, MatrixOrderPrepend);
-
-    // 회전 적용 (centerPoint가 원점이 된 상태에서 회전)
-    if (abs(worldRotationAngle) > minRotationThreshold)
-        transformMatrix.Rotate(worldRotationAngle, MatrixOrderPrepend); // 중심이 (0,0)으로 옮겨졌으므로 그냥 Rotate
-    
-
-    // 좌우 반전 적용 (centerPoint가 원점이 된 상태에서 X축 스케일)
-    if (!isFacingRight)
-        transformMatrix.Scale(-1.0f, 1.0f, MatrixOrderPrepend);
-
-    // DrawImage는 변환된 좌표계의 (0,0)을 기준으로 이미지의 중심이 오도록 그린다.
-    // 따라서 이미지의 좌상단은 (-width/2, -height/2)가 된다.
-    // 이 (0,0)은 이미 centerPoint로 이동되었고, 회전/반전이 적용된 상태
-    // DrawImage에 전달하는 좌표는 이미지의 로컬 중심을 (0,0)에 맞추는 값이어야 함
-    RectF drawingRect(-fDestWidth / 2.f, -fDestHeight / 2.f, fDestWidth, fDestHeight);
-    graphics.SetTransform(&transformMatrix);
-    graphics.DrawImage(frameBitmap, drawingRect);
- 
-    graphics.ResetTransform();
-    
-    CTimeMgr::EndTimer(L"AnimationComp_Render");
-}
-
-// 프레임 캐싱 함수
-void CAnimation::CacheFrames()
-{
-    if (m_bCached || m_vecFrm.empty() || !m_pTex)
-        return;
-
-    // 기존에 캐싱된 비트맵 해제
-    for (auto& bitmap : m_vecFrameBitmaps)
-    {
-        delete bitmap;
-    }
-    m_vecFrameBitmaps.clear();
-
-    // 원본 비트맵 생성
-    HBITMAP hBitmap = m_pTex->GetHBITMAP();
-    Bitmap sourceBitmap(hBitmap, nullptr);
-
-    // 각 프레임별로 처리된 비트맵 생성 및 저장
-    for (size_t i = 0; i < m_vecFrm.size(); i++)
-    {
-        int srcX = static_cast<INT>(m_vecFrm[i].vLT.x);
-        int srcY = static_cast<INT>(m_vecFrm[i].vLT.y);
-        int srcWidth = static_cast<INT>(m_vecFrm[i].vSlice.x);
-        int srcHeight = static_cast<INT>(m_vecFrm[i].vSlice.y);
-
-        // 확대/축소될 최종 너비와 높이 계산
-        int destWidth = static_cast<int>(srcWidth * m_fSizeMulti);
-        int destHeight = static_cast<int>(srcHeight * m_fSizeMulti);
-
-        // 확대/축소된 크기의 새 비트맵 생성
-        Bitmap* frameBitmap = new Bitmap(destWidth, destHeight, PixelFormat32bppARGB);
-
-        Graphics frameGraphics(frameBitmap);
-        // 확대/축소 시 보간 품질 설정 (필요에 따라 NearestNeighbor 외 다른 값 사용 가능)
-        frameGraphics.SetInterpolationMode(InterpolationModeNearestNeighbor);
-
-        ImageAttributes imgAttr;
-        imgAttr.SetColorKey(Color(255, 0, 255), Color(255, 0, 255), ColorAdjustTypeBitmap);
-
-        // 원본 이미지의 해당 부분을 확대/축소하여 새 비트맵에 복사
-        frameGraphics.DrawImage(
-            &sourceBitmap,
-            Rect(0, 0, destWidth, destHeight), // 대상 사각형 (확대/축소된 크기)
-            srcX, srcY, srcWidth, srcHeight,   // 소스 부분 (원본 이미지에서 가져올 영역)
-            UnitPixel,
-            &imgAttr
-        );
-
-        m_vecFrameBitmaps.push_back(frameBitmap);
-    }
-
-    m_bCached = true;
-}
 
 void CAnimation::Create(CTexture* _pTex, Vec2 _vLT, Vec2 _vSliceSize,
 					Vec2 _vStep, float _fDuration, UINT _iFrameCount, float _fSizeMulti, Vec2 _vOffset)
@@ -218,12 +81,11 @@ void CAnimation::Create(CTexture* _pTex, Vec2 _vLT, Vec2 _vSliceSize,
 		m_vecFrm.push_back(frm);
 	}
 
-
-
 	m_fSizeMulti = _fSizeMulti;
-    // 프레임 캐싱 실행
-    CacheFrames();
+    // CacheFrames();  // 프레임 캐싱
 }
+
+
 
 void CAnimation::Save(const wstring& _strRelativePath)
 {
@@ -234,17 +96,17 @@ void CAnimation::Save(const wstring& _strRelativePath)
 	_wfopen_s(&pFile, strFilePath.c_str(), L"wb");
 	assert(pFile);
 
-	//Animation의 이름을 저장한다. (데이터 직렬화)
-	//SaveWString(m_strName, pFile);
+	// Animation의 이름을 저장한다. (데이터 직렬화)
+	// SaveWString(m_strName, pFile);
 	fprintf(pFile, "[Animation_Name]\n");
 	string strName = string(m_strName.begin(), m_strName.end());
 	fprintf(pFile, strName.c_str());
 	fprintf(pFile, "\n");
 
 
-	//Animation이 사용하는 텍스쳐
-	//SaveWString(m_pTex->GetKey(),pFile);
-	//SaveWString(m_pTex->GetRelativePath(), pFile);
+	// Animation이 사용하는 텍스쳐
+	// SaveWString(m_pTex->GetKey(),pFile);
+	// SaveWString(m_pTex->GetRelativePath(), pFile);
 	fprintf(pFile, "[Texture_Name]\n");
 	strName = string(m_pTex->GetKey().begin(), m_pTex->GetKey().end());
 	fprintf(pFile, strName.c_str());
@@ -256,9 +118,9 @@ void CAnimation::Save(const wstring& _strRelativePath)
 	fprintf(pFile, "\n");
 
 
-	//프레임 개수
-	//size_t iFrameCount = m_vecFrm.size();
-	//fwrite(&iFrameCount, sizeof(size_t), 1, pFile);
+	// 프레임 개수
+	// size_t iFrameCount = m_vecFrm.size();
+	// fwrite(&iFrameCount, sizeof(size_t), 1, pFile);
 	fprintf(pFile, "[Frame_Count]\n");
 	fprintf(pFile, "%d\n", static_cast<int>(m_vecFrm.size()));
 
@@ -267,8 +129,8 @@ void CAnimation::Save(const wstring& _strRelativePath)
 	fprintf(pFile, "%f\n", m_fSizeMulti);
 
 
-	//모든 프레임 정보
-	//fwrite(m_vecFrm.data(), sizeof(tAnimFrm), iFrameCount, pFile);
+	// 모든 프레임 정보
+	// fwrite(m_vecFrm.data(), sizeof(tAnimFrm), iFrameCount, pFile);
 	for (size_t i = 0; i < m_vecFrm.size(); i++)
 	{
 		fprintf(pFile, "[Frame Index]\n");
@@ -288,14 +150,11 @@ void CAnimation::Save(const wstring& _strRelativePath)
 
 		fprintf(pFile, "\n\n");
 	}
-
-
-	
-
-
-
+    
 	fclose(pFile);
 }
+
+
 
 void CAnimation::Load(const wstring& _strRelativePath)
 {
@@ -306,8 +165,7 @@ void CAnimation::Load(const wstring& _strRelativePath)
 	_wfopen_s(&pFile, strFilePath.c_str(), L"rb");
 	assert(pFile);
 
-
-
+    
 	////애니메이션 이름 읽기(바이너리)
 	//LoadWString(m_strName, pFile);
 
@@ -316,9 +174,7 @@ void CAnimation::Load(const wstring& _strRelativePath)
 	//LoadWString(strTexKey, pFile);
 	//LoadWString(strTexPath, pFile);
 	//m_pTex = CResMgr::GetInst()->LoadTexture(strTexKey,strTexPath);
-
-
-
+    
 	////프레임 개수
 	//size_t iFrameCount = 0;
 	//fread(&iFrameCount, sizeof(size_t), 1, pFile);
@@ -328,21 +184,18 @@ void CAnimation::Load(const wstring& _strRelativePath)
 	//fread(m_vecFrm.data(), sizeof(tAnimFrm), iFrameCount, pFile);
 
 
-
-
-
-	//Animation의 이름을 읽어온다.
+	// Animation의 이름을 읽어온다.
 	string str;
 	char szBuff[256] = {};
 
 	FScanf(szBuff, pFile);
-	FScanf(szBuff, pFile); //한줄씩 읽어오는 함수
+	FScanf(szBuff, pFile); // 한줄씩 읽어오는 함수
 	
 	str = szBuff;
 	m_strName = wstring(str.begin(), str.end());
 
 
-	//참조하는 텍스처 이름 및 경로
+	// 참조하는 텍스처 이름 및 경로
 	FScanf(szBuff, pFile);
 	FScanf(szBuff, pFile);
 
@@ -356,27 +209,21 @@ void CAnimation::Load(const wstring& _strRelativePath)
 	wstring strTexPath = wstring(str.begin(), str.end());
 
 	m_pTex = CResMgr::GetInst()->LoadTexture(strTexKey, strTexPath);
+    
 
-
-	
-
-
-
-	//프레임 개수
+	// 프레임 개수
 	FScanf(szBuff, pFile);
 	int iFrameCount = 0;
-	fscanf_s(pFile, "%d", &iFrameCount); //문자를 정수로 바꿔서 읽음
+	fscanf_s(pFile, "%d", &iFrameCount); // 문자를 정수로 바꿔서 읽음
 	FScanf(szBuff, pFile);
 
-
-	//사이즈 배율
+	// 사이즈 배율
 	FScanf(szBuff, pFile);
 	fscanf_s(pFile, "%f", &m_fSizeMulti);
 	FScanf(szBuff, pFile);
 
-
-
-	//모든 프레임 정보
+    
+	// 모든 프레임 정보
 	tAnimFrm frm = {};
 
 	for (int i = 0; i < iFrameCount; i++)
@@ -387,8 +234,6 @@ void CAnimation::Load(const wstring& _strRelativePath)
 		{
 			FScanf(szBuff, pFile);
 
-
-
 			if (!strcmp("[Frame Index]", szBuff))
 			{
 				fscanf_s(pFile, "%d", &pt.x);
@@ -396,7 +241,7 @@ void CAnimation::Load(const wstring& _strRelativePath)
 			else if (!strcmp("[Left Top]",szBuff))
 			{
 				fscanf_s(pFile, "%d", &pt.x);
-				fscanf_s(pFile, "%d", &pt.y); //정수만날때까지 ,나 공백문자를 다 읽으면서 넘김
+				fscanf_s(pFile, "%d", &pt.y); // 정수만날때까지 ,나 공백문자를 다 읽으면서 넘김
 			
 				frm.vLT = pt;
 			}
@@ -428,10 +273,10 @@ void CAnimation::Load(const wstring& _strRelativePath)
 
 	fclose(pFile);
     // 프레임 로드 완료 후 캐싱 실행
-    CacheFrames();
+    //CacheFrames();
 }
 
-// Direct2D 프레임 해제
+
 void CAnimation::ReleaseD2DFrames()
 {
     for (auto& bitmap : m_vecD2DFrameBitmaps)
@@ -442,148 +287,118 @@ void CAnimation::ReleaseD2DFrames()
     m_vecD2DFrameBitmaps.clear();
     m_bD2DCached = false;
 }
+
 void CAnimation::CacheD2DFrames(ID2D1RenderTarget* _pRenderTarget)
 {
     ReleaseD2DFrames();
 
     if (m_vecFrm.empty() || !m_pTex || !_pRenderTarget)
-    {
-        OutputDebugStringA("ERROR: CacheD2DFrames - Pre-conditions not met.\n");
         return;
-    }
 
-    // WIC 팩토리 생성 (Direct2D 비트맵 변환에 필요)
+
+    // 팩토리 생성 (비트맵 변환에 필요)
     IWICImagingFactory* pWICFactory = nullptr;
     HRESULT hr = CoCreateInstance(
         CLSID_WICImagingFactory, nullptr, CLSCTX_INPROC_SERVER,
         IID_IWICImagingFactory, (LPVOID*)&pWICFactory
     );
-    if (FAILED(hr))
-    {
-        OutputDebugStringA("ERROR: Failed to create WIC Factory.\n");
-        return;
-    }
+    if (FAILED(hr)) return;
 
-    // 1. 원본 텍스처(스프라이트 시트)의 HBITMAP을 GDI+ Bitmap 객체로 로드합니다.
+
+    // GDI+비트맵으로 텍스쳐 로드
     HBITMAP hSourceBitmap = m_pTex->GetHBITMAP();
     if (!hSourceBitmap)
     {
         pWICFactory->Release();
-        OutputDebugStringA("ERROR: Failed to get HBITMAP from CTexture.\n");
         return;
     }
     Bitmap sourceGdiplusBitmap(hSourceBitmap, nullptr);
 
-    // 2. 각 프레임을 순회하며 32비트 ARGB 비트맵으로 변환 후 D2D 비트맵으로 만듭니다.
+    // 각 프레임을 순회,  32비트 ARGB 비트맵 -> D2D 비트맵
     for (size_t i = 0; i < m_vecFrm.size(); i++)
     {
         tAnimFrm& frame = m_vecFrm[i];
-
-        // 프레임의 원본 위치와 크기
+        
         int srcX = static_cast<int>(frame.vLT.x);
         int srcY = static_cast<int>(frame.vLT.y);
         int srcWidth = static_cast<int>(frame.vSlice.x);
         int srcHeight = static_cast<int>(frame.vSlice.y);
-
-        // 확대/축소될 최종 크기
+        
         int destWidth = static_cast<int>(srcWidth * m_fSizeMulti);
         int destHeight = static_cast<int>(srcHeight * m_fSizeMulti);
 
-        // 3. [핵심] 이 프레임만을 위한 32비트 ARGB GDI+ 비트맵을 메모리에 생성합니다.
+        // 32비트 ARGB GDI+ 비트맵 생성
+        // frameGraphics를 핸들로 frameArgbBitmap에 투명처리하고 비트맵 그리기
         Bitmap* frameArgbBitmap = new Bitmap(destWidth, destHeight, PixelFormat32bppARGB);
         Graphics frameGraphics(frameArgbBitmap);
         
-        // 픽셀 깨짐 방지를 위한 고품질 보간법 설정
+        // 픽셀 깨짐 방지
         frameGraphics.SetInterpolationMode(InterpolationModeNearestNeighbor);
         frameGraphics.SetPixelOffsetMode(PixelOffsetModeHalf);
 
-        // 4. [핵심] 마젠타(255,0,255)를 투명색으로 지정하는 ImageAttributes를 설정합니다.
+        // 투명색 지정(마젠타)
         ImageAttributes imgAttr;
         imgAttr.SetColorKey(Color(255, 0, 255), Color(255, 0, 255), ColorAdjustTypeBitmap);
 
-        // 5. 원본 스프라이트 시트에서 현재 프레임 영역을 잘라내어,
-        //    마젠타 키를 적용하면서 32비트 ARGB 비트맵에 그립니다.
-        //    이 과정에서 마젠타 픽셀은 알파값이 0인 투명 픽셀로 변환됩니다.
+        // 프레임에서 투명색 적용후 그리기
         frameGraphics.DrawImage(
             &sourceGdiplusBitmap,
-            Rect(0, 0, destWidth, destHeight), // 대상 사각형 (메모리에 생성된 ARGB 비트맵 전체)
-            srcX, srcY, srcWidth, srcHeight,   // 소스 사각형 (원본 스프라이트 시트에서 잘라낼 부분)
+            Rect(0, 0, destWidth, destHeight),
+            srcX, srcY, srcWidth, srcHeight,
             UnitPixel,
             &imgAttr
         );
 
-        // 6. 이제 알파 채널이 포함된 32비트 ARGB GDI+ 비트맵이 준비되었습니다.
-        //    이것을 WIC를 통해 Direct2D 비트맵으로 변환합니다.
+
         IWICBitmap* pWICBitmap = nullptr;
         ID2D1Bitmap* pD2DBitmap = nullptr;
 
-        // GDI+ Bitmap에서 HBITMAP을 임시로 추출 (알파 채널 포함)
+        // 투명 처리된 비트맵 frameArgbBitmap 에서 hArgbBitmap로 비트맵 추출
         HBITMAP hArgbBitmap = NULL;
         if (frameArgbBitmap->GetHBITMAP(Color(0,0,0,0), &hArgbBitmap) == Ok)
         {
-            // HBITMAP을 WIC 비트맵으로 변환
+            // HBITMAP -> WIC
+            // WIC는 여러 이미지 포맷(jpg,png,bmp등)을 통일해서 쓸 수 있게하는 형식
             hr = pWICFactory->CreateBitmapFromHBITMAP(hArgbBitmap, nullptr, WICBitmapUsePremultipliedAlpha, &pWICBitmap);
-            if (SUCCEEDED(hr))
+            if (SUCCEEDED(hr)) // WIC 비트맵 -> D2D 비트맵
             {
-                // WIC 비트맵을 최종 D2D 비트맵으로 변환
                 hr = _pRenderTarget->CreateBitmapFromWicBitmap(pWICBitmap, nullptr, &pD2DBitmap);
-                if (FAILED(hr))
-                {
-                    OutputDebugStringA("ERROR: CreateBitmapFromWicBitmap failed.\n");
-                }
             }
-            else
-            {
-                OutputDebugStringA("ERROR: CreateBitmapFromHBITMAP (WIC) failed.\n");
-            }
-            // 임시로 생성한 HBITMAP은 반드시 해제
             DeleteObject(hArgbBitmap);
         }
-        else
-        {
-            OutputDebugStringA("ERROR: Failed to get HBITMAP from GDI+ ARGB bitmap.\n");
-        }
 
-        // 임시 리소스 해제
+        
         if (pWICBitmap) pWICBitmap->Release();
-        delete frameArgbBitmap; // 메모리에 생성했던 GDI+ 비트맵 해제
+        delete frameArgbBitmap; 
 
-        // 최종 생성된 D2D 비트맵을 벡터에 추가 (실패 시 nullptr이 들어감)
+        // Dx비트맵 최종 추가
         m_vecD2DFrameBitmaps.push_back(pD2DBitmap);
     }
 
     pWICFactory->Release();
     m_bD2DCached = true;
-    OutputDebugStringA("SUCCESS: D2D frames cached with magenta color key.\n");
 }
-// Direct2D 렌더링
+
+
+
 void CAnimation::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
 {
     CTimeMgr::StartTimer(L"AnimationComp_DXRender");
 
     if (m_bFinish || m_iCurFrm < 0 || m_iCurFrm >= static_cast<int>(m_vecFrm.size()) || !_pRenderTarget)
-    {
-        // OutputDebugStringA("D2D 렌더링 조건 실패\n"); // 디버그 출력이 너무 많아 주석 처리
         return;
-    }
-
-    // [수정] D2D 프레임 캐싱 상태 확인 및 재생성 로직 개선
+    
     if (!m_bD2DCached)
-    {
-        OutputDebugStringA("D2D 캐싱 필요 - 캐싱 시작\n");
         CacheD2DFrames(_pRenderTarget);
-    }
 
-    // [수정] 캐싱 후에도 비트맵이 유효한지 최종 확인
+    
     if (!m_bD2DCached || m_iCurFrm >= m_vecD2DFrameBitmaps.size() || !m_vecD2DFrameBitmaps[m_iCurFrm])
     {
-        // OutputDebugStringA("D2D 비트맵 없음 - 렌더링 건너뜀\n"); // 디버그 출력이 너무 많아 주석 처리
         CTimeMgr::EndTimer(L"AnimationComp_DXRender");
         return;
     }
 
-    // OutputDebugStringA("D2D 애니메이션 렌더링 수행\n"); // 디버그 출력이 너무 많아 주석 처리
-
+    
     GameObject* pObj = m_pAnimator->GetObj();
         
     Vec2 vLogicalPos = pObj->GetWorldPos();
@@ -608,27 +423,28 @@ void CAnimation::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
     Vec2 vVisualPos = vLogicalPos + vRotatedOffset;
     Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(vVisualPos);
 
+    
     ID2D1Bitmap* pFrameBitmap = m_vecD2DFrameBitmaps[m_iCurFrm];
-    if (!pFrameBitmap) { // 비트맵 유효성 한번 더 체크
+    if (!pFrameBitmap)
+    { 
         CTimeMgr::EndTimer(L"AnimationComp_DXRender");
         return;
     }
     D2D1_SIZE_F bitmapSize = pFrameBitmap->GetSize();
 
-    // 변환 행렬 설정
+    // originalTransform에 원본 변환 행렬 저장해 놓기
     D2D1_MATRIX_3X2_F originalTransform;
     _pRenderTarget->GetTransform(&originalTransform);
 
-    // [수정] 변환 행렬 생성 순서 변경
-    // 최종 변환 = 이동 * 회전 * 스케일 (실제 적용은 스케일 -> 회전 -> 이동 순)
+    
+    // SRT 변환 행렬 생성 및 곱하기
     D2D1_MATRIX_3X2_F matScale = isFacingRight ? D2D1::Matrix3x2F::Identity() : D2D1::Matrix3x2F::Scale(-1.f, 1.f);
     D2D1_MATRIX_3X2_F matRotation = D2D1::Matrix3x2F::Rotation(worldRotationAngle);
     D2D1_MATRIX_3X2_F matTranslation = D2D1::Matrix3x2F::Translation(vRenderPos.x, vRenderPos.y);
-
-    // 행렬을 올바른 순서로 곱합니다.
+    
     _pRenderTarget->SetTransform(matScale * matRotation * matTranslation);
 
-    // 이미지 렌더링 (중심을 (0,0)으로 맞춰서 그립니다)
+    // 0,0 중심점으로 이미지 렌더링
     D2D1_RECT_F destRect = D2D1::RectF(
         -bitmapSize.width / 2.0f,
         -bitmapSize.height / 2.0f,
@@ -638,9 +454,144 @@ void CAnimation::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
 
     _pRenderTarget->DrawBitmap(pFrameBitmap, destRect, 1.0f, D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR);
 
-    // 변환 행렬 복원
+    // originalTransform(원본 변환 행렬)로 복원
     _pRenderTarget->SetTransform(originalTransform);
     CTimeMgr::EndTimer(L"AnimationComp_DXRender");
 }
 
 
+
+
+
+// void CAnimation::Render(HDC _dc)
+// {
+//     CTimeMgr::StartTimer(L"AnimationComp_Render");
+//     if (m_bFinish || m_iCurFrm < 0 || m_iCurFrm >= m_vecFrameBitmaps.size())
+//         return;
+//
+//     // 이미지 캐싱
+//     if (!m_bCached)
+//         CacheFrames();
+//     
+//     
+//     GameObject* pObj = m_pAnimator->GetObj();
+//     Vec2 vLogicalPos = pObj->GetWorldPos();
+//     bool isFacingRight = pObj->GetIsFacingRight();
+//
+//     tAnimFrm& curFrame = m_vecFrm[m_iCurFrm];
+//     Vec2 vOffset = curFrame.vOffset; // 오른쪽 기준 오프셋
+//
+//     //    캐릭터가 왼쪽을 볼 경우 애니메이션 오프셋 X값 반전
+//     if (!isFacingRight)
+//         vOffset.x *= -1.f;
+//
+//     float worldRotationAngle = pObj->GetWorldRotation();
+//     float rotationRad = worldRotationAngle * (3.14159f / 180.f);
+//     float cosAngle = cosf(rotationRad);
+//     float sinAngle = sinf(rotationRad);
+//
+//     Vec2 vRotatedOffset;
+//     vRotatedOffset.x = vOffset.x * cosAngle - vOffset.y * sinAngle;
+//     vRotatedOffset.y = vOffset.x * sinAngle + vOffset.y * cosAngle;
+//
+//     Vec2 vVisualPos = vLogicalPos + vRotatedOffset;
+//     Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(vVisualPos); // 화면상 중심, 렌더링할 위치
+//
+//     float minRotationThreshold = 3.0f;
+//
+//     Graphics graphics(_dc);
+//     graphics.SetInterpolationMode(InterpolationModeNearestNeighbor);
+//     graphics.SetPixelOffsetMode(PixelOffsetModeHalf);
+//
+//     Bitmap* frameBitmap = m_vecFrameBitmaps[m_iCurFrm]; // 항상 오른쪽 이미지
+//     if (!frameBitmap) return;
+//
+//     float fDestWidth = static_cast<float>(frameBitmap->GetWidth());
+//     float fDestHeight = static_cast<float>(frameBitmap->GetHeight());
+//
+//     
+//     Matrix transformMatrix; // 단위 행렬로 시작
+//
+//     // 변환의 중심 위치
+//     PointF centerPoint(vRenderPos.x, vRenderPos.y);
+//
+//     //  최종 위치로 이동 (이동 행렬을 먼저 적용)
+//     //  이렇게 하면 이후의 모든 변환(회전, 스케일)이 centerPoint를 기준으로 적용됨
+//     transformMatrix.Translate(centerPoint.X, centerPoint.Y, MatrixOrderPrepend);
+//
+//     // 회전 적용 (centerPoint가 원점이 된 상태에서 회전)
+//     if (abs(worldRotationAngle) > minRotationThreshold)
+//         transformMatrix.Rotate(worldRotationAngle, MatrixOrderPrepend); // 중심이 (0,0)으로 옮겨졌으므로 그냥 Rotate
+//     
+//
+//     // 좌우 반전 적용 (centerPoint가 원점이 된 상태에서 X축 스케일)
+//     if (!isFacingRight)
+//         transformMatrix.Scale(-1.0f, 1.0f, MatrixOrderPrepend);
+//
+//     // DrawImage는 변환된 좌표계의 (0,0)을 기준으로 이미지의 중심이 오도록 그린다.
+//     // 따라서 이미지의 좌상단은 (-width/2, -height/2)가 된다.
+//     // 이 (0,0)은 이미 centerPoint로 이동되었고, 회전/반전이 적용된 상태
+//     // DrawImage에 전달하는 좌표는 이미지의 로컬 중심을 (0,0)에 맞추는 값이어야 함
+//     RectF drawingRect(-fDestWidth / 2.f, -fDestHeight / 2.f, fDestWidth, fDestHeight);
+//     graphics.SetTransform(&transformMatrix);
+//     graphics.DrawImage(frameBitmap, drawingRect);
+//  
+//     graphics.ResetTransform();
+//     
+//     CTimeMgr::EndTimer(L"AnimationComp_Render");
+// }
+
+
+// 프레임 캐싱 함수
+// void CAnimation::CacheFrames()
+// {
+//     if (m_bCached || m_vecFrm.empty() || !m_pTex)
+//         return;
+//
+//     // 기존에 캐싱된 비트맵 해제
+//     for (auto& bitmap : m_vecFrameBitmaps)
+//     {
+//         delete bitmap;
+//     }
+//     m_vecFrameBitmaps.clear();
+//
+//     // 원본 비트맵 생성
+//     HBITMAP hBitmap = m_pTex->GetHBITMAP();
+//     Bitmap sourceBitmap(hBitmap, nullptr);
+//
+//     // 각 프레임별로 처리된 비트맵 생성 및 저장
+//     for (size_t i = 0; i < m_vecFrm.size(); i++)
+//     {
+//         int srcX = static_cast<INT>(m_vecFrm[i].vLT.x);
+//         int srcY = static_cast<INT>(m_vecFrm[i].vLT.y);
+//         int srcWidth = static_cast<INT>(m_vecFrm[i].vSlice.x);
+//         int srcHeight = static_cast<INT>(m_vecFrm[i].vSlice.y);
+//
+//         // 확대/축소될 최종 너비와 높이 계산
+//         int destWidth = static_cast<int>(srcWidth * m_fSizeMulti);
+//         int destHeight = static_cast<int>(srcHeight * m_fSizeMulti);
+//
+//         // 확대/축소된 크기의 새 비트맵 생성
+//         Bitmap* frameBitmap = new Bitmap(destWidth, destHeight, PixelFormat32bppARGB);
+//
+//         Graphics frameGraphics(frameBitmap);
+//         // 확대/축소 시 보간 품질 설정 (필요에 따라 NearestNeighbor 외 다른 값 사용 가능)
+//         frameGraphics.SetInterpolationMode(InterpolationModeNearestNeighbor);
+//
+//         ImageAttributes imgAttr;
+//         imgAttr.SetColorKey(Color(255, 0, 255), Color(255, 0, 255), ColorAdjustTypeBitmap);
+//
+//         // 원본 이미지의 해당 부분을 확대/축소하여 새 비트맵에 복사
+//         frameGraphics.DrawImage(
+//             &sourceBitmap,
+//             Rect(0, 0, destWidth, destHeight), // 대상 사각형 (확대/축소된 크기)
+//             srcX, srcY, srcWidth, srcHeight,   // 소스 부분 (원본 이미지에서 가져올 영역)
+//             UnitPixel,
+//             &imgAttr
+//         );
+//
+//         m_vecFrameBitmaps.push_back(frameBitmap);
+//     }
+//
+//     m_bCached = true;
+// }
