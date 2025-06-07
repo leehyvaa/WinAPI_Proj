@@ -6,6 +6,7 @@
 #include "CGravity.h"
 #include "CScene.h"
 #include "CSceneMgr.h"
+#include "CCore.h"
 GameObject::GameObject()
     : m_vPos{}
     , m_vScale{}
@@ -301,15 +302,30 @@ void GameObject::Render(HDC _dc)
 
 void GameObject::Component_Render(HDC _dc)
 {
+	// 🚀 Direct2D 하이브리드 렌더링 시스템 활성화
+	// Animator: Direct2D, 나머지: GDI로 최적화된 렌더링
+	
+	// 애니메이터 Direct2D 렌더링 (성능 최적화)
 	if (nullptr != m_pAnimator)
 	{
-		m_pAnimator->Render(_dc);
+		ID2D1DCRenderTarget* pD2DTarget = CCore::GetInst()->GetD2DRenderTarget();
+		if (pD2DTarget)
+		{
+			// Direct2D 렌더링 성공 - 정확한 타입으로 수정!
+			m_pAnimator->RenderD2D(pD2DTarget);
+			OutputDebugStringA("✅ GameObject Direct2D 애니메이션 렌더링 호출 성공\n");
+		}
+		else
+		{
+			// Direct2D 실패 시 안전한 GDI 폴백
+			m_pAnimator->Render(_dc);
+			OutputDebugStringA("⚠️ GameObject Direct2D 실패 - GDI 폴백 렌더링\n");
+		}
 	}
+	
+	// 콜라이더 GDI 렌더링 (안정성 유지)
 	if (nullptr != m_pCollider && CSceneMgr::GetInst()->GetCurScene()->GetDrawCollider())
-	{
 		m_pCollider->Render(_dc);
-	}
-
 }
 
 

@@ -50,6 +50,19 @@ void CAnimator::Render(HDC _dc)
 		m_pCurAnim->Render(_dc);
 }
 
+void CAnimator::RenderD2D(ID2D1DCRenderTarget* _pRenderTarget)
+{
+	if (nullptr != m_pCurAnim && nullptr != _pRenderTarget)
+	{
+		OutputDebugStringA("🎨 CAnimator Direct2D 렌더링 시작\n");
+		m_pCurAnim->RenderD2D(_pRenderTarget);
+	}
+	else
+	{
+		OutputDebugStringA("⚠️ CAnimator Direct2D 렌더링 조건 실패\n");
+	}
+}
+
 void CAnimator::Reset()
 {
     m_pCurAnim = nullptr;

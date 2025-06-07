@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include <d2d1.h>
+
 class CScene;
 
 class CSceneMgr
@@ -14,6 +16,7 @@ public:
 	void init();
 	void Update();
 	void Render(HDC _dc);
+	void RenderD2D(ID2D1RenderTarget* _pRenderTarget); // Direct2D 렌더링 추가
 	CScene* GetCurScene() { return m_pCurScene; }
 	CScene* GetArrScene() { return *m_arrScene; }
 

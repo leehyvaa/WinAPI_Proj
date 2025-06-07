@@ -1,5 +1,10 @@
 ﻿#pragma once
 #include <functional>
+#include <d2d1.h>
+#include <wincodec.h>
+#pragma comment(lib, "d2d1.lib")
+#pragma comment(lib, "windowscodecs.lib")
+
 namespace Gdiplus
 {
     class Bitmap;
@@ -30,8 +35,14 @@ private:
 	float m_fSizeMulti;
 	POINT* rotPos;
     
+    // GDI+ 비트맵 (기존 호환성)
     vector<Gdiplus::Bitmap*> m_vecFrameBitmaps; // 미리 처리된 프레임 비트맵들
-    bool m_bCached; // 캐싱 여부
+    
+    // Direct2D 비트맵 (새로운 D2D 렌더링용)
+    vector<ID2D1Bitmap*> m_vecD2DFrameBitmaps; // D2D 프레임 비트맵들
+    bool m_bD2DCached; // D2D 캐싱 여부
+    
+    bool m_bCached; // 기존 캐싱 여부
     function<void()> m_EndFrameEvent;
     
 public:
@@ -61,9 +72,12 @@ public:
 private:
 	void SetName(const wstring& _strName) { m_strName = _strName; }
     void CacheFrames();
+    void CacheD2DFrames(ID2D1RenderTarget* _pRenderTarget);
+    void ReleaseD2DFrames();
 public:
 	void Update();
 	void Render(HDC _dc);
+	void RenderD2D(ID2D1RenderTarget* _pRenderTarget); // 새로운 D2D 렌더링
 
 	void Create(CTexture* _pTex, Vec2 _vLT, Vec2 _vSliceSize, Vec2 _vStep,
 		float _fDuration,UINT _iFrameCount, float _fSizeMulti, Vec2 _vOffset);

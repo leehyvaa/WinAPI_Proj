@@ -22,6 +22,7 @@ CAnimation::CAnimation()
 	,m_fSizeMulti(1)
 	,rotPos(nullptr)
     ,m_bCached(false)
+    ,m_bD2DCached(false)
     ,m_EndFrameEvent(nullptr)
 {
 	rotPos = new POINT[4];
@@ -30,18 +31,20 @@ CAnimation::CAnimation()
 CAnimation::~CAnimation()
 {
 	delete[] rotPos;
-    // 캐싱된 비트맵들 해제
+    // 캐싱된 GDI+ 비트맵들 해제
     for (auto& bitmap : m_vecFrameBitmaps)
     {
         delete bitmap;
     }
     m_vecFrameBitmaps.clear();
+    
+    // Direct2D 비트맵들 해제
+    ReleaseD2DFrames();
 }
 void CAnimation::Update()
 {
 	if (m_bFinish)
 		return;
-
 	m_fAccTime += fDT;
 
 	if (m_vecFrm[m_iCurFrm].fDuration < m_fAccTime)
@@ -76,7 +79,7 @@ void CAnimation::Render(HDC _dc)
     // 이미지 캐싱
     if (!m_bCached)
         CacheFrames();
-
+    
     
     GameObject* pObj = m_pAnimator->GetObj();
     Vec2 vLogicalPos = pObj->GetWorldPos();
@@ -426,6 +429,220 @@ void CAnimation::Load(const wstring& _strRelativePath)
 	fclose(pFile);
     // 프레임 로드 완료 후 캐싱 실행
     CacheFrames();
+}
+
+// Direct2D 프레임 해제
+void CAnimation::ReleaseD2DFrames()
+{
+    for (auto& bitmap : m_vecD2DFrameBitmaps)
+    {
+        if (bitmap)
+            bitmap->Release();
+    }
+    m_vecD2DFrameBitmaps.clear();
+    m_bD2DCached = false;
+}
+
+// Direct2D 프레임 캐싱
+void CAnimation::CacheD2DFrames(ID2D1RenderTarget* _pRenderTarget)
+{
+    if (m_bD2DCached || m_vecFrm.empty() || !m_pTex || !_pRenderTarget)
+    {
+        OutputDebugStringA("D2D 캐싱 조건 실패\n");
+        return;
+    }
+
+    // 기존 D2D 비트맵 해제
+    ReleaseD2DFrames();
+
+    // WIC 팩토리 생성
+    IWICImagingFactory* pWICFactory = nullptr;
+    HRESULT hr = CoCreateInstance(
+        CLSID_WICImagingFactory,
+        nullptr,
+        CLSCTX_INPROC_SERVER,
+        IID_IWICImagingFactory,
+        (LPVOID*)&pWICFactory
+    );
+
+    if (FAILED(hr) || !pWICFactory)
+    {
+        OutputDebugStringA("WIC 팩토리 생성 실패\n");
+        return;
+    }
+
+    // 원본 HBITMAP을 WIC 비트맵으로 변환
+    HBITMAP hBitmap = m_pTex->GetHBITMAP();
+    if (!hBitmap)
+    {
+        OutputDebugStringA("HBITMAP 획득 실패\n");
+        pWICFactory->Release();
+        return;
+    }
+
+    IWICBitmap* pWICBitmap = nullptr;
+    hr = pWICFactory->CreateBitmapFromHBITMAP(hBitmap, nullptr, WICBitmapUseAlpha, &pWICBitmap);
+
+    if (FAILED(hr) || !pWICBitmap)
+    {
+        OutputDebugStringA("WIC 비트맵 생성 실패\n");
+        pWICFactory->Release();
+        return;
+    }
+
+    // 각 프레임별로 D2D 비트맵 생성
+    for (size_t i = 0; i < m_vecFrm.size(); i++)
+    {
+        tAnimFrm& frame = m_vecFrm[i];
+        
+        // 원본 크기
+        UINT srcX = static_cast<UINT>(frame.vLT.x);
+        UINT srcY = static_cast<UINT>(frame.vLT.y);
+        UINT srcWidth = static_cast<UINT>(frame.vSlice.x);
+        UINT srcHeight = static_cast<UINT>(frame.vSlice.y);
+
+        // 스케일된 크기
+        UINT destWidth = static_cast<UINT>(srcWidth * m_fSizeMulti);
+        UINT destHeight = static_cast<UINT>(srcHeight * m_fSizeMulti);
+
+        // WIC 비트맵에서 프레임 영역 클립
+        IWICBitmapClipper* pClipper = nullptr;
+        WICRect clipRect = { static_cast<INT>(srcX), static_cast<INT>(srcY), static_cast<INT>(srcWidth), static_cast<INT>(srcHeight) };
+        
+        hr = pWICFactory->CreateBitmapClipper(&pClipper);
+        if (SUCCEEDED(hr))
+        {
+            hr = pClipper->Initialize(pWICBitmap, &clipRect);
+        }
+
+        IWICBitmapScaler* pScaler = nullptr;
+        if (SUCCEEDED(hr) && m_fSizeMulti != 1.0f)
+        {
+            // 스케일링이 필요한 경우
+            hr = pWICFactory->CreateBitmapScaler(&pScaler);
+            if (SUCCEEDED(hr))
+            {
+                hr = pScaler->Initialize(pClipper, destWidth, destHeight, WICBitmapInterpolationModeNearestNeighbor);
+            }
+        }
+
+        // D2D 비트맵 생성
+        ID2D1Bitmap* pD2DBitmap = nullptr;
+        if (SUCCEEDED(hr))
+        {
+            IWICBitmapSource* pSource = pScaler ? (IWICBitmapSource*)pScaler : (IWICBitmapSource*)pClipper;
+            hr = _pRenderTarget->CreateBitmapFromWicBitmap(pSource, nullptr, &pD2DBitmap);
+            
+            if (SUCCEEDED(hr))
+            {
+                OutputDebugStringA("D2D 비트맵 생성 성공\n");
+            }
+            else
+            {
+                OutputDebugStringA("D2D 비트맵 생성 실패\n");
+            }
+        }
+
+        // 리소스 해제
+        if (pScaler) pScaler->Release();
+        if (pClipper) pClipper->Release();
+
+        // 결과 저장 (성공/실패와 관계없이 벡터 크기 유지)
+        m_vecD2DFrameBitmaps.push_back(pD2DBitmap);
+    }
+
+    pWICBitmap->Release();
+    pWICFactory->Release();
+    m_bD2DCached = true;
+    
+    OutputDebugStringA("D2D 프레임 캐싱 완료\n");
+}
+
+// Direct2D 렌더링
+void CAnimation::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
+{
+    CTimeMgr::StartTimer(L"AnimationComp_DXRender");
+    
+    if (m_bFinish || m_iCurFrm < 0 || m_iCurFrm >= static_cast<int>(m_vecFrm.size()) || !_pRenderTarget)
+    {
+        OutputDebugStringA("D2D 렌더링 조건 실패\n");
+        return;
+    }
+
+    // D2D 프레임 캐싱
+    if (!m_bD2DCached)
+    {
+        OutputDebugStringA("D2D 캐싱 시작\n");
+        CacheD2DFrames(_pRenderTarget);
+    }
+
+    if (m_iCurFrm >= static_cast<int>(m_vecD2DFrameBitmaps.size()) || !m_vecD2DFrameBitmaps[m_iCurFrm])
+    {
+        OutputDebugStringA("D2D 비트맵 없음\n");
+        return;
+    }
+
+    OutputDebugStringA("D2D 애니메이션 렌더링 수행\n");
+
+    GameObject* pObj = m_pAnimator->GetObj();
+    Vec2 vLogicalPos = pObj->GetWorldPos();
+    bool isFacingRight = pObj->GetIsFacingRight();
+
+    tAnimFrm& curFrame = m_vecFrm[m_iCurFrm];
+    Vec2 vOffset = curFrame.vOffset;
+
+    // 왼쪽을 볼 경우 오프셋 X값 반전
+    if (!isFacingRight)
+        vOffset.x *= -1.f;
+
+    float worldRotationAngle = pObj->GetWorldRotation();
+    float rotationRad = worldRotationAngle * (3.14159f / 180.f);
+    float cosAngle = cosf(rotationRad);
+    float sinAngle = sinf(rotationRad);
+
+    Vec2 vRotatedOffset;
+    vRotatedOffset.x = vOffset.x * cosAngle - vOffset.y * sinAngle;
+    vRotatedOffset.y = vOffset.x * sinAngle + vOffset.y * cosAngle;
+
+    Vec2 vVisualPos = vLogicalPos + vRotatedOffset;
+    Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(vVisualPos);
+
+    ID2D1Bitmap* pFrameBitmap = m_vecD2DFrameBitmaps[m_iCurFrm];
+    D2D1_SIZE_F bitmapSize = pFrameBitmap->GetSize();
+
+    // 변환 행렬 설정
+    D2D1_MATRIX_3X2_F originalTransform;
+    _pRenderTarget->GetTransform(&originalTransform);
+
+    D2D1_MATRIX_3X2_F transform = D2D1::Matrix3x2F::Identity();
+    
+    // 이동
+    transform = transform * D2D1::Matrix3x2F::Translation(vRenderPos.x, vRenderPos.y);
+    
+    // 회전
+    if (abs(worldRotationAngle) > 3.0f)
+        transform = transform * D2D1::Matrix3x2F::Rotation(worldRotationAngle);
+    
+    // 좌우 반전
+    if (!isFacingRight)
+        transform = transform * D2D1::Matrix3x2F::Scale(-1.0f, 1.0f);
+
+    _pRenderTarget->SetTransform(transform);
+
+    // 이미지 렌더링 (중심을 기준으로)
+    D2D1_RECT_F destRect = D2D1::RectF(
+        -bitmapSize.width / 2.0f,
+        -bitmapSize.height / 2.0f,
+        bitmapSize.width / 2.0f,
+        bitmapSize.height / 2.0f
+    );
+
+    _pRenderTarget->DrawBitmap(pFrameBitmap, destRect, 1.0f, D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR);
+
+    // 변환 행렬 복원
+    _pRenderTarget->SetTransform(originalTransform);
+    CTimeMgr::EndTimer(L"AnimationComp_DXRender");
+    
 }
 
 

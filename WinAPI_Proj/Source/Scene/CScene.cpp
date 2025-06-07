@@ -1,5 +1,7 @@
 ﻿#include "pch.h"
 #include "CScene.h"
+
+#include "CAnimator.h"
 #include "GameObject.h"
 #include "CTile.h"
 #include "CResMgr.h"
@@ -209,6 +211,30 @@ void CScene::Render(HDC _dc)
     // 매 프레임 종료 시 리셋
     CTimeMgr::ResetProfileData();
 
+}
+
+// Direct2D 렌더링 - Animator 컴포넌트가 있는 오브젝트들만 렌더링
+void CScene::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
+{
+	if (!_pRenderTarget)
+		return;
+
+	// 모든 그룹을 순회하면서 Animator 컴포넌트가 있는 오브젝트만 Direct2D로 렌더링
+	for (UINT i = 0; i < static_cast<UINT>(GROUP_TYPE::END); i++)
+	{
+		for (size_t j = 0; j < m_arrObj[i].size(); j++)
+		{
+			GameObject* pObj = m_arrObj[i][j];
+			if (pObj && !pObj->IsDead() && pObj->IsActive())
+			{
+				// Animator 컴포넌트가 있는 오브젝트만 Direct2D로 렌더링
+				if (pObj->GetAnimator())
+				{
+					pObj->GetAnimator()->RenderD2D(_pRenderTarget);
+				}
+			}
+		}
+	}
 }
 
 // 해당 씬에서 그룹타입이 TILE인 모든 오브젝트를 그리는 함수

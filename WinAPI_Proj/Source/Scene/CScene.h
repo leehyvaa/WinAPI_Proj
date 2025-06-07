@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "CMonPrefab.h"
 #include "CGroundPrefab.h"
+#include <d2d1.h>
 
 class GameObject;
 class CBackGround;
@@ -49,6 +50,7 @@ public:
 	virtual void Update();
 	virtual void FinalUpdate();
 	virtual void Render(HDC _dc);
+	virtual void RenderD2D(ID2D1RenderTarget* _pRenderTarget); // Direct2D 렌더링 추가
 	void Render_Tile(HDC _dc);
 
 	virtual void Enter();
