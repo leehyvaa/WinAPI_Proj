@@ -28,8 +28,7 @@ private:
 	ID2D1SolidColorBrush*		m_pBlueBrush;
 
 	CTexture* m_pMemTex; //백버퍼 텍스쳐
-
-
+    
 	//GDI Object
 	HBRUSH m_arrBrush[static_cast<UINT>(BRUSH_TYPE::END)];
 	HPEN m_arrPen[static_cast<UINT>(PEN_TYPE::END)];

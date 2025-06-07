@@ -50,7 +50,7 @@ void CAnimator::Render(HDC _dc)
 		m_pCurAnim->Render(_dc);
 }
 
-void CAnimator::RenderD2D(ID2D1DCRenderTarget* _pRenderTarget)
+void CAnimator::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
 {
 	if (nullptr != m_pCurAnim && nullptr != _pRenderTarget)
 	{

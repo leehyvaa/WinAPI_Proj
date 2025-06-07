@@ -19,6 +19,9 @@
 #include "CBackGround.h"
 #include "CSoundMgr.h"
 #include "CSound.h"
+#include "CAnimation.h"
+#include "CAnimator.h"
+
 CCore::CCore()
 	:m_hWnd(0)
 	, m_ptResolution{}
@@ -114,79 +117,58 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 
 void CCore::Progress()
 {
-	//Manager 업데이트
-	CTimeMgr::GetInst()->Update();
-	CKeyMgr::GetInst()->Update();
-	CCamera::GetInst()->Update();
+    // Manager 업데이트
+    CTimeMgr::GetInst()->Update();
+    CKeyMgr::GetInst()->Update();
+    CCamera::GetInst()->Update();
 
-	//씬 업데이트, 충돌처리
-	CSceneMgr::GetInst()->Update();
-	CCollisionMgr::GetInst()->Update();
+    // 씬 업데이트, 충돌처리
+    CSceneMgr::GetInst()->Update();
+    CCollisionMgr::GetInst()->Update();
 
-	//UI 이벤트 체크
-	CUIMgr::GetInst()->Update();
+    // UI 이벤트 체크
+    CUIMgr::GetInst()->Update();
 
-	// 🚀 혁신적 렌더링 파이프라인 시작!
-	// 1단계: 기존 GDI 렌더링 완료 (안정성 보장)
-	Clear(m_pMemTex->GetDC());
-	CSceneMgr::GetInst()->Render(m_pMemTex->GetDC());
-	CCamera::GetInst()->Render(m_pMemTex->GetDC());
+    // 🚀 [수정] 통합 렌더링 파이프라인 시작!
+    HDC hBackBufferDC = m_pMemTex->GetDC(); // GDI 백버퍼 DC 가져오기
+    RECT rc = { 0, 0, m_ptResolution.x, m_ptResolution.y };
+
+    // 1단계: GDI 렌더링 (배경, 타일, UI 등)
+    // GDI 백버퍼에 모든 GDI 내용을 그립니다.
+    Clear(hBackBufferDC); // 배경 그리기
+    CSceneMgr::GetInst()->Render(hBackBufferDC);
+    CCamera::GetInst()->Render(hBackBufferDC);
 	
-	// 2단계: 별도 메모리 DC에 Direct2D 애니메이션 렌더링 (핵심 혁신!)
-	if (m_pDCRenderTarget && m_hD2DMemoryDC)
-	{
-		OutputDebugStringA("🎨 DC 렌더 타겟 애니메이션 렌더링 시작\n");
+    // 2단계: Direct2D 렌더링 (애니메이션)
+    // GDI 백버퍼 DC 위에 직접 Direct2D 내용을 덧그립니다.
+    if (m_pDCRenderTarget)
+    {
+        // [핵심] D2D 렌더 타겟을 GDI 백버퍼 DC에 바인딩합니다.
+        m_pDCRenderTarget->BindDC(hBackBufferDC, &rc);
+
+        m_pDCRenderTarget->BeginDraw();
+
+        // D2D는 GDI 위에 덧그리는 것이므로 Clear()를 호출하지 않습니다.
+        CSceneMgr::GetInst()->RenderD2D(m_pDCRenderTarget);
 		
-		// DC 바인딩 갱신 (매 프레임마다 안전하게)
-		RECT rc = { 0, 0, m_ptResolution.x, m_ptResolution.y };
-		HRESULT hr = m_pDCRenderTarget->BindDC(m_hD2DMemoryDC, &rc);
-		if (SUCCEEDED(hr))
-		{
-			m_pDCRenderTarget->BeginDraw();
-			
-			// ⭐ 핵심: Clear() 호출 안함! 투명 배경 유지
-			// GDI와 충돌하지 않는 애니메이션만 렌더링
-			CSceneMgr::GetInst()->RenderD2D(m_pDCRenderTarget);
-			
-			hr = m_pDCRenderTarget->EndDraw();
-			if (FAILED(hr))
-			{
-				OutputDebugStringA("❌ DC 렌더 타겟 EndDraw 실패\n");
-				if (hr == D2DERR_RECREATE_TARGET)
-				{
-					OutputDebugStringA("🔄 DC 렌더 타겟 재생성 시도\n");
-					ReleaseD2DResources();
-					CreateD2DResources();
-				}
-			}
-			else
-			{
-				OutputDebugStringA("✅ DC 렌더 타겟 애니메이션 렌더링 완료\n");
-			}
-		}
-		else
-		{
-			OutputDebugStringA("❌ DC 바인딩 실패 - GDI로 폴백\n");
-		}
-	}
+        HRESULT hr = m_pDCRenderTarget->EndDraw();
+        if (FAILED(hr) && hr == D2DERR_RECREATE_TARGET)
+        {
+            // 렌더 타겟이 유실된 경우 재생성
+            ReleaseD2DResources();
+            CreateD2DResources();
+        }
+    }
 	
-	// 3단계: 최종 합성 - GDI 백버퍼를 먼저 메인 윈도우에 복사
-	BitBlt(m_hDC, 0, 0, m_ptResolution.x, m_ptResolution.y,
-		m_pMemTex->GetDC(), 0, 0, SRCCOPY);
-	
-	// 4단계: Direct2D 메모리 DC를 메인 윈도우에 알파 블렌딩으로 합성
-	if (m_hD2DMemoryDC)
-	{
-		BLENDFUNCTION blend = { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA };
-		AlphaBlend(m_hDC, 0, 0, m_ptResolution.x, m_ptResolution.y,
-			m_hD2DMemoryDC, 0, 0, m_ptResolution.x, m_ptResolution.y, blend);
-		OutputDebugStringA("🎭 Direct2D 오버레이 합성 완료\n");
-	}
+    // 3단계: 최종 출력
+    // 모든 그림이 그려진 GDI 백버퍼를 화면에 한 번에 복사합니다.
+    BitBlt(m_hDC, 0, 0, m_ptResolution.x, m_ptResolution.y,
+        hBackBufferDC, 0, 0, SRCCOPY);
 
-	CTimeMgr::GetInst()->Render();
+    CTimeMgr::GetInst()->Render();
 
-	//이벤트 지연처리
-	CEventMgr::GetInst()->Update();
+    // 이벤트 지연처리
+    CEventMgr::GetInst()->Update();
 }
 
 void CCore::CreateBrushPen()
@@ -211,126 +193,72 @@ void CCore::CreateBrushPen()
 
 void CCore::CreateD2DResources()
 {
-    OutputDebugStringA("🚀 혁신적 DC 렌더 타겟 기반 Direct2D 리소스 생성 시작\n");
-    
-    // 기존 리소스 정리 (안전을 위해)
+    // 1. 안전을 위해 기존 리소스를 먼저 모두 해제합니다.
     ReleaseD2DResources();
-    
-    // Direct2D Factory 생성
+    OutputDebugStringA("INFO: Creating Direct2D resources for GDI Interop...\n");
+
+    // 2. Direct2D의 모든 작업의 시작점인 팩토리(Factory)를 생성합니다.
     HRESULT hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &m_pD2DFactory);
     if (FAILED(hr))
     {
-        OutputDebugStringA("❌ Direct2D Factory 생성 실패\n");
-        return;
+        OutputDebugStringA("FATAL: D2D1CreateFactory failed. Direct2D will be disabled.\n");
+        return; // 팩토리 생성 실패 시 D2D 사용 불가
     }
-    OutputDebugStringA("✅ Direct2D Factory 생성 성공\n");
 
-    // 1단계: Direct2D 전용 메모리 DC 생성
-    m_hD2DMemoryDC = CreateCompatibleDC(m_hDC);
-    if (!m_hD2DMemoryDC)
-    {
-        OutputDebugStringA("❌ Direct2D 메모리 DC 생성 실패\n");
-        ReleaseD2DResources();
-        return;
-    }
-    OutputDebugStringA("✅ Direct2D 메모리 DC 생성 성공\n");
-
-    // 2단계: Direct2D 전용 비트맵 생성 (32비트 ARGB)
-    BITMAPINFO bmi = {};
-    bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-    bmi.bmiHeader.biWidth = m_ptResolution.x;
-    bmi.bmiHeader.biHeight = -m_ptResolution.y; // 상하 반전 방지
-    bmi.bmiHeader.biPlanes = 1;
-    bmi.bmiHeader.biBitCount = 32;
-    bmi.bmiHeader.biCompression = BI_RGB;
-
-    void* pBits = nullptr;
-    m_hD2DBitmap = CreateDIBSection(m_hD2DMemoryDC, &bmi, DIB_RGB_COLORS, &pBits, nullptr, 0);
-    if (!m_hD2DBitmap)
-    {
-        OutputDebugStringA("❌ Direct2D 비트맵 생성 실패\n");
-        ReleaseD2DResources();
-        return;
-    }
-    OutputDebugStringA("✅ Direct2D 비트맵 생성 성공\n");
-
-    // 3단계: 메모리 DC에 비트맵 선택
-    m_hOldBitmap = (HBITMAP)SelectObject(m_hD2DMemoryDC, m_hD2DBitmap);
-
-    // 4단계: DC 렌더 타겟 생성 (핵심 혁신!)
+    // 3. DC 렌더 타겟의 속성을 정의합니다. GDI 호환성이 핵심입니다.
     D2D1_RENDER_TARGET_PROPERTIES props = D2D1::RenderTargetProperties(
         D2D1_RENDER_TARGET_TYPE_DEFAULT,
+        // GDI의 32비트 비트맵(BGRA)과 호환되는 픽셀 포맷을 지정합니다.
         D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_PREMULTIPLIED),
-        0.0f, 0.0f,
-        D2D1_RENDER_TARGET_USAGE_GDI_COMPATIBLE,
-        D2D1_FEATURE_LEVEL_DEFAULT
+        0.0f, 0.0f, // 기본 DPI 사용
+        // 가장 중요한 플래그: 이 렌더 타겟이 GDI와 함께 사용될 것임을 명시합니다.
+        D2D1_RENDER_TARGET_USAGE_GDI_COMPATIBLE
     );
 
+    // 4. 위에서 정의한 속성으로 DC 렌더 타겟을 생성합니다.
+    // 이 객체는 GDI의 Device Context(DC)에 그림을 그릴 수 있게 해주는 다리 역할을 합니다.
     hr = m_pD2DFactory->CreateDCRenderTarget(&props, &m_pDCRenderTarget);
     if (FAILED(hr))
     {
-        OutputDebugStringA("❌ DC 렌더 타겟 생성 실패\n");
-        ReleaseD2DResources();
+        OutputDebugStringA("ERROR: CreateDCRenderTarget failed. Direct2D will be disabled.\n");
+        // 렌더 타겟 생성 실패 시, 이미 만든 팩토리는 해제해야 합니다.
+        if (m_pD2DFactory) { m_pD2DFactory->Release(); m_pD2DFactory = nullptr; }
         return;
     }
-    OutputDebugStringA("✅ DC 렌더 타겟 생성 성공\n");
 
-    // 5단계: DC 렌더 타겟과 메모리 DC 바인딩
-    RECT rc = { 0, 0, m_ptResolution.x, m_ptResolution.y };
-    hr = m_pDCRenderTarget->BindDC(m_hD2DMemoryDC, &rc);
-    if (FAILED(hr))
-    {
-        OutputDebugStringA("❌ DC 바인딩 실패\n");
-        ReleaseD2DResources();
-        return;
-    }
-    OutputDebugStringA("✅ DC 바인딩 성공\n");
-
-    // 6단계: 브러시들 생성
+    // 5. 렌더링에 자주 사용될 브러시들을 미리 생성해 둡니다.
+    // 이렇게 하면 매 프레임 생성/해제하는 비용을 줄일 수 있습니다.
     if (m_pDCRenderTarget)
     {
-        hr = m_pDCRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Black), &m_pBlackBrush);
-        if (FAILED(hr)) { OutputDebugStringA("❌ Black Brush 생성 실패\n"); }
-        
-        hr = m_pDCRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Red), &m_pRedBrush);
-        if (FAILED(hr)) { OutputDebugStringA("❌ Red Brush 생성 실패\n"); }
-        
-        hr = m_pDCRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Green), &m_pGreenBrush);
-        if (FAILED(hr)) { OutputDebugStringA("❌ Green Brush 생성 실패\n"); }
-        
-        hr = m_pDCRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Blue), &m_pBlueBrush);
-        if (FAILED(hr)) { OutputDebugStringA("❌ Blue Brush 생성 실패\n"); }
-        
-        OutputDebugStringA("🎉 DC 렌더 타겟 기반 Direct2D 리소스 생성 완료!\n");
-        OutputDebugStringA("💡 GDI와 완전히 분리된 안전한 렌더링 파이프라인 구축\n");
+        m_pDCRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Black), &m_pBlackBrush);
+        m_pDCRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Red), &m_pRedBrush);
+        m_pDCRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Green), &m_pGreenBrush);
+        m_pDCRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Blue), &m_pBlueBrush);
+        // 참고: 실제 프로젝트에서는 각 CreateSolidColorBrush의 HRESULT를 확인하는 것이 좋습니다.
     }
-}
 
+    OutputDebugStringA("SUCCESS: Direct2D resources created and ready for GDI interop.\n");
+}
 void CCore::ReleaseD2DResources()
 {
-    OutputDebugStringA("🧹 DC 렌더 타겟 리소스 정리 시작\n");
+    OutputDebugStringA("INFO: Releasing Direct2D resources...\n");
+
+    // 생성의 역순으로 리소스를 해제합니다.
     
-    // 브러시들 해제
-    if (m_pBlueBrush) { m_pBlueBrush->Release(); m_pBlueBrush = nullptr; }
-    if (m_pGreenBrush) { m_pGreenBrush->Release(); m_pGreenBrush = nullptr; }
-    if (m_pRedBrush) { m_pRedBrush->Release(); m_pRedBrush = nullptr; }
+    // 1. 브러시들을 해제합니다.
     if (m_pBlackBrush) { m_pBlackBrush->Release(); m_pBlackBrush = nullptr; }
-    
-    // DC 렌더 타겟 해제
+    if (m_pRedBrush)   { m_pRedBrush->Release();   m_pRedBrush = nullptr; }
+    if (m_pGreenBrush) { m_pGreenBrush->Release(); m_pGreenBrush = nullptr; }
+    if (m_pBlueBrush)  { m_pBlueBrush->Release();  m_pBlueBrush = nullptr; }
+
+    // 2. DC 렌더 타겟을 해제합니다.
     if (m_pDCRenderTarget) { m_pDCRenderTarget->Release(); m_pDCRenderTarget = nullptr; }
-    
-    // GDI 리소스 정리 (순서 중요!)
-    if (m_hD2DMemoryDC && m_hOldBitmap) {
-        SelectObject(m_hD2DMemoryDC, m_hOldBitmap);
-        m_hOldBitmap = nullptr;
-    }
-    if (m_hD2DBitmap) { DeleteObject(m_hD2DBitmap); m_hD2DBitmap = nullptr; }
-    if (m_hD2DMemoryDC) { DeleteDC(m_hD2DMemoryDC); m_hD2DMemoryDC = nullptr; }
-    
-    // Direct2D Factory 해제
+
+    // 3. 마지막으로 팩토리를 해제합니다.
     if (m_pD2DFactory) { m_pD2DFactory->Release(); m_pD2DFactory = nullptr; }
-    
-    OutputDebugStringA("✅ DC 렌더 타겟 리소스 정리 완료\n");
+
+    // [제거됨] D2D 전용 GDI 리소스(m_hD2DMemoryDC, m_hD2DBitmap 등)가 없으므로
+    // 관련 해제 코드도 모두 필요 없습니다.
 }
 
 void CCore::Clear(HDC _dc)

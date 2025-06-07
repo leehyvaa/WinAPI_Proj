@@ -442,149 +442,150 @@ void CAnimation::ReleaseD2DFrames()
     m_vecD2DFrameBitmaps.clear();
     m_bD2DCached = false;
 }
-
-// Direct2D 프레임 캐싱
 void CAnimation::CacheD2DFrames(ID2D1RenderTarget* _pRenderTarget)
 {
-    if (m_bD2DCached || m_vecFrm.empty() || !m_pTex || !_pRenderTarget)
-    {
-        OutputDebugStringA("D2D 캐싱 조건 실패\n");
-        return;
-    }
-
-    // 기존 D2D 비트맵 해제
     ReleaseD2DFrames();
 
-    // WIC 팩토리 생성
+    if (m_vecFrm.empty() || !m_pTex || !_pRenderTarget)
+    {
+        OutputDebugStringA("ERROR: CacheD2DFrames - Pre-conditions not met.\n");
+        return;
+    }
+
+    // WIC 팩토리 생성 (Direct2D 비트맵 변환에 필요)
     IWICImagingFactory* pWICFactory = nullptr;
     HRESULT hr = CoCreateInstance(
-        CLSID_WICImagingFactory,
-        nullptr,
-        CLSCTX_INPROC_SERVER,
-        IID_IWICImagingFactory,
-        (LPVOID*)&pWICFactory
+        CLSID_WICImagingFactory, nullptr, CLSCTX_INPROC_SERVER,
+        IID_IWICImagingFactory, (LPVOID*)&pWICFactory
     );
-
-    if (FAILED(hr) || !pWICFactory)
+    if (FAILED(hr))
     {
-        OutputDebugStringA("WIC 팩토리 생성 실패\n");
+        OutputDebugStringA("ERROR: Failed to create WIC Factory.\n");
         return;
     }
 
-    // 원본 HBITMAP을 WIC 비트맵으로 변환
-    HBITMAP hBitmap = m_pTex->GetHBITMAP();
-    if (!hBitmap)
+    // 1. 원본 텍스처(스프라이트 시트)의 HBITMAP을 GDI+ Bitmap 객체로 로드합니다.
+    HBITMAP hSourceBitmap = m_pTex->GetHBITMAP();
+    if (!hSourceBitmap)
     {
-        OutputDebugStringA("HBITMAP 획득 실패\n");
         pWICFactory->Release();
+        OutputDebugStringA("ERROR: Failed to get HBITMAP from CTexture.\n");
         return;
     }
+    Bitmap sourceGdiplusBitmap(hSourceBitmap, nullptr);
 
-    IWICBitmap* pWICBitmap = nullptr;
-    hr = pWICFactory->CreateBitmapFromHBITMAP(hBitmap, nullptr, WICBitmapUseAlpha, &pWICBitmap);
-
-    if (FAILED(hr) || !pWICBitmap)
-    {
-        OutputDebugStringA("WIC 비트맵 생성 실패\n");
-        pWICFactory->Release();
-        return;
-    }
-
-    // 각 프레임별로 D2D 비트맵 생성
+    // 2. 각 프레임을 순회하며 32비트 ARGB 비트맵으로 변환 후 D2D 비트맵으로 만듭니다.
     for (size_t i = 0; i < m_vecFrm.size(); i++)
     {
         tAnimFrm& frame = m_vecFrm[i];
+
+        // 프레임의 원본 위치와 크기
+        int srcX = static_cast<int>(frame.vLT.x);
+        int srcY = static_cast<int>(frame.vLT.y);
+        int srcWidth = static_cast<int>(frame.vSlice.x);
+        int srcHeight = static_cast<int>(frame.vSlice.y);
+
+        // 확대/축소될 최종 크기
+        int destWidth = static_cast<int>(srcWidth * m_fSizeMulti);
+        int destHeight = static_cast<int>(srcHeight * m_fSizeMulti);
+
+        // 3. [핵심] 이 프레임만을 위한 32비트 ARGB GDI+ 비트맵을 메모리에 생성합니다.
+        Bitmap* frameArgbBitmap = new Bitmap(destWidth, destHeight, PixelFormat32bppARGB);
+        Graphics frameGraphics(frameArgbBitmap);
         
-        // 원본 크기
-        UINT srcX = static_cast<UINT>(frame.vLT.x);
-        UINT srcY = static_cast<UINT>(frame.vLT.y);
-        UINT srcWidth = static_cast<UINT>(frame.vSlice.x);
-        UINT srcHeight = static_cast<UINT>(frame.vSlice.y);
+        // 픽셀 깨짐 방지를 위한 고품질 보간법 설정
+        frameGraphics.SetInterpolationMode(InterpolationModeNearestNeighbor);
+        frameGraphics.SetPixelOffsetMode(PixelOffsetModeHalf);
 
-        // 스케일된 크기
-        UINT destWidth = static_cast<UINT>(srcWidth * m_fSizeMulti);
-        UINT destHeight = static_cast<UINT>(srcHeight * m_fSizeMulti);
+        // 4. [핵심] 마젠타(255,0,255)를 투명색으로 지정하는 ImageAttributes를 설정합니다.
+        ImageAttributes imgAttr;
+        imgAttr.SetColorKey(Color(255, 0, 255), Color(255, 0, 255), ColorAdjustTypeBitmap);
 
-        // WIC 비트맵에서 프레임 영역 클립
-        IWICBitmapClipper* pClipper = nullptr;
-        WICRect clipRect = { static_cast<INT>(srcX), static_cast<INT>(srcY), static_cast<INT>(srcWidth), static_cast<INT>(srcHeight) };
-        
-        hr = pWICFactory->CreateBitmapClipper(&pClipper);
-        if (SUCCEEDED(hr))
-        {
-            hr = pClipper->Initialize(pWICBitmap, &clipRect);
-        }
+        // 5. 원본 스프라이트 시트에서 현재 프레임 영역을 잘라내어,
+        //    마젠타 키를 적용하면서 32비트 ARGB 비트맵에 그립니다.
+        //    이 과정에서 마젠타 픽셀은 알파값이 0인 투명 픽셀로 변환됩니다.
+        frameGraphics.DrawImage(
+            &sourceGdiplusBitmap,
+            Rect(0, 0, destWidth, destHeight), // 대상 사각형 (메모리에 생성된 ARGB 비트맵 전체)
+            srcX, srcY, srcWidth, srcHeight,   // 소스 사각형 (원본 스프라이트 시트에서 잘라낼 부분)
+            UnitPixel,
+            &imgAttr
+        );
 
-        IWICBitmapScaler* pScaler = nullptr;
-        if (SUCCEEDED(hr) && m_fSizeMulti != 1.0f)
-        {
-            // 스케일링이 필요한 경우
-            hr = pWICFactory->CreateBitmapScaler(&pScaler);
-            if (SUCCEEDED(hr))
-            {
-                hr = pScaler->Initialize(pClipper, destWidth, destHeight, WICBitmapInterpolationModeNearestNeighbor);
-            }
-        }
-
-        // D2D 비트맵 생성
+        // 6. 이제 알파 채널이 포함된 32비트 ARGB GDI+ 비트맵이 준비되었습니다.
+        //    이것을 WIC를 통해 Direct2D 비트맵으로 변환합니다.
+        IWICBitmap* pWICBitmap = nullptr;
         ID2D1Bitmap* pD2DBitmap = nullptr;
-        if (SUCCEEDED(hr))
+
+        // GDI+ Bitmap에서 HBITMAP을 임시로 추출 (알파 채널 포함)
+        HBITMAP hArgbBitmap = NULL;
+        if (frameArgbBitmap->GetHBITMAP(Color(0,0,0,0), &hArgbBitmap) == Ok)
         {
-            IWICBitmapSource* pSource = pScaler ? (IWICBitmapSource*)pScaler : (IWICBitmapSource*)pClipper;
-            hr = _pRenderTarget->CreateBitmapFromWicBitmap(pSource, nullptr, &pD2DBitmap);
-            
+            // HBITMAP을 WIC 비트맵으로 변환
+            hr = pWICFactory->CreateBitmapFromHBITMAP(hArgbBitmap, nullptr, WICBitmapUsePremultipliedAlpha, &pWICBitmap);
             if (SUCCEEDED(hr))
             {
-                OutputDebugStringA("D2D 비트맵 생성 성공\n");
+                // WIC 비트맵을 최종 D2D 비트맵으로 변환
+                hr = _pRenderTarget->CreateBitmapFromWicBitmap(pWICBitmap, nullptr, &pD2DBitmap);
+                if (FAILED(hr))
+                {
+                    OutputDebugStringA("ERROR: CreateBitmapFromWicBitmap failed.\n");
+                }
             }
             else
             {
-                OutputDebugStringA("D2D 비트맵 생성 실패\n");
+                OutputDebugStringA("ERROR: CreateBitmapFromHBITMAP (WIC) failed.\n");
             }
+            // 임시로 생성한 HBITMAP은 반드시 해제
+            DeleteObject(hArgbBitmap);
+        }
+        else
+        {
+            OutputDebugStringA("ERROR: Failed to get HBITMAP from GDI+ ARGB bitmap.\n");
         }
 
-        // 리소스 해제
-        if (pScaler) pScaler->Release();
-        if (pClipper) pClipper->Release();
+        // 임시 리소스 해제
+        if (pWICBitmap) pWICBitmap->Release();
+        delete frameArgbBitmap; // 메모리에 생성했던 GDI+ 비트맵 해제
 
-        // 결과 저장 (성공/실패와 관계없이 벡터 크기 유지)
+        // 최종 생성된 D2D 비트맵을 벡터에 추가 (실패 시 nullptr이 들어감)
         m_vecD2DFrameBitmaps.push_back(pD2DBitmap);
     }
 
-    pWICBitmap->Release();
     pWICFactory->Release();
     m_bD2DCached = true;
-    
-    OutputDebugStringA("D2D 프레임 캐싱 완료\n");
+    OutputDebugStringA("SUCCESS: D2D frames cached with magenta color key.\n");
 }
-
 // Direct2D 렌더링
 void CAnimation::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
 {
     CTimeMgr::StartTimer(L"AnimationComp_DXRender");
-    
+
     if (m_bFinish || m_iCurFrm < 0 || m_iCurFrm >= static_cast<int>(m_vecFrm.size()) || !_pRenderTarget)
     {
-        OutputDebugStringA("D2D 렌더링 조건 실패\n");
+        // OutputDebugStringA("D2D 렌더링 조건 실패\n"); // 디버그 출력이 너무 많아 주석 처리
         return;
     }
 
-    // D2D 프레임 캐싱
+    // [수정] D2D 프레임 캐싱 상태 확인 및 재생성 로직 개선
     if (!m_bD2DCached)
     {
-        OutputDebugStringA("D2D 캐싱 시작\n");
+        OutputDebugStringA("D2D 캐싱 필요 - 캐싱 시작\n");
         CacheD2DFrames(_pRenderTarget);
     }
 
-    if (m_iCurFrm >= static_cast<int>(m_vecD2DFrameBitmaps.size()) || !m_vecD2DFrameBitmaps[m_iCurFrm])
+    // [수정] 캐싱 후에도 비트맵이 유효한지 최종 확인
+    if (!m_bD2DCached || m_iCurFrm >= m_vecD2DFrameBitmaps.size() || !m_vecD2DFrameBitmaps[m_iCurFrm])
     {
-        OutputDebugStringA("D2D 비트맵 없음\n");
+        // OutputDebugStringA("D2D 비트맵 없음 - 렌더링 건너뜀\n"); // 디버그 출력이 너무 많아 주석 처리
+        CTimeMgr::EndTimer(L"AnimationComp_DXRender");
         return;
     }
 
-    OutputDebugStringA("D2D 애니메이션 렌더링 수행\n");
+    // OutputDebugStringA("D2D 애니메이션 렌더링 수행\n"); // 디버그 출력이 너무 많아 주석 처리
 
     GameObject* pObj = m_pAnimator->GetObj();
+        
     Vec2 vLogicalPos = pObj->GetWorldPos();
     bool isFacingRight = pObj->GetIsFacingRight();
 
@@ -608,28 +609,26 @@ void CAnimation::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
     Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(vVisualPos);
 
     ID2D1Bitmap* pFrameBitmap = m_vecD2DFrameBitmaps[m_iCurFrm];
+    if (!pFrameBitmap) { // 비트맵 유효성 한번 더 체크
+        CTimeMgr::EndTimer(L"AnimationComp_DXRender");
+        return;
+    }
     D2D1_SIZE_F bitmapSize = pFrameBitmap->GetSize();
 
     // 변환 행렬 설정
     D2D1_MATRIX_3X2_F originalTransform;
     _pRenderTarget->GetTransform(&originalTransform);
 
-    D2D1_MATRIX_3X2_F transform = D2D1::Matrix3x2F::Identity();
-    
-    // 이동
-    transform = transform * D2D1::Matrix3x2F::Translation(vRenderPos.x, vRenderPos.y);
-    
-    // 회전
-    if (abs(worldRotationAngle) > 3.0f)
-        transform = transform * D2D1::Matrix3x2F::Rotation(worldRotationAngle);
-    
-    // 좌우 반전
-    if (!isFacingRight)
-        transform = transform * D2D1::Matrix3x2F::Scale(-1.0f, 1.0f);
+    // [수정] 변환 행렬 생성 순서 변경
+    // 최종 변환 = 이동 * 회전 * 스케일 (실제 적용은 스케일 -> 회전 -> 이동 순)
+    D2D1_MATRIX_3X2_F matScale = isFacingRight ? D2D1::Matrix3x2F::Identity() : D2D1::Matrix3x2F::Scale(-1.f, 1.f);
+    D2D1_MATRIX_3X2_F matRotation = D2D1::Matrix3x2F::Rotation(worldRotationAngle);
+    D2D1_MATRIX_3X2_F matTranslation = D2D1::Matrix3x2F::Translation(vRenderPos.x, vRenderPos.y);
 
-    _pRenderTarget->SetTransform(transform);
+    // 행렬을 올바른 순서로 곱합니다.
+    _pRenderTarget->SetTransform(matScale * matRotation * matTranslation);
 
-    // 이미지 렌더링 (중심을 기준으로)
+    // 이미지 렌더링 (중심을 (0,0)으로 맞춰서 그립니다)
     D2D1_RECT_F destRect = D2D1::RectF(
         -bitmapSize.width / 2.0f,
         -bitmapSize.height / 2.0f,
@@ -642,7 +641,6 @@ void CAnimation::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
     // 변환 행렬 복원
     _pRenderTarget->SetTransform(originalTransform);
     CTimeMgr::EndTimer(L"AnimationComp_DXRender");
-    
 }
 
 

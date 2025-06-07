@@ -31,7 +31,7 @@ public:
 	void Update();
 	void FinalUpdate();
 	void Render(HDC _dc);
-	void RenderD2D(ID2D1DCRenderTarget* _pRenderTarget); // 새로운 D2D 렌더링
+	void RenderD2D(ID2D1RenderTarget* _pRenderTarget); // 새로운 D2D 렌더링
 
     void Reset();
 public:
