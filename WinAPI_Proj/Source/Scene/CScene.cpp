@@ -220,11 +220,19 @@ void CScene::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
 
 	for (UINT i = 0; i < static_cast<UINT>(GROUP_TYPE::END); i++)
 	{
+		// TILE 그룹의 경우 최적화된 타일 렌더링 사용
+		if (static_cast<UINT>(GROUP_TYPE::TILE) == i && !bDrawOutWindow)
+		{
+			RenderTileD2D(_pRenderTarget);
+			continue;
+		}
+
 		for (size_t j = 0; j < m_arrObj[i].size(); j++)
 		{
 			GameObject* pObj = m_arrObj[i][j];
 			if (pObj && !pObj->IsDead() && pObj->IsActive())
 			{
+				// Animator가 있는 경우 Direct2D 애니메이션 렌더링
 				if (pObj->GetAnimator())
 					pObj->GetAnimator()->RenderD2D(_pRenderTarget);
 			}
@@ -303,7 +311,55 @@ void CScene::Render_Tile(HDC _dc)
 		    }
 		}
 	}
+}
 
+// Direct2D를 사용하여 타일을 렌더링하는 함수 (뷰포트 컬링 최적화 적용)
+void CScene::RenderTileD2D(ID2D1RenderTarget* _pRenderTarget)
+{
+    if (!_pRenderTarget)
+        return;
+
+    const vector<GameObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
+    
+    if (vecTile.empty())
+        return;
+
+    Vec2 vCamLook = CCamera::GetInst()->GetLookAt();
+    Vec2 vResolution = CCore::GetInst()->GetResolution();
+
+    Vec2 vLeftTop = vCamLook - vResolution / 2.f;
+    
+    int iTileSize = TILE_SIZE;
+
+    int iLTCol = static_cast<int>(vLeftTop.x) / iTileSize;
+    int iLTRow = static_cast<int>(vLeftTop.y) / iTileSize;
+
+    int iClientWidth = (static_cast<int>(vResolution.x) / iTileSize) + 2;
+    int iClientHeight = (static_cast<int>(vResolution.y) / iTileSize) + 2;
+
+    for (int iCurRow = iLTRow; iCurRow < (iLTRow + iClientHeight); iCurRow++)
+    {
+        for (int iCurCol = iLTCol; iCurCol < (iLTCol + iClientWidth); iCurCol++)
+        {
+            if (iCurCol < 0 || m_iTileX <= static_cast<UINT>(iCurCol) ||
+                iCurRow < 0 || m_iTileY <= static_cast<UINT>(iCurRow))
+            {
+                continue;
+            }
+
+            int iIdx = (m_iTileX * iCurRow) + iCurCol;
+            
+            if (iIdx >= 0 && iIdx < static_cast<int>(vecTile.size()))
+            {
+                CTile* pTile = static_cast<CTile*>(vecTile[iIdx]);
+                if (pTile && !pTile->IsDead() && pTile->IsActive())
+                {
+                    // Direct2D 타일 렌더링 호출
+                    pTile->RenderD2D(_pRenderTarget);
+                }
+            }
+        }
+    }
 }
 
 

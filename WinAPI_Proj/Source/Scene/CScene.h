@@ -52,6 +52,7 @@ public:
 	virtual void Render(HDC _dc);
 	virtual void RenderD2D(ID2D1RenderTarget* _pRenderTarget);
 	void Render_Tile(HDC _dc);
+	void RenderTileD2D(ID2D1RenderTarget* _pRenderTarget);
 
 	virtual void Enter();
 	virtual void Exit();
