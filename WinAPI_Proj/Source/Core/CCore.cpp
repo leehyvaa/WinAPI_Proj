@@ -150,7 +150,9 @@ void CCore::Progress()
         CTimeMgr::EndTimer(L"Core_D2D_BindDC");
         
         m_pDCRenderTarget->BeginDraw();
+        OutputDebugStringA("[DX2D_VERIFY] CCore::Progress - Direct2D rendering started\n");
         CSceneMgr::GetInst()->RenderD2D(m_pDCRenderTarget);
+        OutputDebugStringA("[DX2D_VERIFY] CCore::Progress - Direct2D rendering completed\n");
 
         HRESULT hr = m_pDCRenderTarget->EndDraw();
         if (FAILED(hr) && hr == D2DERR_RECREATE_TARGET)
@@ -270,30 +272,39 @@ void CCore::ReleaseD2DResources()
 
 void CCore::Clear(HDC _dc)
 {
-	//SelectGDI gdi(m_pMemTex->GetDC(), BRUSH_TYPE::BLACK);
-	//Rectangle(m_pMemTex->GetDC(), -1, -1, m_ptResolution.x + 1, m_ptResolution.y + 1);
 	CScene* curScene = CSceneMgr::GetInst()->GetCurScene();
 	CBackGround* backGround = curScene->GetBackGround();
 	if (backGround == nullptr)
+	{
+		// 배경이 없으면 기본 검은색으로 클리어
+		SelectGDI gdi(_dc, BRUSH_TYPE::BLACK);
+		Rectangle(_dc, -1, -1, m_ptResolution.x + 1, m_ptResolution.y + 1);
 		return;
+	}
 
-
+	// 하이브리드 렌더링: GDI로 배경 렌더링, Direct2D는 Progress()에서 오버레이
 	Vec2 vRenderPos = backGround->GetWorldPos();
-
 	Vec2 vScale = backGround->GetScale();
+	
+	if (backGround->GetTexture())
+	{
+		UINT iWidth = backGround->GetTexture()->Width();
+		UINT iHeight = backGround->GetTexture()->Height();
 
-
-	UINT iWidth = backGround->GetTexture()->Width();
-	UINT iHeight = backGround->GetTexture()->Height();
-
-
-	TransparentBlt(_dc
-		, static_cast<int>(vRenderPos.x)
-		, static_cast<int>(vRenderPos.y)
-		, static_cast<int>(vScale.x), static_cast<int>(vScale.y)
-		, backGround->GetTexture()->GetDC()
-		, 0, 0,
-		iWidth, iHeight, RGB(255, 0, 255));
+		TransparentBlt(_dc
+			, static_cast<int>(vRenderPos.x)
+			, static_cast<int>(vRenderPos.y)
+			, static_cast<int>(vScale.x), static_cast<int>(vScale.y)
+			, backGround->GetTexture()->GetDC()
+			, 0, 0,
+			iWidth, iHeight, RGB(255, 0, 255));
+	}
+	else
+	{
+		// 텍스처가 없으면 검은색 배경
+		SelectGDI gdi(_dc, BRUSH_TYPE::BLACK);
+		Rectangle(_dc, -1, -1, m_ptResolution.x + 1, m_ptResolution.y + 1);
+	}
 }
 
 

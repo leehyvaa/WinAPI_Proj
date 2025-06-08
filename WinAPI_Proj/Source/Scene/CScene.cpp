@@ -4,6 +4,7 @@
 #include "CAnimator.h"
 #include "GameObject.h"
 #include "CTile.h"
+#include "CBackGround.h"
 #include "CResMgr.h"
 #include "CPathMgr.h"
 #include "CCamera.h"
@@ -222,6 +223,12 @@ void CScene::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
     
 	if (!_pRenderTarget)
 		return;
+
+	// 배경 렌더링 (가장 먼저)
+	if (backGround && backGround->IsActive())
+	{
+		backGround->RenderD2D(_pRenderTarget);
+	}
 
 	for (UINT i = 0; i < static_cast<UINT>(GROUP_TYPE::END); i++)
 	{
