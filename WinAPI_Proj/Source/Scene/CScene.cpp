@@ -7,6 +7,7 @@
 #include "CResMgr.h"
 #include "CPathMgr.h"
 #include "CCamera.h"
+#include "CCollider.h"
 #include "CCore.h"
 #include "CGravity.h"
 #include "SelectGDI.h"
@@ -172,7 +173,10 @@ void CScene::Render(HDC _dc)
 	{
 		if (static_cast<UINT>(GROUP_TYPE::TILE) == i && !bDrawOutWindow)
 		{
-			Render_Tile(_dc);
+			// Direct2D 활성화 시 GDI 타일 렌더링 스킵
+			if (!CCore::GetInst()->GetD2DRenderTarget()) {
+				Render_Tile(_dc);
+			}
 			continue;
 		}
 
@@ -195,8 +199,8 @@ void CScene::Render(HDC _dc)
 	}
     CTimeMgr::EndTimer(L"Core_GDI_Render");
     
-    // F10 키 - 프로파일 토글
-    if (KEY_HOLD(KEY::F10)) {
+    // F10 키 - 프로파일 토글 (GDI 버전은 Direct2D 비활성화 시에만)
+    if (KEY_HOLD(KEY::F10) && !CCore::GetInst()->GetD2DRenderTarget()) {
         HBRUSH hBlack = CreateSolidBrush(RGB(0, 0, 0));
         RECT rect = {0, 0, 800, 500};
         FillRect(_dc, &rect, hBlack);
@@ -245,10 +249,24 @@ void CScene::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
 				{
 					pObj->GetAnimator()->RenderD2D(_pRenderTarget);
 				}
+				
+				// 콜라이더 디버그 렌더링 (F6 키로 토글)
+				if (bDrawCollider && pObj->GetCollider())
+				{
+					pObj->GetCollider()->RenderD2D(_pRenderTarget);
+				}
 			}
 		}
-	}
-    CTimeMgr::EndTimer(L"Scene_D2D_Render");
+}
+CTimeMgr::EndTimer(L"Scene_D2D_Render");
+
+// F10 키 - Direct2D 프로파일링 출력
+if (KEY_HOLD(KEY::F10)) {
+		CTimeMgr::RenderProfileDataD2D(_pRenderTarget, 10);
+		
+		// 프로파일링 출력 후에만 리셋
+		CTimeMgr::ResetProfileData();
+}
 }
 
 // 해당 씬에서 그룹타입이 TILE인 모든 오브젝트를 그리는 함수
@@ -335,16 +353,21 @@ void CScene::RenderTileD2D(ID2D1RenderTarget* _pRenderTarget)
     if (vecTile.empty())
         return;
 
-    // 안티앨리어싱 모드 저장
+    // 안티앨리어싱 모드 저장 및 픽셀 완벽한 그리드 라인을 위해 비활성화
     D2D1_ANTIALIAS_MODE oldAliasMode = _pRenderTarget->GetAntialiasMode();
-
-    // 격자선 때문에 타일 렌더링때만 안티앨리어싱 중지
+    
+    // 타일 그리드는 픽셀 단위로 선명하게 렌더링하기 위해 안티앨리어싱 비활성화
     _pRenderTarget->SetAntialiasMode(D2D1_ANTIALIAS_MODE_ALIASED);
 
-    static bool s_antialiasDebugLogged = false;
-    if (!s_antialiasDebugLogged)
-        s_antialiasDebugLogged = true;
-
+    // 그리드 그리기용 브러시 생성 (한 번만)
+    static ID2D1SolidColorBrush* s_pGridBrush = nullptr;
+    if (bDrawGrid && !s_pGridBrush)
+    {
+        _pRenderTarget->CreateSolidColorBrush(
+            D2D1::ColorF(D2D1::ColorF::White, 0.3f),
+            &s_pGridBrush
+        );
+    }
 
     Vec2 vCamLook = CCamera::GetInst()->GetLookAt();
     Vec2 vResolution = CCore::GetInst()->GetResolution();
@@ -376,6 +399,22 @@ void CScene::RenderTileD2D(ID2D1RenderTarget* _pRenderTarget)
                 CTile* pTile = static_cast<CTile*>(vecTile[iIdx]);
                 if (pTile && !pTile->IsDead() && pTile->IsActive())
                 {
+                    // 그리드 그리기 (Direct2D)
+                    if (bDrawGrid && s_pGridBrush)
+                    {
+                        Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(pTile->GetWorldPos());
+                        Vec2 vScale = pTile->GetScale();
+
+                        D2D1_RECT_F rect = D2D1::RectF(
+                            vRenderPos.x,
+                            vRenderPos.y,
+                            vRenderPos.x + vScale.x,
+                            vRenderPos.y + vScale.y
+                        );
+
+                        _pRenderTarget->DrawRectangle(rect, s_pGridBrush, 1.0f);
+                    }
+
                     // 타일 렌더링
                     pTile->RenderD2D(_pRenderTarget);
                 }

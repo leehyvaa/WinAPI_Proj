@@ -5,6 +5,10 @@
 #include "SelectGDI.h"
 #include "CCamera.h"
 
+// Direct2D 헤더
+#include <d2d1.h>
+#pragma comment(lib, "d2d1.lib")
+
 UINT CCollider::g_iNextID = 0;
 
 
@@ -88,12 +92,15 @@ void CCollider::FinalUpdate()
 
 void CCollider::Render(HDC _dc)
 {
+    // Direct2D 활성화 시 GDI 렌더링 스킵
+    if (CCore::GetInst()->GetD2DRenderTarget())
+        return;
+        
     PEN_TYPE ePen = PEN_TYPE::GREEN;
     if (m_iCol > 0) // 충돌 중이면 빨간색
         ePen = PEN_TYPE::RED;
     else if (!m_bActive) // 비활성이면 파란색
         ePen = PEN_TYPE::BLUE;
-
 
     SelectGDI p(_dc, ePen);
     SelectGDI b(_dc, BRUSH_TYPE::HOLLOW);
@@ -111,6 +118,49 @@ void CCollider::Render(HDC _dc)
     LineTo(_dc, static_cast<int>(renderCorners[2].x), static_cast<int>(renderCorners[2].y));
     LineTo(_dc, static_cast<int>(renderCorners[3].x), static_cast<int>(renderCorners[3].y));
     LineTo(_dc, static_cast<int>(renderCorners[0].x), static_cast<int>(renderCorners[0].y));
+}
+
+void CCollider::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
+{
+    if (!_pRenderTarget || !m_bActive)
+        return;
+
+    // 색상 결정
+    D2D1_COLOR_F color;
+    if (m_iCol > 0) // 충돌 중이면 빨간색
+        color = D2D1::ColorF(D2D1::ColorF::Red, 0.6f);
+    else if (!m_bActive) // 비활성이면 파란색
+        color = D2D1::ColorF(D2D1::ColorF::Blue, 0.6f);
+    else // 기본 녹색
+        color = D2D1::ColorF(D2D1::ColorF::Green, 0.6f);
+
+    // 브러시 생성
+    ID2D1SolidColorBrush* pBrush = nullptr;
+    HRESULT hr = _pRenderTarget->CreateSolidColorBrush(color, &pBrush);
+    if (FAILED(hr) || !pBrush)
+        return;
+
+    // 카메라 적용된 렌더링 좌표 계산
+    Vec2 renderCorners[4];
+    for (int i = 0; i < 4; ++i)
+    {
+        renderCorners[i] = CCamera::GetInst()->GetRenderPos(m_vCorners[i]);
+    }
+
+    // OBB 그리기 (DrawLine 사용)
+    for (int i = 0; i < 4; ++i)
+    {
+        int nextIdx = (i + 1) % 4;
+        _pRenderTarget->DrawLine(
+            D2D1::Point2F(renderCorners[i].x, renderCorners[i].y),
+            D2D1::Point2F(renderCorners[nextIdx].x, renderCorners[nextIdx].y),
+            pBrush,
+            2.0f
+        );
+    }
+
+    // 리소스 해제
+    pBrush->Release();
 }
 
 void CCollider::OnCollision(CCollider* _pOther)

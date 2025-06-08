@@ -1,6 +1,9 @@
 ﻿#pragma once
 #include "Vec2.h"
 
+// Direct2D 전방 선언
+struct ID2D1RenderTarget;
+
 class GameObject;
 
 struct AABB {
@@ -50,6 +53,7 @@ public:
 
 	void FinalUpdate();
 	void Render(HDC _dc);
+	void RenderD2D(ID2D1RenderTarget* _pRenderTarget);
 
 	void OnCollision(CCollider* _pOther);
 	void OnCollisionEnter(CCollider* pOther);

@@ -3,6 +3,12 @@
 #include "CTimeMgr.h"
 #include "CCore.h"
 #include <iostream>
+
+// DirectWrite 헤더
+#include <d2d1.h>
+#include <dwrite.h>
+#pragma comment(lib, "d2d1.lib")
+#pragma comment(lib, "dwrite.lib")
 CTimeMgr::CTimeMgr()
 	: m_CurCount{}
 	, m_PrevCount{}
@@ -119,6 +125,93 @@ void CTimeMgr::RenderProfileData(HDC _dc, int _iOffsetY)
         swprintf_s(szBuf, L"%s: %.2fms (호출:%d, 평균:%.3fms)",
                   name.c_str(), data.dDuration, data.iCount, data.dAvgMs);
         TextOut(_dc, 10, y, szBuf, wcslen(szBuf));
+        y += 20;
+    }
+}
+
+void CTimeMgr::RenderProfileDataD2D(ID2D1RenderTarget* _pRenderTarget, int _iOffsetY)
+{
+    if (!_pRenderTarget || m_mapProfileData.empty())
+        return;
+
+    // DirectWrite 팩토리 가져오기
+    IDWriteFactory* pDWriteFactory = CCore::GetInst()->GetDWriteFactory();
+    if (!pDWriteFactory)
+        return;
+
+    // 텍스트 포맷 생성 (정적으로 캐싱)
+    static IDWriteTextFormat* s_pTextFormat = nullptr;
+    if (!s_pTextFormat)
+    {
+        HRESULT hr = pDWriteFactory->CreateTextFormat(
+            L"Arial",                    // 폰트 이름
+            nullptr,                     // 폰트 컬렉션
+            DWRITE_FONT_WEIGHT_NORMAL,   // 폰트 두께
+            DWRITE_FONT_STYLE_NORMAL,    // 폰트 스타일
+            DWRITE_FONT_STRETCH_NORMAL,  // 폰트 늘림
+            14.0f,                       // 폰트 크기
+            L"ko-kr",                    // 로케일
+            &s_pTextFormat
+        );
+
+        if (SUCCEEDED(hr) && s_pTextFormat)
+        {
+            s_pTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
+            s_pTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
+        }
+    }
+
+    // 텍스트 브러시 생성 (정적으로 캐싱)
+    static ID2D1SolidColorBrush* s_pTextBrush = nullptr;
+    if (!s_pTextBrush)
+    {
+        _pRenderTarget->CreateSolidColorBrush(
+            D2D1::ColorF(D2D1::ColorF::White),
+            &s_pTextBrush
+        );
+    }
+
+    if (!s_pTextFormat || !s_pTextBrush)
+        return;
+
+    // 배경 브러시 생성 (정적으로 캐싱)
+    static ID2D1SolidColorBrush* s_pBackgroundBrush = nullptr;
+    if (!s_pBackgroundBrush)
+    {
+        _pRenderTarget->CreateSolidColorBrush(
+            D2D1::ColorF(D2D1::ColorF::Black, 0.8f),  // 반투명 검은색
+            &s_pBackgroundBrush
+        );
+    }
+
+    if (s_pBackgroundBrush)
+    {
+        // 배경 사각형 그리기
+        D2D1_RECT_F backgroundRect = D2D1::RectF(0, 0, 800, 500);
+        _pRenderTarget->FillRectangle(backgroundRect, s_pBackgroundBrush);
+    }
+
+    // 프로파일 데이터 렌더링
+    float y = static_cast<float>(_iOffsetY);
+    for (auto iter = m_mapProfileData.begin(); iter != m_mapProfileData.end(); ++iter)
+    {
+        const auto& name = iter->first;
+        const auto& data = iter->second;
+        
+        wchar_t szBuf[128];
+        swprintf_s(szBuf, L"%s: %.2fms (호출:%d, 평균:%.3fms)",
+                  name.c_str(), data.dDuration, data.iCount, data.dAvgMs);
+
+        D2D1_RECT_F textRect = D2D1::RectF(10, y, 780, y + 20);
+        
+        _pRenderTarget->DrawText(
+            szBuf,
+            wcslen(szBuf),
+            s_pTextFormat,
+            textRect,
+            s_pTextBrush
+        );
+        
         y += 20;
     }
 }

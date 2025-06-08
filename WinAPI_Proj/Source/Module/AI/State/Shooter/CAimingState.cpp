@@ -14,6 +14,11 @@
 #include "CBullet.h"
 #include "CObjectPool.h"
 #include "SelectGDI.h"
+#include "CCore.h"
+
+// Direct2D 헤더
+#include <d2d1.h>
+#pragma comment(lib, "d2d1.lib")
 
 CAimingState::CAimingState() : CState(MON_STATE::AIMING)
                                , m_fShotDelay(1.0f) // 1초마다 발사
@@ -115,8 +120,15 @@ void CAimingState::Exit()
 
 void CAimingState::Render(HDC _dc)
 {
+    // Direct2D 활성화 시 GDI 렌더링 스킵
+    if (CCore::GetInst()->GetD2DRenderTarget())
+        return;
+        
     SPlayer* pPlayer = dynamic_cast<SPlayer*>(CSceneMgr::GetInst()->GetCurScene()->GetPlayer());
     CShooterMonster* pMonster = dynamic_cast<CShooterMonster*>(GetMonster());
+    
+    if (!pPlayer || !pMonster || !pMonster->GetHead())
+        return;
     
     PEN_TYPE ePen = PEN_TYPE::RED;
     SelectGDI p(_dc, ePen);
@@ -128,11 +140,58 @@ void CAimingState::Render(HDC _dc)
     else
         renderPos = renderPos + Vec2(-40.f,5.0f);
     
-    
     Vec2 dir = pPlayer->GetWorldPos()+Vec2(0.f,-55.f) - renderPos;
     renderPos = CCamera::GetInst()->GetRenderPos(renderPos);
     dir.Normalize();
     MoveToEx(_dc, renderPos.x, renderPos.y,nullptr);
     
     LineTo(_dc, renderPos.x + dir.x * 1500 ,renderPos.y + dir.y*1500);
+}
+
+void CAimingState::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
+{
+    if (!_pRenderTarget)
+        return;
+        
+    SPlayer* pPlayer = dynamic_cast<SPlayer*>(CSceneMgr::GetInst()->GetCurScene()->GetPlayer());
+    CShooterMonster* pMonster = dynamic_cast<CShooterMonster*>(GetMonster());
+    
+    if (!pPlayer || !pMonster || !pMonster->GetHead())
+        return;
+
+    // 빨간색 브러시 생성 (정적으로 캐싱)
+    static ID2D1SolidColorBrush* s_pRedBrush = nullptr;
+    if (!s_pRedBrush)
+    {
+        _pRenderTarget->CreateSolidColorBrush(
+            D2D1::ColorF(D2D1::ColorF::Red, 0.8f),
+            &s_pRedBrush
+        );
+    }
+
+    if (!s_pRedBrush)
+        return;
+
+    // 조준선 시작점 계산
+    Vec2 renderPos = pMonster->GetHead()->GetWorldPos();
+    if (GetAI()->GetOwner()->GetIsFacingRight())
+        renderPos = renderPos + Vec2(40.f, 5.0f);
+    else
+        renderPos = renderPos + Vec2(-40.f, 5.0f);
+    
+    // 조준 방향 계산
+    Vec2 dir = pPlayer->GetWorldPos() + Vec2(0.f, -55.f) - renderPos;
+    renderPos = CCamera::GetInst()->GetRenderPos(renderPos);
+    dir.Normalize();
+    
+    // 조준선 끝점 계산
+    Vec2 endPos = renderPos + dir * 1500.0f;
+    
+    // Direct2D로 조준선 그리기
+    _pRenderTarget->DrawLine(
+        D2D1::Point2F(renderPos.x, renderPos.y),
+        D2D1::Point2F(endPos.x, endPos.y),
+        s_pRedBrush,
+        2.0f
+    );
 }

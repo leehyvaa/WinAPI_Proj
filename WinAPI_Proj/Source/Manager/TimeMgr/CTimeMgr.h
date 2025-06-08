@@ -1,6 +1,9 @@
 ﻿#pragma once
 #include <unordered_map>
 
+// DirectWrite 전방 선언
+struct ID2D1RenderTarget;
+
 class CTimeMgr
 {
 	SINGLE(CTimeMgr)
@@ -40,6 +43,7 @@ public:
     static void StartTimer(const wstring& _strName);
     static void EndTimer(const wstring& _strName);
     static void RenderProfileData(HDC _dc, int _iOffsetY = 20);
+    static void RenderProfileDataD2D(ID2D1RenderTarget* _pRenderTarget, int _iOffsetY = 20);
     static void ResetProfileData();
 };
 

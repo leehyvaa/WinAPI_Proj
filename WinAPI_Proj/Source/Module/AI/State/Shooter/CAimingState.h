@@ -1,6 +1,9 @@
 ﻿#pragma once
 #include "CState.h"
 
+// Direct2D 전방 선언
+struct ID2D1RenderTarget;
+
 class CAimingState : public CState
 {
 public:
@@ -18,4 +21,5 @@ public:
     virtual void Update() override;
     virtual void Exit() override;
     virtual void Render(HDC _dc);
+    virtual void RenderD2D(ID2D1RenderTarget* _pRenderTarget);
 };
