@@ -505,7 +505,7 @@ void CScene_Tool::SettingTopLeftGround()
     
     // 선택된 타일의 인덱스 계산
     UINT iIdx = iRow * iTileX + iCol;
-	
+
     const vector<GameObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
 
     CTile* selectedTile = static_cast<CTile*>(vecTile[iIdx]);

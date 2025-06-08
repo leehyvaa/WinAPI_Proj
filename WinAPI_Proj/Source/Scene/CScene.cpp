@@ -302,6 +302,7 @@ void CScene::Render_Tile(HDC _dc)
 
 			int iIdx = (m_iTileX * iCurRow) + iCurCol;
 
+			// 격자 그리드를 타일보다 먼저 그리기
 			if(bDrawGrid)
 			{
 				Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(vecTile[iIdx]->GetWorldPos());
@@ -309,34 +310,31 @@ void CScene::Render_Tile(HDC _dc)
 
 				SelectGDI brush(_dc, BRUSH_TYPE::HOLLOW);
 
-
 				Rectangle(_dc, static_cast<int>(vRenderPos.x)
 					, static_cast<int>(vRenderPos.y)
 					, static_cast<int>(vRenderPos.x + vScale.x)
 					, static_cast<int>(vRenderPos.y + vScale.y));
-			    
-			    
 			}
-            
 
+			// 타일 렌더링
 			vecTile[iIdx]->Render(_dc);
 
-		    // 현재 타일의 위치부터 BotRightTile까지 선 그리기
-		    if (bDrawCompleteGround &&
-                static_cast<CTile*>(vecTile[iIdx])->GetGroundType() != GROUND_TYPE::NONE)
-		    {
-		        int botIdx = static_cast<CTile*>(vecTile[iIdx])->GetBotRightTileIdx();
-		        if (botIdx != -1 && botIdx < static_cast<int>(vecTile.size()))
-		        {
-		            Vec2 vStartPos = CCamera::GetInst()->GetRenderPos(vecTile[iIdx]->GetWorldPos());
-		            Vec2 vEndPos = CCamera::GetInst()->GetRenderPos(vecTile[botIdx]->GetWorldPos());
-		            SelectGDI brush(_dc, PEN_TYPE::BIGGREEN);
+			   // 현재 타일의 위치부터 BotRightTile까지 선 그리기
+			   if (bDrawCompleteGround &&
+			             static_cast<CTile*>(vecTile[iIdx])->GetGroundType() != GROUND_TYPE::NONE)
+			   {
+			       int botIdx = static_cast<CTile*>(vecTile[iIdx])->GetBotRightTileIdx();
+			       if (botIdx != -1 && botIdx < static_cast<int>(vecTile.size()))
+			       {
+			           Vec2 vStartPos = CCamera::GetInst()->GetRenderPos(vecTile[iIdx]->GetWorldPos());
+			           Vec2 vEndPos = CCamera::GetInst()->GetRenderPos(vecTile[botIdx]->GetWorldPos());
+			           SelectGDI brush(_dc, PEN_TYPE::BIGGREEN);
 
-		            // 화면에 선 그리기
-		            MoveToEx(_dc, (int)vStartPos.x, (int)vStartPos.y, nullptr);
-		            LineTo(_dc, (int)vEndPos.x, (int)vEndPos.y);
-		        }
-		    }
+			           // 화면에 선 그리기
+			           MoveToEx(_dc, (int)vStartPos.x, (int)vStartPos.y, nullptr);
+			           LineTo(_dc, (int)vEndPos.x, (int)vEndPos.y);
+			       }
+			   }
 		}
 	}
 }
@@ -417,6 +415,38 @@ void CScene::RenderTileD2D(ID2D1RenderTarget* _pRenderTarget)
 
                     // 타일 렌더링
                     pTile->RenderD2D(_pRenderTarget);
+
+                    // 지형 완성선 그리기 (Direct2D)
+                    if (bDrawCompleteGround && pTile->GetGroundType() != GROUND_TYPE::NONE)
+                    {
+                        // 지형 완성선용 브러시 생성 (한 번만)
+                        static ID2D1SolidColorBrush* s_pCompleteGroundBrush = nullptr;
+                        if (!s_pCompleteGroundBrush)
+                        {
+                            _pRenderTarget->CreateSolidColorBrush(
+                                D2D1::ColorF(D2D1::ColorF::Green, 1.0f),  // BIGGREEN 펜에 해당하는 색상
+                                &s_pCompleteGroundBrush
+                            );
+                        }
+
+                        if (s_pCompleteGroundBrush)
+                        {
+                            int botIdx = pTile->GetBotRightTileIdx();
+                            if (botIdx != -1 && botIdx < static_cast<int>(vecTile.size()))
+                            {
+                                Vec2 vStartPos = CCamera::GetInst()->GetRenderPos(pTile->GetWorldPos());
+                                Vec2 vEndPos = CCamera::GetInst()->GetRenderPos(vecTile[botIdx]->GetWorldPos());
+
+                                // Direct2D로 선 그리기
+                                _pRenderTarget->DrawLine(
+                                    D2D1::Point2F(vStartPos.x, vStartPos.y),
+                                    D2D1::Point2F(vEndPos.x+GetTileX()*2, vEndPos.y+GetTileY()*2),
+                                    s_pCompleteGroundBrush,
+                                    2.0f  // 선 두께
+                                );
+                            }
+                        }
+                    }
                 }
             }
         }

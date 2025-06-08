@@ -10,13 +10,8 @@
     <list default="true" id="e174ba9b-dad2-4293-bc5f-8669e5f5e6a8" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.WinAPI_Proj/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.WinAPI_Proj/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Output/bin_debug/WinAPI_Proj.exe" beforeDir="false" afterPath="$PROJECT_DIR$/Output/bin_debug/WinAPI_Proj.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Component/Collider/CCollider.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Component/Collider/CCollider.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Component/Collider/CCollider.h" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Component/Collider/CCollider.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Manager/TimeMgr/CTimeMgr.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Manager/TimeMgr/CTimeMgr.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Manager/TimeMgr/CTimeMgr.h" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Manager/TimeMgr/CTimeMgr.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Module/AI/State/Shooter/CAimingState.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Module/AI/State/Shooter/CAimingState.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Module/AI/State/Shooter/CAimingState.h" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Module/AI/State/Shooter/CAimingState.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Scene/CScene.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Scene/CScene.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Scene/Scene_Tool/CScene_Tool.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Scene/Scene_Tool/CScene_Tool.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,7 +25,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="cidr-memory-view://1" root0="FORCE_HIGHLIGHTING" />
+    <setting file="cidr-memory-view://6" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../Program Files (x86)/Windows Kits/10/Include/10.0.22621.0/shared/windef.h" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../Program Files (x86)/Windows Kits/10/Include/10.0.22621.0/ucrt/stdio.h" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../Program Files (x86)/Windows Kits/10/Include/10.0.22621.0/um/WinUser.h" root0="SKIP_HIGHLIGHTING" />
@@ -203,7 +198,7 @@
       <workItem from="1749344916650" duration="6054000" />
       <workItem from="1749359601979" duration="1744000" />
       <workItem from="1749361398267" duration="9167000" />
-      <workItem from="1749385937260" duration="1693000" />
+      <workItem from="1749385937260" duration="3154000" />
     </task>
     <servers />
   </component>
