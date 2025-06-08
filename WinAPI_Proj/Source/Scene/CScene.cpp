@@ -220,7 +220,7 @@ void CScene::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
 
 	for (UINT i = 0; i < static_cast<UINT>(GROUP_TYPE::END); i++)
 	{
-		// TILE 그룹의 경우 최적화된 타일 렌더링 사용
+		// 타일 렌더링
 		if (static_cast<UINT>(GROUP_TYPE::TILE) == i && !bDrawOutWindow)
 		{
 			RenderTileD2D(_pRenderTarget);
@@ -232,7 +232,7 @@ void CScene::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
 			GameObject* pObj = m_arrObj[i][j];
 			if (pObj && !pObj->IsDead() && pObj->IsActive())
 			{
-				// Animator가 있는 경우 Direct2D 애니메이션 렌더링
+				// Animator 렌더링
 				if (pObj->GetAnimator())
 					pObj->GetAnimator()->RenderD2D(_pRenderTarget);
 			}
@@ -313,7 +313,10 @@ void CScene::Render_Tile(HDC _dc)
 	}
 }
 
-// Direct2D를 사용하여 타일을 렌더링하는 함수 (뷰포트 컬링 최적화 적용)
+
+
+
+// DX2D 사용하는 타일 렌더링 함수
 void CScene::RenderTileD2D(ID2D1RenderTarget* _pRenderTarget)
 {
     if (!_pRenderTarget)
@@ -323,6 +326,17 @@ void CScene::RenderTileD2D(ID2D1RenderTarget* _pRenderTarget)
     
     if (vecTile.empty())
         return;
+
+    // 안티앨리어싱 모드 저장
+    D2D1_ANTIALIAS_MODE oldAliasMode = _pRenderTarget->GetAntialiasMode();
+
+    // 격자선 때문에 타일렌더링때만 안티앨리어싱 중지
+    _pRenderTarget->SetAntialiasMode(D2D1_ANTIALIAS_MODE_ALIASED);
+
+    static bool s_antialiasDebugLogged = false;
+    if (!s_antialiasDebugLogged)
+        s_antialiasDebugLogged = true;
+
 
     Vec2 vCamLook = CCamera::GetInst()->GetLookAt();
     Vec2 vResolution = CCore::GetInst()->GetResolution();
@@ -354,12 +368,15 @@ void CScene::RenderTileD2D(ID2D1RenderTarget* _pRenderTarget)
                 CTile* pTile = static_cast<CTile*>(vecTile[iIdx]);
                 if (pTile && !pTile->IsDead() && pTile->IsActive())
                 {
-                    // Direct2D 타일 렌더링 호출
+                    // 타일 렌더링
                     pTile->RenderD2D(_pRenderTarget);
                 }
             }
         }
     }
+
+    // 애니메이션을 위해 안티앨리어싱 원상복구
+    _pRenderTarget->SetAntialiasMode(oldAliasMode);
 }
 
 

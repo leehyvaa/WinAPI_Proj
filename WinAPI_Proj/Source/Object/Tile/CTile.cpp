@@ -45,16 +45,13 @@ void CTile::Update()
 
 void CTile::Render(HDC _dc)
 {
-    // Direct2D 렌더링이 활성화된 경우 GDI 렌더링 스킵
-    // CAnimation과 동일한 패턴으로 중복 렌더링 방지
+    // Dx2D 렌더링이 활성화된 경우 GDI 렌더링 스킵
     ID2D1RenderTarget* pD2DRenderTarget = CCore::GetInst()->GetD2DRenderTarget();
     if (pD2DRenderTarget != nullptr)
-    {
-        // Direct2D 렌더링이 활성화된 상태이므로 GDI 렌더링을 건너뜀
         return;
-    }
     
-    // Direct2D가 비활성화된 경우에만 GDI 렌더링 수행
+    
+    // 전면 텍스쳐 그리기
 	if (nullptr != m_pTileTex && -1 != m_iImgIdx)
 	{
 		Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(GetWorldPos());
@@ -83,7 +80,8 @@ void CTile::Render(HDC _dc)
 			, iCurCol * TILE_SIZE, iCurRow * TILE_SIZE,
 			TILE_SIZE, TILE_SIZE, RGB(255, 0, 255));
 	}
-
+    
+    // 후면 텍스쳐 그리기
 	if (nullptr != m_pTileTex2 && -1 != m_iImgIdx2)
 	{
 		Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(GetWorldPos());
@@ -113,7 +111,7 @@ void CTile::Render(HDC _dc)
 			TILE_SIZE, TILE_SIZE, RGB(255, 0, 255));
 	}
 
-    // 디버그용 그라운드 타입 렌더링은 Direct2D 상태와 관계없이 항상 GDI로 처리
+    // 디버그용 그라운드 타입 렌더링, 이거 Dx쪽으로 옮겨야함
     if (CSceneMgr::GetInst()->GetCurScene()->GetDrawGroundType() && m_eVertexPosition != VERTEX_POSITION::NONE)
     {
         PEN_TYPE ePen = PEN_TYPE::BLUE;
@@ -155,7 +153,7 @@ void CTile::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
     if (!_pRenderTarget)
         return;
 
-    // 첫 번째 타일 텍스처 렌더링 (캐싱 시스템 적용)
+    // 전면 텍스쳐 그리기
     if (nullptr != m_pTileTex && -1 != m_iImgIdx)
     {
         // 캐시된 비트맵이 없으면 생성
@@ -165,7 +163,7 @@ void CTile::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
             m_bD2DCached = true;
         }
 
-        // 캐시된 D2D 비트맵으로 고속 렌더링
+        
         if (m_pD2DBitmap)
         {
             Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(GetWorldPos());
@@ -187,7 +185,7 @@ void CTile::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
         }
     }
 
-    // 두 번째 타일 텍스처 렌더링 (캐싱 시스템 적용)
+    // 후면 텍스쳐 그리기
     if (nullptr != m_pTileTex2 && -1 != m_iImgIdx2)
     {
         // 캐시된 비트맵이 없으면 생성
@@ -197,7 +195,7 @@ void CTile::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
             m_bD2DCached2 = true;
         }
 
-        // 캐시된 D2D 비트맵으로 고속 렌더링
+        
         if (m_pD2DBitmap2)
         {
             Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(GetWorldPos());
@@ -275,10 +273,10 @@ void CTile::CacheD2DBitmap(ID2D1RenderTarget* _pRenderTarget, CTexture* _pTex, i
     int destWidth = static_cast<int>(vScale.x);
     int destHeight = static_cast<int>(vScale.y);
 
-    // 32비트 ARGB GDI+ 비트맵 생성 (투명 처리를 위해)
+    // 32비트 ARGB GDI+ 비트맵 생성
     Bitmap* tileArgbBitmap = new Bitmap(destWidth, destHeight, PixelFormat32bppARGB);
     Graphics tileGraphics(tileArgbBitmap);
-    
+
     // 픽셀 깨짐 방지
     tileGraphics.SetInterpolationMode(InterpolationModeNearestNeighbor);
     tileGraphics.SetPixelOffsetMode(PixelOffsetModeHalf);
@@ -287,7 +285,7 @@ void CTile::CacheD2DBitmap(ID2D1RenderTarget* _pRenderTarget, CTexture* _pTex, i
     ImageAttributes imgAttr;
     imgAttr.SetColorKey(Color(255, 0, 255), Color(255, 0, 255), ColorAdjustTypeBitmap);
 
-    // 타일 영역에서 투명색 적용 후 그리기
+    // 투명색 적용 후 그리기
     tileGraphics.DrawImage(
         &sourceGdiplusBitmap,
         Rect(0, 0, destWidth, destHeight),
@@ -309,13 +307,12 @@ void CTile::CacheD2DBitmap(ID2D1RenderTarget* _pRenderTarget, CTexture* _pTex, i
         
         if (SUCCEEDED(hr))
         {
-            // WIC 비트맵 -> D2D 비트맵 변환하여 캐시에 저장
+            // WIC 비트맵 -> D2D 비트맵 변환
             hr = _pRenderTarget->CreateBitmapFromWicBitmap(pWICBitmap, nullptr, _ppD2DBitmap);
         }
         DeleteObject(hArgbBitmap);
     }
-
-    // 임시 리소스 정리
+    
     if (pWICBitmap)
         pWICBitmap->Release();
     delete tileArgbBitmap;
@@ -339,11 +336,7 @@ void CTile::ReleaseD2DBitmaps()
     m_bD2DCached2 = false;
 }
 
-void CTile::RenderSingleTileD2D(ID2D1RenderTarget* _pRenderTarget, CTexture* _pTex, int _iImgIdx)
-{
-    // 이 메서드는 이제 사용되지 않음 (캐싱 시스템으로 대체)
-    // 하위 호환성을 위해 빈 함수로 유지
-}
+
 
 void CTile::Save(FILE* _pFile)
 {
@@ -512,6 +505,7 @@ void CTile::Load(FILE* _pFile)
 
 void CTile::OnCollisionEnter(CCollider* _pOther)
 {
+    return;
     GameObject* pOtherObj = _pOther->GetObj();
     if (pOtherObj->GetName() == L"Player")
     {

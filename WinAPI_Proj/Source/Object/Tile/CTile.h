@@ -31,9 +31,6 @@ public:
     virtual void RenderD2D(ID2D1RenderTarget* _pRenderTarget);
 
 private:
-    void RenderSingleTileD2D(ID2D1RenderTarget* _pRenderTarget, CTexture* _pTex, int _iImgIdx);
-    
-    // D2D 캐싱 시스템 메서드들 (CAnimation 패턴 적용)
     void CacheD2DBitmap(ID2D1RenderTarget* _pRenderTarget, CTexture* _pTex, int _iImgIdx, ID2D1Bitmap** _ppD2DBitmap);
     void ReleaseD2DBitmaps();
 

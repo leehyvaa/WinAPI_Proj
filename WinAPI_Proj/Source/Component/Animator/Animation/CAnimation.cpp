@@ -300,7 +300,7 @@ void CAnimation::CacheD2DFrames(ID2D1RenderTarget* _pRenderTarget)
         return;
     }
 
-    // 정적 WIC Factory 사용으로 생성 오버헤드 제거
+    // static WIC 팩토리 생성
     static IWICImagingFactory* s_pWICFactory = nullptr;
     if (!s_pWICFactory)
     {
@@ -385,7 +385,7 @@ void CAnimation::CacheD2DFrames(ID2D1RenderTarget* _pRenderTarget)
         m_vecD2DFrameBitmaps.push_back(pD2DBitmap);
     }
 
-    // 정적 WIC Factory는 해제하지 않음 (재사용)
+
     m_bD2DCached = true;
     
     CTimeMgr::EndTimer(L"Animation_Cache_Called");
@@ -403,7 +403,6 @@ void CAnimation::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
         return;
     }
     
-    // 애니메이션 캐시 최적화: 한 번만 실행하도록 개선
     if (!m_bD2DCached)
     {
         CacheD2DFrames(_pRenderTarget);
