@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "CCore.h"
 #include "CKeyMgr.h"
+#include "CTimeMgr.h"
 #include "GameObject.h"
 #include "CTimeMgr.h"
 #include "SPlayer.h"
@@ -103,49 +104,85 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 
 void CCore::Progress()
 {
+    CTimeMgr::StartTimer(L"Core_Progress_Total");
+    
     // Manager 업데이트
+    CTimeMgr::StartTimer(L"Core_Managers_Update");
     CTimeMgr::GetInst()->Update();
     CKeyMgr::GetInst()->Update();
     CCamera::GetInst()->Update();
+    CTimeMgr::EndTimer(L"Core_Managers_Update");
 
     // 씬 업데이트, 충돌처리
+    CTimeMgr::StartTimer(L"Core_Scene_Update");
     CSceneMgr::GetInst()->Update();
     CCollisionMgr::GetInst()->Update();
+    CTimeMgr::EndTimer(L"Core_Scene_Update");
 
     // UI 이벤트 체크
+    CTimeMgr::StartTimer(L"Core_UI_Update");
     CUIMgr::GetInst()->Update();
+    CTimeMgr::EndTimer(L"Core_UI_Update");
 
     // 렌더링 시작
+    CTimeMgr::StartTimer(L"Core_Rendering_Total");
     HDC hBackBufferDC = m_pMemTex->GetDC(); // GDI 백버퍼 DC 가져오기
     RECT rc = { 0, 0, m_ptResolution.x, m_ptResolution.y };
 
-    // GDI 렌더링 배경,타일,UI
+    // GDI 렌더링 배경,타일,UI (Scene에서 측정하므로 여기서는 제거)
     Clear(hBackBufferDC);
     CSceneMgr::GetInst()->Render(hBackBufferDC);
     CCamera::GetInst()->Render(hBackBufferDC);
 	
-    // 애니메이션 렌더링
-    // 렌더 타겟을 GDI DC에 바인딩
-    m_pDCRenderTarget->BindDC(hBackBufferDC, &rc);
-    m_pDCRenderTarget->BeginDraw();
-    CSceneMgr::GetInst()->RenderD2D(m_pDCRenderTarget);
-
-    HRESULT hr = m_pDCRenderTarget->EndDraw();
-    if (FAILED(hr) && hr == D2DERR_RECREATE_TARGET)
+    // 애니메이션 렌더링 (D2D 리소스가 있을 때만)
+    CTimeMgr::StartTimer(L"Core_D2D_Render");
+    if (m_pDCRenderTarget)
     {
-        ReleaseD2DResources();
-        CreateD2DResources();
+        // DC 바인딩은 리소스 재생성이나 DC 변경 시에만 수행
+        CTimeMgr::StartTimer(L"Core_D2D_BindDC");
+        static HDC s_lastBoundDC = nullptr;
+        if (s_lastBoundDC != hBackBufferDC)
+        {
+            m_pDCRenderTarget->BindDC(hBackBufferDC, &rc);
+            s_lastBoundDC = hBackBufferDC;
+        }
+        CTimeMgr::EndTimer(L"Core_D2D_BindDC");
+        
+        m_pDCRenderTarget->BeginDraw();
+        CSceneMgr::GetInst()->RenderD2D(m_pDCRenderTarget);
+
+        HRESULT hr = m_pDCRenderTarget->EndDraw();
+        if (FAILED(hr) && hr == D2DERR_RECREATE_TARGET)
+        {
+            CTimeMgr::StartTimer(L"Core_D2D_Recreate");
+            ReleaseD2DResources();
+            CreateD2DResources();
+            s_lastBoundDC = nullptr; // DC 바인딩 재설정 필요
+            CTimeMgr::EndTimer(L"Core_D2D_Recreate");
+        }
     }
+    CTimeMgr::EndTimer(L"Core_D2D_Render");
 
 	
     // 최종 출력
+    CTimeMgr::StartTimer(L"Core_Final_BitBlt");
     BitBlt(m_hDC, 0, 0, m_ptResolution.x, m_ptResolution.y,
         hBackBufferDC, 0, 0, SRCCOPY);
+    CTimeMgr::EndTimer(L"Core_Final_BitBlt");
+    CTimeMgr::EndTimer(L"Core_Rendering_Total");
+
+    // 프로파일링 데이터 출력 (F10 키)
+    if (CKeyMgr::GetInst()->GetKeyState(KEY::F10) == KEY_STATE::TAP)
+    {
+        CTimeMgr::RenderProfileData(m_hDC, 500); // 화면 하단에 출력
+    }
 
     CTimeMgr::GetInst()->Render();
 
     // 이벤트 지연처리
     CEventMgr::GetInst()->Update();
+    
+    CTimeMgr::EndTimer(L"Core_Progress_Total");
 }
 
 void CCore::CreateBrushPen()

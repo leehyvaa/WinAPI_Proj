@@ -290,26 +290,38 @@ void CAnimation::ReleaseD2DFrames()
 
 void CAnimation::CacheD2DFrames(ID2D1RenderTarget* _pRenderTarget)
 {
+    CTimeMgr::StartTimer(L"Animation_Cache_Called");
+    
     ReleaseD2DFrames();
 
     if (m_vecFrm.empty() || !m_pTex || !_pRenderTarget)
+    {
+        CTimeMgr::EndTimer(L"Animation_Cache_Called");
         return;
+    }
 
-
-    // 팩토리 생성 (비트맵 변환에 필요)
-    IWICImagingFactory* pWICFactory = nullptr;
-    HRESULT hr = CoCreateInstance(
-        CLSID_WICImagingFactory, nullptr, CLSCTX_INPROC_SERVER,
-        IID_IWICImagingFactory, (LPVOID*)&pWICFactory
-    );
-    if (FAILED(hr)) return;
-
+    // 정적 WIC Factory 사용으로 생성 오버헤드 제거
+    static IWICImagingFactory* s_pWICFactory = nullptr;
+    if (!s_pWICFactory)
+    {
+        HRESULT hr = CoCreateInstance(
+            CLSID_WICImagingFactory, nullptr, CLSCTX_INPROC_SERVER,
+            IID_IWICImagingFactory, (LPVOID*)&s_pWICFactory
+        );
+        if (FAILED(hr))
+        {
+            CTimeMgr::EndTimer(L"Animation_Cache_Called");
+            return;
+        }
+    }
+    IWICImagingFactory* pWICFactory = s_pWICFactory;
 
     // GDI+비트맵으로 텍스쳐 로드
     HBITMAP hSourceBitmap = m_pTex->GetHBITMAP();
     if (!hSourceBitmap)
     {
         pWICFactory->Release();
+        CTimeMgr::EndTimer(L"Animation_Cache_Called");
         return;
     }
     Bitmap sourceGdiplusBitmap(hSourceBitmap, nullptr);
@@ -349,7 +361,6 @@ void CAnimation::CacheD2DFrames(ID2D1RenderTarget* _pRenderTarget)
             &imgAttr
         );
 
-
         IWICBitmap* pWICBitmap = nullptr;
         ID2D1Bitmap* pD2DBitmap = nullptr;
 
@@ -359,7 +370,7 @@ void CAnimation::CacheD2DFrames(ID2D1RenderTarget* _pRenderTarget)
         {
             // HBITMAP -> WIC
             // WIC는 여러 이미지 포맷(jpg,png,bmp등)을 통일해서 쓸 수 있게하는 형식
-            hr = pWICFactory->CreateBitmapFromHBITMAP(hArgbBitmap, nullptr, WICBitmapUsePremultipliedAlpha, &pWICBitmap);
+            HRESULT hr = pWICFactory->CreateBitmapFromHBITMAP(hArgbBitmap, nullptr, WICBitmapUsePremultipliedAlpha, &pWICBitmap);
             if (SUCCEEDED(hr)) // WIC 비트맵 -> D2D 비트맵
             {
                 hr = _pRenderTarget->CreateBitmapFromWicBitmap(pWICBitmap, nullptr, &pD2DBitmap);
@@ -367,16 +378,17 @@ void CAnimation::CacheD2DFrames(ID2D1RenderTarget* _pRenderTarget)
             DeleteObject(hArgbBitmap);
         }
 
-        
         if (pWICBitmap) pWICBitmap->Release();
-        delete frameArgbBitmap; 
+        delete frameArgbBitmap;
 
         // Dx비트맵 최종 추가
         m_vecD2DFrameBitmaps.push_back(pD2DBitmap);
     }
 
-    pWICFactory->Release();
+    // 정적 WIC Factory는 해제하지 않음 (재사용)
     m_bD2DCached = true;
+    
+    CTimeMgr::EndTimer(L"Animation_Cache_Called");
 }
 
 
@@ -386,10 +398,16 @@ void CAnimation::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
     CTimeMgr::StartTimer(L"AnimationComp_DXRender");
 
     if (m_bFinish || m_iCurFrm < 0 || m_iCurFrm >= static_cast<int>(m_vecFrm.size()) || !_pRenderTarget)
+    {
+        CTimeMgr::EndTimer(L"AnimationComp_DXRender");
         return;
+    }
     
+    // 애니메이션 캐시 최적화: 한 번만 실행하도록 개선
     if (!m_bD2DCached)
+    {
         CacheD2DFrames(_pRenderTarget);
+    }
 
     
     if (!m_bD2DCached || m_iCurFrm >= m_vecD2DFrameBitmaps.size() || !m_vecD2DFrameBitmaps[m_iCurFrm])
