@@ -1,6 +1,8 @@
 ﻿#pragma once
 #include <d2d1.h>
+#include <dwrite.h>
 #pragma comment(lib, "d2d1.lib")
+#pragma comment(lib, "dwrite.lib")
 
 class CTexture;
 
@@ -15,12 +17,15 @@ private:
 	HDC		m_hDC;
     
 	ID2D1Factory*				m_pD2DFactory;
-	ID2D1DCRenderTarget*		m_pDCRenderTarget; 
-	HDC							m_hD2DMemoryDC;    
+	ID2D1DCRenderTarget*		m_pDCRenderTarget;
+	HDC							m_hD2DMemoryDC;
 	ID2D1SolidColorBrush*		m_pBlackBrush;
 	ID2D1SolidColorBrush*		m_pRedBrush;
 	ID2D1SolidColorBrush*		m_pGreenBrush;
 	ID2D1SolidColorBrush*		m_pBlueBrush;
+
+	// DirectWrite 리소스
+	IDWriteFactory*				m_pDWriteFactory;
 
 	CTexture* m_pMemTex; // 백버퍼 텍스쳐
     
@@ -55,6 +60,7 @@ public:
 	ID2D1DCRenderTarget* GetD2DRenderTarget() { return m_pDCRenderTarget; }
 	ID2D1Factory* GetD2DFactory() { return m_pD2DFactory; }
 	HDC GetD2DMemoryDC() { return m_hD2DMemoryDC; }
+	IDWriteFactory* GetDWriteFactory() { return m_pDWriteFactory; }
 
 private:
 

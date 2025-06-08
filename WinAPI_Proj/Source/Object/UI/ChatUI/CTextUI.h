@@ -1,6 +1,11 @@
 ﻿#pragma once
 #include "CUI.h"
 #include <vector> // 동적 배열 추가
+#include <dwrite.h>
+
+// DirectWrite 전방 선언
+struct IDWriteTextFormat;
+struct ID2D1SolidColorBrush;
 
 class CTextUI : public CUI
 {
@@ -19,6 +24,11 @@ private:
     int           m_iLineSpace; // 라인 간격 (픽셀)
     COLORREF      m_TextColor;
     HFONT         m_hFont;
+
+    // DirectWrite 관련 멤버 변수
+    IDWriteTextFormat* m_pTextFormat;     // DirectWrite 텍스트 포맷
+    ID2D1SolidColorBrush* m_pTextBrush;   // DirectWrite 텍스트 브러시
+    D2D1_COLOR_F  m_D2DTextColor;         // Direct2D 텍스트 색상
 
 public:
     CTextUI();
@@ -42,7 +52,13 @@ public:
     int GetFontSize() const { return m_iFontSize; }
     void SetFontColor(COLORREF color) { m_TextColor = color; }
 
+    // DirectWrite 관련 메서드
+    void SetFontColorD2D(D2D1_COLOR_F _color);
+    void CreateTextFormat();
+    void CreateTextBrush(ID2D1RenderTarget* _pRenderTarget);
+
     virtual void Render(HDC _dc) override;
+    virtual void RenderD2D(ID2D1RenderTarget* _pRenderTarget) override;
 };
 
 

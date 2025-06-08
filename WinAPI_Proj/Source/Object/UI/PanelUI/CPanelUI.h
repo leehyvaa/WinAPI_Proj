@@ -9,6 +9,7 @@ private:
 public:
     virtual void Update();
     virtual void Render(HDC _dc);
+    virtual void RenderD2D(ID2D1RenderTarget* _pRenderTarget) override;
 
     virtual void MouseOn();
     virtual void MouseLbtnDown();

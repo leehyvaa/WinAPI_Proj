@@ -1,8 +1,7 @@
 ㅡㅡ참고사항ㅡㅡ
-GDI+의 Drow함수 문제가 있음 3가지 중 선택
-- 총알들만 GDI로 처리 BitBlt, TransparentBlt
-- 아니면 전체 GDI로 처리하되 회전에다 좌우반전 이미지 넣고 처리
-- DX2D 업글
+GDI에서 DX로 마이그레이션 할 목록
+콜라이더, 씬, 타임매니저 등등의 Render로 디버깅 할때 현재 GDI임
+CCore의 Clear함수로 배경 그리는거 Dx로 바꿔야 함
 
 
 y는 밑으로 갈수록 +임

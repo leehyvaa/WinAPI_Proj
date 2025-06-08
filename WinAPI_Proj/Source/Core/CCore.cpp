@@ -34,6 +34,7 @@ CCore::CCore()
 	, m_pRedBrush(nullptr)
 	, m_pGreenBrush(nullptr)
 	, m_pBlueBrush(nullptr)
+	, m_pDWriteFactory(nullptr)
 	, m_arrPen{}
 	, m_arrBrush{}
 {
@@ -208,12 +209,23 @@ void CCore::CreateD2DResources()
 {
     ReleaseD2DResources();
 
-    // 팩토리 생성
+    // Direct2D 팩토리 생성
     HRESULT hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &m_pD2DFactory);
     if (FAILED(hr)) return;
 
+    // DirectWrite 팩토리 생성
+    hr = DWriteCreateFactory(
+        DWRITE_FACTORY_TYPE_SHARED,
+        __uuidof(IDWriteFactory),
+        reinterpret_cast<IUnknown**>(&m_pDWriteFactory)
+    );
+    if (FAILED(hr))
+    {
+        // DirectWrite 팩토리 생성 실패 시 로그 출력 (선택사항)
+        OutputDebugStringA("DirectWrite Factory creation failed\n");
+    }
 
-    // 속성 지정, GDI랑 32비트 비트맵 호환 
+    // 속성 지정, GDI랑 32비트 비트맵 호환
     D2D1_RENDER_TARGET_PROPERTIES props = D2D1::RenderTargetProperties(
         D2D1_RENDER_TARGET_TYPE_DEFAULT,
         D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_PREMULTIPLIED),
@@ -249,7 +261,10 @@ void CCore::ReleaseD2DResources()
     // 렌더 타겟 해제
     if (m_pDCRenderTarget) { m_pDCRenderTarget->Release(); m_pDCRenderTarget = nullptr; }
 
-    // 팩토리 해제
+    // DirectWrite 팩토리 해제
+    if (m_pDWriteFactory) { m_pDWriteFactory->Release(); m_pDWriteFactory = nullptr; }
+
+    // Direct2D 팩토리 해제
     if (m_pD2DFactory) { m_pD2DFactory->Release(); m_pD2DFactory = nullptr; }
 }
 

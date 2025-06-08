@@ -15,6 +15,7 @@
 #include "CObjectPool.h"
 #include "CRigidBody.h"
 #include "CTextUI.h"
+#include "CUI.h"
 #include "CTimeMgr.h"
 #include "SPlayer.h"
 
@@ -62,7 +63,7 @@ void CScene::Enter()
 {
     if (m_pPlayerText == nullptr) {
         m_pPlayerText = new CTextUI();
-        m_pPlayerText->SetWorldPos(Vec2(900, 0));
+        m_pPlayerText->SetWorldPos(Vec2(750, 0));
         m_pPlayerText->SetAlign(CTextUI::TEXT_ALIGN::CENTER);
         m_pPlayerText->SetLineSpace(5);
         m_pPlayerText->SetVisibleBox(false);
@@ -232,9 +233,18 @@ void CScene::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
 			GameObject* pObj = m_arrObj[i][j];
 			if (pObj && !pObj->IsDead() && pObj->IsActive())
 			{
-				// Animator 렌더링
-				if (pObj->GetAnimator())
+				// UI 그룹인 경우 CUI::RenderD2D 호출
+				if (static_cast<UINT>(GROUP_TYPE::UI) == i)
+				{
+					CUI* pUI = dynamic_cast<CUI*>(pObj);
+					if (pUI)
+						pUI->RenderD2D(_pRenderTarget);
+				}
+				// 다른 그룹은 Animator 렌더링
+				else if (pObj->GetAnimator())
+				{
 					pObj->GetAnimator()->RenderD2D(_pRenderTarget);
+				}
 			}
 		}
 	}
@@ -315,8 +325,6 @@ void CScene::Render_Tile(HDC _dc)
 
 
 
-
-// DX2D 사용하는 타일 렌더링 함수
 void CScene::RenderTileD2D(ID2D1RenderTarget* _pRenderTarget)
 {
     if (!_pRenderTarget)
@@ -330,7 +338,7 @@ void CScene::RenderTileD2D(ID2D1RenderTarget* _pRenderTarget)
     // 안티앨리어싱 모드 저장
     D2D1_ANTIALIAS_MODE oldAliasMode = _pRenderTarget->GetAntialiasMode();
 
-    // 격자선 때문에 타일렌더링때만 안티앨리어싱 중지
+    // 격자선 때문에 타일 렌더링때만 안티앨리어싱 중지
     _pRenderTarget->SetAntialiasMode(D2D1_ANTIALIAS_MODE_ALIASED);
 
     static bool s_antialiasDebugLogged = false;

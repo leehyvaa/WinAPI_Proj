@@ -1,6 +1,9 @@
 ﻿#pragma once
 #include "GameObject.h"
+#include <d2d1.h>
+
 class CTexture;
+struct ID2D1RenderTarget;
 
 
 class CUI :
@@ -17,6 +20,9 @@ private:
     CTexture* m_pTex;
     int m_iTexIndex;
 
+    // Direct2D 관련 멤버 변수
+    ID2D1Bitmap* m_pD2DBitmap;  // D2D 비트맵 포인터
+    bool m_bD2DCached;          // D2D 캐싱 여부
     
     bool m_bMouseOn; //마우스 UI 위에 있는지
     bool m_bLbtnDown; //UI가 왼쪽버튼이 눌린 적 있는지
@@ -48,8 +54,10 @@ private:
     void Update_Child();
     void FinalUpdate_Child();
     void Render_Child(HDC _dc);
+    void Render_Child_D2D(ID2D1RenderTarget* _pRenderTarget);
 
     void MouseOnCheck();
+    void CacheD2DBitmap(ID2D1RenderTarget* _pRenderTarget);
 
 
 public:
@@ -65,6 +73,7 @@ public:
     virtual void Update();
     virtual void FinalUpdate();
     virtual void Render(HDC _dc);
+    virtual void RenderD2D(ID2D1RenderTarget* _pRenderTarget);
 
 
 
