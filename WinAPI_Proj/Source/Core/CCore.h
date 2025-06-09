@@ -17,8 +17,7 @@ private:
 	HDC		m_hDC;
     
 	ID2D1Factory*				m_pD2DFactory;
-	ID2D1DCRenderTarget*		m_pDCRenderTarget;
-	HDC							m_hD2DMemoryDC;
+	ID2D1HwndRenderTarget*		m_pRenderTarget;
 	ID2D1SolidColorBrush*		m_pBlackBrush;
 	ID2D1SolidColorBrush*		m_pRedBrush;
 	ID2D1SolidColorBrush*		m_pGreenBrush;
@@ -57,9 +56,8 @@ public:
 	HBRUSH GetBrush(BRUSH_TYPE _eType) { return m_arrBrush[static_cast<UINT>(_eType)]; }
 	HPEN GetPen(PEN_TYPE _eType) { return m_arrPen[static_cast<UINT>(_eType)]; }
     
-	ID2D1DCRenderTarget* GetD2DRenderTarget() { return m_pDCRenderTarget; }
+	ID2D1RenderTarget* GetD2DRenderTarget() { return m_pRenderTarget; }
 	ID2D1Factory* GetD2DFactory() { return m_pD2DFactory; }
-	HDC GetD2DMemoryDC() { return m_hD2DMemoryDC; }
 	IDWriteFactory* GetDWriteFactory() { return m_pDWriteFactory; }
 
 private:

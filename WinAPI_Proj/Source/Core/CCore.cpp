@@ -28,8 +28,7 @@ CCore::CCore()
 	, m_ptResolution{}
 	, m_hDC(0)
 	, m_pD2DFactory(nullptr)
-	, m_pDCRenderTarget(nullptr)
-	, m_hD2DMemoryDC(nullptr)
+	, m_pRenderTarget(nullptr)
 	, m_pBlackBrush(nullptr)
 	, m_pRedBrush(nullptr)
 	, m_pGreenBrush(nullptr)
@@ -125,60 +124,44 @@ void CCore::Progress()
     CUIMgr::GetInst()->Update();
     CTimeMgr::EndTimer(L"Core_UI_Update");
 
-    // 렌더링 시작
-    CTimeMgr::StartTimer(L"Core_Rendering_Total");
-    HDC hBackBufferDC = m_pMemTex->GetDC(); // GDI 백버퍼 DC 가져오기
-    RECT rc = { 0, 0, m_ptResolution.x, m_ptResolution.y };
-
-    // GDI 렌더링 배경,타일,UI (Scene에서 측정하므로 여기서는 제거)
-    Clear(hBackBufferDC);
-    CSceneMgr::GetInst()->Render(hBackBufferDC);
-    CCamera::GetInst()->Render(hBackBufferDC);
-	
-    // 애니메이션 렌더링 (D2D 리소스가 있을 때만)
-    CTimeMgr::StartTimer(L"Core_D2D_Render");
-    if (m_pDCRenderTarget)
+    // 순수 Direct2D 렌더링 시작
+    CTimeMgr::StartTimer(L"Core_D2D_Render_Total");
+    if (m_pRenderTarget)
     {
-        // DC 바인딩은 리소스 재생성이나 DC 변경 시에만 수행
-        CTimeMgr::StartTimer(L"Core_D2D_BindDC");
-        static HDC s_lastBoundDC = nullptr;
-        if (s_lastBoundDC != hBackBufferDC)
-        {
-            m_pDCRenderTarget->BindDC(hBackBufferDC, &rc);
-            s_lastBoundDC = hBackBufferDC;
-        }
-        CTimeMgr::EndTimer(L"Core_D2D_BindDC");
+        m_pRenderTarget->BeginDraw();
         
-        m_pDCRenderTarget->BeginDraw();
-        OutputDebugStringA("[DX2D_VERIFY] CCore::Progress - Direct2D rendering started\n");
-        CSceneMgr::GetInst()->RenderD2D(m_pDCRenderTarget);
-        OutputDebugStringA("[DX2D_VERIFY] CCore::Progress - Direct2D rendering completed\n");
+        // 배경 클리어
+        m_pRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::Black));
+        
+        // 배경 렌더링
+        CScene* curScene = CSceneMgr::GetInst()->GetCurScene();
+        CBackGround* backGround = curScene->GetBackGround();
+        if (backGround)
+        {
+            backGround->RenderD2D(m_pRenderTarget);
+        }
+        
+        // 모든 오브젝트와 UI를 Direct2D로 렌더링
+        CSceneMgr::GetInst()->RenderD2D(m_pRenderTarget);
+        CCamera::GetInst()->RenderD2D(m_pRenderTarget);
 
-        HRESULT hr = m_pDCRenderTarget->EndDraw();
+        // 프로파일링 데이터 출력 (F10 키)
+        if (CKeyMgr::GetInst()->GetKeyState(KEY::F10) == KEY_STATE::TAP)
+        {
+            CTimeMgr::RenderProfileDataD2D(m_pRenderTarget, 500); // Direct2D로 출력
+        }
+
+        // EndDraw()가 화면 출력까지 담당
+        HRESULT hr = m_pRenderTarget->EndDraw();
         if (FAILED(hr) && hr == D2DERR_RECREATE_TARGET)
         {
             CTimeMgr::StartTimer(L"Core_D2D_Recreate");
             ReleaseD2DResources();
             CreateD2DResources();
-            s_lastBoundDC = nullptr; // DC 바인딩 재설정 필요
             CTimeMgr::EndTimer(L"Core_D2D_Recreate");
         }
     }
-    CTimeMgr::EndTimer(L"Core_D2D_Render");
-
-	
-    // 최종 출력
-    CTimeMgr::StartTimer(L"Core_Final_BitBlt");
-    BitBlt(m_hDC, 0, 0, m_ptResolution.x, m_ptResolution.y,
-        hBackBufferDC, 0, 0, SRCCOPY);
-    CTimeMgr::EndTimer(L"Core_Final_BitBlt");
-    CTimeMgr::EndTimer(L"Core_Rendering_Total");
-
-    // 프로파일링 데이터 출력 (F10 키)
-    if (CKeyMgr::GetInst()->GetKeyState(KEY::F10) == KEY_STATE::TAP)
-    {
-        CTimeMgr::RenderProfileData(m_hDC, 500); // 화면 하단에 출력
-    }
+    CTimeMgr::EndTimer(L"Core_D2D_Render_Total");
 
     CTimeMgr::GetInst()->Render();
 
@@ -223,32 +206,35 @@ void CCore::CreateD2DResources()
     );
     if (FAILED(hr))
     {
-        // DirectWrite 팩토리 생성 실패 시 로그 출력 (선택사항)
         OutputDebugStringA("DirectWrite Factory creation failed\n");
     }
 
-    // 속성 지정, GDI랑 32비트 비트맵 호환
+    // HWND 렌더 타겟 속성 설정
     D2D1_RENDER_TARGET_PROPERTIES props = D2D1::RenderTargetProperties(
         D2D1_RENDER_TARGET_TYPE_DEFAULT,
-        D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_PREMULTIPLIED),
-        0.0f, 0.0f,
-        D2D1_RENDER_TARGET_USAGE_GDI_COMPATIBLE
+        D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_PREMULTIPLIED)
     );
 
-    // 타겟 생성
-    hr = m_pD2DFactory->CreateDCRenderTarget(&props, &m_pDCRenderTarget);
+    // HWND 렌더 타겟 속성 설정
+    D2D1_HWND_RENDER_TARGET_PROPERTIES hwndProps = D2D1::HwndRenderTargetProperties(
+        m_hWnd,
+        D2D1::SizeU(static_cast<UINT32>(m_ptResolution.x), static_cast<UINT32>(m_ptResolution.y))
+    );
+
+    // HWND 렌더 타겟 생성
+    hr = m_pD2DFactory->CreateHwndRenderTarget(props, hwndProps, &m_pRenderTarget);
     if (FAILED(hr))
     {
         if (m_pD2DFactory) { m_pD2DFactory->Release(); m_pD2DFactory = nullptr; }
         return;
     }
     
-    if (m_pDCRenderTarget)
+    if (m_pRenderTarget)
     {
-        m_pDCRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Black), &m_pBlackBrush);
-        m_pDCRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Red), &m_pRedBrush);
-        m_pDCRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Green), &m_pGreenBrush);
-        m_pDCRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Blue), &m_pBlueBrush);
+        m_pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Black), &m_pBlackBrush);
+        m_pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Red), &m_pRedBrush);
+        m_pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Green), &m_pGreenBrush);
+        m_pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Blue), &m_pBlueBrush);
     }
 }
 
@@ -261,7 +247,7 @@ void CCore::ReleaseD2DResources()
     if (m_pBlueBrush)  { m_pBlueBrush->Release();  m_pBlueBrush = nullptr; }
 
     // 렌더 타겟 해제
-    if (m_pDCRenderTarget) { m_pDCRenderTarget->Release(); m_pDCRenderTarget = nullptr; }
+    if (m_pRenderTarget) { m_pRenderTarget->Release(); m_pRenderTarget = nullptr; }
 
     // DirectWrite 팩토리 해제
     if (m_pDWriteFactory) { m_pDWriteFactory->Release(); m_pDWriteFactory = nullptr; }

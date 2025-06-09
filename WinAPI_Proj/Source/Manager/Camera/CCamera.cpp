@@ -107,6 +107,55 @@ void CCamera::Render(HDC _dc)
 	}
 }
 
+void CCamera::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
+{
+    if (m_listCamEffect.empty() || !_pRenderTarget)
+        return;
+
+    tCamEffect& effect = m_listCamEffect.front();
+    effect.fCurTime += fDT;
+
+    float fRatio = 0.f; // 이펙트 진행 비율
+    fRatio = effect.fCurTime / effect.fDuration;
+
+    if (fRatio < 0.f)
+        fRatio = 0.f;
+    if (fRatio > 1.f)
+        fRatio = 1.f;
+
+    float fAlpha = 0.f;
+
+    if (CAM_EFFECT::FADE_OUT == effect.eEffect)
+    {
+        fAlpha = fRatio;
+    }
+    else if (CAM_EFFECT::FADE_IN == effect.eEffect)
+    {
+        fAlpha = 1.f - fRatio;
+    }
+
+    // Direct2D로 페이드 효과 렌더링
+    static ID2D1SolidColorBrush* s_pFadeBrush = nullptr;
+    if (!s_pFadeBrush)
+    {
+        _pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Black), &s_pFadeBrush);
+    }
+
+    if (s_pFadeBrush)
+    {
+        s_pFadeBrush->SetOpacity(fAlpha);
+        Vec2 vResolution = CCore::GetInst()->GetResolution();
+        D2D1_RECT_F rect = D2D1::RectF(0, 0, vResolution.x, vResolution.y);
+        _pRenderTarget->FillRectangle(&rect, s_pFadeBrush);
+    }
+
+    // 진행시간이 이펙트 지속시간을 넘어서면 스톱
+    if (effect.fDuration < effect.fCurTime)
+    {
+        m_listCamEffect.pop_front();
+    }
+}
+
 void CCamera::init()
 {
 	Vec2 vResolution = CCore::GetInst()->GetResolution();

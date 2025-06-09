@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+struct ID2D1RenderTarget;
 class GameObject;
 class CTexture;
 
@@ -58,6 +59,7 @@ public:
 	void init();
 	void Update();
 	void Render(HDC _dc);
+	void RenderD2D(ID2D1RenderTarget* _pRenderTarget);
 private:
 	void CalDiff();
 
