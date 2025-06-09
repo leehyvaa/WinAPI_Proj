@@ -399,8 +399,8 @@ void CHook::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
     if (!_pRenderTarget)
         return;
         
-    // 컴포넌트 렌더링 (애니메이션은 이미 Direct2D로 처리됨)
-    Component_Render(nullptr); // HDC는 nullptr로 전달, 내부에서 Direct2D 처리
+    // 애니메이션 컴포넌트 Direct2D 렌더링 (다른 오브젝트처럼)
+    GetAnimator()->RenderD2D(_pRenderTarget);
 
     // 체인 그리기
     if (!m_pOwnerArm || !pChainTex) 

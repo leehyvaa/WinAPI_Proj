@@ -8,12 +8,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e174ba9b-dad2-4293-bc5f-8669e5f5e6a8" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.WinAPI_Proj/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.WinAPI_Proj/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Output/bin_debug/WinAPI_Proj.exe" beforeDir="false" afterPath="$PROJECT_DIR$/Output/bin_debug/WinAPI_Proj.exe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/CHook.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/CHook.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/CHook.h" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/CHook.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/GameObject.h" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/GameObject.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Scene/CScene.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Scene/CScene.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -200,7 +195,7 @@
       <workItem from="1749344916650" duration="6054000" />
       <workItem from="1749359601979" duration="1744000" />
       <workItem from="1749361398267" duration="9167000" />
-      <workItem from="1749385937260" duration="5764000" />
+      <workItem from="1749385937260" duration="6354000" />
     </task>
     <servers />
   </component>
