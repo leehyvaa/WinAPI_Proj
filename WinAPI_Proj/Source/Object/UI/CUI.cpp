@@ -2,7 +2,6 @@
 
 #include "CKeyMgr.h"
 #include "CCamera.h"
-#include "SelectGDI.h"
 #include "CTexture.h"
 #include "CCore.h"
 #include <d2d1.h>
@@ -20,7 +19,7 @@ CUI::CUI(bool _bCamAff)
 	, m_pTex(nullptr)
 	, m_iTexIndex(-1)
     , m_bVisibleBox(true)
-    , m_BorderColor(PEN_TYPE::GREEN)
+    , m_BorderColor(D2D1::ColorF(D2D1::ColorF::Green))
     , m_pD2DBitmap(nullptr)
     , m_bD2DCached(false)
 {
@@ -119,15 +118,21 @@ void CUI::Render(HDC _dc)
 	}
 	else if(m_bVisibleBox)
 	{
-		// 사각형 그리기
-		PEN_TYPE penColor = m_bLbtnDown ? PEN_TYPE::BLUE : m_BorderColor;
+		// GDI 모드에서는 기본 사각형만 그리기 (Direct2D 우선 사용)
+		HBRUSH hBrush = CreateSolidBrush(RGB(128, 128, 128));
+		HPEN hPen = CreatePen(PS_SOLID, 1, RGB(0, 255, 0));
 		
-		SelectGDI select_pen(_dc, penColor);
-		SelectGDI select_brush(_dc, m_BoxColor);
-
+		HBRUSH hOldBrush = (HBRUSH)SelectObject(_dc, hBrush);
+		HPEN hOldPen = (HPEN)SelectObject(_dc, hPen);
+		
 		Rectangle(_dc
 			, (int)vPos.x, (int)vPos.y
 			, (int)(vPos.x + vScale.x), (int)(vPos.y + vScale.y));
+			
+		SelectObject(_dc, hOldBrush);
+		SelectObject(_dc, hOldPen);
+		DeleteObject(hBrush);
+		DeleteObject(hPen);
 	}
 
 	// 자식 UI 렌더링

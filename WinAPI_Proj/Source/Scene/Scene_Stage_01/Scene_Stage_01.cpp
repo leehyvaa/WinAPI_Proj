@@ -18,7 +18,6 @@
 #include "CIdleState.h"
 #include "CTraceState.h"
 #include "CRigidBody.h"
-#include "SelectGDI.h"
 #include "CTimeMgr.h"
 #include "CGround.h"
 #include "CBackGround.h"
@@ -62,9 +61,9 @@ void Scene_Stage_01::Update()
 	
 }
 
-void Scene_Stage_01::Render(HDC _dc)
+void Scene_Stage_01::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
 {
-	CScene::Render(_dc);
+	CScene::RenderD2D(_pRenderTarget);
 }
 
 void Scene_Stage_01::Enter()

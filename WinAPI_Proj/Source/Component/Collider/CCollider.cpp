@@ -2,7 +2,6 @@
 #include "CCollider.h"
 #include "GameObject.h"
 #include "CCore.h"
-#include "SelectGDI.h"
 #include "CCamera.h"
 
 // Direct2D 헤더
@@ -90,35 +89,7 @@ void CCollider::FinalUpdate()
 	assert(0 <= m_iCol);
 }
 
-void CCollider::Render(HDC _dc)
-{
-    // Direct2D 활성화 시 GDI 렌더링 스킵
-    if (CCore::GetInst()->GetD2DRenderTarget())
-        return;
-        
-    PEN_TYPE ePen = PEN_TYPE::GREEN;
-    if (m_iCol > 0) // 충돌 중이면 빨간색
-        ePen = PEN_TYPE::RED;
-    else if (!m_bActive) // 비활성이면 파란색
-        ePen = PEN_TYPE::BLUE;
-
-    SelectGDI p(_dc, ePen);
-    SelectGDI b(_dc, BRUSH_TYPE::HOLLOW);
-    
-    // 카메라 적용된 렌더링 좌표 계산
-    Vec2 renderCorners[4];
-    for (int i = 0; i < 4; ++i)
-    {
-        renderCorners[i] = CCamera::GetInst()->GetRenderPos(m_vCorners[i]);
-    }
-
-    // OBB 그리기 (선 사용)
-    MoveToEx(_dc, static_cast<int>(renderCorners[0].x), static_cast<int>(renderCorners[0].y), nullptr);
-    LineTo(_dc, static_cast<int>(renderCorners[1].x), static_cast<int>(renderCorners[1].y));
-    LineTo(_dc, static_cast<int>(renderCorners[2].x), static_cast<int>(renderCorners[2].y));
-    LineTo(_dc, static_cast<int>(renderCorners[3].x), static_cast<int>(renderCorners[3].y));
-    LineTo(_dc, static_cast<int>(renderCorners[0].x), static_cast<int>(renderCorners[0].y));
-}
+// GDI Render 함수 완전 제거 - Direct2D로 완전 전환됨
 
 void CCollider::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
 {

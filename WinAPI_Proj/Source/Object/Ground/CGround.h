@@ -1,6 +1,8 @@
 ﻿#pragma once
 #include "GameObject.h"
 
+struct ID2D1RenderTarget;
+
 enum class COLLISION_SIDE {
     NONE,
     TOP,
@@ -28,7 +30,7 @@ public:
     
 	virtual void Start();
 	virtual void Update();
-	virtual void Render(HDC _dc);
+	virtual void RenderD2D(ID2D1RenderTarget* _pRenderTarget) override;
 	
 
 public:

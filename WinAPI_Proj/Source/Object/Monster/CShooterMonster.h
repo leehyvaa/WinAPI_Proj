@@ -2,6 +2,7 @@
 #include "CMonster.h"
 
 class CShooterHead;
+struct ID2D1RenderTarget;
 
 class CShooterMonster : public CMonster
 {
@@ -26,7 +27,7 @@ public:
     
     virtual void Start();
     virtual void Update();
-    virtual void Render(HDC _dc);
+    virtual void RenderD2D(ID2D1RenderTarget* _pRenderTarget) override;
     virtual void FinalUpdata();
     virtual void Reset() override;
 

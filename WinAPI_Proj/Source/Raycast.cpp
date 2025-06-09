@@ -24,14 +24,36 @@ void Raycast::Update()
 	
 }
 
-void Raycast::Render(HDC _hdc)
+void Raycast::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
 {
+	if (!_pRenderTarget)
+		return;
+		
     // RayCast 충돌 위치 출력
 	if (!targetPos.IsZero() && m_bRender)
 	{
 		Vec2 renderPos = CCamera::GetInst()->GetRenderPos(targetPos);
-		Rectangle(_hdc, renderPos.x - 5, renderPos.y - 5, renderPos.x +5, renderPos.y + 5);
+		
+		// Direct2D로 사각형 렌더링
+		static ID2D1SolidColorBrush* s_pBrush = nullptr;
+		if (!s_pBrush)
+		{
+			_pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::White), &s_pBrush);
+		}
+		
+		if (s_pBrush)
+		{
+			D2D1_RECT_F rect = D2D1::RectF(
+				renderPos.x - 5.0f,
+				renderPos.y - 5.0f,
+				renderPos.x + 5.0f,
+				renderPos.y + 5.0f
+			);
+			_pRenderTarget->DrawRectangle(rect, s_pBrush);
+		}
 	}
+	
+	GameObject::RenderD2D(_pRenderTarget);
 }
 
 

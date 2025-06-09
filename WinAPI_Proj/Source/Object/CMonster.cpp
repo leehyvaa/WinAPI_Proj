@@ -34,9 +34,12 @@ void CMonster::Update()
 
 }
 
-void CMonster::Render(HDC _dc)
+void CMonster::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
 {
-    GameObject::Render(_dc);
+    if (!_pRenderTarget)
+        return;
+    
+    GameObject::RenderD2D(_pRenderTarget);
 }
 
 void CMonster::FinalUpdata()

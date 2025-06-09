@@ -35,14 +35,14 @@ private:
 public:
 	void init();
 	void Update();
-	void Render();
+	// void Render();
 
 	double GetDT() { return m_dDT; }
 	float GetfDT() { return static_cast<float>(m_dDT); }
 
     static void StartTimer(const wstring& _strName);
     static void EndTimer(const wstring& _strName);
-    static void RenderProfileData(HDC _dc, int _iOffsetY = 20);
+    // static void RenderProfileData(HDC _dc, int _iOffsetY = 20);
     static void RenderProfileDataD2D(ID2D1RenderTarget* _pRenderTarget, int _iOffsetY = 20);
     static void ResetProfileData();
 };

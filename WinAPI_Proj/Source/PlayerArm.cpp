@@ -90,10 +90,12 @@ void PlayerArm::Update()
 	m_ePrevState = m_eCurState;
 }
 
-void PlayerArm::Render(HDC _dc)
+void PlayerArm::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
 {
-
-	Component_Render(_dc);
+	if (!_pRenderTarget)
+		return;
+		
+	GameObject::RenderD2D(_pRenderTarget);
 }
 
 void PlayerArm::Update_Animation()

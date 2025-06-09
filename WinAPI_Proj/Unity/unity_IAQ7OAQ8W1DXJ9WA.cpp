@@ -2,8 +2,6 @@
 #include "C:\WinAPIProject\WinAPI_Proj\Source\Module\AI\State\Trace\CTraceState.cpp"
 
 
-#include "C:\WinAPIProject\WinAPI_Proj\Source\Module\SelectGDI.cpp"
-
 
 #include "C:\WinAPIProject\WinAPI_Proj\Source\Object\CMonster.cpp"
 

@@ -1,6 +1,9 @@
 ﻿#pragma once
 #include "GameObject.h"
 
+// Direct2D 전방 선언
+struct ID2D1RenderTarget;
+
 class CTexture;
 class CMonster;
 
@@ -24,7 +27,7 @@ public:
     void ReturnToPool();
 
     virtual void Update() override;
-    virtual void Render(HDC _dc) override;
+    virtual void RenderD2D(ID2D1RenderTarget* _pRenderTarget) override;
     virtual void OnCollisionEnter(CCollider* _pOther) override;
     virtual void Reset() override; // 풀에서 재사용 시 초기화
 

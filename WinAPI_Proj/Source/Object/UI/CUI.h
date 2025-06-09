@@ -14,8 +14,8 @@ private:
     CUI* m_pParentUI;
 
     Vec2 m_vFinalPos;
-    BRUSH_TYPE m_BoxColor;
-    PEN_TYPE m_BorderColor;
+    D2D1_COLOR_F m_BoxColor;
+    D2D1_COLOR_F m_BorderColor;
 
     CTexture* m_pTex;
     int m_iTexIndex;
@@ -46,8 +46,8 @@ public:
     CTexture* GetTexture() { return m_pTex; }
     void SetTexture(CTexture* _pTex) { m_pTex = _pTex; }
     void SetIndex(int _index) { m_iTexIndex = _index; }
-    void SetBoxColor(BRUSH_TYPE color) { m_BoxColor = color; }
-    void SetBorderColor(PEN_TYPE color) { m_BorderColor = color; }
+    void SetBoxColor(D2D1_COLOR_F color) { m_BoxColor = color; }
+    void SetBorderColor(D2D1_COLOR_F color) { m_BorderColor = color; }
     void SetVisibleBox(bool b) { m_bVisibleBox = b; }
 
 private:

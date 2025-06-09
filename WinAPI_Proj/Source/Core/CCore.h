@@ -26,12 +26,6 @@ private:
 	// DirectWrite 리소스
 	IDWriteFactory*				m_pDWriteFactory;
 
-	CTexture* m_pMemTex; // 백버퍼 텍스쳐
-    
-	// GDI Object
-	HBRUSH m_arrBrush[static_cast<UINT>(BRUSH_TYPE::END)];
-	HPEN m_arrPen[static_cast<UINT>(PEN_TYPE::END)];
-
 	// 메뉴
 	HMENU m_hMenu; // Tool씬에서 사용
 
@@ -39,22 +33,16 @@ public:
 	int init(HWND _hWnd, POINT _ptResolution);
 	void Progress();
 
-	void CreateBrushPen();
 	void CreateD2DResources();
 	void ReleaseD2DResources();
-	void Clear(HDC _dc);
 
 	void DockMenu();
 	void DivideMenu();
 	void ChangeWindowSize(Vec2 _vResolution, bool _bMenu);
 
-
-	HDC GetmemDC();
 	HDC GetMainDC() { return m_hDC; }
 	HWND GetMainHwnd() { return m_hWnd; }
 	POINT GetResolution() { return m_ptResolution; }
-	HBRUSH GetBrush(BRUSH_TYPE _eType) { return m_arrBrush[static_cast<UINT>(_eType)]; }
-	HPEN GetPen(PEN_TYPE _eType) { return m_arrPen[static_cast<UINT>(_eType)]; }
     
 	ID2D1RenderTarget* GetD2DRenderTarget() { return m_pRenderTarget; }
 	ID2D1Factory* GetD2DFactory() { return m_pD2DFactory; }

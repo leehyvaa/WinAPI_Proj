@@ -120,12 +120,15 @@ void CShooterMonster::Update()
     }
 }
 
-void CShooterMonster::Render(HDC _dc)
+void CShooterMonster::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
 {
-    CMonster::Render(_dc);
+    if (!_pRenderTarget)
+        return;
+        
+    CMonster::RenderD2D(_pRenderTarget);
     if(nullptr != m_pAI)
     {
-        m_pAI->Render(_dc);
+        m_pAI->RenderD2D(_pRenderTarget);
     }
 }
 

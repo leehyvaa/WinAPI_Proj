@@ -51,6 +51,7 @@ void CTimeMgr::Update()
 	
 }
 
+/*
 void CTimeMgr::Render()
 {
 	++m_iCallCount;
@@ -68,6 +69,7 @@ void CTimeMgr::Render()
 		SetWindowText(CCore::GetInst()->GetMainHwnd(), szBuffer);
 	}
 }
+*/
 
 unordered_map<wstring, CTimeMgr::ProfileResult> CTimeMgr::m_mapProfileData;
 unordered_map<wstring, LARGE_INTEGER> CTimeMgr::m_mapStartTime;
@@ -111,6 +113,7 @@ void CTimeMgr::ResetProfileData()
     m_mapStartTime.clear();  // 시작 시간도 클리어
 }
 
+/*
 void CTimeMgr::RenderProfileData(HDC _dc, int _iOffsetY)
 {
     if (m_mapProfileData.empty())
@@ -128,6 +131,7 @@ void CTimeMgr::RenderProfileData(HDC _dc, int _iOffsetY)
         y += 20;
     }
 }
+*/
 
 void CTimeMgr::RenderProfileDataD2D(ID2D1RenderTarget* _pRenderTarget, int _iOffsetY)
 {

@@ -1,6 +1,8 @@
 ﻿#pragma once
 #include "GameObject.h"
 
+struct ID2D1RenderTarget; // Direct2D 전방 선언
+
 class SPlayer;
 
 class PlayerArm : public GameObject
@@ -13,7 +15,7 @@ private:
     PLAYER_CLIMB_STATE m_ePrevClimbState;
 
     virtual void Update() override;
-    virtual void Render(HDC _dc) override;
+    virtual void RenderD2D(ID2D1RenderTarget* _pRenderTarget) override;
 
 public:
     void Update_Animation();

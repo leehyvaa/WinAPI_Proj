@@ -46,7 +46,7 @@ public:
     virtual ~CHook();
 
     virtual void Update();
-    virtual void Render(HDC _dc);
+    // virtual void Render(HDC _dc);
     virtual void RenderD2D(ID2D1RenderTarget* _pRenderTarget);
 
 private:

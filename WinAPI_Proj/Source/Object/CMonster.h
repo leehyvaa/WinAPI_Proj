@@ -1,5 +1,9 @@
 ﻿#pragma once
 #include "GameObject.h"
+
+// Direct2D 전방 선언
+struct ID2D1RenderTarget;
+
 class CShooterHead;
 class AI;
 
@@ -42,7 +46,7 @@ public:
 
     virtual void Start();
     virtual void Update();
-    virtual void Render(HDC _dc);
+    virtual void RenderD2D(ID2D1RenderTarget* _pRenderTarget);
     virtual void FinalUpdata();
     virtual void Reset();
 

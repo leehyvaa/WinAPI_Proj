@@ -6,6 +6,7 @@
 #include "CAnimation.h"
 #include "CKeyMgr.h"
 #include "CCamera.h"
+
 MouseCursor::MouseCursor()
 {
 	CreateAnimator();
@@ -34,7 +35,10 @@ void MouseCursor::Update()
 	SetWorldPos(pos);
 }
 
-void MouseCursor::Render(HDC _dc)
+void MouseCursor::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
 {
-	Component_Render(_dc);
+	if (!_pRenderTarget)
+		return;
+		
+	GameObject::RenderD2D(_pRenderTarget);
 }

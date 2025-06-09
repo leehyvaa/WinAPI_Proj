@@ -1,4 +1,8 @@
 ﻿#pragma once
+
+// Direct2D 전방 선언
+struct ID2D1RenderTarget;
+
 class CMonster;
 class CState;
 
@@ -12,6 +16,7 @@ private:
 public:
 	void Update();
     void Render(HDC _dc);
+    void RenderD2D(ID2D1RenderTarget* _pRenderTarget);
 
 public:
 	void AddState(CState* _pState);

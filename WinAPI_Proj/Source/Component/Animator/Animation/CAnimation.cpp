@@ -8,7 +8,6 @@
 #include "CPathMgr.h"
 #include "CResMgr.h"
 #include "CCore.h"
-#include "SelectGDI.h"
 #include <gdiplus.h>
 using namespace Gdiplus;
 #pragma comment (lib,"Gdiplus.lib")

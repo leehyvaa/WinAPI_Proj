@@ -1,5 +1,8 @@
 ﻿#pragma once
 #include "GameObject.h"
+
+struct ID2D1RenderTarget; // Direct2D 전방 선언
+
 class Raycast :
     public GameObject
 {
@@ -16,7 +19,7 @@ public:
     ~Raycast();
     
     virtual void Update() override;
-    virtual void Render(HDC hdc) override;
+    virtual void RenderD2D(ID2D1RenderTarget* _pRenderTarget) override;
     
     CCollider* GetCollisionRay() { return onCollisionRay; }
     Vec2 GetTargetPos() { return targetPos; }

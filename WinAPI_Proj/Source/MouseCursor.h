@@ -1,5 +1,8 @@
 ﻿#pragma once
 #include "GameObject.h"
+
+struct ID2D1RenderTarget; // Direct2D 전방 선언
+
 class MouseCursor :
     public GameObject
 {
@@ -9,9 +12,8 @@ public:
     MouseCursor();
     ~MouseCursor();
 
-
     virtual void Update() override;
-    virtual void Render(HDC hdc) override;
+    virtual void RenderD2D(ID2D1RenderTarget* _pRenderTarget) override;
 
     CLONE(MouseCursor)
 };

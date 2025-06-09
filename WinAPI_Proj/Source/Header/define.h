@@ -60,6 +60,8 @@ enum class SCENE_TYPE
 	END,
 };
 
+// Legacy GDI brush and pen types - kept for compatibility
+/*
 enum class BRUSH_TYPE
 {
 	HOLLOW,
@@ -68,8 +70,6 @@ enum class BRUSH_TYPE
 	MAGENTA,
 	END,
 };
-
-
 
 enum class PEN_TYPE
 {
@@ -82,6 +82,7 @@ enum class PEN_TYPE
     HOLLOW,
 	END,
 };
+*/
 
 enum class EVENT_TYPE
 {

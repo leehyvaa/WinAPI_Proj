@@ -49,9 +49,7 @@ public:
 	virtual void Start();
 	virtual void Update();
 	virtual void FinalUpdate();
-	virtual void Render(HDC _dc);
 	virtual void RenderD2D(ID2D1RenderTarget* _pRenderTarget);
-	void Render_Tile(HDC _dc);
 	void RenderTileD2D(ID2D1RenderTarget* _pRenderTarget);
 
 	virtual void Enter();

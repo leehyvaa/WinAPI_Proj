@@ -13,7 +13,6 @@
 #include "Monster/CShooterMonster.h"
 #include "CBullet.h"
 #include "CObjectPool.h"
-#include "SelectGDI.h"
 #include "CCore.h"
 
 // Direct2D 헤더
@@ -130,9 +129,12 @@ void CAimingState::Render(HDC _dc)
     if (!pPlayer || !pMonster || !pMonster->GetHead())
         return;
     
-    PEN_TYPE ePen = PEN_TYPE::RED;
-    SelectGDI p(_dc, ePen);
-    SelectGDI b(_dc, BRUSH_TYPE::HOLLOW);
+    // GDI 모드에서는 기본 펜과 브러시 사용
+    HPEN hPen = CreatePen(PS_SOLID, 1, RGB(255, 0, 0)); // 빨간색
+    HBRUSH hBrush = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
+    
+    HPEN hOldPen = (HPEN)SelectObject(_dc, hPen);
+    HBRUSH hOldBrush = (HBRUSH)SelectObject(_dc, hBrush);
 
     Vec2 renderPos = pMonster->GetHead()->GetWorldPos();
     if (GetAI()->GetOwner()->GetIsFacingRight())

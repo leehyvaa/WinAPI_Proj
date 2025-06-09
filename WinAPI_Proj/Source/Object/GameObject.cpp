@@ -284,30 +284,19 @@ void GameObject::FinalUpdate()
         m_pCollider->FinalUpdate();
 }
 
-void GameObject::Render(HDC _dc)
+void GameObject::Component_Render(ID2D1RenderTarget* _pRenderTarget)
 {
-    if (!m_bActive)
-        return;
-    // 이미지가 없어서 박스 렌더해야 할때 주석 풀고 사용
-	// Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(m_vPos);
-	//
-	// Rectangle(_dc, static_cast<int>(vRenderPos.x - m_vScale.x / 2.f)
-	// 	, static_cast<int>(vRenderPos.y - m_vScale.y / 2.f)
-	// 	, static_cast<int>(vRenderPos.x + m_vScale.x / 2.f)
-	// 	, static_cast<int>(vRenderPos.y + m_vScale.y / 2.f));
+	if (!_pRenderTarget)
+		return;
 
-
-	Component_Render(_dc);
-}
-
-void GameObject::Component_Render(HDC _dc)
-{
-	// 🚀 렌더링 시스템 최적화
-	// 애니메이터 렌더링은 D2D 전용 파이프라인에서 처리됨 (중복 렌더링 방지)
+	// Direct2D 렌더링으로 통합
+	// 애니메이터 렌더링
+	if (m_pAnimator)
+		m_pAnimator->RenderD2D(_pRenderTarget);
 	
-	// 콜라이더 GDI 렌더링 (안정성 유지)
-	if (nullptr != m_pCollider && CSceneMgr::GetInst()->GetCurScene()->GetDrawCollider())
-		m_pCollider->Render(_dc);
+	// 콜라이더 디버그 렌더링
+	if (m_pCollider && CSceneMgr::GetInst()->GetCurScene()->GetDrawCollider())
+		m_pCollider->RenderD2D(_pRenderTarget);
 }
 
 

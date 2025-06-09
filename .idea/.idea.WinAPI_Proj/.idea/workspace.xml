@@ -10,12 +10,55 @@
     <list default="true" id="e174ba9b-dad2-4293-bc5f-8669e5f5e6a8" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.WinAPI_Proj/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.WinAPI_Proj/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Output/bin_debug/WinAPI_Proj.exe" beforeDir="false" afterPath="$PROJECT_DIR$/Output/bin_debug/WinAPI_Proj.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/CHook.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/CHook.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/CHook.h" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/CHook.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Component/Animator/Animation/CAnimation.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Component/Animator/Animation/CAnimation.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Component/Collider/CCollider.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Component/Collider/CCollider.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Core/CCore.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Core/CCore.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Core/CCore.h" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Core/CCore.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Manager/Camera/CCamera.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Manager/Camera/CCamera.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Manager/Camera/CCamera.h" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Manager/Camera/CCamera.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Resource/Texture/CTexture.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Resource/Texture/CTexture.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Resource/Texture/CTexture.h" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Resource/Texture/CTexture.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Header/define.h" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Header/define.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Manager/SceneMgr/CSceneMgr.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Manager/SceneMgr/CSceneMgr.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Manager/SceneMgr/CSceneMgr.h" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Manager/SceneMgr/CSceneMgr.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Manager/TimeMgr/CTimeMgr.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Manager/TimeMgr/CTimeMgr.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Manager/TimeMgr/CTimeMgr.h" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Manager/TimeMgr/CTimeMgr.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Module/AI/AI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Module/AI/AI.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Module/AI/AI.h" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Module/AI/AI.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Module/AI/State/CState.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Module/AI/State/CState.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Module/AI/State/CState.h" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Module/AI/State/CState.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Module/AI/State/Shooter/CAimingState.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Module/AI/State/Shooter/CAimingState.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Module/SelectGDI.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Module/SelectGDI.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/MouseCursor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/MouseCursor.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/MouseCursor.h" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/MouseCursor.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/CBullet.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/CBullet.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/CBullet.h" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/CBullet.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/CMonster.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/CMonster.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/CMonster.h" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/CMonster.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/GameObject.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/GameObject.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/GameObject.h" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/GameObject.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/Ground/CGround.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/Ground/CGround.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/Ground/CGround.h" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/Ground/CGround.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/Ground/CNormalGround.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/Ground/CNormalGround.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/Monster/CShooterHead.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/Monster/CShooterHead.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/Monster/CShooterHead.h" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/Monster/CShooterHead.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/Monster/CShooterMonster.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/Monster/CShooterMonster.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/Monster/CShooterMonster.h" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/Monster/CShooterMonster.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/Tile/CTile.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/Tile/CTile.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/Tile/CTile.h" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/Tile/CTile.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/UI/CUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/UI/CUI.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/UI/CUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/UI/CUI.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/PlayerArm.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/PlayerArm.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/PlayerArm.h" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/PlayerArm.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Raycast.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Raycast.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Raycast.h" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Raycast.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/SPlayer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/SPlayer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/SPlayer.h" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/SPlayer.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Scene/CScene.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Scene/CScene.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Scene/CScene.h" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Scene/CScene.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Scene/Scene_Stage_01/Scene_Stage_01.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Scene/Scene_Stage_01/Scene_Stage_01.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Scene/Scene_Stage_01/Scene_Stage_01.h" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Scene/Scene_Stage_01/Scene_Stage_01.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Unity/unity_IAQ7OAQ8W1DXJ9WA.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Unity/unity_IAQ7OAQ8W1DXJ9WA.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/2D 일정.txt" beforeDir="false" afterPath="$PROJECT_DIR$/자료/2D 일정.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,7 +72,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="cidr-memory-view://13" root0="FORCE_HIGHLIGHTING" />
+    <setting file="cidr-memory-view://15" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../Program Files (x86)/Windows Kits/10/Include/10.0.22621.0/shared/windef.h" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../Program Files (x86)/Windows Kits/10/Include/10.0.22621.0/ucrt/stdio.h" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../Program Files (x86)/Windows Kits/10/Include/10.0.22621.0/um/WinUser.h" root0="SKIP_HIGHLIGHTING" />
@@ -41,6 +84,7 @@
     <setting file="file://$PROJECT_DIR$/../Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.43.34808/include/xmemory" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.43.34808/include/xstring" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.43.34808/include/xtree" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/WinAPI_Proj/Unity/unity_IAQ7OAQ8W1DXJ9WA.cpp" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProjectColorInfo">{
@@ -202,7 +246,7 @@
       <workItem from="1749344916650" duration="6054000" />
       <workItem from="1749359601979" duration="1744000" />
       <workItem from="1749361398267" duration="9167000" />
-      <workItem from="1749385937260" duration="7981000" />
+      <workItem from="1749385937260" duration="15811000" />
     </task>
     <servers />
   </component>

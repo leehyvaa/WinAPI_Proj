@@ -26,6 +26,12 @@ void AI::Render(HDC _dc)
         m_pCurState->Render(_dc);
 }
 
+void AI::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
+{
+    if (m_pCurState && _pRenderTarget)
+        m_pCurState->RenderD2D(_pRenderTarget);
+}
+
 
 void AI::AddState(CState* _pState)
 {

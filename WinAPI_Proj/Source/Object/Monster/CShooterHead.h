@@ -1,6 +1,8 @@
 ﻿#pragma once
 #include "GameObject.h"
 
+struct ID2D1RenderTarget;
+
 class CShooterHead : public GameObject
 {
 private:
@@ -12,7 +14,7 @@ public:
     virtual void Reset() override;
 
     virtual void Update() override;
-    virtual void Render(HDC _dc) override;
+    virtual void RenderD2D(ID2D1RenderTarget* _pRenderTarget) override;
 
     CLONE(CShooterHead)
 };

@@ -9,7 +9,6 @@
 #include "SPlayer.h"
 #include "CCore.h"
 #include "CEventMgr.h"
-#include "SelectGDI.h"
 #include "CKeyMgr.h"
 #include "CObjectPool.h"
 #include "PlayerArm.h"
@@ -240,6 +239,7 @@ void CHook::Update()
 
 }
 
+/*
 void CHook::Render(HDC _dc)
 {
     // Direct2D 활성화 시 GDI 렌더링 스킵 (하이브리드 렌더링 패턴)
@@ -316,11 +316,11 @@ void CHook::Render(HDC _dc)
     
     // 밝기 조절 RGB 1.2배 밝게, 전체밝기 0.15 추가
     // ColorMatrix colorMatrix = {
-    //     1.2f, 0.0f, 0.0f, 0.0f, 0.0f,  
-    //     0.0f, 1.2f, 0.0f, 0.0f, 0.0f, 
-    //     0.0f, 0.0f, 1.2f, 0.0f, 0.0f, 
-    //     0.0f, 0.0f, 0.0f, 1.0f, 0.0f,  
-    //     0.15f, 0.15f, 0.15f, 0.0f, 1.0f 
+    //     1.2f, 0.0f, 0.0f, 0.0f, 0.0f,
+    //     0.0f, 1.2f, 0.0f, 0.0f, 0.0f,
+    //     0.0f, 0.0f, 1.2f, 0.0f, 0.0f,
+    //     0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+    //     0.15f, 0.15f, 0.15f, 0.0f, 1.0f
     // };
     
     // ColorMatrix를 ImageAttributes에 적용
@@ -371,6 +371,7 @@ void CHook::Render(HDC _dc)
     }
 
 }
+*/
 
 void CHook::OnCollisionEnter(CCollider* _pOther)
 {

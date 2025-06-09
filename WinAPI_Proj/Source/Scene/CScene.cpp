@@ -11,7 +11,6 @@
 #include "CCollider.h"
 #include "CCore.h"
 #include "CGravity.h"
-#include "SelectGDI.h"
 #include "CKeyMgr.h"
 #include "CGround.h"
 #include "CObjectPool.h"
@@ -167,55 +166,6 @@ void CScene::FinalUpdate()
     CTimeMgr::EndTimer(L"Scene_FinalUpdate");
 }
 
-void CScene::Render(HDC _dc)
-{
-    CTimeMgr::StartTimer(L"Core_GDI_Render");
-	for (UINT i = 0; i < static_cast<UINT>(GROUP_TYPE::END); i++)
-	{
-		if (static_cast<UINT>(GROUP_TYPE::TILE) == i && !bDrawOutWindow)
-		{
-			// Direct2D 활성화 시 GDI 타일 렌더링 스킵
-			if (!CCore::GetInst()->GetD2DRenderTarget()) {
-				Render_Tile(_dc);
-			}
-			continue;
-		}
-
-
-		vector<GameObject*>::iterator iter = m_arrObj[i].begin();
-
-		for (; iter != m_arrObj[i].end();)
-		{
-			if ((*iter)->IsDead() && !(*iter)->IsManagedByPool())
-			{
-			    iter = m_arrObj[i].erase(iter);
-			}
-			else
-			{
-			    if ((*iter)->IsActive())
-			        (*iter)->Render(_dc);
-			    ++iter;
-			}
-		}
-	}
-    CTimeMgr::EndTimer(L"Core_GDI_Render");
-    
-    // F10 키 - 프로파일 토글 (GDI 버전은 Direct2D 비활성화 시에만)
-    if (KEY_HOLD(KEY::F10) && !CCore::GetInst()->GetD2DRenderTarget()) {
-        HBRUSH hBlack = CreateSolidBrush(RGB(0, 0, 0));
-        RECT rect = {0, 0, 800, 500};
-        FillRect(_dc, &rect, hBlack);
-        DeleteObject(hBlack);
-        
-        SetTextColor(_dc, RGB(255, 255, 255));
-        SetBkMode(_dc, TRANSPARENT);
-        CTimeMgr::RenderProfileData(_dc, 10);
-        
-        // 프로파일링 출력 후에만 리셋
-        CTimeMgr::ResetProfileData();
-    }
-
-}
 
 void CScene::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
 {
@@ -281,78 +231,6 @@ if (KEY_HOLD(KEY::F10)) {
 		CTimeMgr::ResetProfileData();
 }
 }
-
-// 해당 씬에서 그룹타입이 TILE인 모든 오브젝트를 그리는 함수
-void CScene::Render_Tile(HDC _dc)
-{
-	const vector<GameObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
-
-	Vec2 vCamLook = CCamera::GetInst()->GetLookAt();
-	Vec2 vResolution = CCore::GetInst()->GetResolution();
-
-	Vec2 vLeftTop = vCamLook - vResolution / 2.f;
-	
-	int iTileSize = TILE_SIZE;
-
-	int iLTCol = static_cast<int>(vLeftTop.x) / iTileSize;
-	int iLTRow = static_cast<int>(vLeftTop.y) / iTileSize;
-
-
-	int iLTIdx = m_iTileX * iLTRow + iLTCol;
-
-	int iClientWidth = (static_cast<int>(vResolution.x) / iTileSize) +2;
-	int iClientHeight = (static_cast<int>(vResolution.y) / iTileSize)+2;
-
-	for (int iCurRow = iLTRow; iCurRow < (iLTRow +iClientHeight); iCurRow++)
-	{
-		for (int iCurCol = iLTCol; iCurCol < (iLTCol + iClientWidth); iCurCol++)
-		{
-			if (iCurCol < 0 || m_iTileX <= static_cast<UINT>(iCurCol) ||
-				iCurRow < 0 || m_iTileY <= static_cast<UINT>(iCurRow))
-			{
-				continue;
-			}
-
-			int iIdx = (m_iTileX * iCurRow) + iCurCol;
-
-			// 격자 그리드를 타일보다 먼저 그리기
-			if(bDrawGrid)
-			{
-				Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(vecTile[iIdx]->GetWorldPos());
-				Vec2 vScale = vecTile[iIdx]->GetScale();
-
-				SelectGDI brush(_dc, BRUSH_TYPE::HOLLOW);
-
-				Rectangle(_dc, static_cast<int>(vRenderPos.x)
-					, static_cast<int>(vRenderPos.y)
-					, static_cast<int>(vRenderPos.x + vScale.x)
-					, static_cast<int>(vRenderPos.y + vScale.y));
-			}
-
-			// 타일 렌더링
-			vecTile[iIdx]->Render(_dc);
-
-			   // 현재 타일의 위치부터 BotRightTile까지 선 그리기
-			   if (bDrawCompleteGround &&
-			             static_cast<CTile*>(vecTile[iIdx])->GetGroundType() != GROUND_TYPE::NONE)
-			   {
-			       int botIdx = static_cast<CTile*>(vecTile[iIdx])->GetBotRightTileIdx();
-			       if (botIdx != -1 && botIdx < static_cast<int>(vecTile.size()))
-			       {
-			           Vec2 vStartPos = CCamera::GetInst()->GetRenderPos(vecTile[iIdx]->GetWorldPos());
-			           Vec2 vEndPos = CCamera::GetInst()->GetRenderPos(vecTile[botIdx]->GetWorldPos());
-			           SelectGDI brush(_dc, PEN_TYPE::BIGGREEN);
-
-			           // 화면에 선 그리기
-			           MoveToEx(_dc, (int)vStartPos.x, (int)vStartPos.y, nullptr);
-			           LineTo(_dc, (int)vEndPos.x, (int)vEndPos.y);
-			       }
-			   }
-		}
-	}
-}
-
-
 
 void CScene::RenderTileD2D(ID2D1RenderTarget* _pRenderTarget)
 {

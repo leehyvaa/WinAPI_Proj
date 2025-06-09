@@ -4,12 +4,12 @@
 #include "CCollisionMgr.h"
 #include "CGravity.h"
 #include "CCore.h"
-#include "SelectGDI.h"
 #include "CSceneMgr.h"
 #include "CScene.h"
 #include "SPlayer.h"
 #include "CRigidBody.h"
-
+#include "CCamera.h"
+#include <d2d1.h>
 const float COLLISION_TOP_THRESHOLD = 20.f;
 const float COLLISION_BOT_THRESHOLD = 15.f;
 const float COLLISION_SIDE_THRESHOLD = 20.f;
@@ -39,39 +39,62 @@ void CGround::Update()
 {
 }
 
-void CGround::Render(HDC _dc)
+void CGround::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
 {
+    if (!_pRenderTarget)
+        return;
+
     if (CSceneMgr::GetInst()->GetCurScene()->GetDrawGroundType())
     {
-        PEN_TYPE ePen = PEN_TYPE::BLUE;
+        D2D1_COLOR_F color = D2D1::ColorF(D2D1::ColorF::Blue);
+        //
+        // if (GetGroundType() == GROUND_TYPE::NORMAL)
+        // {
+        //     color = D2D1::ColorF::Blue;
+        // }
+        // else if (GetGroundType() == GROUND_TYPE::UNWALKABLE)
+        // {
+        //     color = D2D1::ColorF::Purple;
+        // }
+        // else if (GetGroundType() == GROUND_TYPE::DAMAGEZONE)
+        // {
+        //     color = D2D1::ColorF::Orange;
+        // }
+        // else if (GetGroundType() == GROUND_TYPE::DEADZONE)
+        // {
+        //     color = D2D1::ColorF::Red;
+        // }
 
-        if (GetGroundType() == GROUND_TYPE::NORMAL)
+        // 정적 브러시 캐싱
+        static ID2D1SolidColorBrush* s_pGroundBrush = nullptr;
+        static D2D1_COLOR_F s_lastColor = {};
+        
+        if (!s_pGroundBrush || memcmp(&s_lastColor, &color, sizeof(D2D1_COLOR_F)) != 0)
         {
-            ePen = PEN_TYPE::BLUE;
-        }
-        else if (GetGroundType() == GROUND_TYPE::UNWALKABLE)
-        {
-            ePen = PEN_TYPE::PURPLE;
-        }
-        else if (GetGroundType() == GROUND_TYPE::DAMAGEZONE)
-        {
-            ePen = PEN_TYPE::ORANGE;
-        }
-        else if (GetGroundType() == GROUND_TYPE::DEADZONE)
-        {
-            ePen = PEN_TYPE::RED;
+            if (s_pGroundBrush)
+                s_pGroundBrush->Release();
+            
+            _pRenderTarget->CreateSolidColorBrush(color, &s_pGroundBrush);
+            s_lastColor = color;
         }
 
-        SelectGDI b(_dc, BRUSH_TYPE::HOLLOW);
-        SelectGDI p(_dc, ePen);
+        if (s_pGroundBrush)
+        {
+            Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(Vec2(GetWorldPos().x + 2, GetWorldPos().y + 2));
+            Vec2 vScale = Vec2(GetScale().x - 4.f, GetScale().y - 4.f);
 
-        Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(Vec2(GetWorldPos().x + 2, GetWorldPos().y + 2));
-        Vec2 vScale = Vec2(GetScale().x - 4.f, GetScale().y - 4.f);
+            D2D1_RECT_F rect = D2D1::RectF(
+                vRenderPos.x,
+                vRenderPos.y,
+                vRenderPos.x + vScale.x,
+                vRenderPos.y + vScale.y
+            );
 
-        Rectangle(_dc, static_cast<int>(vRenderPos.x), static_cast<int>(vRenderPos.y), static_cast<int>(vRenderPos.x + vScale.x), static_cast<int>(vRenderPos.y + vScale.y));
+            _pRenderTarget->DrawRectangle(rect, s_pGroundBrush, 1.0f);
+        }
     }
 
-    GameObject::Component_Render(_dc);
+    GameObject::RenderD2D(_pRenderTarget);
 }
 
 

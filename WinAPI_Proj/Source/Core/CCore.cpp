@@ -7,14 +7,12 @@
 #include "SPlayer.h"
 #include "CSceneMgr.h"
 #include "CPathMgr.h"
-#include "SelectGDI.h"
 #include "CCollisionMgr.h"
 #include "CEventMgr.h"
 #include "CCamera.h"
 #include "CUIMgr.h"
 #include "CResMgr.h"
 #include "CTexture.h"
-#include "SelectGDI.h"
 #include "resource.h"
 #include "CScene.h"
 #include "CBackGround.h"
@@ -34,8 +32,6 @@ CCore::CCore()
 	, m_pGreenBrush(nullptr)
 	, m_pBlueBrush(nullptr)
 	, m_pDWriteFactory(nullptr)
-	, m_arrPen{}
-	, m_arrBrush{}
 {
 }
 
@@ -43,12 +39,6 @@ CCore::~CCore()
 {
 	ReleaseD2DResources();
 	ReleaseDC(m_hWnd,m_hDC); // GetDC로 만든 Dc는 릴리즈로 해제
-
-	for (int i = 0; i < static_cast<UINT>(PEN_TYPE::END); i++)
-		DeleteObject(m_arrPen[i]);
-
-	for (int i = 0; i < static_cast<UINT>(BRUSH_TYPE::END); i++)
-		DeleteObject(m_arrBrush[i]);
 
 	DestroyMenu(m_hMenu);
 }
@@ -70,11 +60,6 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 
 	m_hDC = GetDC(m_hWnd);
 
-	// 더블버퍼링 용도의 텍스쳐 한장을 만든다.
-	m_pMemTex = CResMgr::GetInst()->CreateTexture(L"BackBuffer",static_cast<UINT>(m_ptResolution.x), static_cast<UINT>(m_ptResolution.y));
-
-	
-	CreateBrushPen();
 	CreateD2DResources();
 
 	// Manager 초기화
@@ -163,32 +148,11 @@ void CCore::Progress()
     }
     CTimeMgr::EndTimer(L"Core_D2D_Render_Total");
 
-    CTimeMgr::GetInst()->Render();
-
     // 이벤트 지연처리
     CEventMgr::GetInst()->Update();
     
     CTimeMgr::EndTimer(L"Core_Progress_Total");
 }
-
-void CCore::CreateBrushPen()
-{
-    m_arrBrush[static_cast<UINT>(BRUSH_TYPE::HOLLOW)] = static_cast<HBRUSH>(GetStockObject(HOLLOW_BRUSH));
-    m_arrBrush[static_cast<UINT>(BRUSH_TYPE::BLACK)] = static_cast<HBRUSH>(GetStockObject(BLACK_BRUSH));
-    m_arrBrush[static_cast<UINT>(BRUSH_TYPE::RED)] = CreateSolidBrush(RGB(255, 0, 0));
-    m_arrBrush[static_cast<UINT>(BRUSH_TYPE::MAGENTA)] = CreateSolidBrush(RGB(255, 0, 255));
-
-    m_arrPen[static_cast<UINT>(PEN_TYPE::RED)] = CreatePen(PS_SOLID, 1, RGB(255, 0, 0));
-    m_arrPen[static_cast<UINT>(PEN_TYPE::GREEN)] = CreatePen(PS_SOLID, 1, RGB(0, 255, 0));
-    m_arrPen[static_cast<UINT>(PEN_TYPE::BLUE)] = CreatePen(PS_SOLID, 1, RGB(80, 183, 220));
-    
-    m_arrPen[static_cast<UINT>(PEN_TYPE::PURPLE)] = CreatePen(PS_SOLID, 1, RGB(102, 0, 153));
-    m_arrPen[static_cast<UINT>(PEN_TYPE::ORANGE)] = CreatePen(PS_SOLID, 1, RGB(255, 165, 0));
-    m_arrPen[static_cast<UINT>(PEN_TYPE::BIGGREEN)] = CreatePen(PS_SOLID, 5, RGB(0, 255, 0));
-    m_arrPen[static_cast<UINT>(PEN_TYPE::HOLLOW)] = CreatePen(PS_NULL, 1, 0);
-}
-
-
 
 void CCore::CreateD2DResources()
 {
@@ -256,44 +220,6 @@ void CCore::ReleaseD2DResources()
     if (m_pD2DFactory) { m_pD2DFactory->Release(); m_pD2DFactory = nullptr; }
 }
 
-void CCore::Clear(HDC _dc)
-{
-	CScene* curScene = CSceneMgr::GetInst()->GetCurScene();
-	CBackGround* backGround = curScene->GetBackGround();
-	if (backGround == nullptr)
-	{
-		// 배경이 없으면 기본 검은색으로 클리어
-		SelectGDI gdi(_dc, BRUSH_TYPE::BLACK);
-		Rectangle(_dc, -1, -1, m_ptResolution.x + 1, m_ptResolution.y + 1);
-		return;
-	}
-
-	// 하이브리드 렌더링: GDI로 배경 렌더링, Direct2D는 Progress()에서 오버레이
-	Vec2 vRenderPos = backGround->GetWorldPos();
-	Vec2 vScale = backGround->GetScale();
-	
-	if (backGround->GetTexture())
-	{
-		UINT iWidth = backGround->GetTexture()->Width();
-		UINT iHeight = backGround->GetTexture()->Height();
-
-		TransparentBlt(_dc
-			, static_cast<int>(vRenderPos.x)
-			, static_cast<int>(vRenderPos.y)
-			, static_cast<int>(vScale.x), static_cast<int>(vScale.y)
-			, backGround->GetTexture()->GetDC()
-			, 0, 0,
-			iWidth, iHeight, RGB(255, 0, 255));
-	}
-	else
-	{
-		// 텍스처가 없으면 검은색 배경
-		SelectGDI gdi(_dc, BRUSH_TYPE::BLACK);
-		Rectangle(_dc, -1, -1, m_ptResolution.x + 1, m_ptResolution.y + 1);
-	}
-}
-
-
 void CCore::DockMenu()
 {
 	// 메뉴바 장착
@@ -314,12 +240,3 @@ void CCore::ChangeWindowSize(Vec2 _vResolution, bool _bMenu)
 	AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, false);
 	SetWindowPos(m_hWnd, nullptr, 0, 0, rect.right - rect.left, rect.bottom - rect.top, 0);
 }
-
-HDC CCore::GetmemDC()
-{
-	return m_pMemTex->GetDC();
-}
-
-
-
-

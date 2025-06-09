@@ -50,10 +50,12 @@ void CSceneMgr::Update()
 	m_pCurScene->FinalUpdate();
 }
 
+/*
 void CSceneMgr::Render(HDC _dc)
 {
 	m_pCurScene->Render(_dc);
 }
+*/
 
 void CSceneMgr::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
 {
