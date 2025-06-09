@@ -21,8 +21,9 @@ using namespace Gdiplus;
 
 CHook::CHook()
 	:m_fSpeed(2000)
-
 	, hookState(HOOK_STATE::FLYING)
+	, m_pChainD2DBitmap(nullptr)
+	, m_bChainD2DCached(false)
 {
     SetGroup(GROUP_TYPE::HOOK);
 	CreateCollider();
@@ -73,8 +74,7 @@ CHook::CHook()
 
 CHook::~CHook()
 {
-
-
+    ReleaseChainD2DBitmap();
 }
 
 void CHook::ReturnToPool()
@@ -242,6 +242,10 @@ void CHook::Update()
 
 void CHook::Render(HDC _dc)
 {
+    // Direct2D 활성화 시 GDI 렌더링 스킵 (하이브리드 렌더링 패턴)
+    if (CCore::GetInst()->GetD2DRenderTarget())
+        return;
+    
 	Component_Render(_dc);
 
     // 체인 그리기
@@ -388,4 +392,201 @@ void CHook::OnCollisionEnter(CCollider* _pOther)
             }
         }
     }
+}
+
+void CHook::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
+{
+    if (!_pRenderTarget)
+        return;
+        
+    // 컴포넌트 렌더링 (애니메이션은 이미 Direct2D로 처리됨)
+    Component_Render(nullptr); // HDC는 nullptr로 전달, 내부에서 Direct2D 처리
+
+    // 체인 그리기
+    if (!m_pOwnerArm || !pChainTex) 
+        return;
+    
+    // 필요한 정보 세팅 (기존 로직과 동일)
+    Vec2 dir = GetWorldPos() - GetOwnerArm()->GetWorldPos();
+    dir.Normalize();
+    
+    Vec2 vHookWorldPos = GetWorldPos();
+    Vec2 vArmWorldPos = m_pOwnerArm->GetWorldPos() + dir * 25.f;
+
+    Vec2 vHookRenderPos = CCamera::GetInst()->GetRenderPos(vHookWorldPos);
+    Vec2 vArmRenderPos;
+
+    if (hookState == HOOK_STATE::GRAB)
+    {
+        if (GetIsFacingRight())
+            vArmRenderPos = CCamera::GetInst()->GetRenderPos(vArmWorldPos) + Vec2(-7.f, 0.f);
+        else
+            vArmRenderPos = CCamera::GetInst()->GetRenderPos(vArmWorldPos) + Vec2(7.f, 0.f);
+    }
+    else
+    {
+        if (GetIsFacingRight())
+            vArmRenderPos = CCamera::GetInst()->GetRenderPos(vArmWorldPos) + Vec2(0.f, 10.f);
+        else
+            vArmRenderPos = CCamera::GetInst()->GetRenderPos(vArmWorldPos) + Vec2(0.f, 10.f);
+    }
+    
+    Vec2 vDir = vHookRenderPos - vArmRenderPos;
+    float fDistance = vDir.Length() - 5.f;
+    
+    if (fDistance < 1.f) return; // 거리가 매우 짧으면 그리지 않음
+    
+    vDir.Normalize();
+    
+    // 체인 D2D 비트맵 캐싱
+    if (!m_bChainD2DCached)
+    {
+        CacheChainD2DBitmap(_pRenderTarget);
+    }
+    
+    if (!m_pChainD2DBitmap)
+        return;
+    
+    float fLinkWidth = static_cast<float>(pChainTex->Width());
+    float fLinkHeight = static_cast<float>(pChainTex->Height());
+    float fLinkLength = fLinkWidth;
+    
+    if (fLinkLength <= 0) return;
+    
+    // 회전각도 라디안 계산
+    float fAngleRad = atan2(vDir.y, vDir.x);
+    float fAngleDeg = fAngleRad * (180.f / 3.1415926535f);
+    
+    // 사슬 크기 배율
+    const float fScaleFactor = 0.3f;
+    float fScaledLinkWidth = fLinkWidth * fScaleFactor;
+    float fScaledLinkHeight = fLinkHeight * fScaleFactor;
+    float fScaledLinkLength = fLinkLength * fScaleFactor;
+    
+    // 축소된 크기로 그릴 링크 개수 계산
+    int iNumLinks = static_cast<int>(fDistance / fScaledLinkLength);
+    
+    // 원본 변환 행렬 저장
+    D2D1_MATRIX_3X2_F originalTransform;
+    _pRenderTarget->GetTransform(&originalTransform);
+    
+    // 링크 반복 렌더링
+    for (int i = 0; i < iNumLinks; ++i)
+    {
+        // 현재 링크의 중심 위치 계산
+        Vec2 vLinkCenterPos = vArmRenderPos + vDir * (fScaledLinkLength * (static_cast<float>(i) + 0.5f));
+        
+        // SRT 변환 행렬 생성 (Scale -> Rotate -> Translate)
+        D2D1_MATRIX_3X2_F matScale = D2D1::Matrix3x2F::Scale(fScaleFactor, fScaleFactor);
+        D2D1_MATRIX_3X2_F matRotation = D2D1::Matrix3x2F::Rotation(fAngleDeg);
+        D2D1_MATRIX_3X2_F matTranslation = D2D1::Matrix3x2F::Translation(vLinkCenterPos.x, vLinkCenterPos.y);
+        
+        _pRenderTarget->SetTransform(matScale * matRotation * matTranslation);
+        
+        // 중심점 기준으로 이미지 렌더링
+        D2D1_RECT_F destRect = D2D1::RectF(
+            -fLinkWidth / 2.f,
+            -fLinkHeight / 2.f,
+            fLinkWidth / 2.f,
+            fLinkHeight / 2.f
+        );
+        
+        _pRenderTarget->DrawBitmap(
+            m_pChainD2DBitmap, 
+            destRect, 
+            1.0f, 
+            D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR
+        );
+    }
+    
+    // 변환 행렬 복원
+    _pRenderTarget->SetTransform(originalTransform);
+}
+
+void CHook::CacheChainD2DBitmap(ID2D1RenderTarget* _pRenderTarget)
+{
+    if (!pChainTex || !_pRenderTarget)
+        return;
+    
+    // 기존 비트맵 해제
+    ReleaseChainD2DBitmap();
+    
+    // static WIC 팩토리 생성 (CAnimation 패턴과 동일)
+    static IWICImagingFactory* s_pWICFactory = nullptr;
+    if (!s_pWICFactory)
+    {
+        HRESULT hr = CoCreateInstance(
+            CLSID_WICImagingFactory, nullptr, CLSCTX_INPROC_SERVER,
+            IID_IWICImagingFactory, (LPVOID*)&s_pWICFactory
+        );
+        if (FAILED(hr))
+            return;
+    }
+    IWICImagingFactory* pWICFactory = s_pWICFactory;
+    
+    // GDI+ 비트맵으로 텍스처 로드
+    HBITMAP hSourceBitmap = pChainTex->GetHBITMAP();
+    if (!hSourceBitmap)
+        return;
+    
+    using namespace Gdiplus;
+    Bitmap sourceGdiplusBitmap(hSourceBitmap, nullptr);
+    
+    int srcWidth = sourceGdiplusBitmap.GetWidth();
+    int srcHeight = sourceGdiplusBitmap.GetHeight();
+    
+    // 32비트 ARGB GDI+ 비트맵 생성 (투명 처리용)
+    Bitmap* frameArgbBitmap = new Bitmap(srcWidth, srcHeight, PixelFormat32bppARGB);
+    Graphics frameGraphics(frameArgbBitmap);
+    
+    // 픽셀 깨짐 방지
+    frameGraphics.SetInterpolationMode(InterpolationModeNearestNeighbor);
+    frameGraphics.SetPixelOffsetMode(PixelOffsetModeHalf);
+    
+    // 투명색 지정 (마젠타)
+    ImageAttributes imgAttr;
+    imgAttr.SetColorKey(Color(255, 0, 255), Color(255, 0, 255), ColorAdjustTypeBitmap);
+    
+    // 투명색 적용 후 그리기
+    frameGraphics.DrawImage(
+        &sourceGdiplusBitmap,
+        Rect(0, 0, srcWidth, srcHeight),
+        0, 0, srcWidth, srcHeight,
+        UnitPixel,
+        &imgAttr
+    );
+    
+    IWICBitmap* pWICBitmap = nullptr;
+    
+    // 투명 처리된 비트맵에서 HBITMAP 추출
+    HBITMAP hArgbBitmap = NULL;
+    if (frameArgbBitmap->GetHBITMAP(Color(0, 0, 0, 0), &hArgbBitmap) == Ok)
+    {
+        // HBITMAP -> WIC 비트맵 변환
+        HRESULT hr = pWICFactory->CreateBitmapFromHBITMAP(hArgbBitmap, nullptr, WICBitmapUsePremultipliedAlpha, &pWICBitmap);
+        if (SUCCEEDED(hr))
+        {
+            // WIC 비트맵 -> D2D 비트맵 변환
+            hr = _pRenderTarget->CreateBitmapFromWicBitmap(pWICBitmap, nullptr, &m_pChainD2DBitmap);
+            if (SUCCEEDED(hr))
+            {
+                m_bChainD2DCached = true;
+            }
+        }
+        DeleteObject(hArgbBitmap);
+    }
+    
+    if (pWICBitmap) 
+        pWICBitmap->Release();
+    delete frameArgbBitmap;
+}
+
+void CHook::ReleaseChainD2DBitmap()
+{
+    if (m_pChainD2DBitmap)
+    {
+        m_pChainD2DBitmap->Release();
+        m_pChainD2DBitmap = nullptr;
+    }
+    m_bChainD2DCached = false;
 }

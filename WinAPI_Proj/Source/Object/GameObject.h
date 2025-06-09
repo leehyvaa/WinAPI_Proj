@@ -4,10 +4,12 @@
 
 #include "global.h"
 #include "CCamera.h"
+
 class CCollider;
 class CAnimator;
 class CRigidBody;
 class CGravity;
+struct ID2D1RenderTarget;
 
 
 
@@ -109,6 +111,7 @@ public:
 	virtual void Update() = 0;
 	virtual void FinalUpdate();
 	virtual void Render(HDC _dc);
+	virtual void RenderD2D(ID2D1RenderTarget* _pRenderTarget) {}  // Direct2D 렌더링 기본 구현
 
 	void Component_Render(HDC _dc);
 

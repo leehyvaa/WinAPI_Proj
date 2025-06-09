@@ -251,6 +251,12 @@ void CScene::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
 					if (pUI)
 						pUI->RenderD2D(_pRenderTarget);
 				}
+				// HOOK 그룹은 특별한 Direct2D 렌더링 (체인 포함)
+				else if (static_cast<UINT>(GROUP_TYPE::HOOK) == i)
+				{
+					// CHook의 RenderD2D 호출 (체인 렌더링 포함)
+					pObj->RenderD2D(_pRenderTarget);
+				}
 				// 다른 그룹은 Animator 렌더링
 				else if (pObj->GetAnimator())
 				{
