@@ -371,3 +371,6 @@ project_bigOverview.txt
 memory-bank/
 
 code_review_and_improvement_plan.md
+
+.roo/
+custom_modes.yaml

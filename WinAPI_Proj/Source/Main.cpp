@@ -156,10 +156,10 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 
     //전체모드
-    // int width = GetSystemMetrics(SM_CXSCREEN);
-    // int height = GetSystemMetrics(SM_CYSCREEN);
-    // hWnd = CreateWindowW(szWindowClass, szTitle, WS_EX_TOPMOST | WS_POPUP,
-    //     0, 0, width, height, nullptr, nullptr, hInstance, nullptr);
+    int width = GetSystemMetrics(SM_CXSCREEN);
+    int height = GetSystemMetrics(SM_CYSCREEN);
+    hWnd = CreateWindowW(szWindowClass, szTitle, WS_EX_TOPMOST | WS_POPUP,
+        0, 0, width, height, nullptr, nullptr, hInstance, nullptr);
 
     if (!hWnd)
     {
