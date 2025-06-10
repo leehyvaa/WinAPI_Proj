@@ -22,8 +22,7 @@ private:
 	ID2D1SolidColorBrush*		m_pRedBrush;
 	ID2D1SolidColorBrush*		m_pGreenBrush;
 	ID2D1SolidColorBrush*		m_pBlueBrush;
-
-	// DirectWrite 리소스
+    
 	IDWriteFactory*				m_pDWriteFactory;
 
 	// 메뉴

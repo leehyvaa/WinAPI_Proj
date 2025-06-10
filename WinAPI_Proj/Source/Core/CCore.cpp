@@ -109,7 +109,7 @@ void CCore::Progress()
     CUIMgr::GetInst()->Update();
     CTimeMgr::EndTimer(L"Core_UI_Update");
 
-    // 순수 Direct2D 렌더링 시작
+    // Direct2D 렌더링 시작
     CTimeMgr::StartTimer(L"Core_D2D_Render_Total");
     if (m_pRenderTarget)
     {
@@ -122,18 +122,17 @@ void CCore::Progress()
         CScene* curScene = CSceneMgr::GetInst()->GetCurScene();
         CBackGround* backGround = curScene->GetBackGround();
         if (backGround)
-        {
             backGround->RenderD2D(m_pRenderTarget);
-        }
+
         
-        // 모든 오브젝트와 UI를 Direct2D로 렌더링
+        // 모든 오브젝트와 UI를 렌더링
         CSceneMgr::GetInst()->RenderD2D(m_pRenderTarget);
         CCamera::GetInst()->RenderD2D(m_pRenderTarget);
 
-        // 프로파일링 데이터 출력 (F10 키)
+        // 프로파일링 디버그 출력 (F10 키)
         if (CKeyMgr::GetInst()->GetKeyState(KEY::F10) == KEY_STATE::TAP)
         {
-            CTimeMgr::RenderProfileDataD2D(m_pRenderTarget, 500); // Direct2D로 출력
+            CTimeMgr::RenderProfileDataD2D(m_pRenderTarget, 500);
         }
 
         // EndDraw()가 화면 출력까지 담당
@@ -158,7 +157,7 @@ void CCore::CreateD2DResources()
 {
     ReleaseD2DResources();
 
-    // Direct2D 팩토리 생성
+    // Dx2D 팩토리 생성
     HRESULT hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &m_pD2DFactory);
     if (FAILED(hr)) return;
 
@@ -178,8 +177,7 @@ void CCore::CreateD2DResources()
         D2D1_RENDER_TARGET_TYPE_DEFAULT,
         D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_PREMULTIPLIED)
     );
-
-    // HWND 렌더 타겟 속성 설정
+    
     D2D1_HWND_RENDER_TARGET_PROPERTIES hwndProps = D2D1::HwndRenderTargetProperties(
         m_hWnd,
         D2D1::SizeU(static_cast<UINT32>(m_ptResolution.x), static_cast<UINT32>(m_ptResolution.y))
@@ -216,7 +214,7 @@ void CCore::ReleaseD2DResources()
     // DirectWrite 팩토리 해제
     if (m_pDWriteFactory) { m_pDWriteFactory->Release(); m_pDWriteFactory = nullptr; }
 
-    // Direct2D 팩토리 해제
+    // Dx2D 팩토리 해제
     if (m_pD2DFactory) { m_pD2DFactory->Release(); m_pD2DFactory = nullptr; }
 }
 

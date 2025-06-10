@@ -62,7 +62,7 @@ void CUIMgr::Update()
 
 void CUIMgr::SetFocusedUI(CUI* _pUI)
 {
-	//이미 포커싱 중인 경우 or 포커싱 해제 요청인 경우
+	// 이미 포커싱 중인 경우 or 포커싱 해제 요청인 경우
 	if (m_pFocusedUI == _pUI || nullptr == _pUI)
 	{
 		m_pFocusedUI = _pUI;
@@ -102,7 +102,7 @@ CUI* CUIMgr::GetFocusedUI()
 
 	bool bLbtnTap = KEY_TAP(KEY::LBUTTON);
 	
-	//기존 포커싱 UI를 받아두고 변경되었을 경우 체인지
+	// 기존 포커싱 UI를 받아두고 변경되었을 경우 체인지
 	CUI* pFocusedUI = m_pFocusedUI;
 
 	if (!bLbtnTap)
@@ -111,7 +111,7 @@ CUI* CUIMgr::GetFocusedUI()
 	}
 
 
-	//왼쪽버튼 Tap 이 발생했다는 전제 하
+	// 왼쪽버튼 Tap 이 발생했다는 전제 하
 	vector<GameObject*>::iterator targetiter = vecUI.end();
 	vector<GameObject*>::iterator iter =vecUI.begin() ;
 
@@ -125,7 +125,7 @@ CUI* CUIMgr::GetFocusedUI()
 		
 	}
 
-	//이번에 Focus된 UI가 없다
+	// 이번에 Focus된 UI가 없다
 	if (vecUI.end() == targetiter)
 	{
 		return nullptr;
@@ -133,7 +133,7 @@ CUI* CUIMgr::GetFocusedUI()
 
 	pFocusedUI = static_cast<CUI*>(*targetiter);
 
-	//벡터 내에서 맨 뒤로 순번 교체
+	// 벡터 내에서 맨 뒤로 순번 교체
 	vecUI.erase(targetiter);
 	vecUI.push_back(pFocusedUI);
 
@@ -147,7 +147,7 @@ CUI* CUIMgr::GetTargetedUI(CUI* _pParentUI)
 
 
 
-	//1. 부모 UI 포함, 모든 자식들을 검사한다.
+	// 부모 UI 포함, 모든 자식들을 검사한다.
 	CUI* pTargetUI = nullptr;
 
 	static list<CUI*> queue;
@@ -160,12 +160,12 @@ CUI* CUIMgr::GetTargetedUI(CUI* _pParentUI)
 
 	while (!queue.empty())
 	{
-		//데이터 하나씩 꺼내기
+		// 데이터 하나씩 꺼내기
 		CUI* pUI = queue.front();
 		queue.pop_front();
 
-		//큐에서 꺼내온 UI가 TargetUI인지 확인
-		//타겟 UI 중 더 우선순위가 높은 기준은 더 낮은 계층의 자식 UI다
+		// 큐에서 꺼내온 UI가 TargetUI인지 확인
+		// 타겟 UI 중 더 우선순위가 높은 기준은 더 낮은 계층의 자식 UI다
 
 		if (pUI->IsMouseOn())
 		{
@@ -194,7 +194,7 @@ CUI* CUIMgr::GetTargetedUI(CUI* _pParentUI)
 
 	
 	
-	//왼쪽버튼을 떼면, 눌렸던 체크를 다시 해제한다.
+	// 왼쪽버튼을 떼면, 눌렸던 체크를 다시 해제한다.
 	if (bLbtnAway)
 	{
 		for (size_t i = 0; i < vecNoneTarget.size(); i++)
@@ -204,6 +204,6 @@ CUI* CUIMgr::GetTargetedUI(CUI* _pParentUI)
 	}
 
 
-	//리턴이 null이면 아무 ui도 타겟되지 않은 것 
+	// 리턴이 null이면 아무 ui도 타겟되지 않은 것 
 	return pTargetUI;
 }
