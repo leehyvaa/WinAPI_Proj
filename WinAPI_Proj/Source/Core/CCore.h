@@ -16,7 +16,7 @@ private:
 	POINT	m_ptResolution;
 	HDC		m_hDC;
     
-	ID2D1Factory*				m_pD2DFactory;
+	ID2D1Factory*				m_pFactory;
 	ID2D1HwndRenderTarget*		m_pRenderTarget;
 	ID2D1SolidColorBrush*		m_pBlackBrush;
 	ID2D1SolidColorBrush*		m_pRedBrush;
@@ -32,8 +32,8 @@ public:
 	int init(HWND _hWnd, POINT _ptResolution);
 	void Progress();
 
-	void CreateD2DResources();
-	void ReleaseD2DResources();
+	void CreateResources();
+	void ReleaseResources();
 
 	void DockMenu();
 	void DivideMenu();
@@ -43,8 +43,8 @@ public:
 	HWND GetMainHwnd() { return m_hWnd; }
 	POINT GetResolution() { return m_ptResolution; }
     
-	ID2D1RenderTarget* GetD2DRenderTarget() { return m_pRenderTarget; }
-	ID2D1Factory* GetD2DFactory() { return m_pD2DFactory; }
+	ID2D1RenderTarget* GetRenderTarget() { return m_pRenderTarget; }
+	ID2D1Factory* GetFactory() { return m_pFactory; }
 	IDWriteFactory* GetDWriteFactory() { return m_pDWriteFactory; }
 
 private:

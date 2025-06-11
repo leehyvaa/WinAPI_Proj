@@ -93,7 +93,7 @@ void CTile::Render(ID2D1RenderTarget* _pRenderTarget)
         D2D1_SIZE_F dstSize = D2D1::SizeF(vScale.x, vScale.y);
 
         // Direct2D 비트맵 직접 사용 (PNG 알파 채널 지원)
-        ID2D1Bitmap* pD2DBitmap = m_pTileTex->GetD2DBitmap();
+        ID2D1Bitmap* pD2DBitmap = m_pTileTex->GetBitmap();
 
         if (debugCount < 5)
         {
@@ -164,7 +164,7 @@ void CTile::Render(ID2D1RenderTarget* _pRenderTarget)
         D2D1_SIZE_F dstSize = D2D1::SizeF(vScale.x, vScale.y);
 
         // Direct2D 비트맵 직접 사용 (PNG 알파 채널 지원)
-        ID2D1Bitmap* pD2DBitmap = m_pTileTex2->GetD2DBitmap();
+        ID2D1Bitmap* pD2DBitmap = m_pTileTex2->GetBitmap();
 
         if (pD2DBitmap)
         {

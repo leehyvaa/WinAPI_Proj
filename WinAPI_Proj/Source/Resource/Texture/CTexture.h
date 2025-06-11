@@ -18,7 +18,7 @@ private:
     BITMAP m_bitInfo;
 
     // Direct2D 멤버 (PNG 파일의 알파 채널 지원)
-    ID2D1Bitmap* m_pD2DBitmap;
+    ID2D1Bitmap* m_pBitmap;
     UINT m_iWidth;
     UINT m_iHeight;
 
@@ -35,12 +35,12 @@ public:
     HDC GetDC() { return m_dc; }
 
     // Direct2D 인터페이스
-    ID2D1Bitmap* GetD2DBitmap() { return m_pD2DBitmap; }
+    ID2D1Bitmap* GetBitmap() { return m_pBitmap; }
     UINT Width() { return m_iWidth; }
     UINT Height() { return m_iHeight; }
 
     // 텍스처 유효성 검사 (GDI 또는 D2D 중 하나라도 유효하면 OK)
-    bool IsValid() const { return (m_pD2DBitmap != nullptr && m_iWidth > 0 && m_iHeight > 0) || (m_hBit != nullptr); }
+    bool IsValid() const { return (m_pBitmap != nullptr && m_iWidth > 0 && m_iHeight > 0) || (m_hBit != nullptr); }
 
     // 분할된 비트맵 검색/캐싱 함수
     ID2D1Bitmap* GetSlicedBitmap(const std::wstring& _strKey, const D2D1_RECT_F& _srcRect, const D2D1_SIZE_F& _dstSize);
@@ -49,9 +49,9 @@ public:
 
 private:
     // Direct2D 관련 private 메서드
-    void CreateD2DBitmap(const wstring& _strFilePath);
-    void CreateD2DBitmapFromSize(UINT _iWidth, UINT _iHeight);
-    void ReleaseD2DResources();
+    void CreateBitmap(const wstring& _strFilePath);
+    void CreateBitmapFromSize(UINT _iWidth, UINT _iHeight);
+    void ReleaseResources();
 
 private:
     CTexture();

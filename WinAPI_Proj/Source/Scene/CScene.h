@@ -50,7 +50,7 @@ public:
 	virtual void Update();
 	virtual void FinalUpdate();
 	virtual void Render(ID2D1RenderTarget* _pRenderTarget);
-	void RenderTileD2D(ID2D1RenderTarget* _pRenderTarget);
+	void RenderTile(ID2D1RenderTarget* _pRenderTarget);
 
 	virtual void Enter();
 	virtual void Exit();

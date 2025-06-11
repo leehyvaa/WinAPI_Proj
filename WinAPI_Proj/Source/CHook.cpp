@@ -21,8 +21,8 @@ using namespace Gdiplus;
 CHook::CHook()
 	:m_fSpeed(2000)
 	, hookState(HOOK_STATE::FLYING)
-	, m_pChainD2DBitmap(nullptr)
-	, m_bChainD2DCached(false)
+	, m_pChainBitmap(nullptr)
+	, m_bChainCached(false)
 {
     SetGroup(GROUP_TYPE::HOOK);
 	CreateCollider();
@@ -73,7 +73,7 @@ CHook::CHook()
 
 CHook::~CHook()
 {
-    ReleaseChainD2DBitmap();
+    ReleaseChainBitmap();
 }
 
 void CHook::ReturnToPool()
@@ -306,13 +306,13 @@ void CHook::Render(ID2D1RenderTarget* _pRenderTarget)
     
     vDir.Normalize();
     
-    // 체인 D2D 비트맵 캐싱
-    if (!m_bChainD2DCached)
+    // 체인 비트맵 캐싱
+    if (!m_bChainCached)
     {
-        CacheChainD2DBitmap(_pRenderTarget);
+        CacheChainBitmap(_pRenderTarget);
     }
     
-    if (!m_pChainD2DBitmap)
+    if (!m_pChainBitmap)
         return;
     
     float fLinkWidth = static_cast<float>(pChainTex->Width());
@@ -360,9 +360,9 @@ void CHook::Render(ID2D1RenderTarget* _pRenderTarget)
         );
         
         _pRenderTarget->DrawBitmap(
-            m_pChainD2DBitmap, 
-            destRect, 
-            1.0f, 
+            m_pChainBitmap,
+            destRect,
+            1.0f,
             D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR
         );
     }
@@ -371,31 +371,31 @@ void CHook::Render(ID2D1RenderTarget* _pRenderTarget)
     _pRenderTarget->SetTransform(originalTransform);
 }
 
-void CHook::CacheChainD2DBitmap(ID2D1RenderTarget* _pRenderTarget)
+void CHook::CacheChainBitmap(ID2D1RenderTarget* _pRenderTarget)
 {
     if (!pChainTex || !_pRenderTarget)
         return;
 
     // 기존 비트맵 해제
-    ReleaseChainD2DBitmap();
+    ReleaseChainBitmap();
 
     // PNG 파일의 경우 Direct2D 비트맵을 직접 사용 (알파 채널 지원)
-    ID2D1Bitmap* pSourceD2DBitmap = pChainTex->GetD2DBitmap();
+    ID2D1Bitmap* pSourceD2DBitmap = pChainTex->GetBitmap();
     if (pSourceD2DBitmap)
     {
         // 원본 Direct2D 비트맵을 직접 참조 (참조 카운트 증가)
-        m_pChainD2DBitmap = pSourceD2DBitmap;
-        m_pChainD2DBitmap->AddRef();
-        m_bChainD2DCached = true;
+        m_pChainBitmap = pSourceD2DBitmap;
+        m_pChainBitmap->AddRef();
+        m_bChainCached = true;
     }
 }
 
-void CHook::ReleaseChainD2DBitmap()
+void CHook::ReleaseChainBitmap()
 {
-    if (m_pChainD2DBitmap)
+    if (m_pChainBitmap)
     {
-        m_pChainD2DBitmap->Release();
-        m_pChainD2DBitmap = nullptr;
+        m_pChainBitmap->Release();
+        m_pChainBitmap = nullptr;
     }
-    m_bChainD2DCached = false;
+    m_bChainCached = false;
 }

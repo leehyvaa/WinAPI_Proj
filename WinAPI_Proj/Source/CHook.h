@@ -38,8 +38,8 @@ private:
     PlayerArm* m_pOwnerArm;
     
     // Direct2D 관련 멤버 변수 (CAnimation/CTile 패턴 적용)
-    ID2D1Bitmap* m_pChainD2DBitmap;    // 체인 텍스처 캐시된 D2D 비트맵
-    bool m_bChainD2DCached;            // 체인 텍스처 캐싱 완료 여부
+    ID2D1Bitmap* m_pChainBitmap;    // 체인 텍스처 캐시된 비트맵
+    bool m_bChainCached;            // 체인 텍스처 캐싱 완료 여부
     
 public:
     CHook();
@@ -49,8 +49,8 @@ public:
     virtual void Render(ID2D1RenderTarget* _pRenderTarget);
 
 private:
-    void CacheChainD2DBitmap(ID2D1RenderTarget* _pRenderTarget);
-    void ReleaseChainD2DBitmap();
+    void CacheChainBitmap(ID2D1RenderTarget* _pRenderTarget);
+    void ReleaseChainBitmap();
 
 public:
     void Update_Animation();

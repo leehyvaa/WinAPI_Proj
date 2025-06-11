@@ -27,7 +27,7 @@ void CBackGround::Render(ID2D1RenderTarget* _pRenderTarget)
 		return;
 
 	// CTexture에서 D2D 비트맵 가져오기
-	ID2D1Bitmap* pD2DBitmap = m_pTex->GetD2DBitmap();
+	ID2D1Bitmap* pD2DBitmap = m_pTex->GetBitmap();
 	if (!pD2DBitmap)
 		return;
 

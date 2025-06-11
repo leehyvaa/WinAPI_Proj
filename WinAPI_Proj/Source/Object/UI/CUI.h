@@ -49,7 +49,7 @@ public:
 private:
     void Update_Child();
     void FinalUpdate_Child();
-    void Render_Child_D2D(ID2D1RenderTarget* _pRenderTarget);
+    void Render_Child(ID2D1RenderTarget* _pRenderTarget);
 
     void MouseOnCheck();
 

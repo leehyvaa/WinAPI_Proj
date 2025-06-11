@@ -22,13 +22,12 @@ private:
     std::vector<std::wstring> m_vecLines; // 라인별 텍스트 저장
     TEXT_ALIGN    m_Align;     // 정렬 방식
     int           m_iLineSpace; // 라인 간격 (픽셀)
-    COLORREF      m_TextColor;
     HFONT         m_hFont;
 
     // DirectWrite 관련 멤버 변수
     IDWriteTextFormat* m_pTextFormat;     // DirectWrite 텍스트 포맷
     ID2D1SolidColorBrush* m_pTextBrush;   // DirectWrite 텍스트 브러시
-    D2D1_COLOR_F  m_D2DTextColor;         // Direct2D 텍스트 색상
+    D2D1_COLOR_F  m_TextColor;         // Direct2D 텍스트 색상
 
 public:
     CTextUI();
@@ -50,10 +49,9 @@ public:
     void SetText(const std::wstring& _str, wchar_t _delimiter = L'\n');
     void SetFontSize(int _size);
     int GetFontSize() const { return m_iFontSize; }
-    void SetFontColor(COLORREF color) { m_TextColor = color; }
 
     // DirectWrite 관련 메서드
-    void SetFontColorD2D(D2D1_COLOR_F _color);
+    void SetFontColor(D2D1_COLOR_F _color);
     void CreateTextFormat();
     void CreateTextBrush(ID2D1RenderTarget* _pRenderTarget);
     

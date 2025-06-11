@@ -132,7 +132,6 @@ void CScene_Tool::Enter()
     m_pModeText->SetLineSpace(5);
     m_pModeText->SetVisibleBox(false);
     m_pModeText->SetFontSize(20);
-    m_pModeText->SetFontColor(RGB(0,0,255));
     AddObject(m_pModeText, GROUP_TYPE::UI);
 
 
@@ -142,7 +141,6 @@ void CScene_Tool::Enter()
     m_pHelpText->SetAlign(CTextUI::TEXT_ALIGN::LEFT);
     m_pHelpText->SetLineSpace(5);
     m_pHelpText->SetVisibleBox(false);
-    m_pHelpText->SetFontColor(RGB(137,0,255));
     m_pHelpText->SetFontSize(20);
     AddObject(m_pHelpText, GROUP_TYPE::UI);
 
@@ -152,7 +150,6 @@ void CScene_Tool::Enter()
     m_pHelpSubText->SetAlign(CTextUI::TEXT_ALIGN::LEFT);
     m_pHelpSubText->SetLineSpace(5);
     m_pHelpSubText->SetVisibleBox(false);
-    m_pHelpSubText->SetFontColor(RGB(137,0,255));
     m_pHelpSubText->SetFontSize(20);
     AddObject(m_pHelpSubText, GROUP_TYPE::UI);
 
@@ -815,57 +812,57 @@ void CScene_Tool::NextTileUI()
 }
 
 
-
-void CScene_Tool::SaveBmp()
-{
-	HDC hdcScreen = CCore::GetInst()->GetMainDC();
-
-
-	int screenX =TILE_SIZE*GetTileX();
-	int screenY = TILE_SIZE * GetTileY();
-
-
-	HDC hdcMem = CreateCompatibleDC(hdcScreen);
-	HBITMAP hBitmap = CreateCompatibleBitmap(hdcScreen, screenX, screenY);
-	SelectObject(hdcMem, hBitmap);
-
-	//화면 캡처
-	BitBlt(hdcMem, 0, 0, screenX, screenY, hdcScreen, 0, 0, SRCCOPY);
-
-	//비트맵 저장
-	BITMAPINFOHEADER bi;
-	bi.biSize = sizeof(BITMAPINFOHEADER);
-	bi.biWidth = screenX;
-	bi.biHeight = screenY;
-	bi.biPlanes = 1;
-	bi.biBitCount = 24;
-	bi.biCompression = BI_RGB;
-	bi.biSizeImage = 0;
-	bi.biXPelsPerMeter = 0;
-	bi.biYPelsPerMeter = 0;
-	bi.biClrUsed = 0;
-	bi.biClrImportant = 0;
-
-	HANDLE hFile = CreateFile(L"content\\texture\\map\\screenshot.bmp", GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-	DWORD dwWritten = 0;
-	DWORD dwSizeofDIB = screenX * screenY * 3 + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
-	BITMAPFILEHEADER bmfHeader;
-	bmfHeader.bfOffBits = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
-	bmfHeader.bfSize = dwSizeofDIB + sizeof(BITMAPFILEHEADER);
-	bmfHeader.bfType = 0x4D42;
-	WriteFile(hFile, (LPSTR)&bmfHeader, sizeof(BITMAPFILEHEADER), &dwWritten, NULL);
-	WriteFile(hFile, (LPSTR)&bi, sizeof(BITMAPINFOHEADER), &dwWritten, NULL);
-	LPSTR lpBits = new char[dwSizeofDIB];
-	GetDIBits(hdcScreen, hBitmap, 0, static_cast<UINT>(screenY), lpBits, (BITMAPINFO*)&bi, DIB_RGB_COLORS);
-	WriteFile(hFile, lpBits, dwSizeofDIB, &dwWritten, NULL);
-
-
-	delete[] lpBits;
-	CloseHandle(hFile);
-	DeleteObject(hBitmap);
-	DeleteDC(hdcMem);
-	ReleaseDC(NULL, hdcScreen);
- }
+// 스크린샷 기능
+// void CScene_Tool::SaveBmp()
+// {
+// 	HDC hdcScreen = CCore::GetInst()->GetMainDC();
+//
+//
+// 	int screenX =TILE_SIZE*GetTileX();
+// 	int screenY = TILE_SIZE * GetTileY();
+//
+//
+// 	HDC hdcMem = CreateCompatibleDC(hdcScreen);
+// 	HBITMAP hBitmap = CreateCompatibleBitmap(hdcScreen, screenX, screenY);
+// 	SelectObject(hdcMem, hBitmap);
+//
+// 	//화면 캡처
+// 	BitBlt(hdcMem, 0, 0, screenX, screenY, hdcScreen, 0, 0, SRCCOPY);
+//
+// 	//비트맵 저장
+// 	BITMAPINFOHEADER bi;
+// 	bi.biSize = sizeof(BITMAPINFOHEADER);
+// 	bi.biWidth = screenX;
+// 	bi.biHeight = screenY;
+// 	bi.biPlanes = 1;
+// 	bi.biBitCount = 24;
+// 	bi.biCompression = BI_RGB;
+// 	bi.biSizeImage = 0;
+// 	bi.biXPelsPerMeter = 0;
+// 	bi.biYPelsPerMeter = 0;
+// 	bi.biClrUsed = 0;
+// 	bi.biClrImportant = 0;
+//
+// 	HANDLE hFile = CreateFile(L"content\\texture\\map\\screenshot.bmp", GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+// 	DWORD dwWritten = 0;
+// 	DWORD dwSizeofDIB = screenX * screenY * 3 + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
+// 	BITMAPFILEHEADER bmfHeader;
+// 	bmfHeader.bfOffBits = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
+// 	bmfHeader.bfSize = dwSizeofDIB + sizeof(BITMAPFILEHEADER);
+// 	bmfHeader.bfType = 0x4D42;
+// 	WriteFile(hFile, (LPSTR)&bmfHeader, sizeof(BITMAPFILEHEADER), &dwWritten, NULL);
+// 	WriteFile(hFile, (LPSTR)&bi, sizeof(BITMAPINFOHEADER), &dwWritten, NULL);
+// 	LPSTR lpBits = new char[dwSizeofDIB];
+// 	GetDIBits(hdcScreen, hBitmap, 0, static_cast<UINT>(screenY), lpBits, (BITMAPINFO*)&bi, DIB_RGB_COLORS);
+// 	WriteFile(hFile, lpBits, dwSizeofDIB, &dwWritten, NULL);
+//
+//
+// 	delete[] lpBits;
+// 	CloseHandle(hFile);
+// 	DeleteObject(hBitmap);
+// 	DeleteDC(hdcMem);
+// 	ReleaseDC(NULL, hdcScreen);
+//  }
 
 bool CScene_Tool::CalculateTileIndex(int& iCol, int& iRow,int& iTileX)
 {

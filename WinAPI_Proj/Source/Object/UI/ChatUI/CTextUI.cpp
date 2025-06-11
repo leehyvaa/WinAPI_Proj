@@ -9,12 +9,11 @@
 
 CTextUI::CTextUI()
     : CUI(false) // 카메라 영향 받지 않음
-    , m_TextColor(RGB(0, 255, 0)) // 기본 흰색
     , m_hFont(nullptr)
     , m_iFontSize(15)
     , m_pTextFormat(nullptr)
     , m_pTextBrush(nullptr)
-    , m_D2DTextColor(D2D1::ColorF(0.625f, 0.27f, 0.625f, 1.0f)) // 보라색
+    , m_TextColor(D2D1::ColorF(0.625f, 0.27f, 0.625f, 1.0f)) // 보라색
 {
     m_bVisibleBox = true;
 }
@@ -102,9 +101,9 @@ void CTextUI::SetFontSize(int _size)
 }
 
 // DirectWrite 관련 메서드 구현
-void CTextUI::SetFontColorD2D(D2D1_COLOR_F _color)
+void CTextUI::SetFontColor(D2D1_COLOR_F _color)
 {
-    m_D2DTextColor = _color;
+    m_TextColor = _color;
     
     // 기존 브러시가 있으면 해제하여 다음 렌더링 시 새로 생성
     if (m_pTextBrush)
@@ -170,7 +169,7 @@ void CTextUI::CreateTextBrush(ID2D1RenderTarget* _pRenderTarget)
 
     // DirectWrite 텍스트 브러시 생성
     HRESULT hr = _pRenderTarget->CreateSolidColorBrush(
-        m_D2DTextColor,
+        m_TextColor,
         &m_pTextBrush
     );
 

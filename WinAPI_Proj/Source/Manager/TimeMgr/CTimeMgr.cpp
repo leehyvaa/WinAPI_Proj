@@ -133,7 +133,7 @@ void CTimeMgr::RenderProfileData(HDC _dc, int _iOffsetY)
 }
 */
 
-void CTimeMgr::RenderProfileDataD2D(ID2D1RenderTarget* _pRenderTarget, int _iOffsetY)
+void CTimeMgr::RenderProfileData(ID2D1RenderTarget* _pRenderTarget, int _iOffsetY)
 {
     if (!_pRenderTarget || m_mapProfileData.empty())
         return;

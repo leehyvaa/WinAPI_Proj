@@ -25,7 +25,7 @@ CCore::CCore()
 	:m_hWnd(0)
 	, m_ptResolution{}
 	, m_hDC(0)
-	, m_pD2DFactory(nullptr)
+	, m_pFactory(nullptr)
 	, m_pRenderTarget(nullptr)
 	, m_pBlackBrush(nullptr)
 	, m_pRedBrush(nullptr)
@@ -37,7 +37,7 @@ CCore::CCore()
 
 CCore::~CCore()
 {
-	ReleaseD2DResources();
+	ReleaseResources();
 	ReleaseDC(m_hWnd,m_hDC); // GetDC로 만든 Dc는 릴리즈로 해제
 	DestroyMenu(m_hMenu);
 }
@@ -59,7 +59,7 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 
 	m_hDC = GetDC(m_hWnd);
 
-	CreateD2DResources();
+	CreateResources();
 
 	// Manager 초기화
 	CTimeMgr::GetInst()->init();
@@ -131,7 +131,7 @@ void CCore::Progress()
         // 프로파일링 디버그 출력 (F10 키)
         if (CKeyMgr::GetInst()->GetKeyState(KEY::F10) == KEY_STATE::TAP)
         {
-            CTimeMgr::RenderProfileDataD2D(m_pRenderTarget, 500);
+            CTimeMgr::RenderProfileData(m_pRenderTarget, 500);
         }
 
         // EndDraw()가 화면 출력까지 담당
@@ -139,8 +139,8 @@ void CCore::Progress()
         if (FAILED(hr) && hr == D2DERR_RECREATE_TARGET)
         {
             CTimeMgr::StartTimer(L"Core_D2D_Recreate");
-            ReleaseD2DResources();
-            CreateD2DResources();
+            ReleaseResources();
+            CreateResources();
             CTimeMgr::EndTimer(L"Core_D2D_Recreate");
         }
     }
@@ -152,12 +152,12 @@ void CCore::Progress()
     CTimeMgr::EndTimer(L"Core_Progress_Total");
 }
 
-void CCore::CreateD2DResources()
+void CCore::CreateResources()
 {
-    ReleaseD2DResources();
+    ReleaseResources();
 
     // Dx2D 팩토리 생성
-    HRESULT hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &m_pD2DFactory);
+    HRESULT hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &m_pFactory);
     if (FAILED(hr)) return;
 
     // DirectWrite 팩토리 생성
@@ -183,10 +183,10 @@ void CCore::CreateD2DResources()
     );
 
     // HWND 렌더 타겟 생성
-    hr = m_pD2DFactory->CreateHwndRenderTarget(props, hwndProps, &m_pRenderTarget);
+    hr = m_pFactory->CreateHwndRenderTarget(props, hwndProps, &m_pRenderTarget);
     if (FAILED(hr))
     {
-        if (m_pD2DFactory) { m_pD2DFactory->Release(); m_pD2DFactory = nullptr; }
+        if (m_pFactory) { m_pFactory->Release(); m_pFactory = nullptr; }
         return;
     }
     
@@ -200,7 +200,7 @@ void CCore::CreateD2DResources()
 }
 
 
-void CCore::ReleaseD2DResources()
+void CCore::ReleaseResources()
 {
     if (m_pBlackBrush) { m_pBlackBrush->Release(); m_pBlackBrush = nullptr; }
     if (m_pRedBrush)   { m_pRedBrush->Release();   m_pRedBrush = nullptr; }
@@ -214,7 +214,7 @@ void CCore::ReleaseD2DResources()
     if (m_pDWriteFactory) { m_pDWriteFactory->Release(); m_pDWriteFactory = nullptr; }
 
     // Dx2D 팩토리 해제
-    if (m_pD2DFactory) { m_pD2DFactory->Release(); m_pD2DFactory = nullptr; }
+    if (m_pFactory) { m_pFactory->Release(); m_pFactory = nullptr; }
 }
 
 void CCore::DockMenu()

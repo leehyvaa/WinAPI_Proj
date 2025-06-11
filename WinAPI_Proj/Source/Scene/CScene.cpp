@@ -69,7 +69,6 @@ void CScene::Enter()
         m_pPlayerText->SetLineSpace(5);
         m_pPlayerText->SetVisibleBox(false);
         m_pPlayerText->SetFontSize(20);
-        m_pPlayerText->SetFontColor(RGB(0,0,255));
         AddObject(m_pPlayerText, GROUP_TYPE::UI);
     }
 
@@ -89,7 +88,6 @@ void CScene::Enter()
         m_pPoolDebugText->SetLineSpace(5);
         m_pPoolDebugText->SetVisibleBox(true);
         m_pPoolDebugText->SetFontSize(16);
-        m_pPoolDebugText->SetFontColor(RGB(255, 200, 0)); // 오렌지색
         m_pPoolDebugText->SetActive(false); // 기본적으로 숨김
         AddObject(m_pPoolDebugText, GROUP_TYPE::UI);
     }
@@ -185,7 +183,7 @@ void CScene::Render(ID2D1RenderTarget* _pRenderTarget)
 		// 타일 렌더링
 		if (static_cast<UINT>(GROUP_TYPE::TILE) == i && !bDrawOutWindow)
 		{
-			RenderTileD2D(_pRenderTarget);
+			RenderTile(_pRenderTarget);
 			continue;
 		}
 
@@ -225,14 +223,14 @@ CTimeMgr::EndTimer(L"Scene_D2D_Render");
 
 // F10 키 - Direct2D 프로파일링 출력
 if (KEY_HOLD(KEY::F10)) {
-		CTimeMgr::RenderProfileDataD2D(_pRenderTarget, 10);
+		CTimeMgr::RenderProfileData(_pRenderTarget, 10);
 		
 		// 프로파일링 출력 후에만 리셋
 		CTimeMgr::ResetProfileData();
 }
 }
 
-void CScene::RenderTileD2D(ID2D1RenderTarget* _pRenderTarget)
+void CScene::RenderTile(ID2D1RenderTarget* _pRenderTarget)
 {
     if (!_pRenderTarget)
         return;

@@ -92,7 +92,7 @@ void CUI::Render(ID2D1RenderTarget* _pRenderTarget)
 	if (m_pTex != nullptr)
 	{
 		// CTexture에서 캐시된 D2D 비트맵을 직접 가져와서 렌더링
-		ID2D1Bitmap* pD2DBitmap = m_pTex->GetD2DBitmap();
+		ID2D1Bitmap* pD2DBitmap = m_pTex->GetBitmap();
 		if (pD2DBitmap)
 		{
 			UINT iWidth = m_pTex->Width();
@@ -152,11 +152,11 @@ void CUI::Render(ID2D1RenderTarget* _pRenderTarget)
 	}
 
 	// 자식 UI 렌더링
-	Render_Child_D2D(_pRenderTarget);
+	Render_Child(_pRenderTarget);
 }
 
 
-void CUI::Render_Child_D2D(ID2D1RenderTarget* _pRenderTarget)
+void CUI::Render_Child(ID2D1RenderTarget* _pRenderTarget)
 {
 	for (size_t i = 0; i < m_vecChildUI.size(); i++)
 	{

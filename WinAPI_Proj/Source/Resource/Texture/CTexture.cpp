@@ -23,7 +23,7 @@ CTexture::CTexture()
     : m_hBit(0)
     , m_dc(0)
     , m_bitInfo{}
-    , m_pD2DBitmap(nullptr)
+    , m_pBitmap(nullptr)
     , m_iWidth(0)
     , m_iHeight(0)
 {
@@ -37,10 +37,10 @@ CTexture::~CTexture()
 void CTexture::Load(const wstring& _strFilePath)
 {
     // Direct2D로 PNG 파일 로딩 (알파 채널 지원)
-    CreateD2DBitmap(_strFilePath);
+    CreateBitmap(_strFilePath);
 
     // 텍스처 로딩 실패 시 로그 출력
-    if (!m_pD2DBitmap || m_iWidth == 0 || m_iHeight == 0)
+    if (!m_pBitmap || m_iWidth == 0 || m_iHeight == 0)
     {
         // 디버깅: 파일 로딩 실패 로그
         string debugPath = string(_strFilePath.begin(), _strFilePath.end());
@@ -54,7 +54,7 @@ void CTexture::Load(const wstring& _strFilePath)
 
     // 하위 호환성을 위한 GDI 리소스 생성 (필요한 경우에만)
     // PNG 파일의 경우 Direct2D만으로도 충분하지만, 기존 코드와의 호환성을 위해 유지
-    if (m_pD2DBitmap)
+    if (m_pBitmap)
     {
         // GDI+ 비트맵을 로드하고 HBITMAP 생성
         Gdiplus::Bitmap gdiBmp(_strFilePath.c_str());
@@ -82,7 +82,7 @@ void CTexture::Load(const wstring& _strFilePath)
 void CTexture::Create(UINT _iWidth, UINT _iHeight)
 {
     // Direct2D 비트맵 생성
-    CreateD2DBitmapFromSize(_iWidth, _iHeight);
+    CreateBitmapFromSize(_iWidth, _iHeight);
     
     // 하위 호환성을 위한 GDI 리소스도 생성
     HDC maindc = CCore::GetInst()->GetMainDC();
@@ -95,9 +95,9 @@ void CTexture::Create(UINT _iWidth, UINT _iHeight)
     GetObject(m_hBit, sizeof(BITMAP), &m_bitInfo);
 }
 
-void CTexture::CreateD2DBitmap(const wstring& _strFilePath)
+void CTexture::CreateBitmap(const wstring& _strFilePath)
 {
-    ID2D1RenderTarget* pRenderTarget = CCore::GetInst()->GetD2DRenderTarget();
+    ID2D1RenderTarget* pRenderTarget = CCore::GetInst()->GetRenderTarget();
     if (!pRenderTarget)
         return;
 
@@ -175,7 +175,7 @@ void CTexture::CreateD2DBitmap(const wstring& _strFilePath)
     hr = pRenderTarget->CreateBitmapFromWicBitmap(
         pConverter,
         nullptr,
-        &m_pD2DBitmap
+        &m_pBitmap
     );
 
     // 리소스 해제
@@ -184,9 +184,9 @@ void CTexture::CreateD2DBitmap(const wstring& _strFilePath)
     pDecoder->Release();
 }
 
-void CTexture::CreateD2DBitmapFromSize(UINT _iWidth, UINT _iHeight)
+void CTexture::CreateBitmapFromSize(UINT _iWidth, UINT _iHeight)
 {
-    ID2D1RenderTarget* pRenderTarget = CCore::GetInst()->GetD2DRenderTarget();
+    ID2D1RenderTarget* pRenderTarget = CCore::GetInst()->GetRenderTarget();
     if (!pRenderTarget)
         return;
 
@@ -199,15 +199,15 @@ void CTexture::CreateD2DBitmapFromSize(UINT _iWidth, UINT _iHeight)
         D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_PREMULTIPLIED)
     );
 
-    HRESULT hr = pRenderTarget->CreateBitmap(size, nullptr, 0, props, &m_pD2DBitmap);
+    HRESULT hr = pRenderTarget->CreateBitmap(size, nullptr, 0, props, &m_pBitmap);
 }
 
-void CTexture::ReleaseD2DResources()
+void CTexture::ReleaseResources()
 {
-    if (m_pD2DBitmap)
+    if (m_pBitmap)
     {
-        m_pD2DBitmap->Release();
-        m_pD2DBitmap = nullptr;
+        m_pBitmap->Release();
+        m_pBitmap = nullptr;
     }
 }
 
@@ -221,8 +221,8 @@ ID2D1Bitmap* CTexture::GetSlicedBitmap(const std::wstring& _strKey, const D2D1_R
     }
 
     // 캐시에 없으면 새로 생성
-    ID2D1RenderTarget* pRenderTarget = CCore::GetInst()->GetD2DRenderTarget();
-    if (!pRenderTarget || !m_pD2DBitmap)
+    ID2D1RenderTarget* pRenderTarget = CCore::GetInst()->GetRenderTarget();
+    if (!pRenderTarget || !m_pBitmap)
         return nullptr;
 
     // 목적지 크기
@@ -248,7 +248,7 @@ ID2D1Bitmap* CTexture::GetSlicedBitmap(const std::wstring& _strKey, const D2D1_R
 
     // 원본 텍스처의 지정된 영역을 목적지 크기로 그리기
     pBitmapRenderTarget->DrawBitmap(
-        m_pD2DBitmap,
+        m_pBitmap,
         destRect,
         1.0f,
         D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR,
@@ -291,7 +291,7 @@ void CTexture::Release()
     m_mapSlicedBitmaps.clear();
 
     // Direct2D 리소스 해제
-    ReleaseD2DResources();
+    ReleaseResources();
     
     // 기존 GDI 리소스 해제
     if (m_dc)
