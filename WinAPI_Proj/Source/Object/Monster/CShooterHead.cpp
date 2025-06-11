@@ -14,7 +14,7 @@ CShooterHead::CShooterHead()
 {
     SetGroup(GROUP_TYPE::MONSTER_HEAD);
     CreateAnimator();
-    CTexture *pTex = CResMgr::GetInst()->LoadTexture(L"RifleManTex", L"texture\\enemy\\rifleman\\RifleMan.bmp");
+    CTexture *pTex = CResMgr::GetInst()->LoadTexture(L"RifleManTex", L"texture\\enemy\\rifleman\\RifleMan.png");
 
     GetAnimator()->CreateAnimation(L"RIFLEMAN_SHOT_HEAD_TOP", pTex,
                                            Vec2(0.f, 1400.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 4, 2.f, Vec2(0.f, -10.f));

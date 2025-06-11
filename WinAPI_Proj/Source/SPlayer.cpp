@@ -22,7 +22,7 @@
 SPlayer::SPlayer()
 	: m_fSpeed(1000), m_eCurState(PLAYER_STATE::IDLE), m_ePrevState(PLAYER_STATE::RUN), m_bOnGround(false), m_pPlayerArm(nullptr), m_pPlayerHook(nullptr), m_bClimbing(false), m_pRayHitCollider(nullptr), m_vRayHitPos(Vec2(0.f, 0.f)), m_fWireRange(-1.f), m_fWireMaxRange(700.f), m_fMoveEnergy(0.f), m_fPosEnergy(0.f), m_bCanBooster(false), m_eClimbState(PLAYER_CLIMB_STATE::NONE), m_pSubduedMonster(nullptr), m_bIsSubduing(false), m_fSubdueRange(700.f), m_bIsMovingToTarget(false), m_vMoveStartPos(Vec2(0.f, 0.f)), m_vMoveTargetPos(Vec2(0.f, 0.f)), m_fMoveProgress(0.f), m_fMoveSpeed(2000.f),m_bIsExecuteDashing(false)
 {
-	// m_pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\sigong.bmp");
+	// m_pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\sigong.png");
 	SetGroup(GROUP_TYPE::PLAYER);
 
 	// 67 -13분 캐릭터 상태변환후 애니메이션 전환
@@ -35,7 +35,7 @@ SPlayer::SPlayer()
 
 #pragma region 플레이어 애니메이션
 	// 텍스쳐 로딩
-	CTexture *pTexRight = CResMgr::GetInst()->LoadTexture(L"PlayerTex_Right", L"texture\\player\\Player_Right.bmp");
+	CTexture *pTexRight = CResMgr::GetInst()->LoadTexture(L"PlayerTex_Right", L"texture\\player\\Player_Right.png");
 
 	// 애니메이션 로딩
 	// GetAnimator()->LoadAnimation(L"animation\\player_right_idle.anim");

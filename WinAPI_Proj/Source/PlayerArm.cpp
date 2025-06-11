@@ -19,7 +19,7 @@ PlayerArm::PlayerArm()
 
 #pragma region 플레이어 Arm 애니메이션
 	// 텍스쳐 로딩
-	CTexture *pArmTexRight = CResMgr::GetInst()->LoadTexture(L"ArmTex_Right", L"texture\\player\\Arm_Right.bmp");
+	CTexture *pArmTexRight = CResMgr::GetInst()->LoadTexture(L"ArmTex_Right", L"texture\\player\\Arm_Right.png");
 
 	// 애니메이션 로딩
 	// GetAnimator()->LoadAnimation(L"animation\\playerArm_right_idle.anim");

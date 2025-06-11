@@ -10,7 +10,7 @@
 MouseCursor::MouseCursor()
 {
 	CreateAnimator();
-	CTexture * pCursor = CResMgr::GetInst()->LoadTexture(L"Cursor_Tex", L"texture\\UI\\Cursor.bmp");
+	CTexture * pCursor = CResMgr::GetInst()->LoadTexture(L"Cursor_Tex", L"texture\\UI\\Cursor.png");
 	
 	
 	GetAnimator()->CreateAnimation(L"Cursor", pCursor,

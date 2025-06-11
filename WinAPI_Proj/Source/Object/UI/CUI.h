@@ -20,10 +20,6 @@ private:
     CTexture* m_pTex;
     int m_iTexIndex;
 
-    // Direct2D 관련 멤버 변수
-    ID2D1Bitmap* m_pD2DBitmap;  // D2D 비트맵 포인터
-    bool m_bD2DCached;          // D2D 캐싱 여부
-    
     bool m_bMouseOn; //마우스 UI 위에 있는지
     bool m_bLbtnDown; //UI가 왼쪽버튼이 눌린 적 있는지
 
@@ -57,7 +53,6 @@ private:
     void Render_Child_D2D(ID2D1RenderTarget* _pRenderTarget);
 
     void MouseOnCheck();
-    void CacheD2DBitmap(ID2D1RenderTarget* _pRenderTarget);
 
 
 public:

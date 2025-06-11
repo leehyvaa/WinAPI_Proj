@@ -35,12 +35,6 @@ private:
 	float m_fSizeMulti;
 	POINT* rotPos;
     
-    // DX 비트맵
-    vector<ID2D1Bitmap*> m_vecD2DFrameBitmaps;
-    
-    // 캐싱 여부
-    bool m_bD2DCached; 
-    bool m_bCached;
     
     function<void()> m_EndFrameEvent;
     
@@ -71,8 +65,6 @@ public:
 private:
 	void SetName(const wstring& _strName) { m_strName = _strName; }
     //void CacheFrames();
-    void CacheD2DFrames(ID2D1RenderTarget* _pRenderTarget);
-    void ReleaseD2DFrames();
 public:
 	void Update();
 	void RenderD2D(ID2D1RenderTarget* _pRenderTarget);

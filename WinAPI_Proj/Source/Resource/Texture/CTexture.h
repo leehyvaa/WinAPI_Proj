@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "CRes.h"
+#include <unordered_map>
 
 // Direct2D 전방 선언
 struct ID2D1Bitmap;
@@ -18,6 +19,9 @@ private:
     ID2D1Bitmap* m_pD2DBitmap;
     UINT m_iWidth;
     UINT m_iHeight;
+    
+    // 분할된 비트맵 캐시
+    std::unordered_map<std::wstring, ID2D1Bitmap*> m_mapSlicedBitmaps;
 
 public:
     void Load(const wstring& _strFilePath);
@@ -32,6 +36,9 @@ public:
     ID2D1Bitmap* GetD2DBitmap() { return m_pD2DBitmap; }
     UINT Width() { return m_iWidth; }
     UINT Height() { return m_iHeight; }
+    
+    // 분할된 비트맵 검색/캐싱 함수
+    ID2D1Bitmap* GetSlicedBitmap(const std::wstring& _strKey, const D2D1_RECT_F& _srcRect, const D2D1_SIZE_F& _dstSize);
     
     void Release();
 

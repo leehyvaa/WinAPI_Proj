@@ -18,11 +18,6 @@ private:
     VERTEX_POSITION m_eVertexPosition;
     GROUND_TYPE m_eGroundType; // 지형 타입 필드
 
-    // D2D 비트맵 캐싱 시스템 (CAnimation 패턴 적용)
-    ID2D1Bitmap* m_pD2DBitmap;        // 첫 번째 텍스처 캐시된 D2D 비트맵
-    ID2D1Bitmap* m_pD2DBitmap2;       // 두 번째 텍스처 캐시된 D2D 비트맵
-    bool m_bD2DCached;                // 캐싱 완료 여부
-    bool m_bD2DCached2;               // 두 번째 텍스처 캐싱 완료 여부
     
 public:
     
@@ -30,8 +25,6 @@ public:
     virtual void RenderD2D(ID2D1RenderTarget* _pRenderTarget);
 
 private:
-    void CacheD2DBitmap(ID2D1RenderTarget* _pRenderTarget, CTexture* _pTex, int _iImgIdx, ID2D1Bitmap** _ppD2DBitmap);
-    void ReleaseD2DBitmaps();
 
 public:
 

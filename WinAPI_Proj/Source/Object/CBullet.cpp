@@ -25,7 +25,7 @@ CBullet::CBullet()
     CreateCollider();
     CreateAnimator();
 
-    CTexture *pTex = CResMgr::GetInst()->LoadTexture(L"RifleManTex", L"texture\\enemy\\rifleman\\RifleMan.bmp");
+    CTexture *pTex = CResMgr::GetInst()->LoadTexture(L"RifleManTex", L"texture\\enemy\\rifleman\\RifleMan.png");
 
     GetAnimator()->CreateAnimation(L"RIFLEMAN_BULLET", pTex,
                                                Vec2(0.f, 1000.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 12, 2.f, Vec2(0.f, 20.f));

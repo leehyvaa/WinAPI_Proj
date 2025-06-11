@@ -174,7 +174,7 @@ void Scene_Stage_01::Enter()
     // 백그라운드 설정
 	CBackGround* backGround = new CBackGround;
 	backGround->SetWorldPos(Vec2(0, 0));
-	CTexture* back = CResMgr::GetInst()->LoadTexture(L"TutorialBack", L"texture\\background\\Forest_Mountain2.bmp");
+	CTexture* back = CResMgr::GetInst()->LoadTexture(L"TutorialBack", L"texture\\background\\Forest_Mountain2.png");
 	
 	backGround->SetTexture(back);
 	

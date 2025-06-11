@@ -25,17 +25,12 @@ CTile::CTile()
     ,m_eGroundType(GROUND_TYPE::NONE)
     ,m_eVertexPosition(VERTEX_POSITION::NONE)
     ,m_iBotRightTileIdx(-1)
-    ,m_pD2DBitmap(nullptr)
-    ,m_pD2DBitmap2(nullptr)
-    ,m_bD2DCached(false)
-    ,m_bD2DCached2(false)
 {
 	SetScale(Vec2(TILE_SIZE, TILE_SIZE));
 }
 
 CTile::~CTile()
 {
-    ReleaseD2DBitmaps();
 }
 
 void CTile::Update()
@@ -164,18 +159,41 @@ void CTile::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
     // 전면 텍스쳐 그리기
     if (nullptr != m_pTileTex && -1 != m_iImgIdx)
     {
-        // 캐시된 비트맵이 없으면 생성
-        if (!m_bD2DCached || !m_pD2DBitmap)
-        {
-            CacheD2DBitmap(_pRenderTarget, m_pTileTex, m_iImgIdx, &m_pD2DBitmap);
-            m_bD2DCached = true;
-        }
+        UINT iWidth = m_pTileTex->Width();
+        UINT iHeight = m_pTileTex->Height();
 
+        UINT iMaxCol = iWidth / TILE_SIZE;
+        UINT iMaxRow = iHeight / TILE_SIZE;
+
+        UINT iCurRow = static_cast<UINT>(m_iImgIdx) / iMaxCol;
+        UINT iCurCol = static_cast<UINT>(m_iImgIdx) % iMaxCol;
+
+        // 이미지 범위를 벗어난 인덱스 체크
+        if (iMaxRow <= iCurRow)
+            return;
+
+        // 소스 사각형 계산
+        D2D1_RECT_F srcRect = D2D1::RectF(
+            static_cast<float>(iCurCol * TILE_SIZE),
+            static_cast<float>(iCurRow * TILE_SIZE),
+            static_cast<float>((iCurCol + 1) * TILE_SIZE),
+            static_cast<float>((iCurRow + 1) * TILE_SIZE)
+        );
+
+        // 목적지 크기 계산
+        Vec2 vScale = GetScale();
+        D2D1_SIZE_F dstSize = D2D1::SizeF(vScale.x, vScale.y);
+
+        // 고유 캐시 키 생성
+        wstring strTexPath = m_pTileTex->GetRelativePath();
+        wstring strCacheKey = strTexPath + L"_" + std::to_wstring(m_iImgIdx);
+
+        // CTexture의 GetSlicedBitmap을 호출하여 비트맵 가져오기
+        ID2D1Bitmap* pSlicedBitmap = m_pTileTex->GetSlicedBitmap(strCacheKey, srcRect, dstSize);
         
-        if (m_pD2DBitmap)
+        if (pSlicedBitmap)
         {
             Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(GetWorldPos());
-            Vec2 vScale = GetScale();
 
             D2D1_RECT_F destRect = D2D1::RectF(
                 vRenderPos.x,
@@ -185,7 +203,7 @@ void CTile::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
             );
 
             _pRenderTarget->DrawBitmap(
-                m_pD2DBitmap,
+                pSlicedBitmap,
                 destRect,
                 1.0f,
                 D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR
@@ -196,18 +214,41 @@ void CTile::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
     // 후면 텍스쳐 그리기
     if (nullptr != m_pTileTex2 && -1 != m_iImgIdx2)
     {
-        // 캐시된 비트맵이 없으면 생성
-        if (!m_bD2DCached2 || !m_pD2DBitmap2)
-        {
-            CacheD2DBitmap(_pRenderTarget, m_pTileTex2, m_iImgIdx2, &m_pD2DBitmap2);
-            m_bD2DCached2 = true;
-        }
+        UINT iWidth = m_pTileTex2->Width();
+        UINT iHeight = m_pTileTex2->Height();
 
+        UINT iMaxCol = iWidth / TILE_SIZE;
+        UINT iMaxRow = iHeight / TILE_SIZE;
+
+        UINT iCurRow = static_cast<UINT>(m_iImgIdx2) / iMaxCol;
+        UINT iCurCol = static_cast<UINT>(m_iImgIdx2) % iMaxCol;
+
+        // 이미지 범위를 벗어난 인덱스 체크
+        if (iMaxRow <= iCurRow)
+            return;
+
+        // 소스 사각형 계산
+        D2D1_RECT_F srcRect = D2D1::RectF(
+            static_cast<float>(iCurCol * TILE_SIZE),
+            static_cast<float>(iCurRow * TILE_SIZE),
+            static_cast<float>((iCurCol + 1) * TILE_SIZE),
+            static_cast<float>((iCurRow + 1) * TILE_SIZE)
+        );
+
+        // 목적지 크기 계산
+        Vec2 vScale = GetScale();
+        D2D1_SIZE_F dstSize = D2D1::SizeF(vScale.x, vScale.y);
+
+        // 고유 캐시 키 생성
+        wstring strTexPath = m_pTileTex2->GetRelativePath();
+        wstring strCacheKey = strTexPath + L"_" + std::to_wstring(m_iImgIdx2);
+
+        // CTexture의 GetSlicedBitmap을 호출하여 비트맵 가져오기
+        ID2D1Bitmap* pSlicedBitmap = m_pTileTex2->GetSlicedBitmap(strCacheKey, srcRect, dstSize);
         
-        if (m_pD2DBitmap2)
+        if (pSlicedBitmap)
         {
             Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(GetWorldPos());
-            Vec2 vScale = GetScale();
 
             D2D1_RECT_F destRect = D2D1::RectF(
                 vRenderPos.x,
@@ -217,7 +258,7 @@ void CTile::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
             );
 
             _pRenderTarget->DrawBitmap(
-                m_pD2DBitmap2,
+                pSlicedBitmap,
                 destRect,
                 1.0f,
                 D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR
@@ -226,123 +267,6 @@ void CTile::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
     }
 }
 
-void CTile::CacheD2DBitmap(ID2D1RenderTarget* _pRenderTarget, CTexture* _pTex, int _iImgIdx, ID2D1Bitmap** _ppD2DBitmap)
-{
-    if (!_pRenderTarget || !_pTex || _iImgIdx == -1 || !_ppD2DBitmap)
-        return;
-
-    // 기존 비트맵이 있으면 해제
-    if (*_ppD2DBitmap)
-    {
-        (*_ppD2DBitmap)->Release();
-        *_ppD2DBitmap = nullptr;
-    }
-
-    Vec2 vScale = GetScale();
-
-    UINT iWidth = _pTex->Width();
-    UINT iHeight = _pTex->Height();
-
-    UINT iMaxCol = iWidth / TILE_SIZE;
-    UINT iMaxRow = iHeight / TILE_SIZE;
-
-    UINT iCurRow = static_cast<UINT>(_iImgIdx) / iMaxCol;
-    UINT iCurCol = static_cast<UINT>(_iImgIdx) % iMaxCol;
-
-    // 이미지 범위를 벗어난 인덱스 체크
-    if (iMaxRow <= iCurRow)
-        return;
-
-    // WIC Factory를 정적으로 관리하여 재사용
-    static IWICImagingFactory* s_pWICFactory = nullptr;
-    if (!s_pWICFactory)
-    {
-        HRESULT hr = CoCreateInstance(
-            CLSID_WICImagingFactory, nullptr, CLSCTX_INPROC_SERVER,
-            IID_IWICImagingFactory, (LPVOID*)&s_pWICFactory
-        );
-        if (FAILED(hr))
-            return;
-    }
-
-    // GDI+ 비트맵으로 텍스처 로드
-    HBITMAP hSourceBitmap = _pTex->GetHBITMAP();
-    if (!hSourceBitmap)
-        return;
-
-    Bitmap sourceGdiplusBitmap(hSourceBitmap, nullptr);
-
-    // 타일 영역 크기 계산
-    int srcX = iCurCol * TILE_SIZE;
-    int srcY = iCurRow * TILE_SIZE;
-    int srcWidth = TILE_SIZE;
-    int srcHeight = TILE_SIZE;
-    
-    int destWidth = static_cast<int>(vScale.x);
-    int destHeight = static_cast<int>(vScale.y);
-
-    // 32비트 ARGB GDI+ 비트맵 생성
-    Bitmap* tileArgbBitmap = new Bitmap(destWidth, destHeight, PixelFormat32bppARGB);
-    Graphics tileGraphics(tileArgbBitmap);
-
-    // 픽셀 깨짐 방지
-    tileGraphics.SetInterpolationMode(InterpolationModeNearestNeighbor);
-    tileGraphics.SetPixelOffsetMode(PixelOffsetModeHalf);
-
-    // 투명색 지정 (마젠타)
-    ImageAttributes imgAttr;
-    imgAttr.SetColorKey(Color(255, 0, 255), Color(255, 0, 255), ColorAdjustTypeBitmap);
-
-    // 투명색 적용 후 그리기
-    tileGraphics.DrawImage(
-        &sourceGdiplusBitmap,
-        Rect(0, 0, destWidth, destHeight),
-        srcX, srcY, srcWidth, srcHeight,
-        UnitPixel,
-        &imgAttr
-    );
-
-    IWICBitmap* pWICBitmap = nullptr;
-
-    // 투명 처리된 비트맵에서 HBITMAP 추출
-    HBITMAP hArgbBitmap = NULL;
-    if (tileArgbBitmap->GetHBITMAP(Color(0, 0, 0, 0), &hArgbBitmap) == Ok)
-    {
-        // HBITMAP -> WIC 비트맵 변환
-        HRESULT hr = s_pWICFactory->CreateBitmapFromHBITMAP(
-            hArgbBitmap, nullptr, WICBitmapUsePremultipliedAlpha, &pWICBitmap
-        );
-        
-        if (SUCCEEDED(hr))
-        {
-            // WIC 비트맵 -> D2D 비트맵 변환
-            hr = _pRenderTarget->CreateBitmapFromWicBitmap(pWICBitmap, nullptr, _ppD2DBitmap);
-        }
-        DeleteObject(hArgbBitmap);
-    }
-    
-    if (pWICBitmap)
-        pWICBitmap->Release();
-    delete tileArgbBitmap;
-}
-
-void CTile::ReleaseD2DBitmaps()
-{
-    if (m_pD2DBitmap)
-    {
-        m_pD2DBitmap->Release();
-        m_pD2DBitmap = nullptr;
-    }
-    
-    if (m_pD2DBitmap2)
-    {
-        m_pD2DBitmap2->Release();
-        m_pD2DBitmap2 = nullptr;
-    }
-    
-    m_bD2DCached = false;
-    m_bD2DCached2 = false;
-}
 
 
 

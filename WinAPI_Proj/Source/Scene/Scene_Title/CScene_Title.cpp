@@ -50,7 +50,7 @@ void CScene_Title::Enter()
 	//백그라운드
 	CBackGround* backGround = new CBackGround;
 	backGround->SetWorldPos(Vec2(0, 0));
-	CTexture* back = CResMgr::GetInst()->LoadTexture(L"TitleBack", L"texture\\background\\Title.bmp");
+	CTexture* back = CResMgr::GetInst()->LoadTexture(L"TitleBack", L"texture\\background\\Title.png");
 
 	backGround->SetTexture(back);
 	backGround->SetScale(CCore::GetInst()->GetResolution());
@@ -63,7 +63,7 @@ void CScene_Title::Enter()
 	pPanelUI->SetName(L"TitleUI");
 	pPanelUI->SetScale(Vec2(300.f, 300.f));
 	pPanelUI->SetWorldPos(Vec2(800.f, 700.f));
-	CTexture* TitleUI = CResMgr::GetInst()->LoadTexture(L"UI_RECT", L"Texture\\UI\\UI_RECT.bmp");
+	CTexture* TitleUI = CResMgr::GetInst()->LoadTexture(L"UI_RECT", L"Texture\\UI\\UI_RECT.png");
 	((CPanelUI*)pPanelUI)->SetTexture(TitleUI);
 	
 	
@@ -76,7 +76,7 @@ void CScene_Title::Enter()
 	pBtnStart->SetWorldPos(Vec2(50.f, 0.f));
 	pBtnStart->SetClickedCallBack(&ChangeScene, 2, 0);
 
-	CTexture* pBtnGameStart = CResMgr::GetInst()->LoadTexture(L"UI_GameStart", L"Texture\\UI\\UI_GameStart.bmp");
+	CTexture* pBtnGameStart = CResMgr::GetInst()->LoadTexture(L"UI_GameStart", L"Texture\\UI\\UI_GameStart.png");
 	pBtnStart->SetTexture(pBtnGameStart);
 	pPanelUI->AddChild(pBtnStart);
 
@@ -85,7 +85,7 @@ void CScene_Title::Enter()
 	CBtnUI* pBtnMap = pBtnStart->Clone();
 	pBtnMap->SetWorldPos(Vec2(50.f, 100.f));
 	pBtnMap->SetClickedCallBack(&ChangeScene, 1, 0);
-	CTexture* pBtnTexMap = CResMgr::GetInst()->LoadTexture(L"UI_MapEditor", L"Texture\\UI\\UI_MapEditor.bmp");
+	CTexture* pBtnTexMap = CResMgr::GetInst()->LoadTexture(L"UI_MapEditor", L"Texture\\UI\\UI_MapEditor.png");
 	pBtnMap->SetTexture(pBtnTexMap);
 	pPanelUI->AddChild(pBtnMap);
 
@@ -93,7 +93,7 @@ void CScene_Title::Enter()
 	CBtnUI* pBtnQuit = pBtnStart->Clone();
 	pBtnQuit->SetWorldPos(Vec2(50.f, 200.f));
 	pBtnQuit->SetClickedCallBack(&GameOver,0,0);
-	CTexture* pBtnTexQuit = CResMgr::GetInst()->LoadTexture(L"UI_GameQuit", L"Texture\\UI\\UI_GameQuit.bmp");
+	CTexture* pBtnTexQuit = CResMgr::GetInst()->LoadTexture(L"UI_GameQuit", L"Texture\\UI\\UI_GameQuit.png");
 	pBtnQuit->SetTexture(pBtnTexQuit);
 	pPanelUI->AddChild(pBtnQuit);
 

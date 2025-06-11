@@ -32,8 +32,8 @@ CHook::CHook()
     
 #pragma region 후크 애니메이션
 	//텍스쳐 로딩
-	CTexture* pTexRight = CResMgr::GetInst()->LoadTexture(L"GrabTex_Right", L"texture\\player\\Grab_Right.bmp");
-	pChainTex= CResMgr::GetInst()->LoadTexture(L"Chain", L"texture\\player\\Chain.bmp");
+	CTexture* pTexRight = CResMgr::GetInst()->LoadTexture(L"GrabTex_Right", L"texture\\player\\Grab_Right.png");
+	pChainTex= CResMgr::GetInst()->LoadTexture(L"Chain", L"texture\\player\\Chain.png");
 	
 
 	//애니메이션 로딩

@@ -83,7 +83,7 @@ void CScene_Tool::Enter()
 	pBtnPrev->SetWorldPos(Vec2(1.f,288.f));
 	//pBtnUI->SetClickedCallBack(&ChangeScene,0,0);
 	((CBtnUI*)pBtnPrev)->SetClickedCallBack(this,static_cast<SCENE_MEMFUNC>(&CScene_Tool::PrevTileUI));
-	CTexture* pBtnTexPrev = CResMgr::GetInst()->LoadTexture(L"UI_LEFT", L"Texture\\UI\\UI_LEFT.bmp");
+	CTexture* pBtnTexPrev = CResMgr::GetInst()->LoadTexture(L"UI_LEFT", L"Texture\\UI\\UI_LEFT.png");
 	pBtnPrev->SetTexture(pBtnTexPrev);
 	pBtnTileTex->AddChild(pBtnPrev);
 	
@@ -92,7 +92,7 @@ void CScene_Tool::Enter()
 	CBtnUI* pBtnNext = pBtnPrev->Clone();
 	pBtnNext->SetWorldPos(Vec2(283.f, 288.f));
 	((CBtnUI*)pBtnNext)->SetClickedCallBack(this, static_cast<SCENE_MEMFUNC>(&CScene_Tool::NextTileUI));
-	CTexture* pBtnTexNext = CResMgr::GetInst()->LoadTexture(L"UI_RIGHT", L"Texture\\UI\\UI_RIGHT.bmp");
+	CTexture* pBtnTexNext = CResMgr::GetInst()->LoadTexture(L"UI_RIGHT", L"Texture\\UI\\UI_RIGHT.png");
 	pBtnNext->SetTexture(pBtnTexNext);
 	pBtnTileTex->AddChild(pBtnNext);
 
@@ -100,7 +100,7 @@ void CScene_Tool::Enter()
 	CBtnUI* pBtnSave = pBtnPrev->Clone();
 	pBtnSave->SetWorldPos(Vec2(140.f, 288.f));
 	((CBtnUI*)pBtnSave)->SetClickedCallBack(this, static_cast<SCENE_MEMFUNC>(&CScene_Tool::SaveTileData));
-	//CTexture* pBtnTexNext = CResMgr::GetInst()->LoadTexture(L"UI_RIGHT", L"Tool\\Button\\UI_RIGHT.bmp");
+	//CTexture* pBtnTexNext = CResMgr::GetInst()->LoadTexture(L"UI_RIGHT", L"Tool\\Button\\UI_RIGHT.png");
 	//pBtnNext->SetTexture(pBtnTexNext);
 	pBtnTileTex->AddChild(pBtnSave);
 
@@ -211,7 +211,7 @@ void CScene_Tool::Enter()
 
 	CBackGround* backGround = new CBackGround;
 	backGround->SetWorldPos(Vec2(0, 0));
-	CTexture* back = CResMgr::GetInst()->LoadTexture(L"TutorialBack", L"texture\\background\\Forest_Mountain2.bmp");
+	CTexture* back = CResMgr::GetInst()->LoadTexture(L"TutorialBack", L"texture\\background\\Forest_Mountain2.png");
 	
 	backGround->SetTexture(back);
 	backGround->SetScale(CCore::GetInst()->GetResolution());

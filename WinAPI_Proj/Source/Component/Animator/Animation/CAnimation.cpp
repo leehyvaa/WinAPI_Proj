@@ -20,8 +20,6 @@ CAnimation::CAnimation()
 	,m_bFinish(false)
 	,m_fSizeMulti(1)
 	,rotPos(nullptr)
-    ,m_bCached(false)
-    ,m_bD2DCached(false)
     ,m_EndFrameEvent(nullptr)
 {
 	rotPos = new POINT[4];
@@ -31,7 +29,6 @@ CAnimation::~CAnimation()
 {
 	delete[] rotPos;
 
-    ReleaseD2DFrames();
 }
 void CAnimation::Update()
 {
@@ -276,119 +273,6 @@ void CAnimation::Load(const wstring& _strRelativePath)
 }
 
 
-void CAnimation::ReleaseD2DFrames()
-{
-    for (auto& bitmap : m_vecD2DFrameBitmaps)
-    {
-        if (bitmap)
-            bitmap->Release();
-    }
-    m_vecD2DFrameBitmaps.clear();
-    m_bD2DCached = false;
-}
-
-void CAnimation::CacheD2DFrames(ID2D1RenderTarget* _pRenderTarget)
-{
-    CTimeMgr::StartTimer(L"Animation_Cache_Called");
-    
-    ReleaseD2DFrames();
-
-    if (m_vecFrm.empty() || !m_pTex || !_pRenderTarget)
-    {
-        CTimeMgr::EndTimer(L"Animation_Cache_Called");
-        return;
-    }
-
-    // static WIC 팩토리 생성
-    static IWICImagingFactory* s_pWICFactory = nullptr;
-    if (!s_pWICFactory)
-    {
-        HRESULT hr = CoCreateInstance(
-            CLSID_WICImagingFactory, nullptr, CLSCTX_INPROC_SERVER,
-            IID_IWICImagingFactory, (LPVOID*)&s_pWICFactory
-        );
-        if (FAILED(hr))
-        {
-            CTimeMgr::EndTimer(L"Animation_Cache_Called");
-            return;
-        }
-    }
-    IWICImagingFactory* pWICFactory = s_pWICFactory;
-
-    // GDI+비트맵으로 텍스쳐 로드
-    HBITMAP hSourceBitmap = m_pTex->GetHBITMAP();
-    if (!hSourceBitmap)
-    {
-        pWICFactory->Release();
-        CTimeMgr::EndTimer(L"Animation_Cache_Called");
-        return;
-    }
-    Bitmap sourceGdiplusBitmap(hSourceBitmap, nullptr);
-
-    // 각 프레임을 순회,  32비트 ARGB 비트맵 -> D2D 비트맵
-    for (size_t i = 0; i < m_vecFrm.size(); i++)
-    {
-        tAnimFrm& frame = m_vecFrm[i];
-        
-        int srcX = static_cast<int>(frame.vLT.x);
-        int srcY = static_cast<int>(frame.vLT.y);
-        int srcWidth = static_cast<int>(frame.vSlice.x);
-        int srcHeight = static_cast<int>(frame.vSlice.y);
-        
-        int destWidth = static_cast<int>(srcWidth * m_fSizeMulti);
-        int destHeight = static_cast<int>(srcHeight * m_fSizeMulti);
-
-        // 32비트 ARGB GDI+ 비트맵 생성
-        // frameGraphics를 핸들로 frameArgbBitmap에 투명처리하고 비트맵 그리기
-        Bitmap* frameArgbBitmap = new Bitmap(destWidth, destHeight, PixelFormat32bppARGB);
-        Graphics frameGraphics(frameArgbBitmap);
-        
-        // 픽셀 깨짐 방지
-        frameGraphics.SetInterpolationMode(InterpolationModeNearestNeighbor);
-        frameGraphics.SetPixelOffsetMode(PixelOffsetModeHalf);
-
-        // 투명색 지정(마젠타)
-        ImageAttributes imgAttr;
-        imgAttr.SetColorKey(Color(255, 0, 255), Color(255, 0, 255), ColorAdjustTypeBitmap);
-
-        // 프레임에서 투명색 적용후 그리기
-        frameGraphics.DrawImage(
-            &sourceGdiplusBitmap,
-            Rect(0, 0, destWidth, destHeight),
-            srcX, srcY, srcWidth, srcHeight,
-            UnitPixel,
-            &imgAttr
-        );
-
-        IWICBitmap* pWICBitmap = nullptr;
-        ID2D1Bitmap* pD2DBitmap = nullptr;
-
-        // 투명 처리된 비트맵 frameArgbBitmap 에서 hArgbBitmap로 비트맵 추출
-        HBITMAP hArgbBitmap = NULL;
-        if (frameArgbBitmap->GetHBITMAP(Color(0,0,0,0), &hArgbBitmap) == Ok)
-        {
-            // HBITMAP -> WIC
-            // WIC는 여러 이미지 포맷(jpg,png,bmp등)을 통일해서 쓸 수 있게하는 형식
-            HRESULT hr = pWICFactory->CreateBitmapFromHBITMAP(hArgbBitmap, nullptr, WICBitmapUsePremultipliedAlpha, &pWICBitmap);
-            if (SUCCEEDED(hr)) // WIC 비트맵 -> D2D 비트맵
-            {
-                hr = _pRenderTarget->CreateBitmapFromWicBitmap(pWICBitmap, nullptr, &pD2DBitmap);
-            }
-            DeleteObject(hArgbBitmap);
-        }
-
-        if (pWICBitmap) pWICBitmap->Release();
-        delete frameArgbBitmap;
-
-        // Dx비트맵 최종 추가
-        m_vecD2DFrameBitmaps.push_back(pD2DBitmap);
-    }
-
-
-    m_bD2DCached = true;
-    
-    CTimeMgr::EndTimer(L"Animation_Cache_Called");
-}
 
 
 
@@ -396,31 +280,45 @@ void CAnimation::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
 {
     CTimeMgr::StartTimer(L"AnimationComp_DXRender");
 
-    if (m_bFinish || m_iCurFrm < 0 || m_iCurFrm >= static_cast<int>(m_vecFrm.size()) || !_pRenderTarget)
-    {
-        CTimeMgr::EndTimer(L"AnimationComp_DXRender");
-        return;
-    }
-    
-    if (!m_bD2DCached)
-    {
-        CacheD2DFrames(_pRenderTarget);
-    }
-
-    
-    if (!m_bD2DCached || m_iCurFrm >= m_vecD2DFrameBitmaps.size() || !m_vecD2DFrameBitmaps[m_iCurFrm])
+    if (m_bFinish || m_iCurFrm < 0 || m_iCurFrm >= static_cast<int>(m_vecFrm.size()) || !_pRenderTarget || !m_pTex)
     {
         CTimeMgr::EndTimer(L"AnimationComp_DXRender");
         return;
     }
 
+    // 현재 프레임 정보 가져오기
+    tAnimFrm& curFrame = m_vecFrm[m_iCurFrm];
     
+    // 소스 사각형 계산
+    D2D1_RECT_F srcRect = D2D1::RectF(
+        curFrame.vLT.x,
+        curFrame.vLT.y,
+        curFrame.vLT.x + curFrame.vSlice.x,
+        curFrame.vLT.y + curFrame.vSlice.y
+    );
+    
+    // 목적지 크기 계산 (크기 배율 적용)
+    D2D1_SIZE_F dstSize = D2D1::SizeF(
+        curFrame.vSlice.x * m_fSizeMulti,
+        curFrame.vSlice.y * m_fSizeMulti
+    );
+    
+    // 캐시 키 생성 (애니메이션이름_프레임인덱스)
+    wstring strCacheKey = m_strName + L"_" + to_wstring(m_iCurFrm);
+    
+    // CTexture의 GetSlicedBitmap을 통해 비트맵 가져오기
+    ID2D1Bitmap* pFrameBitmap = m_pTex->GetSlicedBitmap(strCacheKey, srcRect, dstSize);
+    if (!pFrameBitmap)
+    {
+        CTimeMgr::EndTimer(L"AnimationComp_DXRender");
+        return;
+    }
+
+    // 게임 오브젝트 정보 가져오기
     GameObject* pObj = m_pAnimator->GetObj();
-        
     Vec2 vLogicalPos = pObj->GetWorldPos();
     bool isFacingRight = pObj->GetIsFacingRight();
-
-    tAnimFrm& curFrame = m_vecFrm[m_iCurFrm];
+    
     Vec2 vOffset = curFrame.vOffset;
 
     // 왼쪽을 볼 경우 오프셋 X값 반전
@@ -439,20 +337,12 @@ void CAnimation::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
     Vec2 vVisualPos = vLogicalPos + vRotatedOffset;
     Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(vVisualPos);
 
-    
-    ID2D1Bitmap* pFrameBitmap = m_vecD2DFrameBitmaps[m_iCurFrm];
-    if (!pFrameBitmap)
-    { 
-        CTimeMgr::EndTimer(L"AnimationComp_DXRender");
-        return;
-    }
     D2D1_SIZE_F bitmapSize = pFrameBitmap->GetSize();
 
     // originalTransform에 원본 변환 행렬 저장해 놓기
     D2D1_MATRIX_3X2_F originalTransform;
     _pRenderTarget->GetTransform(&originalTransform);
 
-    
     // SRT 변환 행렬 생성 및 곱하기
     D2D1_MATRIX_3X2_F matScale = isFacingRight ? D2D1::Matrix3x2F::Identity() : D2D1::Matrix3x2F::Scale(-1.f, 1.f);
     D2D1_MATRIX_3X2_F matRotation = D2D1::Matrix3x2F::Rotation(worldRotationAngle);

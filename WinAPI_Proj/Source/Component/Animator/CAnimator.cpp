@@ -10,7 +10,7 @@ CAnimator::CAnimator()
 	,m_bRepeat(false)
 	,tempTex(nullptr)
 {
-	tempTex = CResMgr::GetInst()->LoadTexture(L"AnimatorTemp", L"texture\\player\\Grab_Right.bmp");
+	tempTex = CResMgr::GetInst()->LoadTexture(L"AnimatorTemp", L"texture\\player\\Grab_Right.png");
 
 
 }

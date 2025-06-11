@@ -470,7 +470,7 @@ void CScene::CreateTile(UINT _iXCount, UINT _iYCount)
     m_iTileX = _iXCount;
     m_iTileY = _iYCount;
 
-    //CTexture* pTileTex = CResMgr::GetInst()->LoadTexture(L"Tile", L"texture\\tile\\Prologue_Tileset32.bmp");
+    //CTexture* pTileTex = CResMgr::GetInst()->LoadTexture(L"Tile", L"texture\\tile\\Prologue_Tileset32.png");
 
     for (UINT i = 0; i < _iYCount; i++)
     {

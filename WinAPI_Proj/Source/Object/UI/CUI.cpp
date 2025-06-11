@@ -20,8 +20,6 @@ CUI::CUI(bool _bCamAff)
 	, m_iTexIndex(-1)
     , m_bVisibleBox(true)
     , m_BorderColor(D2D1::ColorF(D2D1::ColorF::Green))
-    , m_pD2DBitmap(nullptr)
-    , m_bD2DCached(false)
 {
 }
 
@@ -33,8 +31,6 @@ CUI::CUI(const CUI& _origin)
 	,m_bLbtnDown(false)
 	, m_pTex(nullptr)
 	, m_iTexIndex(-1)
-	, m_pD2DBitmap(nullptr)
-	, m_bD2DCached(false)
 {
 	for (size_t i = 0; i < _origin.m_vecChildUI.size(); i++)
 	{
@@ -45,13 +41,6 @@ CUI::CUI(const CUI& _origin)
 
 CUI::~CUI()
 {
-	// D2D 리소스 해제
-	if (m_pD2DBitmap)
-	{
-		m_pD2DBitmap->Release();
-		m_pD2DBitmap = nullptr;
-	}
-	
 	Safe_Delete_Vec(m_vecChildUI);
 }
 
@@ -154,13 +143,9 @@ void CUI::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
 
 	if (m_pTex != nullptr)
 	{
-		// 텍스처가 있는 경우 Direct2D 비트맵으로 렌더링
-		if (!m_bD2DCached || !m_pD2DBitmap)
-		{
-			CacheD2DBitmap(_pRenderTarget);
-		}
-
-		if (m_pD2DBitmap)
+		// CTexture에서 캐시된 D2D 비트맵을 직접 가져와서 렌더링
+		ID2D1Bitmap* pD2DBitmap = m_pTex->GetD2DBitmap();
+		if (pD2DBitmap)
 		{
 			UINT iWidth = m_pTex->Width();
 			UINT iHeight = m_pTex->Height();
@@ -173,7 +158,7 @@ void CUI::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
 			);
 
 			_pRenderTarget->DrawBitmap(
-				m_pD2DBitmap,
+				pD2DBitmap,
 				destRect,
 				1.0f,
 				D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR
@@ -222,88 +207,6 @@ void CUI::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
 	Render_Child_D2D(_pRenderTarget);
 }
 
-void CUI::CacheD2DBitmap(ID2D1RenderTarget* _pRenderTarget)
-{
-	if (!_pRenderTarget || !m_pTex)
-		return;
-
-	// 기존 비트맵이 있으면 해제
-	if (m_pD2DBitmap)
-	{
-		m_pD2DBitmap->Release();
-		m_pD2DBitmap = nullptr;
-	}
-
-	// WIC Factory를 정적으로 관리하여 재사용 (CTile 패턴 참고)
-	static IWICImagingFactory* s_pWICFactory = nullptr;
-	if (!s_pWICFactory)
-	{
-		HRESULT hr = CoCreateInstance(
-			CLSID_WICImagingFactory, nullptr, CLSCTX_INPROC_SERVER,
-			IID_IWICImagingFactory, (LPVOID*)&s_pWICFactory
-		);
-		if (FAILED(hr))
-			return;
-	}
-
-	// GDI+ 비트맵으로 텍스처 로드
-	HBITMAP hSourceBitmap = m_pTex->GetHBITMAP();
-	if (!hSourceBitmap)
-		return;
-
-	Bitmap sourceGdiplusBitmap(hSourceBitmap, nullptr);
-
-	UINT iWidth = m_pTex->Width();
-	UINT iHeight = m_pTex->Height();
-
-	// 32비트 ARGB GDI+ 비트맵 생성
-	Bitmap* uiArgbBitmap = new Bitmap(iWidth, iHeight, PixelFormat32bppARGB);
-	Graphics uiGraphics(uiArgbBitmap);
-
-	// 픽셀 깨짐 방지
-	uiGraphics.SetInterpolationMode(InterpolationModeNearestNeighbor);
-	uiGraphics.SetPixelOffsetMode(PixelOffsetModeHalf);
-
-	// 투명색 지정 (검은색)
-	ImageAttributes imgAttr;
-	imgAttr.SetColorKey(Color(0, 0, 0), Color(0, 0, 0), ColorAdjustTypeBitmap);
-
-	// 투명색 적용 후 그리기
-	uiGraphics.DrawImage(
-		&sourceGdiplusBitmap,
-		Rect(0, 0, iWidth, iHeight),
-		0, 0, iWidth, iHeight,
-		UnitPixel,
-		&imgAttr
-	);
-
-	IWICBitmap* pWICBitmap = nullptr;
-
-	// 투명 처리된 비트맵에서 HBITMAP 추출
-	HBITMAP hArgbBitmap = NULL;
-	if (uiArgbBitmap->GetHBITMAP(Color(0, 0, 0, 0), &hArgbBitmap) == Ok)
-	{
-		// HBITMAP -> WIC 비트맵 변환
-		HRESULT hr = s_pWICFactory->CreateBitmapFromHBITMAP(
-			hArgbBitmap, nullptr, WICBitmapUsePremultipliedAlpha, &pWICBitmap
-		);
-		
-		if (SUCCEEDED(hr))
-		{
-			// WIC 비트맵 -> D2D 비트맵 변환
-			hr = _pRenderTarget->CreateBitmapFromWicBitmap(pWICBitmap, nullptr, &m_pD2DBitmap);
-			if (SUCCEEDED(hr))
-			{
-				m_bD2DCached = true;
-			}
-		}
-		DeleteObject(hArgbBitmap);
-	}
-	
-	if (pWICBitmap)
-		pWICBitmap->Release();
-	delete uiArgbBitmap;
-}
 
 void CUI::Render_Child_D2D(ID2D1RenderTarget* _pRenderTarget)
 {
