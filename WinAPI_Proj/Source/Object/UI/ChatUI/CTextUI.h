@@ -56,9 +56,8 @@ public:
     void SetFontColorD2D(D2D1_COLOR_F _color);
     void CreateTextFormat();
     void CreateTextBrush(ID2D1RenderTarget* _pRenderTarget);
-
-    virtual void Render(HDC _dc) override;
-    virtual void RenderD2D(ID2D1RenderTarget* _pRenderTarget) override;
+    
+    virtual void Render(ID2D1RenderTarget* _pRenderTarget) override;
 };
 
 

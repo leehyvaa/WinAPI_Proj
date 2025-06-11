@@ -52,8 +52,7 @@ public:
     
 
 	void FinalUpdate();
-	void Render(HDC _dc);
-	void RenderD2D(ID2D1RenderTarget* _pRenderTarget);
+	void Render(ID2D1RenderTarget* _pRenderTarget);
 
 	void OnCollision(CCollider* _pOther);
 	void OnCollisionEnter(CCollider* pOther);

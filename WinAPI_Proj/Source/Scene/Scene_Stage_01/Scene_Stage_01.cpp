@@ -61,9 +61,9 @@ void Scene_Stage_01::Update()
 	
 }
 
-void Scene_Stage_01::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
+void Scene_Stage_01::Render(ID2D1RenderTarget* _pRenderTarget)
 {
-	CScene::RenderD2D(_pRenderTarget);
+	CScene::Render(_pRenderTarget);
 }
 
 void Scene_Stage_01::Enter()

@@ -34,12 +34,12 @@ void CMonster::Update()
 
 }
 
-void CMonster::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
+void CMonster::Render(ID2D1RenderTarget* _pRenderTarget)
 {
     if (!_pRenderTarget)
         return;
     
-    GameObject::RenderD2D(_pRenderTarget);
+    GameObject::Render(_pRenderTarget);
 }
 
 void CMonster::FinalUpdata()

@@ -202,9 +202,9 @@ void SPlayer::Update()
 	m_bIsFacingRightPrev = m_bIsFacingRight;
 }
 
-void SPlayer::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
+void SPlayer::Render(ID2D1RenderTarget* _pRenderTarget)
 {
-	GameObject::RenderD2D(_pRenderTarget);
+	GameObject::Render(_pRenderTarget);
 }
 
 

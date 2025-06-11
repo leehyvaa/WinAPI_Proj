@@ -117,12 +117,12 @@ void CBullet::Update()
     }
 }
 
-void CBullet::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
+void CBullet::Render(ID2D1RenderTarget* _pRenderTarget)
 {
     if (!IsActive() || !_pRenderTarget)
         return;
     
-    GameObject::RenderD2D(_pRenderTarget);
+    GameObject::Render(_pRenderTarget);
 }
 
 void CBullet::OnCollisionEnter(CCollider* _pOther)

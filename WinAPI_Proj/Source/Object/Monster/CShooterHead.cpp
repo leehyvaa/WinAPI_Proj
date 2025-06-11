@@ -78,12 +78,12 @@ void CShooterHead::Update()
     }
 }
 
-void CShooterHead::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
+void CShooterHead::Render(ID2D1RenderTarget* _pRenderTarget)
 {
     if (!_pRenderTarget)
         return;
         
-    GameObject::RenderD2D(_pRenderTarget);
+    GameObject::Render(_pRenderTarget);
 }
 
 void CShooterHead::Reset()

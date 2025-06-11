@@ -167,7 +167,7 @@ void CScene::FinalUpdate()
 }
 
 
-void CScene::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
+void CScene::Render(ID2D1RenderTarget* _pRenderTarget)
 {
     CTimeMgr::StartTimer(L"Scene_D2D_Render");
     
@@ -177,7 +177,7 @@ void CScene::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
 	// 배경 렌더링 (가장 먼저)
 	if (backGround && backGround->IsActive())
 	{
-		backGround->RenderD2D(_pRenderTarget);
+		backGround->Render(_pRenderTarget);
 	}
 
 	for (UINT i = 0; i < static_cast<UINT>(GROUP_TYPE::END); i++)
@@ -199,24 +199,24 @@ void CScene::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
 				{
 					CUI* pUI = dynamic_cast<CUI*>(pObj);
 					if (pUI)
-						pUI->RenderD2D(_pRenderTarget);
+						pUI->Render(_pRenderTarget);
 				}
 				// HOOK 그룹은 특별한 Direct2D 렌더링 (체인 포함)
 				else if (static_cast<UINT>(GROUP_TYPE::HOOK) == i)
 				{
 					// CHook의 RenderD2D 호출 (체인 렌더링 포함)
-					pObj->RenderD2D(_pRenderTarget);
+					pObj->Render(_pRenderTarget);
 				}
 				// 다른 그룹은 Animator 렌더링
 				else if (pObj->GetAnimator())
 				{
-					pObj->GetAnimator()->RenderD2D(_pRenderTarget);
+					pObj->GetAnimator()->Render(_pRenderTarget);
 				}
 				
 				// 콜라이더 디버그 렌더링 (F6 키로 토글)
 				if (bDrawCollider && pObj->GetCollider())
 				{
-					pObj->GetCollider()->RenderD2D(_pRenderTarget);
+					pObj->GetCollider()->Render(_pRenderTarget);
 				}
 			}
 		}
@@ -305,7 +305,7 @@ void CScene::RenderTileD2D(ID2D1RenderTarget* _pRenderTarget)
                     }
 
                     // 타일 렌더링
-                    pTile->RenderD2D(_pRenderTarget);
+                    pTile->Render(_pRenderTarget);
 
                     // 지형 완성선 그리기 (Direct2D)
                     if (bDrawCompleteGround && pTile->GetGroundType() != GROUND_TYPE::NONE)

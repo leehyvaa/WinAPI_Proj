@@ -292,11 +292,11 @@ void GameObject::Component_Render(ID2D1RenderTarget* _pRenderTarget)
 	// Direct2D 렌더링으로 통합
 	// 애니메이터 렌더링
 	if (m_pAnimator)
-		m_pAnimator->RenderD2D(_pRenderTarget);
+		m_pAnimator->Render(_pRenderTarget);
 	
 	// 콜라이더 디버그 렌더링
 	if (m_pCollider && CSceneMgr::GetInst()->GetCurScene()->GetDrawCollider())
-		m_pCollider->RenderD2D(_pRenderTarget);
+		m_pCollider->Render(_pRenderTarget);
 }
 
 

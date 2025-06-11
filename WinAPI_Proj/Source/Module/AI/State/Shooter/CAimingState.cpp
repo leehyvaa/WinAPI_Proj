@@ -117,40 +117,8 @@ void CAimingState::Exit()
 {
 }
 
-void CAimingState::Render(HDC _dc)
-{
-    // Direct2D 활성화 시 GDI 렌더링 스킵
-    if (CCore::GetInst()->GetD2DRenderTarget())
-        return;
-        
-    SPlayer* pPlayer = dynamic_cast<SPlayer*>(CSceneMgr::GetInst()->GetCurScene()->GetPlayer());
-    CShooterMonster* pMonster = dynamic_cast<CShooterMonster*>(GetMonster());
-    
-    if (!pPlayer || !pMonster || !pMonster->GetHead())
-        return;
-    
-    // GDI 모드에서는 기본 펜과 브러시 사용
-    HPEN hPen = CreatePen(PS_SOLID, 1, RGB(255, 0, 0)); // 빨간색
-    HBRUSH hBrush = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
-    
-    HPEN hOldPen = (HPEN)SelectObject(_dc, hPen);
-    HBRUSH hOldBrush = (HBRUSH)SelectObject(_dc, hBrush);
 
-    Vec2 renderPos = pMonster->GetHead()->GetWorldPos();
-    if (GetAI()->GetOwner()->GetIsFacingRight())
-        renderPos = renderPos + Vec2(40.f,5.0f);
-    else
-        renderPos = renderPos + Vec2(-40.f,5.0f);
-    
-    Vec2 dir = pPlayer->GetWorldPos()+Vec2(0.f,-55.f) - renderPos;
-    renderPos = CCamera::GetInst()->GetRenderPos(renderPos);
-    dir.Normalize();
-    MoveToEx(_dc, renderPos.x, renderPos.y,nullptr);
-    
-    LineTo(_dc, renderPos.x + dir.x * 1500 ,renderPos.y + dir.y*1500);
-}
-
-void CAimingState::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
+void CAimingState::Render(ID2D1RenderTarget* _pRenderTarget)
 {
     if (!_pRenderTarget)
         return;

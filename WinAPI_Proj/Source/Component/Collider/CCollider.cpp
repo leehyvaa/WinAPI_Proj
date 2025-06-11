@@ -91,7 +91,7 @@ void CCollider::FinalUpdate()
 
 // GDI Render 함수 완전 제거 - Direct2D로 완전 전환됨
 
-void CCollider::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
+void CCollider::Render(ID2D1RenderTarget* _pRenderTarget)
 {
     if (!_pRenderTarget || !m_bActive)
         return;

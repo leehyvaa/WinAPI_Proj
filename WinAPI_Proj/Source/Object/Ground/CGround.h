@@ -30,7 +30,7 @@ public:
     
 	virtual void Start();
 	virtual void Update();
-	virtual void RenderD2D(ID2D1RenderTarget* _pRenderTarget) override;
+	virtual void Render(ID2D1RenderTarget* _pRenderTarget) override;
 	
 
 public:

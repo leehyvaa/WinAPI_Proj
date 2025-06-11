@@ -110,8 +110,7 @@ public:
 	virtual void Start() {}; //씬 시작되기 직전에 호출되는함수
 	virtual void Update() = 0;
 	virtual void FinalUpdate();
-	// virtual void Render(HDC _dc);  // GDI 렌더링 제거
-	virtual void RenderD2D(ID2D1RenderTarget* _pRenderTarget) {}  // Direct2D 렌더링 기본 구현
+	virtual void Render(ID2D1RenderTarget* _pRenderTarget) {}  
 
 	void Component_Render(ID2D1RenderTarget* _pRenderTarget);
 

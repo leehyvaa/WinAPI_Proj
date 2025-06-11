@@ -15,7 +15,7 @@ private:
     PLAYER_CLIMB_STATE m_ePrevClimbState;
 
     virtual void Update() override;
-    virtual void RenderD2D(ID2D1RenderTarget* _pRenderTarget) override;
+    virtual void Render(ID2D1RenderTarget* _pRenderTarget) override;
 
 public:
     void Update_Animation();

@@ -10,8 +10,7 @@ class CBackGround :
     public CTile
 {
 public:
-    virtual void Render(HDC _dc);
-    virtual void RenderD2D(ID2D1RenderTarget* _pRenderTarget);
+    virtual void Render(ID2D1RenderTarget* _pRenderTarget);
 
     CBackGround();
     virtual ~CBackGround();

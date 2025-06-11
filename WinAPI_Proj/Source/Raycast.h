@@ -19,7 +19,7 @@ public:
     ~Raycast();
     
     virtual void Update() override;
-    virtual void RenderD2D(ID2D1RenderTarget* _pRenderTarget) override;
+    virtual void Render(ID2D1RenderTarget* _pRenderTarget) override;
     
     CCollider* GetCollisionRay() { return onCollisionRay; }
     Vec2 GetTargetPos() { return targetPos; }

@@ -35,10 +35,10 @@ void MouseCursor::Update()
 	SetWorldPos(pos);
 }
 
-void MouseCursor::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
+void MouseCursor::Render(ID2D1RenderTarget* _pRenderTarget)
 {
 	if (!_pRenderTarget)
 		return;
 		
-	GameObject::RenderD2D(_pRenderTarget);
+	GameObject::Render(_pRenderTarget);
 }

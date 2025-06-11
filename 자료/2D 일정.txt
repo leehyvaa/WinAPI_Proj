@@ -4,9 +4,11 @@
 타일 F7 현재 안먹는거같음?
 
 지금 GDI가 완전히 삭제된게 맞나?
-DX 변경 후 기존 Render함수들 다 지워야함
+DX 변경 후 기존 Render함수들 다 지우고 D2D를 다 Render로 바꿔야함
+CCore의 브러시들 map으로 통합
 GameObejct의 ComponentRender에서 RenderD2D를 실행하게끔 했다는거 확인해야함
 각각 클래스들의 DX텍스처 캐싱 함수들 CTexture 클래스에서 한번에 못하나?
+-이거 전부다 된건가? CHook에 있는 체인도 CTexture로 못넘기나?
 DX 변경하면서 화면 위아래로 눌린거 전체화면으로는 해결된듯?, 타이틀 UI 이미지 위치도 요상하게 위로 밀렸나 했는데 이건 버튼 콜라이더 디버깅해서 봐야함
 
 

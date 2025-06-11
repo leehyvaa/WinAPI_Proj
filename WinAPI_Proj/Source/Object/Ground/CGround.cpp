@@ -39,7 +39,7 @@ void CGround::Update()
 {
 }
 
-void CGround::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
+void CGround::Render(ID2D1RenderTarget* _pRenderTarget)
 {
     if (!_pRenderTarget)
         return;
@@ -94,7 +94,7 @@ void CGround::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
         }
     }
 
-    GameObject::RenderD2D(_pRenderTarget);
+    GameObject::Render(_pRenderTarget);
 }
 
 

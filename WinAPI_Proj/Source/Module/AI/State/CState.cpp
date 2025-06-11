@@ -3,11 +3,7 @@
 #include "CMonster.h"
 #include "AI.h"
 
-void CState::Render(HDC _dc)
-{
-}
-
-void CState::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
+void CState::Render(ID2D1RenderTarget* _pRenderTarget)
 {
 }
 

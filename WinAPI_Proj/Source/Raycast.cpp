@@ -24,7 +24,7 @@ void Raycast::Update()
 	
 }
 
-void Raycast::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
+void Raycast::Render(ID2D1RenderTarget* _pRenderTarget)
 {
 	if (!_pRenderTarget)
 		return;
@@ -53,7 +53,7 @@ void Raycast::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
 		}
 	}
 	
-	GameObject::RenderD2D(_pRenderTarget);
+	GameObject::Render(_pRenderTarget);
 }
 
 

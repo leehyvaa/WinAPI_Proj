@@ -75,60 +75,8 @@ void CUI::FinalUpdate()
 
 }
 
-void CUI::Render(HDC _dc)
-{
-	// Direct2D 렌더링이 활성화된 경우 GDI 렌더링 스킵
-	ID2D1RenderTarget* pD2DRenderTarget = CCore::GetInst()->GetD2DRenderTarget();
-	if (pD2DRenderTarget != nullptr)
-	{
-		// Direct2D 모드에서는 RenderD2D가 호출됨
-		return;
-	}
 
-	Vec2 vPos = GetFinalPos();
-	Vec2 vScale = GetScale();
-
-	if (m_bCamAffected)
-	{
-		vPos = CCamera::GetInst()->GetRenderPos(vPos);
-	}
-
-	if (m_pTex != nullptr)
-	{
-		UINT iWidth = m_pTex->Width();
-		UINT iHeight = m_pTex->Height();
-
-		TransparentBlt(_dc
-			, static_cast<int>(vPos.x)
-			, static_cast<int>(vPos.y)
-			, iWidth, iHeight
-			, m_pTex->GetDC()
-			, 0, 0, iWidth, iHeight, RGB(0, 0, 0));
-	}
-	else if(m_bVisibleBox)
-	{
-		// GDI 모드에서는 기본 사각형만 그리기 (Direct2D 우선 사용)
-		HBRUSH hBrush = CreateSolidBrush(RGB(128, 128, 128));
-		HPEN hPen = CreatePen(PS_SOLID, 1, RGB(0, 255, 0));
-		
-		HBRUSH hOldBrush = (HBRUSH)SelectObject(_dc, hBrush);
-		HPEN hOldPen = (HPEN)SelectObject(_dc, hPen);
-		
-		Rectangle(_dc
-			, (int)vPos.x, (int)vPos.y
-			, (int)(vPos.x + vScale.x), (int)(vPos.y + vScale.y));
-			
-		SelectObject(_dc, hOldBrush);
-		SelectObject(_dc, hOldPen);
-		DeleteObject(hBrush);
-		DeleteObject(hPen);
-	}
-
-	// 자식 UI 렌더링
-	Render_Child(_dc);
-}
-
-void CUI::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
+void CUI::Render(ID2D1RenderTarget* _pRenderTarget)
 {
 	if (!_pRenderTarget)
 		return;
@@ -212,7 +160,7 @@ void CUI::Render_Child_D2D(ID2D1RenderTarget* _pRenderTarget)
 {
 	for (size_t i = 0; i < m_vecChildUI.size(); i++)
 	{
-		m_vecChildUI[i]->RenderD2D(_pRenderTarget);
+		m_vecChildUI[i]->Render(_pRenderTarget);
 	}
 }
 
@@ -235,13 +183,6 @@ void CUI::FinalUpdate_Child()
 
 
 
-void CUI::Render_Child(HDC _dc)
-{
-	for (size_t i = 0; i < m_vecChildUI.size(); i++)
-	{
-		m_vecChildUI[i]->Render(_dc);
-	}
-}
 
 void CUI::MouseOnCheck()
 {

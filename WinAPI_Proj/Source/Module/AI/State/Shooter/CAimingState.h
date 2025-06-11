@@ -20,6 +20,5 @@ public:
     virtual void Enter() override;
     virtual void Update() override;
     virtual void Exit() override;
-    virtual void Render(HDC _dc);
-    virtual void RenderD2D(ID2D1RenderTarget* _pRenderTarget);
+    virtual void Render(ID2D1RenderTarget* _pRenderTarget);
 };

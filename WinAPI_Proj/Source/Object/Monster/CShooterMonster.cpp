@@ -120,15 +120,15 @@ void CShooterMonster::Update()
     }
 }
 
-void CShooterMonster::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
+void CShooterMonster::Render(ID2D1RenderTarget* _pRenderTarget)
 {
     if (!_pRenderTarget)
         return;
         
-    CMonster::RenderD2D(_pRenderTarget);
+    CMonster::Render(_pRenderTarget);
     if(nullptr != m_pAI)
     {
-        m_pAI->RenderD2D(_pRenderTarget);
+        m_pAI->Render(_pRenderTarget);
     }
 }
 

@@ -101,63 +101,6 @@ void CTextUI::SetFontSize(int _size)
     }
 }
 
-void CTextUI::Render(HDC _dc)
-{
-    // Direct2D 렌더링이 활성화된 경우 GDI 렌더링 스킵
-    ID2D1RenderTarget* pD2DRenderTarget = CCore::GetInst()->GetD2DRenderTarget();
-    if (pD2DRenderTarget != nullptr)
-    {
-        // Direct2D 모드에서는 RenderD2D가 호출됨
-        return;
-    }
-
-    CUI::Render(_dc); // 기본 UI 렌더
-    if (!m_hFont) {
-        CreateFontHandle();
-    }
-    // 배경 투명화 추가
-    SetBkMode(_dc, TRANSPARENT);
-    SetBkColor(_dc, RGB(0, 0, 0));
-
-    Vec2 vPos = GetFinalPos();
-    if (m_bCamAffected)
-        vPos = CCamera::GetInst()->GetRenderPos(vPos);
-
-    // 폰트/색상 설정
-    HFONT oldFont = static_cast<HFONT>(SelectObject(_dc, m_hFont));
-    COLORREF oldColor = SetTextColor(_dc, m_TextColor);
-
-    // 라인별 렌더링
-    SIZE txtSize = { 0 };
-    for (size_t i = 0; i < m_vecLines.size(); ++i)
-    {
-        const std::wstring& line = m_vecLines[i];
-
-        // 텍스트 크기 측정
-        GetTextExtentPoint32(_dc, line.c_str(), static_cast<int>(line.length()), &txtSize);
-
-        // 정렬 계산
-        int x = static_cast<int>(vPos.x);
-        switch (m_Align)
-        {
-        case TEXT_ALIGN::CENTER:
-            x += (GetScale().x - txtSize.cx) / 2;
-            break;
-        case TEXT_ALIGN::RIGHT:
-            x += GetScale().x - txtSize.cx;
-            break;
-        }
-
-        // Y 위치 계산 (라인 간격 적용)
-        int y = static_cast<int>(vPos.y) + (txtSize.cy + m_iLineSpace) * static_cast<int>(i);
-
-        TextOutW(_dc, x, y, line.c_str(), static_cast<int>(line.length()));
-    }
-
-    // GDI 객체 복원
-    SetTextColor(_dc, oldColor);
-    SelectObject(_dc, oldFont);
-}
 // DirectWrite 관련 메서드 구현
 void CTextUI::SetFontColorD2D(D2D1_COLOR_F _color)
 {
@@ -237,13 +180,13 @@ void CTextUI::CreateTextBrush(ID2D1RenderTarget* _pRenderTarget)
     }
 }
 
-void CTextUI::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
+void CTextUI::Render(ID2D1RenderTarget* _pRenderTarget)
 {
     if (!_pRenderTarget)
         return;
 
     // 기본 UI 렌더링 (배경/테두리)
-    CUI::RenderD2D(_pRenderTarget);
+    CUI::Render(_pRenderTarget);
 
     // DirectWrite 리소스 준비
     if (!m_pTextFormat)

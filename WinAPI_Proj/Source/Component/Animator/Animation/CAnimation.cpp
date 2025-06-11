@@ -276,7 +276,7 @@ void CAnimation::Load(const wstring& _strRelativePath)
 
 
 
-void CAnimation::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
+void CAnimation::Render(ID2D1RenderTarget* _pRenderTarget)
 {
     CTimeMgr::StartTimer(L"AnimationComp_DXRender");
 

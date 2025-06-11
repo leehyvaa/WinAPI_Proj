@@ -49,7 +49,6 @@ public:
 private:
     void Update_Child();
     void FinalUpdate_Child();
-    void Render_Child(HDC _dc);
     void Render_Child_D2D(ID2D1RenderTarget* _pRenderTarget);
 
     void MouseOnCheck();
@@ -67,8 +66,7 @@ public:
 public:
     virtual void Update();
     virtual void FinalUpdate();
-    virtual void Render(HDC _dc);
-    virtual void RenderD2D(ID2D1RenderTarget* _pRenderTarget);
+    virtual void Render(ID2D1RenderTarget* _pRenderTarget);
 
 
 

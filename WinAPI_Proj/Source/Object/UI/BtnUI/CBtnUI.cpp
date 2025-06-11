@@ -57,50 +57,13 @@ void CBtnUI::MouseLbtnClicked()
 	}
 }
 
-void CBtnUI::Render(HDC _dc)
-{
-	// Direct2D 렌더링이 활성화된 경우 GDI 렌더링 스킵
-	ID2D1RenderTarget* pD2DRenderTarget = CCore::GetInst()->GetD2DRenderTarget();
-	if (pD2DRenderTarget != nullptr)
-	{
-		// Direct2D 모드에서는 RenderD2D가 호출됨
-		return;
-	}
-
-	CUI::Render(_dc);
-
-	/*BitBlt(_dc
-		, (int)(vPos.x )
-		, (int)(vPos.y )
-		, (int)vScale.x
-		, (int)vScale.y
-		, m_pBtnTex->GetDC()
-		, 0
-		, 0
-		, SRCCOPY);*/
-
-	//BLENDFUNCTION bf = {};
-	//bf.BlendOp = AC_SRC_OVER;
-	//bf.BlendFlags = 0;
-	//bf.AlphaFormat = AC_SRC_ALPHA;
-	//bf.SourceConstantAlpha = 127; //전역적으로 적용되는 알파
-
-	//AlphaBlend(_dc
-	//, (int)(vRenderPos.x)
-	//, (int)(vRenderPos.y)
-	//, int(iWidth), int(iHeight)
-	//, m_pBtnTex->GetDC()
-	//, 0, 0, int(iWidth), int(iHeight)
-	//, bf);
-}
-
-void CBtnUI::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
+void CBtnUI::Render(ID2D1RenderTarget* _pRenderTarget)
 {
 	if (!_pRenderTarget)
 		return;
 
 	// 부모 CUI의 RenderD2D 호출 (버튼 배경 이미지/사각형 렌더링)
-	CUI::RenderD2D(_pRenderTarget);
+	CUI::Render(_pRenderTarget);
 
 	// // 버튼 상태에 따른 추가 시각적 피드백
 	// if (IsMouseOn() || IsLbtnDown())

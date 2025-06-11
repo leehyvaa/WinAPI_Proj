@@ -58,8 +58,7 @@ public:
 public:
 	void init();
 	void Update();
-	void Render(HDC _dc);
-	void RenderD2D(ID2D1RenderTarget* _pRenderTarget);
+	void Render(ID2D1RenderTarget* _pRenderTarget);
 private:
 	void CalDiff();
 

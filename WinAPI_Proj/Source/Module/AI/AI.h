@@ -15,8 +15,7 @@ private:
 
 public:
 	void Update();
-    void Render(HDC _dc);
-    void RenderD2D(ID2D1RenderTarget* _pRenderTarget);
+    void Render(ID2D1RenderTarget* _pRenderTarget);
 
 public:
 	void AddState(CState* _pState);

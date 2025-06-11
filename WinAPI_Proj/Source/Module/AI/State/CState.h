@@ -21,8 +21,7 @@ public:
 	virtual void Update() = 0;
 	virtual void Enter() = 0;
 	virtual void Exit() = 0;
-    virtual void Render(HDC _dc);
-    virtual void RenderD2D(ID2D1RenderTarget* _pRenderTarget);
+    virtual void Render(ID2D1RenderTarget* _pRenderTarget);
 
 public:
 	CState(MON_STATE _eState);

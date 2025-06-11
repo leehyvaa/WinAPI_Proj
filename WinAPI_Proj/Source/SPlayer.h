@@ -105,8 +105,7 @@ public:
 
     
 	virtual void Update() override;
-	// virtual void Render(HDC _dc) override;  // GDI 렌더링 제거됨 - Direct2D 전용
-	virtual void RenderD2D(ID2D1RenderTarget* _pRenderTarget) override;
+	virtual void Render(ID2D1RenderTarget* _pRenderTarget) override;
 	   virtual void Reset() override;
 
 private:

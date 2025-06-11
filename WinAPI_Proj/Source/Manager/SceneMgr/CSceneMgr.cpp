@@ -50,18 +50,12 @@ void CSceneMgr::Update()
 	m_pCurScene->FinalUpdate();
 }
 
-/*
-void CSceneMgr::Render(HDC _dc)
-{
-	m_pCurScene->Render(_dc);
-}
-*/
 
-void CSceneMgr::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
+void CSceneMgr::Render(ID2D1RenderTarget* _pRenderTarget)
 {
 	if (m_pCurScene && _pRenderTarget)
 	{
-		m_pCurScene->RenderD2D(_pRenderTarget);
+		m_pCurScene->Render(_pRenderTarget);
 	}
 }
 

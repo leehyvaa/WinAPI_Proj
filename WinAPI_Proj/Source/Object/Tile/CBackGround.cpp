@@ -16,33 +16,8 @@ CBackGround::~CBackGround()
 {
 }
 
-void CBackGround::Render(HDC _dc)
-{
-	// Direct2D 활성화 시 GDI 렌더링 스킵 (하이브리드 렌더링)
-	if (CCore::GetInst()->GetD2DRenderTarget())
-		return;
 
-	CTexture* pTileTex = GetTexture();
-
-	if (nullptr == pTileTex)
-		return;
-
-	Vec2 vRenderPos = GetWorldPos();
-	Vec2 vScale = GetScale();
-
-	UINT iWidth = pTileTex->Width();
-	UINT iHeight = pTileTex->Height();
-
-	TransparentBlt(_dc
-		, static_cast<int>(vRenderPos.x)
-		, static_cast<int>(vRenderPos.y)
-		, static_cast<int>(vScale.x), static_cast<int>(vScale.y)
-		, pTileTex->GetDC()
-		, 0, 0,
-		iWidth, iHeight, RGB(255, 0, 255));
-}
-
-void CBackGround::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
+void CBackGround::Render(ID2D1RenderTarget* _pRenderTarget)
 {
 	if (!_pRenderTarget)
 		return;

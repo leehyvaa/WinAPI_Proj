@@ -49,7 +49,7 @@ public:
 	virtual void Start();
 	virtual void Update();
 	virtual void FinalUpdate();
-	virtual void RenderD2D(ID2D1RenderTarget* _pRenderTarget);
+	virtual void Render(ID2D1RenderTarget* _pRenderTarget);
 	void RenderTileD2D(ID2D1RenderTarget* _pRenderTarget);
 
 	virtual void Enter();

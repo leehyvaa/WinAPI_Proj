@@ -44,17 +44,11 @@ void CAnimator::FinalUpdate()
 	}
 }
 
-// void CAnimator::Render(HDC _dc)
-// {
-// 	if (nullptr != m_pCurAnim)
-// 		m_pCurAnim->Render(_dc);
-// }
-
-void CAnimator::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
+void CAnimator::Render(ID2D1RenderTarget* _pRenderTarget)
 {
 	if (nullptr != m_pCurAnim && nullptr != _pRenderTarget)
 	{
-		m_pCurAnim->RenderD2D(_pRenderTarget);
+		m_pCurAnim->Render(_pRenderTarget);
 	}
 }
 

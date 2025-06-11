@@ -39,7 +39,6 @@ CCore::~CCore()
 {
 	ReleaseD2DResources();
 	ReleaseDC(m_hWnd,m_hDC); // GetDC로 만든 Dc는 릴리즈로 해제
-
 	DestroyMenu(m_hMenu);
 }
 
@@ -122,12 +121,12 @@ void CCore::Progress()
         CScene* curScene = CSceneMgr::GetInst()->GetCurScene();
         CBackGround* backGround = curScene->GetBackGround();
         if (backGround)
-            backGround->RenderD2D(m_pRenderTarget);
+            backGround->Render(m_pRenderTarget);
 
         
         // 모든 오브젝트와 UI를 렌더링
-        CSceneMgr::GetInst()->RenderD2D(m_pRenderTarget);
-        CCamera::GetInst()->RenderD2D(m_pRenderTarget);
+        CSceneMgr::GetInst()->Render(m_pRenderTarget);
+        CCamera::GetInst()->Render(m_pRenderTarget);
 
         // 프로파일링 디버그 출력 (F10 키)
         if (CKeyMgr::GetInst()->GetKeyState(KEY::F10) == KEY_STATE::TAP)

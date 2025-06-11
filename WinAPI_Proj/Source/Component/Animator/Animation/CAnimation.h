@@ -67,7 +67,7 @@ private:
     //void CacheFrames();
 public:
 	void Update();
-	void RenderD2D(ID2D1RenderTarget* _pRenderTarget);
+	void Render(ID2D1RenderTarget* _pRenderTarget);
 
 	void Create(CTexture* _pTex, Vec2 _vLT, Vec2 _vSliceSize, Vec2 _vStep,
 		float _fDuration,UINT _iFrameCount, float _fSizeMulti, Vec2 _vOffset);

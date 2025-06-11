@@ -52,62 +52,7 @@ void CCamera::Update()
 	CalDiff();
 }
 
-void CCamera::Render(HDC _dc)
-{
-	if (m_listCamEffect.empty())
-		return;
-
-	tCamEffect& effect = m_listCamEffect.front();
-	effect.fCurTime += fDT;
-
-
-
-
-
-	float fRatio = 0.f; //이펙트 진행 비율
-	fRatio = effect.fCurTime / effect.fDuration;
-
-	if (fRatio < 0.f)
-		fRatio = 0.f;
-	if (fRatio > 1.f)
-		fRatio = 1.f;
-
-
-	int iAlpha = 0;
-
-	if (CAM_EFFECT::FADE_OUT == effect.eEffect)
-	{
-		iAlpha = static_cast<int>(255.f * fRatio);
-	}
-	else if (CAM_EFFECT::FADE_IN == effect.eEffect)
-	{
-		iAlpha = static_cast<int>(255.f * (1.f - fRatio));
-	}
-
-
-	BLENDFUNCTION bf = {};
-	bf.BlendOp = AC_SRC_OVER;
-	bf.BlendFlags = 0;
-	bf.AlphaFormat = 0;
-	bf.SourceConstantAlpha = iAlpha; //전역적으로 적용되는 알파
-
-	AlphaBlend(_dc
-		, 0
-		, 0
-		, static_cast<int>(m_pVeilTex->Width()), static_cast<int>(m_pVeilTex->Height())
-		, m_pVeilTex->GetDC()
-		, 0, 0, static_cast<int>(m_pVeilTex->Width()), static_cast<int>(m_pVeilTex->Height())
-		, bf);
-
-
-	//진행시간이 이펙트 지속시간을 넘어서면 스톱
-	if (effect.fDuration < effect.fCurTime)
-	{
-		m_listCamEffect.pop_front();
-	}
-}
-
-void CCamera::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
+void CCamera::Render(ID2D1RenderTarget* _pRenderTarget)
 {
     if (m_listCamEffect.empty() || !_pRenderTarget)
         return;

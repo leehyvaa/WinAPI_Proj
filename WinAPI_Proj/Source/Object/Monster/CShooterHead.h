@@ -14,7 +14,7 @@ public:
     virtual void Reset() override;
 
     virtual void Update() override;
-    virtual void RenderD2D(ID2D1RenderTarget* _pRenderTarget) override;
+    virtual void Render(ID2D1RenderTarget* _pRenderTarget) override;
 
     CLONE(CShooterHead)
 };
