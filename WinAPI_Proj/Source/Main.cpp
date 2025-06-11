@@ -5,14 +5,9 @@
 #include "framework.h"
 #include "WinAPI_Proj.h"
 #include "CCore.h"
-#include <gdiplus.h>
-using namespace Gdiplus;
 using namespace std;
 #define MAX_LOADSTRING 100
 
-
-const HWND* mainHwnd;
-const HDC* mainHdc;
 
 // 전역 변수:
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
@@ -43,15 +38,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     // TODO: 여기에 코드를 입력합니다.
 
-    // GDI+ 초기화 시작
-    ULONG_PTR           gdiplusToken;
-    GdiplusStartupInput gdiplusStartupInput;
-    if (GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL) != Ok)
-    {
-        MessageBox(nullptr, L"GDI+ 초기화 실패", L"ERROR", MB_OK);
-        return FALSE;
-    }
-    // GDI+ 초기화 끝
 
     //메모리 릭 확인
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
@@ -65,8 +51,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     // 애플리케이션 초기화를 수행합니다:
     if (!InitInstance(hInstance, nCmdShow))
     {
-        // GDI+ 종료 (InitInstance 실패 시에도 안전하게 호출)
-        GdiplusShutdown(gdiplusToken);
         return FALSE;
     }
     //1280 720
@@ -74,8 +58,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     if (FAILED(CCore::GetInst()->init(hWnd,POINT{1920,1200})))
     {
         MessageBox(nullptr, L"Core 객체 초기화 실패", L"ERROR", MB_OK);
-        // GDI+ 종료 (Core 초기화 실패 시에도 안전하게 호출)
-        GdiplusShutdown(gdiplusToken);
         return FALSE;
     }
 
@@ -102,9 +84,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             CCore::GetInst()->Progress();
         }
     }
-
-    // GDI+ 종료
-    GdiplusShutdown(gdiplusToken);
 
     return static_cast<int>(msg.wParam);
 }
@@ -229,9 +208,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         ptCurPos.y = circleRadius;
         bFlag = false;
 
-        mainHdc = &hdc;
-        mainHwnd = &hWnd;
-
         GetClientRect(hWnd, &rectView);
 
         
@@ -287,13 +263,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     case WM_PAINT:
     {
-
-        // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
-
         hdc = BeginPaint(hWnd, &ps);
-
-
-
         EndPaint(hWnd, &ps);
     }
     break;

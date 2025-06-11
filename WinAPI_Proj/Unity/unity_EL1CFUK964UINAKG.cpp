@@ -1,4 +1,10 @@
 
+#include "C:\WinAPIProject\WinAPI_Proj\Source\Manager\CollisionMgr\CCollisionMgr.cpp"
+
+
+#include "C:\WinAPIProject\WinAPI_Proj\Source\Manager\CSoundMgr\CSoundMgr.cpp"
+
+
 #include "C:\WinAPIProject\WinAPI_Proj\Source\Manager\EventMgr\CEventMgr.cpp"
 
 
@@ -18,13 +24,4 @@
 
 
 #include "C:\WinAPIProject\WinAPI_Proj\Source\Manager\UIMgr\CUIMgr.cpp"
-
-
-#include "C:\WinAPIProject\WinAPI_Proj\Source\Module\AI\AI.cpp"
-
-
-#include "C:\WinAPIProject\WinAPI_Proj\Source\Module\AI\State\CState.cpp"
-
-
-#include "C:\WinAPIProject\WinAPI_Proj\Source\Module\AI\State\Idle\CIdleState.cpp"
 

@@ -373,4 +373,9 @@ memory-bank/
 code_review_and_improvement_plan.md
 
 .roo/
+diagnostics/
+implementation/
+design/
+research/
 custom_modes.yaml
+README.md

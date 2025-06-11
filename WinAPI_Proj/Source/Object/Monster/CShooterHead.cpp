@@ -58,7 +58,7 @@ void CShooterHead::Update()
 
         // 플레이어 방향 벡터와 양의 X축 사이의 각도를 라디안으로 계산 후 디그리로 변환
         float angleRad = atan2f(dirToPlayer.y, dirToPlayer.x);
-        float angleDeg = angleRad * (180.f / 3.14159);
+        float angleDeg = angleRad * (180.f / 3.14159f);
 
 
         float finalRotationDeg;

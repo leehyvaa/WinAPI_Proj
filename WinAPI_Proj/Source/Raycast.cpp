@@ -79,7 +79,7 @@ void Raycast::CollisionCheck()
 	int i = 0;
 	while (true)
 	{
-		offsetPos += dir * i*3;
+		offsetPos += dir * static_cast<float>(i * 3);
 		GetCollider()->SetOffsetPos(offsetPos);
 
 	    // Ground중 현재 Ray에 충돌한 지형이 있는지 체크

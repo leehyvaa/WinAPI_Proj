@@ -52,47 +52,12 @@ void CTexture::Load(const wstring& _strFilePath)
         return;
     }
 
-    // 하위 호환성을 위한 GDI 리소스 생성 (필요한 경우에만)
-    // PNG 파일의 경우 Direct2D만으로도 충분하지만, 기존 코드와의 호환성을 위해 유지
-    if (m_pBitmap)
-    {
-        // GDI+ 비트맵을 로드하고 HBITMAP 생성
-        Gdiplus::Bitmap gdiBmp(_strFilePath.c_str());
-        if (gdiBmp.GetLastStatus() == Ok)
-        {
-            gdiBmp.GetHBITMAP(Gdiplus::Color(0, 0, 0, 0), &m_hBit);
-
-            // DC 생성 및 비트맵 연결
-            if (m_hBit)
-            {
-                m_dc = CreateCompatibleDC(CCore::GetInst()->GetMainDC());
-                SelectObject(m_dc, m_hBit);
-                GetObject(m_hBit, sizeof(BITMAP), &m_bitInfo);
-            }
-        }
-        else
-        {
-            // GDI+ 로드 실패 시 초기화
-            m_hBit = nullptr;
-            m_dc = nullptr;
-        }
-    }
 }
 
 void CTexture::Create(UINT _iWidth, UINT _iHeight)
 {
     // Direct2D 비트맵 생성
     CreateBitmapFromSize(_iWidth, _iHeight);
-    
-    // 하위 호환성을 위한 GDI 리소스도 생성
-    HDC maindc = CCore::GetInst()->GetMainDC();
-    m_hBit = CreateCompatibleBitmap(maindc, _iWidth, _iHeight);
-    m_dc = CreateCompatibleDC(maindc);
-
-    HBITMAP hOldBit = static_cast<HBITMAP>(SelectObject(m_dc, m_hBit));
-    DeleteObject(hOldBit);
-
-    GetObject(m_hBit, sizeof(BITMAP), &m_bitInfo);
 }
 
 void CTexture::CreateBitmap(const wstring& _strFilePath)

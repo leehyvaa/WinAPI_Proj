@@ -123,9 +123,6 @@
     <ClInclude Include="Source\Module\AI\State\Trace\CTraceState.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Module\SelectGDI.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Object\CMonster.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -276,9 +273,6 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Source\Module\AI\State\Trace\CTraceState.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Module\SelectGDI.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Source\Object\CMonster.cpp">

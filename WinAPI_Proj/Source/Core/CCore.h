@@ -14,7 +14,6 @@ class CCore
 private:
 	HWND	m_hWnd;
 	POINT	m_ptResolution;
-	HDC		m_hDC;
     
 	ID2D1Factory*				m_pFactory;
 	ID2D1HwndRenderTarget*		m_pRenderTarget;
@@ -39,7 +38,6 @@ public:
 	void DivideMenu();
 	void ChangeWindowSize(Vec2 _vResolution, bool _bMenu);
 
-	HDC GetMainDC() { return m_hDC; }
 	HWND GetMainHwnd() { return m_hWnd; }
 	POINT GetResolution() { return m_ptResolution; }
     

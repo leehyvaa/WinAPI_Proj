@@ -24,7 +24,6 @@
 CCore::CCore()
 	:m_hWnd(0)
 	, m_ptResolution{}
-	, m_hDC(0)
 	, m_pFactory(nullptr)
 	, m_pRenderTarget(nullptr)
 	, m_pBlackBrush(nullptr)
@@ -38,7 +37,6 @@ CCore::CCore()
 CCore::~CCore()
 {
 	ReleaseResources();
-	ReleaseDC(m_hWnd,m_hDC); // GetDC로 만든 Dc는 릴리즈로 해제
 	DestroyMenu(m_hMenu);
 }
 
@@ -57,7 +55,6 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 	// 메뉴바 생성
 	m_hMenu = LoadMenu(nullptr, MAKEINTRESOURCEW(IDC_WINAPIPROJ));
 
-	m_hDC = GetDC(m_hWnd);
 
 	CreateResources();
 

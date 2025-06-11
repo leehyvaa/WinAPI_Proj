@@ -238,9 +238,6 @@ void CTextUI::Render(ID2D1RenderTarget* _pRenderTarget)
         // 최소 크기 보장 및 적절한 여백 추가
         vScale.x = max(maxLineWidth + 20.0f, 200.0f); // 최소 200픽셀 너비
         vScale.y = max(lineCount * estimatedLineHeight + 10.0f, 50.0f); // 최소 50픽셀 높이
-        
-        // [DEBUG] 자동 크기 계산 로그
-        char autoSizeMsg[256];
     }
 
     // DirectWrite 텍스트 렌더링 영역 설정

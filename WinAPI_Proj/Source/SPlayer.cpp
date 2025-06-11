@@ -700,10 +700,10 @@ void SPlayer::ApplySwingVelocity()
     // 이 위치는 부스터 쓸때만 써야할듯?, 갈고리 박고 4초간 떨리는 현상 발생
     //nextPos.x = (curMaxPos.x - hookPos.x) * cos(radian) - (curMaxPos.y - hookPos.y) * sin(radian) + hookPos.x;
     //nextPos.y = (curMaxPos.x - hookPos.x) * sin(radian) + (curMaxPos.y - hookPos.y) * cos(radian) + hookPos.y;
-    nextPos.x = (m_pPlayerArm->GetWorldPos().x - hookPos.x) * cos(radian) - (m_pPlayerArm->GetWorldPos().y - hookPos.y) *
-        sin(radian) + hookPos.x;
-    nextPos.y = (m_pPlayerArm->GetWorldPos().x - hookPos.x) * sin(radian) + (m_pPlayerArm->GetWorldPos().y - hookPos.y) *
-        cos(radian) + hookPos.y;
+    nextPos.x = (m_pPlayerArm->GetWorldPos().x - hookPos.x) * static_cast<float>(cos(radian)) - (m_pPlayerArm->GetWorldPos().y - hookPos.y) *
+        static_cast<float>(sin(radian)) + hookPos.x;
+    nextPos.y = (m_pPlayerArm->GetWorldPos().x - hookPos.x) * static_cast<float>(sin(radian)) + (m_pPlayerArm->GetWorldPos().y - hookPos.y) *
+        static_cast<float>(cos(radian)) + hookPos.y;
 
     // 플레이어와 갈고리 사이의 각도와 현재 받는 힘에 따라 플레이어가 이동할 다음 위치 계산
     Vec2 nextDir = nextPos - m_pPlayerArm->GetWorldPos();
@@ -757,7 +757,7 @@ void SPlayer::UpdateSwingEnergy()
     else
     {
         float offset = 180.f - wireDir.Angle(up);
-        angle = offset + 180.f;
+        angle = static_cast<float>(offset + 180.f);
     }
 
     
@@ -946,9 +946,9 @@ void SPlayer::CreateHook()
 			}
 
 			if (m_vRayHitPos.x < m_pPlayerArm->GetWorldPos().x)
-				m_fMoveEnergy = -distance * 1.5;
+				m_fMoveEnergy = -distance * 1.5f;
 			else
-				m_fMoveEnergy = distance * 1.5;
+				m_fMoveEnergy = distance * 1.5f;
 		}
 		else if (m_pPlayerRay->GetCollisionRay()->GetObj()->GetGroup() == GROUP_TYPE::MONSTER)
 		{

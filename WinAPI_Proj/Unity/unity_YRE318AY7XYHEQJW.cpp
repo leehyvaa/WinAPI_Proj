@@ -25,6 +25,3 @@
 
 #include "C:\WinAPIProject\WinAPI_Proj\Source\Object\UI\ChatUI\CTextUI.cpp"
 
-
-#include "C:\WinAPIProject\WinAPI_Proj\Source\CHook.cpp"
-

@@ -210,7 +210,7 @@ void CTimeMgr::RenderProfileData(ID2D1RenderTarget* _pRenderTarget, int _iOffset
         
         _pRenderTarget->DrawText(
             szBuf,
-            wcslen(szBuf),
+            static_cast<UINT32>(wcslen(szBuf)),
             s_pTextFormat,
             textRect,
             s_pTextBrush
