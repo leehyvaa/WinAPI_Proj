@@ -159,8 +159,31 @@ void CTile::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
     // 전면 텍스쳐 그리기
     if (nullptr != m_pTileTex && -1 != m_iImgIdx)
     {
+        // 디버깅: 텍스처 정보 출력
+        static int debugCount = 0;
+        if (debugCount < 5) // 처음 5개 타일만 로그 출력
+        {
+            OutputDebugStringA("CTile::RenderD2D - Tile texture found\n");
+            debugCount++;
+        }
+
+        // 텍스처 유효성 체크 (디버깅용)
+        if (!m_pTileTex->IsValid())
+        {
+            // 텍스처가 유효하지 않으면 스킵
+            if (debugCount < 5)
+            {
+                OutputDebugStringA("CTile::RenderD2D - Texture is not valid\n");
+            }
+            return;
+        }
+
         UINT iWidth = m_pTileTex->Width();
         UINT iHeight = m_pTileTex->Height();
+
+        // TILE_SIZE 유효성 확인
+        if (TILE_SIZE == 0)
+            return;
 
         UINT iMaxCol = iWidth / TILE_SIZE;
         UINT iMaxRow = iHeight / TILE_SIZE;
@@ -184,14 +207,18 @@ void CTile::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
         Vec2 vScale = GetScale();
         D2D1_SIZE_F dstSize = D2D1::SizeF(vScale.x, vScale.y);
 
-        // 고유 캐시 키 생성
-        wstring strTexPath = m_pTileTex->GetRelativePath();
-        wstring strCacheKey = strTexPath + L"_" + std::to_wstring(m_iImgIdx);
+        // Direct2D 비트맵 직접 사용 (PNG 알파 채널 지원)
+        ID2D1Bitmap* pD2DBitmap = m_pTileTex->GetD2DBitmap();
 
-        // CTexture의 GetSlicedBitmap을 호출하여 비트맵 가져오기
-        ID2D1Bitmap* pSlicedBitmap = m_pTileTex->GetSlicedBitmap(strCacheKey, srcRect, dstSize);
-        
-        if (pSlicedBitmap)
+        if (debugCount < 5)
+        {
+            if (pD2DBitmap)
+                OutputDebugStringA("CTile::RenderD2D - D2D bitmap found, rendering tile\n");
+            else
+                OutputDebugStringA("CTile::RenderD2D - D2D bitmap is NULL\n");
+        }
+
+        if (pD2DBitmap)
         {
             Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(GetWorldPos());
 
@@ -203,10 +230,11 @@ void CTile::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
             );
 
             _pRenderTarget->DrawBitmap(
-                pSlicedBitmap,
+                pD2DBitmap,
                 destRect,
                 1.0f,
-                D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR
+                D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR,
+                srcRect
             );
         }
     }
@@ -214,8 +242,19 @@ void CTile::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
     // 후면 텍스쳐 그리기
     if (nullptr != m_pTileTex2 && -1 != m_iImgIdx2)
     {
+        // 텍스처 유효성 체크 (디버깅용)
+        if (!m_pTileTex2->IsValid())
+        {
+            // 텍스처가 유효하지 않으면 스킵
+            return;
+        }
+
         UINT iWidth = m_pTileTex2->Width();
         UINT iHeight = m_pTileTex2->Height();
+
+        // TILE_SIZE 유효성 확인
+        if (TILE_SIZE == 0)
+            return;
 
         UINT iMaxCol = iWidth / TILE_SIZE;
         UINT iMaxRow = iHeight / TILE_SIZE;
@@ -239,14 +278,10 @@ void CTile::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
         Vec2 vScale = GetScale();
         D2D1_SIZE_F dstSize = D2D1::SizeF(vScale.x, vScale.y);
 
-        // 고유 캐시 키 생성
-        wstring strTexPath = m_pTileTex2->GetRelativePath();
-        wstring strCacheKey = strTexPath + L"_" + std::to_wstring(m_iImgIdx2);
+        // Direct2D 비트맵 직접 사용 (PNG 알파 채널 지원)
+        ID2D1Bitmap* pD2DBitmap = m_pTileTex2->GetD2DBitmap();
 
-        // CTexture의 GetSlicedBitmap을 호출하여 비트맵 가져오기
-        ID2D1Bitmap* pSlicedBitmap = m_pTileTex2->GetSlicedBitmap(strCacheKey, srcRect, dstSize);
-        
-        if (pSlicedBitmap)
+        if (pD2DBitmap)
         {
             Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(GetWorldPos());
 
@@ -258,10 +293,11 @@ void CTile::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
             );
 
             _pRenderTarget->DrawBitmap(
-                pSlicedBitmap,
+                pD2DBitmap,
                 destRect,
                 1.0f,
-                D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR
+                D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR,
+                srcRect
             );
         }
     }
@@ -287,6 +323,12 @@ void CTile::Save(FILE* _pFile)
 
 		fprintf(_pFile, "[Texture_Path]\n");
 		strName = string(m_pTileTex->GetRelativePath().begin(), m_pTileTex->GetRelativePath().end());
+
+		// BMP에서 PNG로 마이그레이션: 저장 시 확장자를 PNG로 강제 변환
+		if (strName.find(".bmp") != string::npos) {
+			strName = strName.substr(0, strName.find(".bmp")) + ".png";
+		}
+
 		fprintf(_pFile, strName.c_str());
 		fprintf(_pFile, "\n");
 	}
@@ -306,6 +348,12 @@ void CTile::Save(FILE* _pFile)
 
 		fprintf(_pFile, "[Texture_Path]\n");
 		strName = string(m_pTileTex2->GetRelativePath().begin(), m_pTileTex2->GetRelativePath().end());
+
+		// BMP에서 PNG로 마이그레이션: 저장 시 확장자를 PNG로 강제 변환
+		if (strName.find(".bmp") != string::npos) {
+			strName = strName.substr(0, strName.find(".bmp")) + ".png";
+		}
+
 		fprintf(_pFile, strName.c_str());
 		fprintf(_pFile, "\n");
 	}
@@ -368,7 +416,22 @@ void CTile::Load(FILE* _pFile)
 		str = szBuff;
 		wstring strTexPath = wstring(str.begin(), str.end());
 
+		// BMP에서 PNG로 마이그레이션: 확장자 자동 변경
+		if (strTexPath.find(L".bmp") != wstring::npos) {
+			strTexPath = strTexPath.substr(0, strTexPath.find(L".bmp")) + L".png";
+		}
+
+		// 디버깅: 로딩하려는 텍스처 경로 출력
+		string debugPath = string(strTexPath.begin(), strTexPath.end());
+		OutputDebugStringA(("CTile::Load - Loading texture (converted): " + debugPath + "\n").c_str());
+
 		m_pTileTex = CResMgr::GetInst()->LoadTexture(strTexKey, strTexPath);
+
+		// 디버깅: 텍스처 로딩 결과 확인
+		if (m_pTileTex)
+			OutputDebugStringA("CTile::Load - Texture loaded successfully\n");
+		else
+			OutputDebugStringA("CTile::Load - Texture loading FAILED\n");
 	}
 	else
 	{
@@ -390,6 +453,11 @@ void CTile::Load(FILE* _pFile)
 
 		str = szBuff;
 		wstring strTexPath = wstring(str.begin(), str.end());
+
+		// BMP에서 PNG로 마이그레이션: 확장자 자동 변경
+		if (strTexPath.find(L".bmp") != wstring::npos) {
+			strTexPath = strTexPath.substr(0, strTexPath.find(L".bmp")) + L".png";
+		}
 
 		m_pTileTex2 = CResMgr::GetInst()->LoadTexture(strTexKey, strTexPath);
 	}

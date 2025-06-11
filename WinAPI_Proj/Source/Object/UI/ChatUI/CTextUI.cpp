@@ -299,9 +299,6 @@ void CTextUI::RenderD2D(ID2D1RenderTarget* _pRenderTarget)
         
         // [DEBUG] 자동 크기 계산 로그
         char autoSizeMsg[256];
-        sprintf_s(autoSizeMsg, "[CTextUI FIX] Auto-sized: Lines=%d, MaxWidth=%.1f, NewScale=(%.1f,%.1f)\n",
-                  static_cast<int>(lineCount), maxLineWidth, vScale.x, vScale.y);
-        OutputDebugStringA(autoSizeMsg);
     }
 
     // DirectWrite 텍스트 렌더링 영역 설정

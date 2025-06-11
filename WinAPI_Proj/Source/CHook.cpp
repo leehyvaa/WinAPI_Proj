@@ -508,78 +508,19 @@ void CHook::CacheChainD2DBitmap(ID2D1RenderTarget* _pRenderTarget)
 {
     if (!pChainTex || !_pRenderTarget)
         return;
-    
+
     // 기존 비트맵 해제
     ReleaseChainD2DBitmap();
-    
-    // static WIC 팩토리 생성 (CAnimation 패턴과 동일)
-    static IWICImagingFactory* s_pWICFactory = nullptr;
-    if (!s_pWICFactory)
+
+    // PNG 파일의 경우 Direct2D 비트맵을 직접 사용 (알파 채널 지원)
+    ID2D1Bitmap* pSourceD2DBitmap = pChainTex->GetD2DBitmap();
+    if (pSourceD2DBitmap)
     {
-        HRESULT hr = CoCreateInstance(
-            CLSID_WICImagingFactory, nullptr, CLSCTX_INPROC_SERVER,
-            IID_IWICImagingFactory, (LPVOID*)&s_pWICFactory
-        );
-        if (FAILED(hr))
-            return;
+        // 원본 Direct2D 비트맵을 직접 참조 (참조 카운트 증가)
+        m_pChainD2DBitmap = pSourceD2DBitmap;
+        m_pChainD2DBitmap->AddRef();
+        m_bChainD2DCached = true;
     }
-    IWICImagingFactory* pWICFactory = s_pWICFactory;
-    
-    // GDI+ 비트맵으로 텍스처 로드
-    HBITMAP hSourceBitmap = pChainTex->GetHBITMAP();
-    if (!hSourceBitmap)
-        return;
-    
-    using namespace Gdiplus;
-    Bitmap sourceGdiplusBitmap(hSourceBitmap, nullptr);
-    
-    int srcWidth = sourceGdiplusBitmap.GetWidth();
-    int srcHeight = sourceGdiplusBitmap.GetHeight();
-    
-    // 32비트 ARGB GDI+ 비트맵 생성 (투명 처리용)
-    Bitmap* frameArgbBitmap = new Bitmap(srcWidth, srcHeight, PixelFormat32bppARGB);
-    Graphics frameGraphics(frameArgbBitmap);
-    
-    // 픽셀 깨짐 방지
-    frameGraphics.SetInterpolationMode(InterpolationModeNearestNeighbor);
-    frameGraphics.SetPixelOffsetMode(PixelOffsetModeHalf);
-    
-    // 투명색 지정 (마젠타)
-    ImageAttributes imgAttr;
-    imgAttr.SetColorKey(Color(255, 0, 255), Color(255, 0, 255), ColorAdjustTypeBitmap);
-    
-    // 투명색 적용 후 그리기
-    frameGraphics.DrawImage(
-        &sourceGdiplusBitmap,
-        Rect(0, 0, srcWidth, srcHeight),
-        0, 0, srcWidth, srcHeight,
-        UnitPixel,
-        &imgAttr
-    );
-    
-    IWICBitmap* pWICBitmap = nullptr;
-    
-    // 투명 처리된 비트맵에서 HBITMAP 추출
-    HBITMAP hArgbBitmap = NULL;
-    if (frameArgbBitmap->GetHBITMAP(Color(0, 0, 0, 0), &hArgbBitmap) == Ok)
-    {
-        // HBITMAP -> WIC 비트맵 변환
-        HRESULT hr = pWICFactory->CreateBitmapFromHBITMAP(hArgbBitmap, nullptr, WICBitmapUsePremultipliedAlpha, &pWICBitmap);
-        if (SUCCEEDED(hr))
-        {
-            // WIC 비트맵 -> D2D 비트맵 변환
-            hr = _pRenderTarget->CreateBitmapFromWicBitmap(pWICBitmap, nullptr, &m_pChainD2DBitmap);
-            if (SUCCEEDED(hr))
-            {
-                m_bChainD2DCached = true;
-            }
-        }
-        DeleteObject(hArgbBitmap);
-    }
-    
-    if (pWICBitmap) 
-        pWICBitmap->Release();
-    delete frameArgbBitmap;
 }
 
 void CHook::ReleaseChainD2DBitmap()

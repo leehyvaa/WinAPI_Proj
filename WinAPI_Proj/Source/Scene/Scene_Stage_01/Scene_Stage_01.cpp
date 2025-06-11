@@ -152,7 +152,7 @@ void Scene_Stage_01::Enter()
 	//AddObject((GameObject*)pGround2, GROUP_TYPE::GROUND);
 
 	// 타일 로딩
-	LoadTile(L"Tile\\NewTest6");
+	LoadTile(L"Tile\\NewTest7");
     // 불러온 타일 정보를 바탕으로 땅 생성
     CreateGround();
 

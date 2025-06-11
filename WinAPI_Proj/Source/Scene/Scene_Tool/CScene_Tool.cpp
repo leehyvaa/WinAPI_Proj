@@ -730,7 +730,12 @@ void CScene_Tool::LoadTileTexUI()
 			if ((data.dwFileAttributes & FILE_ATTRIBUTE_ARCHIVE) &&  //파일이라면
 				!(data.dwFileAttributes & FILE_ATTRIBUTE_SYSTEM)) //시스템파일은 제외
 			{
-				m_vecTile_list.push_back(std::string(data.cFileName));
+				// PNG 파일만 필터링 (BMP에서 PNG로 마이그레이션)
+				std::string fileName = std::string(data.cFileName);
+				if (fileName.find(".png") != std::string::npos || fileName.find(".PNG") != std::string::npos)
+				{
+					m_vecTile_list.push_back(fileName);
+				}
 			}
 		}
 		FindClose(hFind); //핸들 닫아주기 
