@@ -6,24 +6,16 @@
 // Direct2D 헤더
 #include <d2d1.h>
 #include <wincodec.h>
-#include <gdiplus.h>
-
-using namespace Gdiplus;
 
 // PNG 파일 지원으로 마이그레이션 완료
 // - 알파 채널을 지원하는 PNG 파일 사용
 // - 마젠타 색상 투명 처리 로직 제거 (PNG 알파 채널 사용)
 // - Direct2D 기반 텍스처 로딩 및 캐싱
 
-#pragma comment(lib, "d2d1.lib")
-#pragma comment(lib, "windowscodecs.lib")
-#pragma comment(lib, "Gdiplus.lib")
+
 
 CTexture::CTexture()
-    : m_hBit(0)
-    , m_dc(0)
-    , m_bitInfo{}
-    , m_pBitmap(nullptr)
+    : m_pBitmap(nullptr)
     , m_iWidth(0)
     , m_iHeight(0)
 {
@@ -258,21 +250,9 @@ void CTexture::Release()
     // Direct2D 리소스 해제
     ReleaseResources();
     
-    // 기존 GDI 리소스 해제
-    if (m_dc)
-    {
-        DeleteDC(m_dc);
-        m_dc = nullptr;
-    }
-    if (m_hBit)
-    {
-        DeleteObject(m_hBit);
-        m_hBit = nullptr;
-    }
-    
+
     // 크기 정보 초기화
     m_iWidth = 0;
     m_iHeight = 0;
-    m_bitInfo = {};
 }
 

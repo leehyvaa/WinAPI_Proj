@@ -3,7 +3,6 @@
 #include <vector> // 동적 배열 추가
 #include <dwrite.h>
 
-// DirectWrite 전방 선언
 struct IDWriteTextFormat;
 struct ID2D1SolidColorBrush;
 
@@ -19,7 +18,7 @@ public:
 
 private:
     int m_iFontSize;
-    std::vector<std::wstring> m_vecLines; // 라인별 텍스트 저장
+    vector<wstring> m_vecLines; // 라인별 텍스트 저장
     TEXT_ALIGN    m_Align;     // 정렬 방식
     int           m_iLineSpace; // 라인 간격 (픽셀)
     HFONT         m_hFont;

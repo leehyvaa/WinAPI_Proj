@@ -288,8 +288,7 @@ void GameObject::Component_Render(ID2D1RenderTarget* _pRenderTarget)
 {
 	if (!_pRenderTarget)
 		return;
-
-	// Direct2D 렌더링으로 통합
+    
 	// 애니메이터 렌더링
 	if (m_pAnimator)
 		m_pAnimator->Render(_pRenderTarget);

@@ -225,9 +225,9 @@ void SPlayer::Enter_State(PLAYER_STATE _eState)
 	case PLAYER_STATE::JUMP:
 	    GetRigidBody()->SetMaxSpeed(Vec2(780.f, 1000.f));
 	    if (m_bOnGround)
-	        GetRigidBody()->AddForce(Vec2(0.f, -10000.f));
+	        GetRigidBody()->AddForce(Vec2(0.f, -15000.f));
         else
-            GetRigidBody()->AddForce(Vec2(0.f, -5000.f));
+            GetRigidBody()->AddForce(Vec2(0.f, -7500.f));
 		SetWorldPos(Vec2(GetWorldPos().x, GetWorldPos().y - 20.f));
 		GetGravity()->SetApplyGravity(true);
 		SetOnGround(false);
@@ -488,7 +488,7 @@ void SPlayer::Update_Animation()
 
 void SPlayer::Update_Gravity()
 {
-	GetRigidBody()->AddForce(Vec2(0.f, 500.f));
+	GetRigidBody()->AddForce(Vec2(0.f, 700.f));
 }
 
 void SPlayer::OnCollisionEnter(CCollider *_pOther)
@@ -568,7 +568,7 @@ void SPlayer::WallKickJump()
         else
         {
             m_bIsFacingRight = false;
-            GetRigidBody()->AddForce(Vec2(-4000.f, -9500.f));
+            GetRigidBody()->AddForce(Vec2(-6000.f, -13000.f));
             //GetRigidBody()->SetVelocity(Vec2(-400.f, -950.f));
         }
 	}
@@ -581,7 +581,7 @@ void SPlayer::WallKickJump()
 	    else
 	    {
 	        m_bIsFacingRight = true;
-	        GetRigidBody()->AddForce(Vec2(4000.f, -9500.f));
+	        GetRigidBody()->AddForce(Vec2(6000.f, -13000.f));
 	        //GetRigidBody()->SetVelocity(Vec2(400.f, -950.f));
 	    }
 	}

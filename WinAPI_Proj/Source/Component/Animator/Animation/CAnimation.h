@@ -5,11 +5,6 @@
 #pragma comment(lib, "d2d1.lib")
 #pragma comment(lib, "windowscodecs.lib")
 
-namespace Gdiplus
-{
-    class Bitmap;
-}
-
 class CAnimator;
 class CTexture;
 

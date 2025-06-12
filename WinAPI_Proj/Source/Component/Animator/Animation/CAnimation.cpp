@@ -8,9 +8,7 @@
 #include "CPathMgr.h"
 #include "CResMgr.h"
 #include "CCore.h"
-#include <gdiplus.h>
-using namespace Gdiplus;
-#pragma comment (lib,"Gdiplus.lib")
+
 
 CAnimation::CAnimation()
 	:m_pAnimator(nullptr)

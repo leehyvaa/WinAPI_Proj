@@ -11,11 +11,8 @@
 #include "CTimeMgr.h"
 #include <d2d1.h>
 #include <wincodec.h>
-#include <gdiplus.h>
-using namespace Gdiplus;
-#pragma comment(lib, "d2d1.lib")
-#pragma comment(lib, "windowscodecs.lib")
-#pragma comment(lib, "Gdiplus.lib")
+
+
 
 CTile::CTile()
 	:m_pTileTex(nullptr)

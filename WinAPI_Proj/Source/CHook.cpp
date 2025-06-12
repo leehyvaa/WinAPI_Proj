@@ -12,11 +12,8 @@
 #include "CKeyMgr.h"
 #include "CObjectPool.h"
 #include "PlayerArm.h"
-#include <gdiplus.h>
 
 #include "CTexture.h"
-using namespace Gdiplus;
-#pragma comment (lib,"Gdiplus.lib")
 
 CHook::CHook()
 	:m_fSpeed(2000)

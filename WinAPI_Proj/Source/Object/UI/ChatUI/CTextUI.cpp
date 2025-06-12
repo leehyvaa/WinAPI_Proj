@@ -20,7 +20,6 @@ CTextUI::CTextUI()
 
 CTextUI::~CTextUI()
 {
-    // GDI 리소스 해제
     if (m_hFont)
         DeleteObject(m_hFont);
         

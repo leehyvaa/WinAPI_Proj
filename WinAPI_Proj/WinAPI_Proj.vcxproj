@@ -199,7 +199,6 @@
     <ClInclude Include="Source\Module\AI\State\CState.h" />
     <ClInclude Include="Source\Module\AI\State\Idle\CIdleState.h" />
     <ClInclude Include="Source\Module\AI\State\Trace\CTraceState.h" />
-    <ClInclude Include="Source\Module\SelectGDI.h" />
     <ClInclude Include="Source\Object\CMonster.h" />
     <ClInclude Include="Source\Object\GameObject.h" />
     <ClInclude Include="Source\Object\Ground\CGround.h" />

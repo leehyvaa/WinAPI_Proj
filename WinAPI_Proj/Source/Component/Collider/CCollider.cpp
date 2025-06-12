@@ -89,7 +89,6 @@ void CCollider::FinalUpdate()
 	assert(0 <= m_iCol);
 }
 
-// GDI Render 함수 완전 제거 - Direct2D로 완전 전환됨
 
 void CCollider::Render(ID2D1RenderTarget* _pRenderTarget)
 {

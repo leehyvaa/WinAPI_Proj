@@ -12,35 +12,25 @@ class CTexture :
     public CRes
 {
 private:
-    // 기존 GDI 멤버 (하위 호환성 - 필요시에만 사용)
-    HDC m_dc;
-    HBITMAP m_hBit;
-    BITMAP m_bitInfo;
-
     // Direct2D 멤버 (PNG 파일의 알파 채널 지원)
     ID2D1Bitmap* m_pBitmap;
     UINT m_iWidth;
     UINT m_iHeight;
 
     // 분할된 비트맵 캐시 (Direct2D 기반)
-    std::unordered_map<std::wstring, ID2D1Bitmap*> m_mapSlicedBitmaps;
+    unordered_map<wstring, ID2D1Bitmap*> m_mapSlicedBitmaps;
 
 public:
     void Load(const wstring& _strFilePath);
     void Create(UINT _iWidth, UINT _iHeight);
-
-    // 기존 GDI 인터페이스 (호환성)
-    HBITMAP GetHBITMAP() { return m_hBit; }
-    BITMAP GetBitMapInfo() {return m_bitInfo;}
-    HDC GetDC() { return m_dc; }
+    
 
     // Direct2D 인터페이스
     ID2D1Bitmap* GetBitmap() { return m_pBitmap; }
     UINT Width() { return m_iWidth; }
     UINT Height() { return m_iHeight; }
 
-    // 텍스처 유효성 검사 (GDI 또는 D2D 중 하나라도 유효하면 OK)
-    bool IsValid() const { return (m_pBitmap != nullptr && m_iWidth > 0 && m_iHeight > 0) || (m_hBit != nullptr); }
+    bool IsValid() const { return (m_pBitmap != nullptr && m_iWidth > 0 && m_iHeight > 0); }
 
     // 분할된 비트맵 검색/캐싱 함수
     ID2D1Bitmap* GetSlicedBitmap(const std::wstring& _strKey, const D2D1_RECT_F& _srcRect, const D2D1_SIZE_F& _dstSize);
