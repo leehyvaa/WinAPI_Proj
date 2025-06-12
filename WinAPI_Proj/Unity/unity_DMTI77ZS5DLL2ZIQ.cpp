@@ -1,7 +1,4 @@
 
-#include "C:\WinAPIProject\WinAPI_Proj\Source\CHook.cpp"
-
-
 #include "C:\WinAPIProject\WinAPI_Proj\Source\Component\Animator\Animation\CAnimation.cpp"
 
 
@@ -18,6 +15,9 @@
 
 
 #include "C:\WinAPIProject\WinAPI_Proj\Source\Core\CCore.cpp"
+
+
+#include "C:\WinAPIProject\WinAPI_Proj\Source\Manager\BrushMgr\CBrushManager.cpp"
 
 
 #include "C:\WinAPIProject\WinAPI_Proj\Source\Header\func.cpp"

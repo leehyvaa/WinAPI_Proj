@@ -4,6 +4,9 @@
 #pragma comment(lib, "d2d1.lib")
 #pragma comment(lib, "dwrite.lib")
 
+// CBrushManager 관련 헤더 포함
+#include "../Manager/BrushMgr/CBrushManager.h"
+
 class CTexture;
 
 // 객체를 데이터영역에 넣어두는 방식
@@ -17,10 +20,8 @@ private:
     
 	ID2D1Factory*				m_pFactory;
 	ID2D1HwndRenderTarget*		m_pRenderTarget;
-	ID2D1SolidColorBrush*		m_pBlackBrush;
-	ID2D1SolidColorBrush*		m_pRedBrush;
-	ID2D1SolidColorBrush*		m_pGreenBrush;
-	ID2D1SolidColorBrush*		m_pBlueBrush;
+	
+	// 기존 개별 브러시 멤버는 CBrushManager로 완전 이전됨
     
 	IDWriteFactory*				m_pDWriteFactory;
 
@@ -40,10 +41,23 @@ public:
 
 	HWND GetMainHwnd() { return m_hWnd; }
 	POINT GetResolution() { return m_ptResolution; }
-    
+	   
 	ID2D1RenderTarget* GetRenderTarget() { return m_pRenderTarget; }
 	ID2D1Factory* GetFactory() { return m_pFactory; }
 	IDWriteFactory* GetDWriteFactory() { return m_pDWriteFactory; }
+	
+	// 브러시 접근 인터페이스 (기존 호환성 유지)
+	ID2D1SolidColorBrush* GetBlackBrush() { return CBrushManager::GetInst()->GetBlackBrush(); }
+	ID2D1SolidColorBrush* GetRedBrush() { return CBrushManager::GetInst()->GetRedBrush(); }
+	ID2D1SolidColorBrush* GetGreenBrush() { return CBrushManager::GetInst()->GetGreenBrush(); }
+	ID2D1SolidColorBrush* GetBlueBrush() { return CBrushManager::GetInst()->GetBlueBrush(); }
+	
+	// 새로운 브러시 접근 인터페이스
+	ID2D1SolidColorBrush* GetBrush(BrushType type) { return CBrushManager::GetInst()->GetBrush(type); }
+	ID2D1SolidColorBrush* GetCustomBrush(float r, float g, float b, float a = 1.0f)
+	{
+		return CBrushManager::GetInst()->GetCustomBrush(r, g, b, a);
+	}
 
 private:
 

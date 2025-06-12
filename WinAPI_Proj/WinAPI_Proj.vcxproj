@@ -135,7 +135,7 @@
       <MinFilesInUnityFile>8</MinFilesInUnityFile>
       <UnityFilesDirectory>$(ProjectDir)\Unity\</UnityFilesDirectory>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(ProjectDir)Source\Object\UI\ChatUI;$(ProjectDir);$(ProjectDir)Source;$(ProjectDir)Source\Component;$(ProjectDir)Source\Core;$(ProjectDir)Source\Header;$(ProjectDir)Source\Manager;$(ProjectDir)Source\Module;$(ProjectDir)Source\Object;$(ProjectDir)Source\Prefab;$(ProjectDir)Source\Resource;$(ProjectDir)Source\Scene;$(ProjectDir)Source\Tool;$(ProjectDir)Source\Component\Animator;$(ProjectDir)Source\Component\Collider;$(ProjectDir)Source\Component\Gravity;$(ProjectDir)Source\Component\RigidBody;$(ProjectDir)Source\Component\Animator\Animation;$(ProjectDir)Source\Manager\Camera;$(ProjectDir)Source\Manager\CollisionMgr;$(ProjectDir)Source\Manager\CSoundMgr;$(ProjectDir)Source\Manager\EventMgr;$(ProjectDir)Source\Manager\KeyMgr;$(ProjectDir)Source\Manager\PathMgr;$(ProjectDir)Source\Manager\ResMgr;$(ProjectDir)Source\Manager\SceneMgr;$(ProjectDir)Source\Manager\TimeMgr;$(ProjectDir)Source\Manager\UIMgr;$(ProjectDir)Source\Module\AI;$(ProjectDir)Source\Module\AI\State;$(ProjectDir)Source\Module\AI\State\Idle;$(ProjectDir)Source\Module\AI\State\Trace;$(ProjectDir)Source\Object\Ground;$(ProjectDir)Source\Object\Tile;$(ProjectDir)Source\Object\UI;$(ProjectDir)Source\Object\UI\BtnUI;$(ProjectDir)Source\Object\UI\PanelUI;$(ProjectDir)Source\Resource\Sound;$(ProjectDir)Source\Resource\Texture;$(ProjectDir)Source\Scene\Scene_Stage_01;$(ProjectDir)Source\Scene\Scene_Title;$(ProjectDir)Source\Scene\Scene_Tool</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Source\Object\UI\ChatUI;$(ProjectDir);$(ProjectDir)Source;$(ProjectDir)Source\Component;$(ProjectDir)Source\Core;$(ProjectDir)Source\Header;$(ProjectDir)Source\Manager;$(ProjectDir)Source\Module;$(ProjectDir)Source\Object;$(ProjectDir)Source\Prefab;$(ProjectDir)Source\Resource;$(ProjectDir)Source\Scene;$(ProjectDir)Source\Tool;$(ProjectDir)Source\Component\Animator;$(ProjectDir)Source\Component\Collider;$(ProjectDir)Source\Component\Gravity;$(ProjectDir)Source\Component\RigidBody;$(ProjectDir)Source\Component\Animator\Animation;$(ProjectDir)Source\Manager\BrushMgr;$(ProjectDir)Source\Manager\Camera;$(ProjectDir)Source\Manager\CollisionMgr;$(ProjectDir)Source\Manager\CSoundMgr;$(ProjectDir)Source\Manager\EventMgr;$(ProjectDir)Source\Manager\KeyMgr;$(ProjectDir)Source\Manager\PathMgr;$(ProjectDir)Source\Manager\ResMgr;$(ProjectDir)Source\Manager\SceneMgr;$(ProjectDir)Source\Manager\TimeMgr;$(ProjectDir)Source\Manager\UIMgr;$(ProjectDir)Source\Module\AI;$(ProjectDir)Source\Module\AI\State;$(ProjectDir)Source\Module\AI\State\Idle;$(ProjectDir)Source\Module\AI\State\Trace;$(ProjectDir)Source\Object\Ground;$(ProjectDir)Source\Object\Tile;$(ProjectDir)Source\Object\UI;$(ProjectDir)Source\Object\UI\BtnUI;$(ProjectDir)Source\Object\UI\PanelUI;$(ProjectDir)Source\Resource\Sound;$(ProjectDir)Source\Resource\Texture;$(ProjectDir)Source\Scene\Scene_Stage_01;$(ProjectDir)Source\Scene\Scene_Title;$(ProjectDir)Source\Scene\Scene_Tool</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -179,6 +179,7 @@
     <ClInclude Include="Source\Component\Gravity\CGravity.h" />
     <ClInclude Include="Source\Component\RigidBody\CRigidBody.h" />
     <ClInclude Include="Source\Core\CCore.h" />
+    <ClInclude Include="Source\Manager\BrushMgr\CBrushManager.h" />
     <ClInclude Include="Source\framework.h" />
     <ClInclude Include="Source\Header\define.h" />
     <ClInclude Include="Source\Header\func.h" />
@@ -330,6 +331,7 @@
     <ClCompile Include="Source\Component\Gravity\CGravity.cpp" />
     <ClCompile Include="Source\Component\RigidBody\CRigidBody.cpp" />
     <ClCompile Include="Source\Core\CCore.cpp" />
+    <ClCompile Include="Source\Manager\BrushMgr\CBrushManager.cpp" />
     <ClCompile Include="Source\Header\func.cpp" />
     <ClCompile Include="Source\Manager\Camera\CCamera.cpp" />
     <ClCompile Include="Source\Manager\CollisionMgr\CCollisionMgr.cpp" />

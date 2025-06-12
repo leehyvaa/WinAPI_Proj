@@ -8,23 +8,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e174ba9b-dad2-4293-bc5f-8669e5f5e6a8" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.WinAPI_Proj/.idea/AugmentWebviewStateStore.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.WinAPI_Proj/.idea/AugmentWebviewStateStore.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.WinAPI_Proj/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.WinAPI_Proj/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Output/bin_debug/WinAPI_Proj.exe" beforeDir="false" afterPath="$PROJECT_DIR$/Output/bin_debug/WinAPI_Proj.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/CHook.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/CHook.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Component/Animator/Animation/CAnimation.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Component/Animator/Animation/CAnimation.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Component/Animator/Animation/CAnimation.h" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Component/Animator/Animation/CAnimation.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Component/Collider/CCollider.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Component/Collider/CCollider.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/GameObject.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/GameObject.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/Tile/CTile.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/Tile/CTile.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/UI/CUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/UI/CUI.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/UI/ChatUI/CTextUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/UI/ChatUI/CTextUI.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/UI/ChatUI/CTextUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/UI/ChatUI/CTextUI.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Resource/Texture/CTexture.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Resource/Texture/CTexture.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Resource/Texture/CTexture.h" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Resource/Texture/CTexture.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/SPlayer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/SPlayer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Core/CCore.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Core/CCore.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Core/CCore.h" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Core/CCore.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Unity/unity_Q4DK7VQBZ16RPRYR.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Unity/unity_YRE318AY7XYHEQJW.cpp" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/WinAPI_Proj/WinAPI_Proj.vcxproj" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/WinAPI_Proj.vcxproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/자료/2D 일정.txt" beforeDir="false" afterPath="$PROJECT_DIR$/자료/2D 일정.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,7 +28,25 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="cidr-memory-view://6" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="cidr-memory-view://25" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../Program Files (x86)/Windows Kits/10/Include/10.0.22621.0/shared/windef.h" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../Program Files (x86)/Windows Kits/10/Include/10.0.22621.0/ucrt/stdio.h" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../Program Files (x86)/Windows Kits/10/Include/10.0.22621.0/um/WinUser.h" root0="SKIP_HIGHLIGHTING" />
@@ -218,7 +226,7 @@
       <workItem from="1749548820103" duration="2425000" />
       <workItem from="1749598163463" duration="13614000" />
       <workItem from="1749617460296" duration="4566000" />
-      <workItem from="1749686241999" duration="8757000" />
+      <workItem from="1749686241999" duration="13205000" />
     </task>
     <servers />
   </component>

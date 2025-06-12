@@ -26,10 +26,6 @@ CCore::CCore()
 	, m_ptResolution{}
 	, m_pFactory(nullptr)
 	, m_pRenderTarget(nullptr)
-	, m_pBlackBrush(nullptr)
-	, m_pRedBrush(nullptr)
-	, m_pGreenBrush(nullptr)
-	, m_pBlueBrush(nullptr)
 	, m_pDWriteFactory(nullptr)
 {
 }
@@ -136,6 +132,8 @@ void CCore::Progress()
         if (FAILED(hr) && hr == D2DERR_RECREATE_TARGET)
         {
             CTimeMgr::StartTimer(L"Core_D2D_Recreate");
+            // 디바이스 손실 처리
+            CBrushManager::GetInst()->OnDeviceLost();
             ReleaseResources();
             CreateResources();
             CTimeMgr::EndTimer(L"Core_D2D_Recreate");
@@ -187,22 +185,18 @@ void CCore::CreateResources()
         return;
     }
     
+    // CBrushManager 초기화
     if (m_pRenderTarget)
     {
-        m_pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Black), &m_pBlackBrush);
-        m_pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Red), &m_pRedBrush);
-        m_pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Green), &m_pGreenBrush);
-        m_pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Blue), &m_pBlueBrush);
+        CBrushManager::GetInst()->Initialize(m_pRenderTarget);
     }
 }
 
 
 void CCore::ReleaseResources()
 {
-    if (m_pBlackBrush) { m_pBlackBrush->Release(); m_pBlackBrush = nullptr; }
-    if (m_pRedBrush)   { m_pRedBrush->Release();   m_pRedBrush = nullptr; }
-    if (m_pGreenBrush) { m_pGreenBrush->Release(); m_pGreenBrush = nullptr; }
-    if (m_pBlueBrush)  { m_pBlueBrush->Release();  m_pBlueBrush = nullptr; }
+    // CBrushManager 해제
+    CBrushManager::GetInst()->Release();
 
     // 렌더 타겟 해제
     if (m_pRenderTarget) { m_pRenderTarget->Release(); m_pRenderTarget = nullptr; }
