@@ -20,8 +20,36 @@
 #include "AI.h"
 
 SPlayer::SPlayer()
-	: m_fSpeed(1000), m_eCurState(PLAYER_STATE::IDLE), m_ePrevState(PLAYER_STATE::RUN), m_bOnGround(false), m_pPlayerArm(nullptr), m_pPlayerHook(nullptr), m_bClimbing(false), m_pRayHitCollider(nullptr), m_vRayHitPos(Vec2(0.f, 0.f)), m_fWireRange(-1.f), m_fWireMaxRange(700.f), m_fMoveEnergy(0.f), m_fPosEnergy(0.f), m_bCanBooster(false), m_eClimbState(PLAYER_CLIMB_STATE::NONE), m_pSubduedMonster(nullptr), m_bIsSubduing(false), m_fSubdueRange(700.f), m_bIsMovingToTarget(false), m_vMoveStartPos(Vec2(0.f, 0.f)), m_vMoveTargetPos(Vec2(0.f, 0.f)), m_fMoveProgress(0.f), m_fMoveSpeed(2000.f),m_bIsExecuteDashing(false)
+	: m_fSpeed(1000)
+    , m_eCurState(PLAYER_STATE::IDLE)
+    , m_ePrevState(PLAYER_STATE::RUN)
+    , m_bOnGround(false)
+    , m_pPlayerArm(nullptr)
+    , m_pPlayerHook(nullptr)
+    , m_bClimbing(false)
+    , m_pRayHitCollider(nullptr)
+    , m_vRayHitPos(Vec2(0.f, 0.f))
+    , m_fWireRange(-1.f)
+    , m_fWireMaxRange(700.f)
+    , m_fMoveEnergy(0.f)
+    , m_fPosEnergy(0.f)
+    , m_bCanBooster(false)
+    , m_eClimbState(PLAYER_CLIMB_STATE::NONE)
+    , m_pSubduedMonster(nullptr)
+    , m_bIsSubduing(false)
+    , m_fSubdueRange(700.f)
+    , m_bIsMovingToTarget(false)
+    , m_vMoveStartPos(Vec2(0.f, 0.f))
+    , m_vMoveTargetPos(Vec2(0.f, 0.f))
+    , m_fMoveProgress(0.f)
+    , m_fMoveSpeed(2000.f)
+    , m_bIsExecuteDashing(false)
+    , m_iHP(0)
+    , m_iMaxHP(900)
+    , m_fInvincibleTime(0.f)
 {
+    m_iHP = m_iMaxHP;
+    
 	// m_pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\sigong.png");
 	SetGroup(GROUP_TYPE::PLAYER);
 
@@ -41,6 +69,8 @@ SPlayer::SPlayer()
 	// GetAnimator()->LoadAnimation(L"animation\\player_right_idle.anim");
 
 	// RIGHT 애니메이션 생성
+    GetAnimator()->CreateAnimation(L"SNB_RIGHT_DAMAGED", pTexRight,
+                                   Vec2(0.f, 0.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.07f, 5, 3.f, Vec2(0.f, -57.f));
 	GetAnimator()->CreateAnimation(L"SNB_RIGHT_IDLE", pTexRight,
 								   Vec2(0.f, 900.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 8, 3.f, Vec2(0.f, -57.f));
 	GetAnimator()->CreateAnimation(L"SNB_RIGHT_RUN", pTexRight,
@@ -66,6 +96,7 @@ SPlayer::SPlayer()
 
 
 	// RIGHT 애니메이션 저장
+	GetAnimator()->FindAnimation(L"SNB_RIGHT_DAMAGED")->Save(L"animation\\player_right_damaged.anim");
 	GetAnimator()->FindAnimation(L"SNB_RIGHT_IDLE")->Save(L"animation\\player_right_idle.anim");
 	GetAnimator()->FindAnimation(L"SNB_RIGHT_RUN")->Save(L"animation\\player_right_run.anim");
 	GetAnimator()->FindAnimation(L"SNB_RIGHT_JUMP")->Save(L"animation\\player_right_jump.anim");
@@ -121,6 +152,7 @@ SPlayer::~SPlayer()
 {
 }
 
+
 void SPlayer::Reset()
 {
     GameObject::Reset();
@@ -156,6 +188,7 @@ void SPlayer::Reset()
     
 
 }
+
 
 void SPlayer::Update()
 {
@@ -209,6 +242,8 @@ void SPlayer::Render(ID2D1RenderTarget* _pRenderTarget)
 
 
 
+
+
 void SPlayer::Enter_State(PLAYER_STATE _eState)
 {
 	switch (_eState)
@@ -252,6 +287,16 @@ void SPlayer::Enter_State(PLAYER_STATE _eState)
 	    GetRigidBody()->SetMaxSpeed(Vec2(1000.f, 1000.f));
 		break;
 	case PLAYER_STATE::DAMAGED:
+	    {
+		    GetGravity()->SetApplyGravity(false);
+	        GetRigidBody()->SetVelocity(Vec2(0.f, 0.f));
+	        // 공격받은 반대 방향으로 튕겨나가는 효과
+	        float knockbackPower = 60000.f;
+	        if (m_bIsFacingRight)
+	            GetRigidBody()->AddForce(Vec2(-knockbackPower/2, -knockbackPower));
+	        else
+	            GetRigidBody()->AddForce(Vec2(knockbackPower/2, -knockbackPower));
+	    }
 		break;
 	case PLAYER_STATE::DEAD:
 		break;
@@ -260,32 +305,80 @@ void SPlayer::Enter_State(PLAYER_STATE _eState)
 	}
 }
 
+
+void SPlayer::ChangeState(PLAYER_STATE _eNextState)
+{
+    if (m_eCurState == _eNextState) return;
+
+    Exit_State(m_eCurState);
+    Enter_State(_eNextState);
+    m_ePrevState = m_eCurState;
+    m_eCurState = _eNextState;
+}
+
+
 void SPlayer::Update_State()
 {
-	PLAYER_STATE eNextState = m_eCurState;
+    if (m_fInvincibleTime > 0.f)
+        m_fInvincibleTime -= fDT; // 매 프레임마다 남은 시간 감소
 
+    // 와이어 발사 또는 제압 시작
+    if (KEY_TAP(KEY::LBUTTON))
+    {
+        if (m_pRayHitCollider != nullptr && m_pRayHitCollider->GetObj()->GetGroup() == GROUP_TYPE::MONSTER)
+        {
+            CMonster* pMonster = static_cast<CMonster*>(m_pRayHitCollider->GetObj());
+            float distance = (m_vRayHitPos - GetWorldPos()).Length();
+            
+            if (distance <= m_fSubdueRange)
+            {
+                StartSubdue(pMonster);
+                ChangeState(PLAYER_STATE::EXECUTE);
+                return; // 상태 변경 후 즉시 종료
+            }
+        }
+        // 몬스터가 아니거나, 멀리 있거나, 아무것도 감지되지 않으면 일반 와이어 발사
+        CreateHook();
+        ChangeState(PLAYER_STATE::SHOT);
+        return; // 상태 변경 후 즉시 종료
+    }
+
+    // 와이어 해제 또는 몬스터 처형 (LBUTTON AWAY)
+    if (KEY_AWAY(KEY::LBUTTON))
+    {
+        if (m_bIsSubduing && m_pSubduedMonster)
+        {
+            EndSubdue();
+            GetAnimator()->Play(L"SNB_RIGHT_EXC_DASH", false);
+            m_bIsExecuteDashing = true;
+            // EXECUTE 상태는 이미 유지되고 있으므로 ChangeState 불필요
+        }
+        else if (m_pPlayerHook != nullptr && m_pPlayerHook->GetHookState() == HOOK_STATE::GRAB)
+        {
+            m_pPlayerHook->SetHookState(HOOK_STATE::RETURN_WITH);
+            // SWING 상태에서 FALL로 전환되는 로직은 SWING 상태 내부에서 처리
+        }
+    }
+
+
+
+    
 	switch (m_eCurState)
 	{
 	case PLAYER_STATE::IDLE:
 		HorizontalMove();
-		if (KEY_TAP(KEY::SPACE) && m_bOnGround)
-			eNextState = PLAYER_STATE::JUMP;
-		else if (KEY_HOLD(KEY::A) || KEY_HOLD(KEY::D))
-			eNextState = PLAYER_STATE::RUN;
-	    if (!m_bOnGround && GetRigidBody()->GetVelocity().y > 0.f)
-	        eNextState = PLAYER_STATE::FALL;
-
+		if (!m_bOnGround && GetRigidBody()->GetVelocity().y > 0.f) { ChangeState(PLAYER_STATE::FALL); return; }
+		if (KEY_TAP(KEY::SPACE) && m_bOnGround)                   { ChangeState(PLAYER_STATE::JUMP); return; }
+		if (KEY_HOLD(KEY::A) || KEY_HOLD(KEY::D))                 { ChangeState(PLAYER_STATE::RUN); return; }
 		break;
+
 	case PLAYER_STATE::RUN:
 		HorizontalMove();
-		// 조작 없을시 Idle전환
-		if (0.f == GetRigidBody()->GetSpeed() && m_bOnGround)
-			eNextState = PLAYER_STATE::IDLE;
-		if (KEY_TAP(KEY::SPACE) && m_bOnGround)
-			eNextState = PLAYER_STATE::JUMP;
-	    if (!m_bOnGround && GetRigidBody()->GetVelocity().y > 0.f)
-	        eNextState = PLAYER_STATE::FALL;
+		if (!m_bOnGround && GetRigidBody()->GetVelocity().y > 0.f) { ChangeState(PLAYER_STATE::FALL); return; }
+		if (KEY_TAP(KEY::SPACE) && m_bOnGround)                   { ChangeState(PLAYER_STATE::JUMP); return; }
+		if (0.f == GetRigidBody()->GetSpeed() && m_bOnGround)     { ChangeState(PLAYER_STATE::IDLE); return; }
 		break;
+
 	case PLAYER_STATE::EXECUTE:
 		HorizontalMove();
 	    if (!m_bIsSubduing && m_bIsExecuteDashing)
@@ -293,115 +386,65 @@ void SPlayer::Update_State()
 	        CAnimation* pCurAnim = GetAnimator()->GetCurAnimation();
 	        if (pCurAnim && pCurAnim->IsFinish())
 	        {
-	            m_bIsExecuteDashing = false; // 플래그 해제
-	            eNextState = PLAYER_STATE::FALL;
+	            m_bIsExecuteDashing = false;
+	            ChangeState(PLAYER_STATE::FALL);
+                return;
 	        }
 	    }
 		break;
+
 	case PLAYER_STATE::JUMP:
 		HorizontalMove();
-	    if (GetRigidBody()->GetVelocity().y > 0.f)
-	        eNextState = PLAYER_STATE::FALL;
-		if (m_bOnGround && GetRigidBody()->GetVelocity().y >= 0.f)
-			eNextState = PLAYER_STATE::IDLE;
-		if (IsWallClimbing())
-			eNextState = PLAYER_STATE::CLIMB;
+		if (IsWallClimbing())                                     { ChangeState(PLAYER_STATE::CLIMB); return; }
+	    if (GetRigidBody()->GetVelocity().y > 0.f)                { ChangeState(PLAYER_STATE::FALL); return; }
+		if (m_bOnGround && GetRigidBody()->GetVelocity().y >= 0.f) { ChangeState(PLAYER_STATE::IDLE); return; }
 		break;
+
 	case PLAYER_STATE::FALL:
 	    HorizontalMove();
-	    if (m_bOnGround)
-	        eNextState = PLAYER_STATE::IDLE;
-	    if (IsWallClimbing())
-	        eNextState = PLAYER_STATE::CLIMB;
+	    if (IsWallClimbing())                                     { ChangeState(PLAYER_STATE::CLIMB); return; }
+	    if (m_bOnGround)                                          { ChangeState(PLAYER_STATE::IDLE); return; }
 	    break;
+
 	case PLAYER_STATE::CLIMB:
 		VirticalMove();
 	    if (!m_bClimbing)
 	    {
-	        if (m_eClimbState == PLAYER_CLIMB_STATE::UP)
-	            eNextState = PLAYER_STATE::JUMP;
-	        else
-	            eNextState = PLAYER_STATE::FALL;
+	        if (m_eClimbState == PLAYER_CLIMB_STATE::UP) { ChangeState(PLAYER_STATE::JUMP); return; }
+	        else                                         { ChangeState(PLAYER_STATE::FALL); return; }
 	    }
 		if (KEY_TAP(KEY::SPACE))
 		{
-			eNextState = PLAYER_STATE::JUMP;
 			WallKickJump();
+			ChangeState(PLAYER_STATE::JUMP);
+            return;
 		}
 		break;
+
 	case PLAYER_STATE::SHOT:
-	    if (m_pRayHitCollider != nullptr && m_pRayHitCollider->GetObj()->GetGroup() == GROUP_TYPE::GROUND)
-	        eNextState = PLAYER_STATE::SWING;
-	    if (m_pPlayerHook == nullptr)
-	        eNextState = PLAYER_STATE::IDLE;
+	    if (m_pPlayerHook == nullptr)                                                               { ChangeState(PLAYER_STATE::IDLE); return; }
+        if (m_pRayHitCollider != nullptr && m_pRayHitCollider->GetObj()->GetGroup() == GROUP_TYPE::GROUND) { ChangeState(PLAYER_STATE::SWING); return; }
 		break;
+
 	case PLAYER_STATE::SWING:
 		SwingMove();
-		if (KEY_AWAY(KEY::LBUTTON))
-			eNextState = PLAYER_STATE::FALL;
+		if (KEY_AWAY(KEY::LBUTTON)) { ChangeState(PLAYER_STATE::FALL); return; }
 		break;
+
 	case PLAYER_STATE::DAMAGED:
+        // 피격 애니메이션이 끝났는지 확인
+        if (GetAnimator()->GetCurAnimation()->IsFinish())
+        {
+            ChangeState(PLAYER_STATE::FALL);
+            return;
+        }
 		break;
+
 	case PLAYER_STATE::DEAD:
 		break;
+
 	default:
 		break;
-	}
-
-	// 와이어 발사 또는 제압 시작
-	if (KEY_TAP(KEY::LBUTTON))
-	{
-		// 레이캐스트 결과 확인 - 몬스터가 감지되면 제압 시도
-		if (m_pRayHitCollider != nullptr && m_pRayHitCollider->GetObj()->GetGroup() == GROUP_TYPE::MONSTER)
-		{
-			CMonster* pMonster = static_cast<CMonster*>(m_pRayHitCollider->GetObj());
-			float distance = (m_vRayHitPos - GetWorldPos()).Length();
-			
-			// 제압 가능 거리 내에 있는지 확인
-			if (distance <= m_fSubdueRange)
-			{
-				StartSubdue(pMonster);
-			    eNextState = PLAYER_STATE::EXECUTE;
-			}
-			else
-			{
-				// 거리가 멀면 와이어 발사
-				CreateHook();
-				eNextState = PLAYER_STATE::SHOT;
-			}
-		}
-		else
-		{
-			// 몬스터가 아니면 일반 와이어 발사
-			CreateHook();
-			eNextState = PLAYER_STATE::SHOT;
-		}
-	}
-
-	// 와이어 해제 또는 몬스터 처형
-	if (KEY_AWAY(KEY::LBUTTON))
-	{
-		// 제압 중이면 몬스터 처형 (CSubduedState에서 처형 처리)
-		if (m_bIsSubduing && m_pSubduedMonster)
-		{
-			EndSubdue();
-            GetAnimator()->Play(L"SNB_RIGHT_EXC_DASH", false);
-		    m_bIsExecuteDashing = true;
-		}
-		// 와이어가 걸려있으면 해제
-		else if (m_pPlayerHook != nullptr && m_pPlayerHook->GetHookState() == HOOK_STATE::GRAB)
-		{
-			// 바로 삭제하지 않고 회수모션으로 전환 후 회수되면 삭제
-			m_pPlayerHook->SetHookState(HOOK_STATE::RETURN_WITH);
-		}
-	}
-
-	if (eNextState != m_eCurState)
-	{
-		Exit_State(m_eCurState); // 기존 상태 정리
-		Enter_State(eNextState); // 새 상태 초기화
-		m_ePrevState = m_eCurState;
-		m_eCurState = eNextState;
 	}
 }
 
@@ -431,6 +474,9 @@ void SPlayer::Exit_State(PLAYER_STATE _eState)
 	    m_pPlayerArm->SetLocalRotation(0.f);
 		break;
 	case PLAYER_STATE::DAMAGED:
+	    GetGravity()->SetApplyGravity(true);
+	    if (GetRigidBody()->GetVelocity().y <0.f)
+	        GetRigidBody()->SetVelocityY(0.f);
 		break;
 	case PLAYER_STATE::DEAD:
 		break;
@@ -466,7 +512,7 @@ void SPlayer::Update_Animation()
 	        GetAnimator()->Play(L"SNB_RIGHT_FALLING", true);
 	    break;
 	case PLAYER_STATE::CLIMB:
-			GetAnimator()->Play(L"SNB_RIGHT_CLIMBSTOP", true);
+			//GetAnimator()->Play(L"SNB_RIGHT_CLIMBSTOP", true);
 		break;
 	case PLAYER_STATE::SWING:
 	    if (m_pPlayerHook != nullptr)
@@ -476,7 +522,7 @@ void SPlayer::Update_Animation()
 	        GetAnimator()->Play(L"SNB_RIGHT_SWING", true);
 	    break;
 	case PLAYER_STATE::DAMAGED:
-
+	        GetAnimator()->Play(L"SNB_RIGHT_DAMAGED", false);
 		break;
 	case PLAYER_STATE::DEAD:
 
@@ -485,6 +531,31 @@ void SPlayer::Update_Animation()
 		break;
 	}
 }
+
+
+void SPlayer::ClimbAnimationUpdate()
+{
+    // 클라임 상태일 때에만 애니메이션 적용
+    if (m_eCurState == PLAYER_STATE::CLIMB)
+    {
+        switch (m_eClimbState)
+        {
+        case PLAYER_CLIMB_STATE::NONE:
+            GetAnimator()->Play(L"SNB_RIGHT_CLIMBSTOP", true);
+            break;
+        case PLAYER_CLIMB_STATE::UP:
+            GetAnimator()->Play(L"SNB_RIGHT_CLIMBUP", true);
+            break;
+        case PLAYER_CLIMB_STATE::DOWN:
+            GetAnimator()->Play(L"SNB_RIGHT_CLIMBDOWN", true);
+            break;
+        default:
+            break;
+        }
+        m_ePrevClimbState = m_eClimbState;
+    }
+}
+
 
 void SPlayer::Update_Gravity()
 {
@@ -531,28 +602,6 @@ void SPlayer::OnCollisionExit(CCollider *_pOther)
 
 
 
-void SPlayer::ClimbAnimationUpdate()
-{
-	// 클라임 상태일 때에만 애니메이션 적용
-	if (m_eCurState == PLAYER_STATE::CLIMB)
-	{
-		switch (m_eClimbState)
-		{
-		case PLAYER_CLIMB_STATE::NONE:
-				GetAnimator()->Play(L"SNB_RIGHT_CLIMBSTOP", true);
-			break;
-		case PLAYER_CLIMB_STATE::UP:
-				GetAnimator()->Play(L"SNB_RIGHT_CLIMBUP", true);
-			break;
-		case PLAYER_CLIMB_STATE::DOWN:
-				GetAnimator()->Play(L"SNB_RIGHT_CLIMBDOWN", true);
-			break;
-		default:
-			break;
-		}
-		m_ePrevClimbState = m_eClimbState;
-	}
-}
 
 // 매달린 상태에서 점프 (반대방향으로 점프 혹은 위로 뛰어서 다시 위의 벽 잡기)
 void SPlayer::WallKickJump()
@@ -1124,3 +1173,34 @@ void SPlayer::CompleteMoveToTarget()
 	GetGravity()->SetApplyGravity(true);
 	GetRigidBody()->SetVelocity(Vec2(0.f, 0.f));
 }
+
+
+void SPlayer::TakeDamage(int m_iDamage)
+{
+    // 무적 상태인 경우
+    if (m_fInvincibleTime > 0.f)
+        return;
+
+    if (m_eCurState == PLAYER_STATE::DEAD)
+        return;
+
+    
+    // 체력 감소 및 무적 시간 설정
+    m_iHP -= m_iDamage;
+    m_fInvincibleTime = 0.75f;
+
+    // 플레이어 사망 처리
+    if (m_iHP <= 0)
+    {
+        m_iHP = 0;
+        ChangeState(PLAYER_STATE::DEAD);
+    }
+    else
+    {
+        ChangeState(PLAYER_STATE::DAMAGED);
+
+        // 피격 시 슬로우 모션 효과
+        CTimeMgr::GetInst()->StartSlowMotion(0.2f, 0.7f);
+    }
+}
+

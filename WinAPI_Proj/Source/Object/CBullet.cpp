@@ -132,8 +132,8 @@ void CBullet::OnCollisionEnter(CCollider* _pOther)
     // 플레이어와 충돌 시
     if (pOtherObj->GetGroup() == GROUP_TYPE::PLAYER)
     {
-        // 여기서 데미지 적용
-        
+        // 데미지 적용
+        static_cast<SPlayer*>(pOtherObj)->TakeDamage(m_iDamage);
         ReturnToPool();
     }
     // 지형과 충돌 시

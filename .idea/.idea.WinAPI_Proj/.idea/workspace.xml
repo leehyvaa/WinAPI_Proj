@@ -9,12 +9,7 @@
   <component name="ChangeListManager">
     <list default="true" id="e174ba9b-dad2-4293-bc5f-8669e5f5e6a8" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.WinAPI_Proj/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.WinAPI_Proj/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Output/bin_debug/WinAPI_Proj.exe" beforeDir="false" afterPath="$PROJECT_DIR$/Output/bin_debug/WinAPI_Proj.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Core/CCore.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Core/CCore.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Core/CCore.h" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Core/CCore.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Unity/unity_Q4DK7VQBZ16RPRYR.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Unity/unity_YRE318AY7XYHEQJW.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/WinAPI_Proj.vcxproj" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/WinAPI_Proj.vcxproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/2D 일정.txt" beforeDir="false" afterPath="$PROJECT_DIR$/자료/2D 일정.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,7 +41,8 @@
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="cidr-memory-view://25" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../Program Files (x86)/Windows Kits/10/Include/10.0.22621.0/shared/windef.h" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../Program Files (x86)/Windows Kits/10/Include/10.0.22621.0/ucrt/stdio.h" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../Program Files (x86)/Windows Kits/10/Include/10.0.22621.0/um/WinUser.h" root0="SKIP_HIGHLIGHTING" />
@@ -227,6 +223,7 @@
       <workItem from="1749598163463" duration="13614000" />
       <workItem from="1749617460296" duration="4566000" />
       <workItem from="1749686241999" duration="13205000" />
+      <workItem from="1749792436594" duration="752000" />
     </task>
     <servers />
   </component>

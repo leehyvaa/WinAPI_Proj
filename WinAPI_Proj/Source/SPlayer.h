@@ -16,9 +16,7 @@ class SPlayer : public GameObject
 {
 
 private:
-	float m_fSpeed;
-	float m_fWireRange;
-	float m_fWireMaxRange;
+
 	bool m_bOnGround;
 	bool m_bClimbing;
 	bool m_bRidingWire;
@@ -30,6 +28,14 @@ private:
 	CHook* m_pPlayerHook;
 	PlayerArm* m_pPlayerArm;
 
+    // 플레이어 스탯 및 피격시 무적 시간
+	float m_fSpeed;
+    float m_fWireRange;
+    float m_fWireMaxRange;
+    int m_iHP;                 
+    int m_iMaxHP;              
+    float m_fInvincibleTime;   
+    
     // 와이어 액션 변수
 	Raycast* m_pPlayerRay;
 	CCollider* m_pRayHitCollider;
@@ -63,41 +69,44 @@ public:
 	}
 	virtual ~SPlayer();
 
-
+    void TakeDamage(int m_iDamage);
 	
-	Vec2 GetTargetPos() { return m_vRayHitPos; }
-	float GetMoveEnergy() { return m_fMoveEnergy; }
+
+
+    void SetOnGround(bool _onGround) { m_bOnGround = _onGround; }
+    void SetRidingWire(bool _ridingWire) { m_bRidingWire = _ridingWire; }
+    void SetWallClimbing(bool _isClimbing) { m_bClimbing = _isClimbing; }
+    void SetArm(PlayerArm *_arm) { m_pPlayerArm = _arm; }
+    void SetHookRemove(CHook *_hook) { m_pPlayerHook = _hook; }
+    void SetPlayerState(PLAYER_STATE _eState) { m_eCurState = _eState; }
+    void SetMoveEnergy(float _energy) { m_fMoveEnergy = _energy; }
+    void SetPosEnergy(float _energy) { m_fPosEnergy = _energy; }
+  
+    // 상태 getter
+    PLAYER_STATE GetState() { return m_eCurState; }
+    PLAYER_STATE GetPrevState() { return m_ePrevState; }
+    PLAYER_CLIMB_STATE GetClimbState() { return m_eClimbState; }
+    CHook* GetPlayerHook() const { return m_pPlayerHook; }
+    Vec2 GetTargetPos() { return m_vRayHitPos; }
+
+    bool IsWireTaut();
+    bool IsOnGround() { return m_bOnGround; }
+    bool IsWallClimbing() { return m_bClimbing; }
+    bool IsRidingWire() { return m_bRidingWire; }
+	 
+    
+    // 와이어 액션 Getter
+    float GetMoveEnergy() { return m_fMoveEnergy; }
     float GetPosEnergy() { return m_fPosEnergy; }
     float GetWireRange() { return m_fWireRange; }
     float GetWireMaxRange() { return m_fWireMaxRange; }
     float GetHookDistance() {return m_fHookDistance;}
 
-	   
-    bool IsWireTaut();
-    bool IsOnGround() { return m_bOnGround; }
-    bool IsWallClimbing() { return m_bClimbing; }
-    bool IsRidingWire() { return m_bRidingWire; }
-	   
-    // 제압 시스템 관련 getter/setter
+    
+    // 제압 시스템 getter/setter
     bool IsSubduing() const { return m_bIsSubduing; }
     CMonster* GetSubduedMonster() const { return m_pSubduedMonster; }
     float GetSubdueRange() const { return m_fSubdueRange; }
-    
-    PLAYER_STATE GetState() { return m_eCurState; }
-    PLAYER_STATE GetPrevState() { return m_ePrevState; }
-    PLAYER_CLIMB_STATE GetClimbState() { return m_eClimbState; }
-    CHook* GetPlayerHook() const { return m_pPlayerHook; }
-
-	void SetOnGround(bool _onGround) { m_bOnGround = _onGround; }
-    void SetRidingWire(bool _ridingWire) { m_bRidingWire = _ridingWire; }
-    void SetWallClimbing(bool _isClimbing) { m_bClimbing = _isClimbing; }
-    void SetArm(PlayerArm *_arm) { m_pPlayerArm = _arm; }
-    void SetHookRemove(CHook *_hook) { m_pPlayerHook = _hook; }
-	void SetPlayerState(PLAYER_STATE _eState) { m_eCurState = _eState; }
-    void SetMoveEnergy(float _energy) { m_fMoveEnergy = _energy; }
-    void SetPosEnergy(float _energy) { m_fPosEnergy = _energy; }
-	   
-    // 제압 시스템
     void SetSubduing(bool _bSubduing) { m_bIsSubduing = _bSubduing; }
     void SetSubduedMonster(CMonster* _pMonster) { m_pSubduedMonster = _pMonster; }
     void SetSubdueRange(float _fRange) { m_fSubdueRange = _fRange; }
@@ -106,9 +115,10 @@ public:
     
 	virtual void Update() override;
 	virtual void Render(ID2D1RenderTarget* _pRenderTarget) override;
-	   virtual void Reset() override;
+    virtual void Reset() override;
 
 private:
+    void ChangeState(PLAYER_STATE _eNextState);
 	void Enter_State(PLAYER_STATE _eState);
 	void Update_State();
 	void Exit_State(PLAYER_STATE _eState);

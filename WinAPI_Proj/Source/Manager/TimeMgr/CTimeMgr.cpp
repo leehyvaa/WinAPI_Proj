@@ -16,6 +16,8 @@ CTimeMgr::CTimeMgr()
 	, m_dDT(0.)
 	, m_dAcc(0.)
 	, m_iCallCount{0}
+    , m_dTimeScale(1.0)         
+    , m_dSlowMotionTimer(0.0) 
 	
 {
 
@@ -38,18 +40,41 @@ void CTimeMgr::Update()
 {
 	QueryPerformanceCounter(&m_CurCount);
 
-	//이전 프레임의 카운팅과, 현재 프레임 카운팅 값의 차이를 구한다.
+	// 이전 프레임의 카운팅과, 현재 프레임 카운팅 값의 차이를 구한다.
 	m_dDT = static_cast<double>(m_CurCount.QuadPart - m_PrevCount.QuadPart) /static_cast<double>(m_FreQuency.QuadPart);
 	
-	//이전 카운트 값을 현재값으로 갱신(다음 계산을 위해서)
+	// 이전 카운트 값을 현재값으로 갱신(다음 계산을 위해서)
 	m_PrevCount = m_CurCount;
 
+    // 프레임 방어 코드
 #ifdef _DEBUG
 	if (m_dDT > (1. / 60.))
 		m_dDT = (1. / 60.);
 #endif
-	
+
+
+    // 슬로우 모션 타이머
+    if (m_dSlowMotionTimer > 0.0)
+    {
+        m_dSlowMotionTimer -= m_dDT; 
+
+        if (m_dSlowMotionTimer <= 0.0)
+        {
+            m_dTimeScale = 1.0; // 시간이 다 되면 TimeScale을 원래대로 복구
+            m_dSlowMotionTimer = 0.0;
+        }
+    }
 }
+
+void CTimeMgr::StartSlowMotion(double scale, double duration)
+{
+    if (scale < 0.0) scale = 0.0;
+    if (scale > 1.0) scale = 1.0;
+
+    m_dTimeScale = scale;
+    m_dSlowMotionTimer = duration;
+}
+
 
 /*
 void CTimeMgr::Render()
@@ -113,25 +138,6 @@ void CTimeMgr::ResetProfileData()
     m_mapStartTime.clear();  // 시작 시간도 클리어
 }
 
-/*
-void CTimeMgr::RenderProfileData(HDC _dc, int _iOffsetY)
-{
-    if (m_mapProfileData.empty())
-        return;
-
-    int y = _iOffsetY;
-    for (auto iter = m_mapProfileData.begin(); iter != m_mapProfileData.end(); ++iter) {
-        const auto& name = iter->first;
-        const auto& data = iter->second;  // const로 변경 (수정 불필요)
-        
-        wchar_t szBuf[128];
-        swprintf_s(szBuf, L"%s: %.2fms (호출:%d, 평균:%.3fms)",
-                  name.c_str(), data.dDuration, data.iCount, data.dAvgMs);
-        TextOut(_dc, 10, y, szBuf, wcslen(szBuf));
-        y += 20;
-    }
-}
-*/
 
 void CTimeMgr::RenderProfileData(ID2D1RenderTarget* _pRenderTarget, int _iOffsetY)
 {
