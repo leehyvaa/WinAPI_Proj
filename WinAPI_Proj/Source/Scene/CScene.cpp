@@ -192,17 +192,14 @@ void CScene::Render(ID2D1RenderTarget* _pRenderTarget)
 			GameObject* pObj = m_arrObj[i][j];
 			if (pObj && !pObj->IsDead() && pObj->IsActive())
 			{
-				// UI 그룹인 경우 CUI::RenderD2D 호출
 				if (static_cast<UINT>(GROUP_TYPE::UI) == i)
 				{
 					CUI* pUI = dynamic_cast<CUI*>(pObj);
 					if (pUI)
 						pUI->Render(_pRenderTarget);
 				}
-				// HOOK 그룹은 특별한 Direct2D 렌더링 (체인 포함)
 				else if (static_cast<UINT>(GROUP_TYPE::HOOK) == i)
 				{
-					// CHook의 RenderD2D 호출 (체인 렌더링 포함)
 					pObj->Render(_pRenderTarget);
 				}
 				// 다른 그룹은 Animator 렌더링
@@ -210,7 +207,7 @@ void CScene::Render(ID2D1RenderTarget* _pRenderTarget)
 				{
 					pObj->GetAnimator()->Render(_pRenderTarget);
 				}
-				
+			    
 				// 콜라이더 디버그 렌더링 (F6 키로 토글)
 				if (bDrawCollider && pObj->GetCollider())
 				{
@@ -218,16 +215,18 @@ void CScene::Render(ID2D1RenderTarget* _pRenderTarget)
 				}
 			}
 		}
-}
-CTimeMgr::EndTimer(L"Scene_D2D_Render");
+    }
+    
+    CTimeMgr::EndTimer(L"Scene_D2D_Render");
 
-// F10 키 - Direct2D 프로파일링 출력
-if (KEY_HOLD(KEY::F10)) {
+    // F10 키 - Direct2D 프로파일링 출력
+    if (KEY_HOLD(KEY::F10))
+    {
 		CTimeMgr::RenderProfileData(_pRenderTarget, 10);
 		
 		// 프로파일링 출력 후에만 리셋
 		CTimeMgr::ResetProfileData();
-}
+    }
 }
 
 void CScene::RenderTile(ID2D1RenderTarget* _pRenderTarget)
@@ -240,13 +239,13 @@ void CScene::RenderTile(ID2D1RenderTarget* _pRenderTarget)
     if (vecTile.empty())
         return;
 
-    // 안티앨리어싱 모드 저장 및 픽셀 완벽한 그리드 라인을 위해 비활성화
+    // 기존 모드 세팅 저장
     D2D1_ANTIALIAS_MODE oldAliasMode = _pRenderTarget->GetAntialiasMode();
     
-    // 타일 그리드는 픽셀 단위로 선명하게 렌더링하기 위해 안티앨리어싱 비활성화
+    // 안티앨리어싱 비활성화
     _pRenderTarget->SetAntialiasMode(D2D1_ANTIALIAS_MODE_ALIASED);
 
-    // 그리드 그리기용 브러시 생성 (한 번만)
+    // 그리드 그리기용 브러시 생성
     static ID2D1SolidColorBrush* s_pGridBrush = nullptr;
     if (bDrawGrid && !s_pGridBrush)
     {
@@ -286,7 +285,7 @@ void CScene::RenderTile(ID2D1RenderTarget* _pRenderTarget)
                 CTile* pTile = static_cast<CTile*>(vecTile[iIdx]);
                 if (pTile && !pTile->IsDead() && pTile->IsActive())
                 {
-                    // 그리드 그리기 (Direct2D)
+                    // 그리드 그리기
                     if (bDrawGrid && s_pGridBrush)
                     {
                         Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(pTile->GetWorldPos());
@@ -305,15 +304,15 @@ void CScene::RenderTile(ID2D1RenderTarget* _pRenderTarget)
                     // 타일 렌더링
                     pTile->Render(_pRenderTarget);
 
-                    // 지형 완성선 그리기 (Direct2D)
+                    // 지형 완성선 그리기
                     if (bDrawCompleteGround && pTile->GetGroundType() != GROUND_TYPE::NONE)
                     {
-                        // 지형 완성선용 브러시 생성 (한 번만)
+                        // 지형 완성선용 브러시 생성
                         static ID2D1SolidColorBrush* s_pCompleteGroundBrush = nullptr;
                         if (!s_pCompleteGroundBrush)
                         {
                             _pRenderTarget->CreateSolidColorBrush(
-                                D2D1::ColorF(D2D1::ColorF::Green, 1.0f),  // BIGGREEN 펜에 해당하는 색상
+                                D2D1::ColorF(D2D1::ColorF::Green, 1.0f),
                                 &s_pCompleteGroundBrush
                             );
                         }
@@ -326,7 +325,7 @@ void CScene::RenderTile(ID2D1RenderTarget* _pRenderTarget)
                                 Vec2 vStartPos = CCamera::GetInst()->GetRenderPos(pTile->GetWorldPos());
                                 Vec2 vEndPos = CCamera::GetInst()->GetRenderPos(vecTile[botIdx]->GetWorldPos());
 
-                                // Direct2D로 선 그리기
+                                // 선 그리기
                                 _pRenderTarget->DrawLine(
                                     D2D1::Point2F(vStartPos.x, vStartPos.y),
                                     D2D1::Point2F(vEndPos.x+GetTileX()*2, vEndPos.y+GetTileY()*2),
@@ -597,7 +596,7 @@ void CScene::UpdateDebugUI()
             static wstring state;
             static wstring animation;
             static wstring ongravity;
-            static wstring climbMove;
+            static wstring hp;
             static wstring climb;
             static wstring velocityX;
             static wstring velocityY;
@@ -618,12 +617,8 @@ void CScene::UpdateDebugUI()
 
     
 
-            if (player->GetClimbState() == PLAYER_CLIMB_STATE::NONE)
-                climbMove = L"Climb None";
-            else if (player->GetClimbState() == PLAYER_CLIMB_STATE::UP)
-                climbMove = L"Climb Up";
-            else if (player->GetClimbState() == PLAYER_CLIMB_STATE::DOWN)
-                climbMove = L"Climb Down";
+            
+            hp = to_wstring(player->GetCurHP());
 
 
             player->GetState();
@@ -676,7 +671,7 @@ void CScene::UpdateDebugUI()
                 state,
                 ongravity,
                 climb,
-                climbMove,
+                hp,
                 velocityX,
                 velocityY,
                 MoveEnergy,

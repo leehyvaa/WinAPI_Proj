@@ -88,6 +88,7 @@ public:
     PLAYER_CLIMB_STATE GetClimbState() { return m_eClimbState; }
     CHook* GetPlayerHook() const { return m_pPlayerHook; }
     Vec2 GetTargetPos() { return m_vRayHitPos; }
+    float GetCurHP() { return m_iHP; }
 
     bool IsWireTaut();
     bool IsOnGround() { return m_bOnGround; }

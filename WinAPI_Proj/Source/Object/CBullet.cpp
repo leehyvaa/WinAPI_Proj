@@ -47,14 +47,14 @@ void CBullet::SetBulletInfo(GameObject* _pOwner)
     // 기본 총알 속성
     m_fSpeed = 400.f;
     m_fRange = 2000.f;
-    m_iDamage = 10;
+    m_iDamage = 1;
 
     // 소유자 타입에 따라 총알 속성 설정
     if (CShooterMonster* pShooter = dynamic_cast<CShooterMonster*>(_pOwner))
     {
         m_fSpeed = 400.f;
         m_fRange = 2000.f;
-        m_iDamage = 20;
+        m_iDamage = 1;
         
         GetCollider()->SetScale(Vec2(20.f, 20.f));
         GetCollider()->SetOffsetPos(Vec2(0.f, 0.f));

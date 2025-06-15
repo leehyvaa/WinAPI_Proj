@@ -41,24 +41,8 @@ void CTile::Render(ID2D1RenderTarget* _pRenderTarget)
     // 전면 텍스쳐 그리기
     if (nullptr != m_pTileTex && -1 != m_iImgIdx)
     {
-        // 디버깅: 텍스처 정보 출력
-        static int debugCount = 0;
-        if (debugCount < 5) // 처음 5개 타일만 로그 출력
-        {
-            OutputDebugStringA("CTile::RenderD2D - Tile texture found\n");
-            debugCount++;
-        }
-
-        // 텍스처 유효성 체크 (디버깅용)
         if (!m_pTileTex->IsValid())
-        {
-            // 텍스처가 유효하지 않으면 스킵
-            if (debugCount < 5)
-            {
-                OutputDebugStringA("CTile::RenderD2D - Texture is not valid\n");
-            }
             return;
-        }
 
         UINT iWidth = m_pTileTex->Width();
         UINT iHeight = m_pTileTex->Height();
@@ -91,15 +75,7 @@ void CTile::Render(ID2D1RenderTarget* _pRenderTarget)
 
         // Direct2D 비트맵 직접 사용 (PNG 알파 채널 지원)
         ID2D1Bitmap* pD2DBitmap = m_pTileTex->GetBitmap();
-
-        if (debugCount < 5)
-        {
-            if (pD2DBitmap)
-                OutputDebugStringA("CTile::RenderD2D - D2D bitmap found, rendering tile\n");
-            else
-                OutputDebugStringA("CTile::RenderD2D - D2D bitmap is NULL\n");
-        }
-
+        
         if (pD2DBitmap)
         {
             Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(GetWorldPos());
@@ -124,12 +100,9 @@ void CTile::Render(ID2D1RenderTarget* _pRenderTarget)
     // 후면 텍스쳐 그리기
     if (nullptr != m_pTileTex2 && -1 != m_iImgIdx2)
     {
-        // 텍스처 유효성 체크 (디버깅용)
         if (!m_pTileTex2->IsValid())
-        {
-            // 텍스처가 유효하지 않으면 스킵
             return;
-        }
+
 
         UINT iWidth = m_pTileTex2->Width();
         UINT iHeight = m_pTileTex2->Height();
@@ -159,8 +132,7 @@ void CTile::Render(ID2D1RenderTarget* _pRenderTarget)
         // 목적지 크기 계산
         Vec2 vScale = GetScale();
         D2D1_SIZE_F dstSize = D2D1::SizeF(vScale.x, vScale.y);
-
-        // Direct2D 비트맵 직접 사용 (PNG 알파 채널 지원)
+        
         ID2D1Bitmap* pD2DBitmap = m_pTileTex2->GetBitmap();
 
         if (pD2DBitmap)

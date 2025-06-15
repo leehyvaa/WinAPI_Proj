@@ -45,7 +45,7 @@ SPlayer::SPlayer()
     , m_fMoveSpeed(2000.f)
     , m_bIsExecuteDashing(false)
     , m_iHP(0)
-    , m_iMaxHP(900)
+    , m_iMaxHP(3)
     , m_fInvincibleTime(0.f)
 {
     m_iHP = m_iMaxHP;
@@ -71,7 +71,9 @@ SPlayer::SPlayer()
 	// RIGHT 애니메이션 생성
     GetAnimator()->CreateAnimation(L"SNB_RIGHT_DAMAGED", pTexRight,
                                    Vec2(0.f, 0.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.07f, 5, 3.f, Vec2(0.f, -57.f));
-	GetAnimator()->CreateAnimation(L"SNB_RIGHT_IDLE", pTexRight,
+    GetAnimator()->CreateAnimation(L"SNB_RIGHT_DEATH", pTexRight,
+                                      Vec2(0.f, 300.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.3f, 24, 3.f, Vec2(0.f, -32.f));
+    GetAnimator()->CreateAnimation(L"SNB_RIGHT_IDLE", pTexRight,
 								   Vec2(0.f, 900.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 8, 3.f, Vec2(0.f, -57.f));
 	GetAnimator()->CreateAnimation(L"SNB_RIGHT_RUN", pTexRight,
 								   Vec2(0.f, 1400.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.07f, 20, 3.f, Vec2(0.f, -57.f));
@@ -97,6 +99,7 @@ SPlayer::SPlayer()
 
 	// RIGHT 애니메이션 저장
 	GetAnimator()->FindAnimation(L"SNB_RIGHT_DAMAGED")->Save(L"animation\\player_right_damaged.anim");
+	GetAnimator()->FindAnimation(L"SNB_RIGHT_DEATH")->Save(L"animation\\player_right_death.anim");
 	GetAnimator()->FindAnimation(L"SNB_RIGHT_IDLE")->Save(L"animation\\player_right_idle.anim");
 	GetAnimator()->FindAnimation(L"SNB_RIGHT_RUN")->Save(L"animation\\player_right_run.anim");
 	GetAnimator()->FindAnimation(L"SNB_RIGHT_JUMP")->Save(L"animation\\player_right_jump.anim");
@@ -299,6 +302,9 @@ void SPlayer::Enter_State(PLAYER_STATE _eState)
 	    }
 		break;
 	case PLAYER_STATE::DEAD:
+		GetRigidBody()->SetVelocity(Vec2(0.f, 0.f));
+	    GetGravity()->SetApplyGravity(false);
+	    
 		break;
 	default:
 		break;
@@ -525,6 +531,7 @@ void SPlayer::Update_Animation()
 	        GetAnimator()->Play(L"SNB_RIGHT_DAMAGED", false);
 		break;
 	case PLAYER_STATE::DEAD:
+	        GetAnimator()->Play(L"SNB_RIGHT_DEATH", false);
 
 		break;
 	default:
@@ -1180,9 +1187,9 @@ void SPlayer::TakeDamage(int m_iDamage)
     // 무적 상태인 경우
     if (m_fInvincibleTime > 0.f)
         return;
-
-    if (m_eCurState == PLAYER_STATE::DEAD)
+    if (m_eCurState == PLAYER_STATE::EXECUTE || m_eCurState == PLAYER_STATE::DEAD)
         return;
+
 
     
     // 체력 감소 및 무적 시간 설정

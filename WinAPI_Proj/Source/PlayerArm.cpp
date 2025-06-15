@@ -25,6 +25,8 @@ PlayerArm::PlayerArm()
 	// GetAnimator()->LoadAnimation(L"animation\\playerArm_right_idle.anim");
 
 	// RIGHT 애니메이션 생성
+    GetAnimator()->CreateAnimation(L"SNB_ARM_RIGHT_DAMAGED", pArmTexRight,
+                                   Vec2(0.f, 0.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.07f, 5, 0.85f, Vec2(-5.f, 17.f));
 	GetAnimator()->CreateAnimation(L"SNB_ARM_RIGHT_IDLE", pArmTexRight,
 								   Vec2(0.f, 900.f), Vec2(100.f, 100.f), Vec2(100.f, 0.f), 0.25f, 8, 0.85f, Vec2(-20.f, 28.f));
 	GetAnimator()->CreateAnimation(L"SNB_ARM_RIGHT_RUN", pArmTexRight,
@@ -51,6 +53,7 @@ PlayerArm::PlayerArm()
     
 	// RIGHT 애니메이션 저장
 	GetAnimator()->FindAnimation(L"SNB_ARM_RIGHT_IDLE")->Save(L"animation\\playerArm_right_idle.anim");
+	GetAnimator()->FindAnimation(L"SNB_ARM_RIGHT_DAMAGED")->Save(L"animation\\playerArm_right_damaged.anim");
 	GetAnimator()->FindAnimation(L"SNB_ARM_RIGHT_RUN")->Save(L"animation\\playerArm_right_run.anim");
 	GetAnimator()->FindAnimation(L"SNB_ARM_RIGHT_JUMP")->Save(L"animation\\playerArm_right_jump.anim");
 	GetAnimator()->FindAnimation(L"SNB_ARM_RIGHT_FALLING")->Save(L"animation\\playerArm_right_falling.anim");
@@ -148,14 +151,13 @@ void PlayerArm::Update_Animation()
 	    }
 	    break;
 	case PLAYER_STATE::SWING:
-
 			GetAnimator()->Play(L"SNB_ARM_RIGHT_SWING", true);
 		break;
 	case PLAYER_STATE::DAMAGED:
-
+			GetAnimator()->Play(L"SNB_ARM_RIGHT_DAMAGED", true);
 		break;
 	case PLAYER_STATE::DEAD:
-
+			GetAnimator()->Reset();
 		break;
 	default:
 		break;
