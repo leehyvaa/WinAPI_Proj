@@ -1,11 +1,13 @@
 ﻿#pragma once
 #include "GameObject.h"
+#include "DamageEffect/CDamageEffectUI.h"
 
 class CTexture;
 class PlayerArm;
 class CHook;
 class Raycast;
 class CMonster;
+class CDamageEffectUI;
 
 enum class PLAYER_ATTACK_STATE
 {
@@ -59,6 +61,10 @@ private:
 	Vec2 m_vMoveTargetPos;        
 	float m_fMoveProgress;         // 이동 진행도 (0.0 ~ 1.0)
 	float m_fMoveSpeed;
+	
+	// 데미지 이펙트 UI
+	CDamageEffectUI* m_pDamageEffectUI;
+	
 public:
 	SPlayer();
 
@@ -67,8 +73,13 @@ public:
 	// 복사생성자가 문제가 되는 경우는 콜라이더처럼 자신의 owner를 가지고 있거나
 	// 고유한 id값을 가지고 있을때 얕은복사를 하면 문제가 됨
 	SPlayer(const SPlayer &_origin)
-		: GameObject(_origin), m_fSpeed(_origin.m_fSpeed), m_eCurState(_origin.m_eCurState), m_ePrevState(_origin.m_ePrevState), m_pPlayerArm(_origin.m_pPlayerArm), m_pPlayerRay(_origin.m_pPlayerRay), m_bOnGround(false), m_bClimbing(false), m_vRayHitPos(_origin.m_vRayHitPos), m_pRayHitCollider(nullptr), m_eClimbState(PLAYER_CLIMB_STATE::NONE), m_pSubduedMonster(nullptr), m_bIsSubduing(false), m_fSubdueRange(_origin.m_fSubdueRange), m_bIsMovingToTarget(false), m_vMoveStartPos(Vec2(0.f, 0.f)), m_vMoveTargetPos(Vec2(0.f, 0.f)), m_fMoveProgress(0.f), m_fMoveSpeed(_origin.m_fMoveSpeed)
+		: GameObject(_origin), m_fSpeed(_origin.m_fSpeed), m_eCurState(_origin.m_eCurState), m_ePrevState(_origin.m_ePrevState), m_pPlayerArm(_origin.m_pPlayerArm), m_pPlayerRay(_origin.m_pPlayerRay), m_bOnGround(false), m_bClimbing(false), m_vRayHitPos(_origin.m_vRayHitPos), m_pRayHitCollider(nullptr), m_eClimbState(PLAYER_CLIMB_STATE::NONE), m_pSubduedMonster(nullptr), m_bIsSubduing(false), m_fSubdueRange(_origin.m_fSubdueRange), m_bIsMovingToTarget(false), m_vMoveStartPos(Vec2(0.f, 0.f)), m_vMoveTargetPos(Vec2(0.f, 0.f)), m_fMoveProgress(0.f), m_fMoveSpeed(_origin.m_fMoveSpeed), m_pDamageEffectUI(nullptr)
 	{
+		// 데미지 이펙트 UI는 복사하지 않고 새로 생성 (고유 인스턴스 필요)
+		if (_origin.m_pDamageEffectUI)
+		{
+			m_pDamageEffectUI = new CDamageEffectUI(*_origin.m_pDamageEffectUI);
+		}
 	}
 	virtual ~SPlayer();
 
@@ -117,7 +128,9 @@ public:
     void SetSubdueRange(float _fRange) { m_fSubdueRange = _fRange; }
 	void EndSubdue();
 
-    
+	   // 데미지 이펙트 UI 접근자
+	   CDamageEffectUI* GetDamageEffectUI() const { return m_pDamageEffectUI; }
+	   
 	virtual void Update() override;
 	virtual void Render(ID2D1RenderTarget* _pRenderTarget) override;
     virtual void Reset() override;

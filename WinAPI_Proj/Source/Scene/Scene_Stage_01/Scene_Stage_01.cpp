@@ -26,6 +26,7 @@
 #include "CResMgr.h"
 #include "MouseCursor.h"
 #include "Monster/CShooterMonster.h"
+#include "Object/UI/DamageEffect/CDamageEffectUI.h"
 
 Scene_Stage_01::Scene_Stage_01()
     : m_bPlayerDeathMode(false)
@@ -154,7 +155,20 @@ void Scene_Stage_01::Enter()
 	AddObject(player, GROUP_TYPE::PLAYER);
 	RegisterPlayer(player);
 
-
+	// 플레이어의 데미지 이펙트 UI를 씬에 등록
+	SPlayer* pPlayer = static_cast<SPlayer*>(player);
+	if (pPlayer && pPlayer->GetDamageEffectUI())
+	{
+		CDamageEffectUI* pDamageEffect = pPlayer->GetDamageEffectUI();
+		
+		// 화면 전체 크기로 설정 (오버레이 효과)
+		Vec2 vResolution = CCore::GetInst()->GetResolution();
+		pDamageEffect->SetWorldPos(Vec2(0.f, 0.f));
+		pDamageEffect->SetScale(Vec2(static_cast<float>(vResolution.x), static_cast<float>(vResolution.y)));
+		
+		// UI 시스템에 등록하여 렌더링 활성화
+		AddObject(pDamageEffect, GROUP_TYPE::UI);
+	}
 
 	// 마우스커서 추가
 	ShowCursor(false);

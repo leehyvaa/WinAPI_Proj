@@ -1,7 +1,4 @@
 
-#include "C:\WinAPIProject\WinAPI_Proj\Source\Component\Animator\Animation\CAnimation.cpp"
-
-
 #include "C:\WinAPIProject\WinAPI_Proj\Source\Component\Animator\CAnimator.cpp"
 
 
@@ -24,4 +21,10 @@
 
 
 #include "C:\WinAPIProject\WinAPI_Proj\Source\Manager\Camera\CCamera.cpp"
+
+
+#include "C:\WinAPIProject\WinAPI_Proj\Source\Manager\CollisionMgr\CCollisionMgr.cpp"
+
+
+#include "C:\WinAPIProject\WinAPI_Proj\Source\Manager\CSoundMgr\CSoundMgr.cpp"
 

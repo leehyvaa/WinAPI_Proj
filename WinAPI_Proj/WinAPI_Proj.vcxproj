@@ -208,6 +208,7 @@
     <ClInclude Include="Source\Object\Tile\CTile.h" />
     <ClInclude Include="Source\Object\UI\BtnUI\CBtnUI.h" />
     <ClInclude Include="Source\Object\UI\CUI.h" />
+    <ClInclude Include="Source\Object\UI\DamageEffect\CDamageEffectUI.h" />
     <ClInclude Include="Source\Object\UI\PanelUI\CPanelUI.h" />
     <ClInclude Include="Source\Prefab\CGroundPrefab.h" />
     <ClInclude Include="Source\Prefab\CMonPrefab.h" />
@@ -356,6 +357,7 @@
     <ClCompile Include="Source\Object\Tile\CTile.cpp" />
     <ClCompile Include="Source\Object\UI\BtnUI\CBtnUI.cpp" />
     <ClCompile Include="Source\Object\UI\CUI.cpp" />
+    <ClCompile Include="Source\Object\UI\DamageEffect\CDamageEffectUI.cpp" />
     <ClCompile Include="Source\Object\UI\PanelUI\CPanelUI.cpp" />
     <ClCompile Include="Source\Prefab\CGroundPrefab.cpp" />
     <ClCompile Include="Source\Prefab\CMonPrefab.cpp" />

@@ -18,6 +18,8 @@
 #include "CObjectPool.h"
 #include "CMonster.h"
 #include "AI.h"
+#include "Object/UI/DamageEffect/CDamageEffectUI.h"
+
 
 SPlayer::SPlayer()
 	: m_fSpeed(1000)
@@ -48,6 +50,7 @@ SPlayer::SPlayer()
     , m_iMaxHP(3)
     , m_fInvincibleTime(0.f)
     , m_bDeathAnimationCompleted(false)
+    , m_pDamageEffectUI(nullptr)
 {
     m_iHP = m_iMaxHP;
     
@@ -149,11 +152,21 @@ SPlayer::SPlayer()
     // 와이어 생성
     CObjectPool::GetInst()->CreatePool<CHook>(L"Hook", 1);
     
-	Enter_State(m_eCurState);
+    // 데미지 이펙트 UI 생성
+    m_pDamageEffectUI = new CDamageEffectUI();
+    m_pDamageEffectUI->SetName(L"DamageEffectUI");
+    
+ Enter_State(m_eCurState);
 }
 
 SPlayer::~SPlayer()
 {
+    // 데미지 이펙트 UI 메모리 해제
+    if (m_pDamageEffectUI)
+    {
+        delete m_pDamageEffectUI;
+        m_pDamageEffectUI = nullptr;
+    }
 }
 
 
@@ -193,7 +206,11 @@ void SPlayer::Reset()
     m_pRayHitCollider = nullptr;
     m_vRayHitPos = Vec2(0.f, 0.f);
     
-
+    // 데미지 이펙트 상태 초기화
+    if (m_pDamageEffectUI)
+    {
+        m_pDamageEffectUI->ResetEffect();
+    }
 }
 
 
@@ -1204,6 +1221,12 @@ void SPlayer::TakeDamage(int m_iDamage)
     // 체력 감소 및 무적 시간 설정
     m_iHP -= m_iDamage;
     m_fInvincibleTime = 0.75f;
+    
+    // 데미지 이펙트 트리거 (Unity의 OnPlayerDamaged와 동일한 기능)
+    if (m_pDamageEffectUI)
+    {
+        m_pDamageEffectUI->OnPlayerDamaged();
+    }
 
     // 플레이어 사망 처리
     if (m_iHP <= 0)

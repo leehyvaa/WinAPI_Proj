@@ -25,3 +25,6 @@
 
 #include "C:\WinAPIProject\WinAPI_Proj\Source\CHook.cpp"
 
+
+#include "C:\WinAPIProject\WinAPI_Proj\Source\Component\Animator\Animation\CAnimation.cpp"
+

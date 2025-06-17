@@ -1,13 +1,4 @@
 
-#include "C:\WinAPIProject\WinAPI_Proj\Source\Module\AI\AI.cpp"
-
-
-#include "C:\WinAPIProject\WinAPI_Proj\Source\Module\AI\State\CState.cpp"
-
-
-#include "C:\WinAPIProject\WinAPI_Proj\Source\Module\AI\State\Idle\CIdleState.cpp"
-
-
 #include "C:\WinAPIProject\WinAPI_Proj\Source\Module\AI\State\Trace\CTraceState.cpp"
 
 
@@ -24,4 +15,16 @@
 
 
 #include "C:\WinAPIProject\WinAPI_Proj\Source\Object\Tile\CBackGround.cpp"
+
+
+#include "C:\WinAPIProject\WinAPI_Proj\Source\Object\Tile\CTile.cpp"
+
+
+#include "C:\WinAPIProject\WinAPI_Proj\Source\Object\UI\BtnUI\CBtnUI.cpp"
+
+
+#include "C:\WinAPIProject\WinAPI_Proj\Source\Object\UI\CUI.cpp"
+
+
+#include "C:\WinAPIProject\WinAPI_Proj\Source\Object\UI\DamageEffect\CDamageEffectUI.cpp"
 

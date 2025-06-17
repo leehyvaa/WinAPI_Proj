@@ -2,6 +2,7 @@
 #include "CScene.h"
 
 struct ID2D1RenderTarget;
+class CDamageEffectUI;
 
 class Scene_Stage_01 :public CScene
 {
