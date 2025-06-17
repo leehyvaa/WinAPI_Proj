@@ -15,6 +15,7 @@
 #include "CCamera.h"
 #include "CCore.h"
 #include "AI.h"
+#include "CAnimator.h"
 #include "CIdleState.h"
 #include "CTraceState.h"
 #include "CRigidBody.h"
@@ -27,6 +28,8 @@
 #include "Monster/CShooterMonster.h"
 
 Scene_Stage_01::Scene_Stage_01()
+    : m_bPlayerDeathMode(false)
+    , m_fDeathSceneTimer(1.0f)  // 1초로 초기화
 {
 
 }
@@ -59,28 +62,68 @@ void Scene_Stage_01::Update()
 		cout << MOUSE_POS.x <<" "<<MOUSE_POS.y <<endl;
 	}
 
-    // 클리어 영역의 시작점과 끝점 가져오기
+
+    
     Vec2 clearStartPos = GetSceneClearStartPos();
     Vec2 clearEndPos = GetSceneClearEndPos();
 
-    // 플레이어의 현재 월드 위치 가져오기
+    // 플레이어가 스테이지 클리어
     Vec2 playerPos = GetPlayer()->GetWorldPos();
     if (playerPos.x >= clearStartPos.x && playerPos.x <= clearEndPos.x &&
         playerPos.y >= clearStartPos.y && playerPos.y <= clearEndPos.y)
     {
-        // 클리어 조건 만족! 씬 전환
-        ChangeScene(SCENE_TYPE::START); // 예시로 START 씬으로 전환
+        ChangeScene(SCENE_TYPE::START); 
+    }
+
+    
+    // 플레이어 죽음 감지 및 처리
+    SPlayer* pPlayer = static_cast<SPlayer*>(GetPlayer());
+    if (pPlayer && pPlayer->GetState() == PLAYER_STATE::DEAD)
+    {
+        if (!m_bPlayerDeathMode)
+        {
+            m_bPlayerDeathMode = true;
+            SetBackGround(nullptr);
+        }
+        
+        // 죽음 애니메이션이 완료되면 1초 후 타이틀 씬으로 전환
+        if (pPlayer->IsDeathAnimationCompleted())
+        {
+            m_fDeathSceneTimer -= fDT;
+            if (m_fDeathSceneTimer <= 0.f)
+            {
+                ChangeScene(SCENE_TYPE::START);
+            }
+        }
     }
 }
 
 void Scene_Stage_01::Render(ID2D1RenderTarget* _pRenderTarget)
 {
-	CScene::Render(_pRenderTarget);
+    if (m_bPlayerDeathMode)
+    {
+        SPlayer* pPlayer = static_cast<SPlayer*>(GetPlayer());
+        if (pPlayer && pPlayer->GetAnimator())
+        {
+            pPlayer->GetAnimator()->Render(_pRenderTarget);
+        }
+        
+        CCamera::GetInst()->Render(_pRenderTarget);
+    }
+    else
+    {
+        CScene::Render(_pRenderTarget);
+    }
 }
 
 void Scene_Stage_01::Enter()
 {
     CScene::Enter();
+    
+    // 죽음 모드 플래그 및 타이머 초기화
+    m_bPlayerDeathMode = false;
+    m_fDeathSceneTimer = 1.0f;
+    
 	//CCamera::GetInst()->FadeIn(2.f);
 
 	//씬 진입 상황에서는 AddObject 해도 되지만 
@@ -180,7 +223,7 @@ void Scene_Stage_01::Enter()
 
 	
 
-	//그룹간 충돌 체크
+	// 그룹간 충돌 체크
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::MONSTER);
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::GROUND);
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::PROJ_MONSTER);
@@ -188,11 +231,11 @@ void Scene_Stage_01::Enter()
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::MONSTER, GROUP_TYPE::GROUND);
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::GROUND, GROUP_TYPE::HOOK);
     
-    //카메라 위치 지정
+    // 카메라 위치 지정
     CCamera::GetInst()->SetLookAt(vResolution/2.f);
     CCamera::GetInst()->SetTarget(player);
 
-	//스타트 함수 호출
+	// 스타트 함수 호출
 	Start();
 }
 

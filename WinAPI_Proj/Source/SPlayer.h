@@ -34,7 +34,10 @@ private:
     float m_fWireMaxRange;
     int m_iHP;                 
     int m_iMaxHP;              
-    float m_fInvincibleTime;   
+    float m_fInvincibleTime;
+    
+    // 죽음 처리 관련 변수
+    bool m_bDeathAnimationCompleted;  // 죽음 애니메이션 완료 여부
     
     // 와이어 액션 변수
 	Raycast* m_pPlayerRay;
@@ -89,6 +92,7 @@ public:
     CHook* GetPlayerHook() const { return m_pPlayerHook; }
     Vec2 GetTargetPos() { return m_vRayHitPos; }
     float GetCurHP() { return m_iHP; }
+    bool IsDeathAnimationCompleted() const { return m_bDeathAnimationCompleted; }
 
     bool IsWireTaut();
     bool IsOnGround() { return m_bOnGround; }

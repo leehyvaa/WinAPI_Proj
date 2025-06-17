@@ -47,6 +47,7 @@ SPlayer::SPlayer()
     , m_iHP(0)
     , m_iMaxHP(3)
     , m_fInvincibleTime(0.f)
+    , m_bDeathAnimationCompleted(false)
 {
     m_iHP = m_iMaxHP;
     
@@ -184,6 +185,9 @@ void SPlayer::Reset()
     m_vMoveTargetPos = Vec2(0.f, 0.f);
     m_fMoveProgress = 0.f;
     m_fMoveSpeed = 2000.f;
+    
+    // 죽음 처리 시스템 초기화
+    m_bDeathAnimationCompleted = false;
     
     // 필요한 경우 Raycast 포인터도 초기화
     m_pRayHitCollider = nullptr;
@@ -447,6 +451,11 @@ void SPlayer::Update_State()
 		break;
 
 	case PLAYER_STATE::DEAD:
+		// 죽음 애니메이션이 완료되었는지 확인
+		if (GetAnimator()->GetCurAnimation() && GetAnimator()->GetCurAnimation()->IsFinish())
+		{
+			m_bDeathAnimationCompleted = true;
+		}
 		break;
 
 	default:
