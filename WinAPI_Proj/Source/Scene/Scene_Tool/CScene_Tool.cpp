@@ -36,6 +36,12 @@ CScene_Tool::CScene_Tool()
 	, m_bSecondTex(false)
 	, m_pModeText(nullptr)
     , m_pHelpText(nullptr)
+    , m_vPlayerSpawnPos(Vec2(0, 0))
+    , m_vSceneClearStartPos(Vec2(0, 0))
+    , m_vSceneClearEndPos(Vec2(0, 0))
+    , m_bPlayerSpawnSet(false)
+    , m_bSceneClearSet(false)
+    , m_bDraggingClearArea(false)
 {
 }
 
@@ -118,6 +124,7 @@ void CScene_Tool::Enter()
     // 텍스트 UI 초기화
     m_textureHelp.clear();
     m_groundHelp.clear();
+    m_spawnHelp.clear();
     m_commonHelp.clear();
     
     m_pModeText = nullptr;  
@@ -178,17 +185,28 @@ void CScene_Tool::Enter()
         L"ENTER - 좌우 클릭으로 지정한 지형을 완성시키기",
     };
 
+    m_spawnHelp = {
+        L"[스폰 모드]",
+        L"1 - 플레이어 시작 위치 설정",
+        L"2 - 씬 클리어 영역 설정",
+        L"좌클릭 - 플레이어 위치 설정 (1번 모드)",
+        L"드래그 - 클리어 영역 설정 (2번 모드)",
+        L"CTRL+S - 스폰 데이터 저장",
+        L"CTRL+L - 스폰 데이터 로드",
+    };
+
     m_commonHelp = {
         L"[조작법]",
         L"F1 - 텍스처 모드",
         L"F2 - 지형 모드",
         L"F3 - 트리거 모드",
         L"F4 - 프리팹 모드",
+        L"F5 - 플레이어 스폰,클리어 모드",
         L"",
-        L"F5 - 타일 테두리 표시",
-        L"F6 - 콜라이더 표시",
-        L"F7 - 그라운드 타입 표시",
-        L"F8 - 그라운드 완성 라인 표시",
+        L"F8 - 타일 그리드 표시",
+        L"F9 - 그라운드 타입 표시",
+        L"F10 - 그라운드 완성 처리 디버깅",
+        L"",
         L"",
         L"CTRL - 타일맵 불러오기",
         L"ESC - 시작 화면으로"
@@ -247,6 +265,9 @@ void CScene_Tool::Update()
                 break;
             case GROUND_MODE:
                 m_pHelpSubText->AddLines(m_groundHelp);
+                break;
+            case SPAWN_MODE:
+                m_pHelpSubText->AddLines(m_spawnHelp);
                 break;
             }
         }
@@ -323,6 +344,67 @@ void CScene_Tool::Update()
  
     }
 	break;
+	case SPAWN_MODE:
+    {
+        mode = L"SpawnMode";
+
+        static bool bSpawnMode = true; // true: 플레이어 스폰, false: 씬 클리어
+
+        if (KEY_TAP(KEY::KEY_1))
+        {
+            subMode = L"PlayerSpawn";
+            bSpawnMode = true;
+        }
+        if (KEY_TAP(KEY::KEY_2))
+        {
+            subMode = L"SceneClear";
+            bSpawnMode = false;
+        }
+
+        if (!m_pPanelUI->IsMouseOn())
+        {
+            if (bSpawnMode)
+            {
+                // 플레이어 스폰 위치는 클릭으로 설정
+                if (KEY_TAP(KEY::LBUTTON))
+                {
+                    SetPlayerSpawnPos();
+                }
+            }
+            else
+            {
+                // 씬 클리어 위치는 드래그로 영역 설정
+                if (KEY_TAP(KEY::LBUTTON))
+                {
+                    // 드래그 시작
+                    Vec2 vMousePos = CKeyMgr::GetInst()->GetMousePos();
+                    Vec2 vCamLook = CCamera::GetInst()->GetLookAt();
+                    Vec2 vResolution = CCore::GetInst()->GetResolution();
+                    m_vSceneClearStartPos = vMousePos + vCamLook - vResolution / 2.f;
+                    m_bDraggingClearArea = true;
+                }
+
+                if (KEY_HOLD(KEY::LBUTTON) && m_bDraggingClearArea)
+                {
+                    // 드래그 중
+                    Vec2 vMousePos = CKeyMgr::GetInst()->GetMousePos();
+                    Vec2 vCamLook = CCamera::GetInst()->GetLookAt();
+                    Vec2 vResolution = CCore::GetInst()->GetResolution();
+                    m_vSceneClearEndPos = vMousePos + vCamLook - vResolution / 2.f;
+                }
+
+                if (KEY_AWAY(KEY::LBUTTON) && m_bDraggingClearArea)
+                {
+                    // 드래그 완료
+                    SetSceneClearPos();
+                    m_bDraggingClearArea = false;
+                }
+            }
+        }
+
+
+    }
+    break;
 	case PREFAB_MODE:
 		break;
 	case TRIGGER_MODE:
@@ -363,6 +445,8 @@ void CScene_Tool::Update()
 		m_eToolMode = TOOL_MODE::TRIGGER_MODE;
 	if (KEY_TAP(KEY::F4))
 		m_eToolMode = TOOL_MODE::PREFAB_MODE;
+	if (KEY_TAP(KEY::F5))
+		m_eToolMode = TOOL_MODE::SPAWN_MODE;
 
     vector<wstring> modeText =
         {
@@ -624,6 +708,23 @@ void CScene_Tool::SaveTile(const wstring& _strFilePath)
 	// {
 	// 	static_cast<CGround*>(vecGround[i])->Save(pFile);
 	// }
+
+	// 스폰 데이터 저장 추가
+	fprintf(pFile, "[SpawnData]\n");
+
+	// 플레이어 스폰 위치 저장
+	fprintf(pFile, "[PlayerSpawn]\n");
+	fprintf(pFile, "%.1f\n", m_vPlayerSpawnPos.x);
+	fprintf(pFile, "%.1f\n", m_vPlayerSpawnPos.y);
+	fprintf(pFile, "%d\n", m_bPlayerSpawnSet ? 1 : 0);
+
+	// 씬 클리어 영역 저장
+	fprintf(pFile, "[SceneClear]\n");
+	fprintf(pFile, "%.1f\n", m_vSceneClearStartPos.x);
+	fprintf(pFile, "%.1f\n", m_vSceneClearStartPos.y);
+	fprintf(pFile, "%.1f\n", m_vSceneClearEndPos.x);
+	fprintf(pFile, "%.1f\n", m_vSceneClearEndPos.y);
+	fprintf(pFile, "%d\n", m_bSceneClearSet ? 1 : 0);
 
 	fclose(pFile);
 }
@@ -931,4 +1032,128 @@ INT_PTR CALLBACK TileCountProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		break;
 	}
 	return (INT_PTR)FALSE;
+}
+
+// 플레이어 스폰 위치 설정
+void CScene_Tool::SetPlayerSpawnPos()
+{
+    Vec2 vMousePos = CKeyMgr::GetInst()->GetMousePos();
+    Vec2 vCamLook = CCamera::GetInst()->GetLookAt();
+    Vec2 vResolution = CCore::GetInst()->GetResolution();
+    Vec2 vWorldPos = vMousePos + vCamLook - vResolution / 2.f;
+
+    m_vPlayerSpawnPos = vWorldPos;
+    m_bPlayerSpawnSet = true;
+
+    // 디버그 메시지
+    wchar_t szBuffer[256];
+    swprintf_s(szBuffer, L"플레이어 스폰 위치 설정: (%.1f, %.1f)", vWorldPos.x, vWorldPos.y);
+    MessageBox(nullptr, szBuffer, L"스폰 위치 설정", MB_OK);
+}
+
+// 씬 클리어 위치 설정 (드래그 영역)
+void CScene_Tool::SetSceneClearPos()
+{
+    // 시작점과 끝점을 정규화 (왼쪽 위가 시작점, 오른쪽 아래가 끝점이 되도록)
+    float minX = min(m_vSceneClearStartPos.x, m_vSceneClearEndPos.x);
+    float minY = min(m_vSceneClearStartPos.y, m_vSceneClearEndPos.y);
+    float maxX = max(m_vSceneClearStartPos.x, m_vSceneClearEndPos.x);
+    float maxY = max(m_vSceneClearStartPos.y, m_vSceneClearEndPos.y);
+
+    m_vSceneClearStartPos = Vec2(minX, minY);
+    m_vSceneClearEndPos = Vec2(maxX, maxY);
+    m_bSceneClearSet = true;
+
+    // 디버그 메시지
+    wchar_t szBuffer[256];
+    swprintf_s(szBuffer, L"씬 클리어 영역 설정: (%.1f, %.1f) ~ (%.1f, %.1f)",
+               minX, minY, maxX, maxY);
+    MessageBox(nullptr, szBuffer, L"클리어 영역 설정", MB_OK);
+}
+
+
+
+void CScene_Tool::Render(ID2D1RenderTarget* _pRenderTarget)
+{
+    CScene::Render(_pRenderTarget);
+
+    if (!_pRenderTarget)
+        return;
+
+    // 스폰 위치 표시 (빨간 원)
+    if (m_bPlayerSpawnSet)
+    {
+        Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(m_vPlayerSpawnPos);
+
+        ID2D1SolidColorBrush* pBrush = nullptr;
+        _pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Red, 0.7f), &pBrush);
+
+        if (pBrush)
+        {
+            D2D1_ELLIPSE ellipse = D2D1::Ellipse(D2D1::Point2F(vRenderPos.x, vRenderPos.y), 20.0f, 20.0f);
+            _pRenderTarget->FillEllipse(ellipse, pBrush);
+
+            // 테두리
+            _pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::DarkRed), &pBrush);
+            _pRenderTarget->DrawEllipse(ellipse, pBrush, 2.0f);
+
+            pBrush->Release();
+        }
+    }
+
+    // 클리어 영역 표시 (파란 사각형)
+    if (m_bSceneClearSet)
+    {
+        Vec2 vRenderStartPos = CCamera::GetInst()->GetRenderPos(m_vSceneClearStartPos);
+        Vec2 vRenderEndPos = CCamera::GetInst()->GetRenderPos(m_vSceneClearEndPos);
+
+        ID2D1SolidColorBrush* pBrush = nullptr;
+        _pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Blue, 0.3f), &pBrush);
+
+        if (pBrush)
+        {
+            D2D1_RECT_F rect = D2D1::RectF(
+                vRenderStartPos.x,
+                vRenderStartPos.y,
+                vRenderEndPos.x,
+                vRenderEndPos.y
+            );
+            _pRenderTarget->FillRectangle(rect, pBrush);
+
+            // 테두리
+            pBrush->Release();
+            _pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::DarkBlue), &pBrush);
+            _pRenderTarget->DrawRectangle(rect, pBrush, 2.0f);
+
+            pBrush->Release();
+        }
+    }
+
+    // 드래그 중인 클리어 영역 표시
+    if (m_bDraggingClearArea)
+    {
+        Vec2 vRenderStartPos = CCamera::GetInst()->GetRenderPos(m_vSceneClearStartPos);
+        Vec2 vRenderEndPos = CCamera::GetInst()->GetRenderPos(m_vSceneClearEndPos);
+
+        ID2D1SolidColorBrush* pBrush = nullptr;
+        _pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Yellow, 0.3f), &pBrush);
+
+        if (pBrush)
+        {
+            D2D1_RECT_F rect = D2D1::RectF(
+                vRenderStartPos.x,
+                vRenderStartPos.y,
+                vRenderEndPos.x,
+                vRenderEndPos.y
+            );
+            _pRenderTarget->FillRectangle(rect, pBrush);
+
+            // 테두리
+            pBrush->Release();
+            _pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Orange), &pBrush);
+            _pRenderTarget->DrawRectangle(rect, pBrush, 2.0f);
+
+            pBrush->Release();
+        }
+    }
 }

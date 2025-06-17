@@ -121,8 +121,8 @@ void CCore::Progress()
         CSceneMgr::GetInst()->Render(m_pRenderTarget);
         CCamera::GetInst()->Render(m_pRenderTarget);
 
-        // 프로파일링 디버그 출력 (F10 키)
-        if (CKeyMgr::GetInst()->GetKeyState(KEY::F10) == KEY_STATE::TAP)
+        // 프로파일링 디버그 출력 ( P 키)
+        if (CKeyMgr::GetInst()->GetKeyState(KEY::P) == KEY_STATE::TAP)
         {
             CTimeMgr::RenderProfileData(m_pRenderTarget, 500);
         }

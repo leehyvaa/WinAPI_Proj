@@ -8,13 +8,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e174ba9b-dad2-4293-bc5f-8669e5f5e6a8" name="변경" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.WinAPI_Proj/.idea/AugmentWebviewStateStore.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.WinAPI_Proj/.idea/AugmentWebviewStateStore.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.WinAPI_Proj/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.WinAPI_Proj/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Output/bin_debug/WinAPI_Proj.exe" beforeDir="false" afterPath="$PROJECT_DIR$/Output/bin_debug/WinAPI_Proj.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/CBullet.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/CBullet.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/Tile/CTile.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/Tile/CTile.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/PlayerArm.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/PlayerArm.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/SPlayer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/SPlayer.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/SPlayer.h" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/SPlayer.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Core/CCore.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Core/CCore.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Scene/CScene.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Scene/CScene.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Scene/CScene.h" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Scene/CScene.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Scene/Scene_Stage_01/Scene_Stage_01.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Scene/Scene_Stage_01/Scene_Stage_01.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Scene/Scene_Tool/CScene_Tool.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Scene/Scene_Tool/CScene_Tool.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Scene/Scene_Tool/CScene_Tool.h" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Scene/Scene_Tool/CScene_Tool.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/자료/2D 일정.txt" beforeDir="false" afterPath="$PROJECT_DIR$/자료/2D 일정.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -31,6 +33,23 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="cidr-memory-view://24" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../Program Files (x86)/Windows Kits/10/Include/10.0.22621.0/shared/windef.h" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../Program Files (x86)/Windows Kits/10/Include/10.0.22621.0/ucrt/stdio.h" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../Program Files (x86)/Windows Kits/10/Include/10.0.22621.0/um/WinUser.h" root0="SKIP_HIGHLIGHTING" />
@@ -213,6 +232,8 @@
       <workItem from="1749686241999" duration="13205000" />
       <workItem from="1749792436594" duration="752000" />
       <workItem from="1749820991793" duration="19294000" />
+      <workItem from="1749951234041" duration="10466000" />
+      <workItem from="1750043139674" duration="3729000" />
     </task>
     <servers />
   </component>

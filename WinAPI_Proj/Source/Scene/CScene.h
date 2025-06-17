@@ -30,6 +30,13 @@ private:
 	GameObject* m_pPlayer;
 	CBackGround* backGround;
 
+	// 스폰, 클리어 데이터
+	Vec2 m_vPlayerSpawnPos;
+	Vec2 m_vSceneClearStartPos;
+	Vec2 m_vSceneClearEndPos;
+	bool m_bPlayerSpawnSet;
+	bool m_bSceneClearSet;
+
 public:
 	void SetName(const wstring& _strName) { m_strName = _strName;}
 	const wstring& GetName() { return m_strName; }
@@ -45,6 +52,12 @@ public:
 
 	CBackGround* GetBackGround() { return backGround; }
 	void SetBackGround(CBackGround* _tex) { backGround = _tex; }
+
+	// 스폰 데이터 접근자
+	Vec2 GetPlayerSpawnPos() const { return m_vPlayerSpawnPos; }
+	Vec2 GetSceneClearStartPos() const { return m_vSceneClearStartPos; }
+	Vec2 GetSceneClearEndPos() const { return m_vSceneClearEndPos; }
+
 
 	virtual void Start();
 	virtual void Update();

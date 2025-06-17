@@ -33,6 +33,11 @@ CScene::CScene()
 	,backGround(nullptr)
     ,m_pPlayerText(nullptr)
     ,m_pPoolDebugText(nullptr)
+    ,m_vPlayerSpawnPos(Vec2(0, 0))
+    ,m_vSceneClearStartPos(Vec2(0, 0))
+    ,m_vSceneClearEndPos(Vec2(0, 0))
+    ,m_bPlayerSpawnSet(false)
+    ,m_bSceneClearSet(false)
 {
 
 
@@ -115,22 +120,22 @@ void CScene::Update()
 		}
 	}
  
+
     // 맵 그리드 확인
-	if (KEY_TAP(KEY::F5))
-		bDrawGrid= !bDrawGrid;
-    // 콜라이더 디버깅
-	if (KEY_TAP(KEY::F6))
-		bDrawCollider = !bDrawCollider;
+    if (KEY_TAP(KEY::F8))
+        bDrawGrid= !bDrawGrid;
     // 그라운드 타입 디버깅 
-	if (KEY_TAP(KEY::F7))
+	if (KEY_TAP(KEY::F9))
 		bDrawGroundType = !bDrawGroundType;
     // 그라운드 완성 처리 디버깅
-    if (KEY_TAP(KEY::F8))
+    if (KEY_TAP(KEY::F10))
         bDrawCompleteGround = !bDrawCompleteGround;
+    // 콜라이더 디버깅
+    if (KEY_TAP(KEY::F11))
+        bDrawCollider = !bDrawCollider;
     // 오브젝트 풀 내의 오브젝트 활성화 여부 디버깅
-    if (KEY_TAP(KEY::F9))
+    if (KEY_TAP(KEY::O))
         TogglePoolDebugDisplay();
-
 	if (KEY_TAP(KEY::F12))
 		bDrawOutWindow = !bDrawOutWindow;
     // 플레이어 정보 UI 디버깅 토글
@@ -220,7 +225,7 @@ void CScene::Render(ID2D1RenderTarget* _pRenderTarget)
     CTimeMgr::EndTimer(L"Scene_D2D_Render");
 
     // F10 키 - Direct2D 프로파일링 출력
-    if (KEY_HOLD(KEY::F10))
+    if (KEY_HOLD(KEY::P))
     {
 		CTimeMgr::RenderProfileData(_pRenderTarget, 10);
 		
@@ -449,10 +454,37 @@ void CScene::LoadTile(const wstring& _strRelativePath)
 	// {
 	// 	((CGround*)vecGround[i])->Load(pFile);
 	// }
+    
+    char szSpawnBuff[256] = {};
 
+    // 파일 끝(EOF)에 도달할 때까지 루프를 돌며 "[SpawnData]"를 찾기
+    while (fscanf_s(pFile, "%s", szSpawnBuff, (unsigned)_countof(szSpawnBuff)) != EOF)
+        if (strcmp(szSpawnBuff, "[SpawnData]") == 0)
+            break;
 
-	fclose(pFile);
+    
+    if (strcmp(szSpawnBuff, "[SpawnData]") == 0)
+    {
+        // FScanf 대신 fscanf_s를 직접 사용하여 값을 읽습니다.
+        fscanf_s(pFile, "%s", szSpawnBuff, (unsigned)_countof(szSpawnBuff)); 
+        fscanf_s(pFile, "%f", &m_vPlayerSpawnPos.x);                     
+        fscanf_s(pFile, "%f", &m_vPlayerSpawnPos.y);                     
+        int spawnSet = 0;
+        fscanf_s(pFile, "%d", &spawnSet);                                
+        m_bPlayerSpawnSet = (spawnSet == 1);
 
+        // 씬 클리어 영역 로드
+        fscanf_s(pFile, "%s", szSpawnBuff, (unsigned)_countof(szSpawnBuff)); 
+        fscanf_s(pFile, "%f", &m_vSceneClearStartPos.x);                 
+        fscanf_s(pFile, "%f", &m_vSceneClearStartPos.y);                 
+        fscanf_s(pFile, "%f", &m_vSceneClearEndPos.x);                   
+        fscanf_s(pFile, "%f", &m_vSceneClearEndPos.y);                   
+        int clearSet = 0;
+        fscanf_s(pFile, "%d", &clearSet);                                
+        m_bSceneClearSet = (clearSet == 1);
+    }
+
+    fclose(pFile);
 }
 
 /*

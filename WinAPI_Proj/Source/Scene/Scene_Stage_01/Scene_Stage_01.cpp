@@ -58,7 +58,19 @@ void Scene_Stage_01::Update()
 	{
 		cout << MOUSE_POS.x <<" "<<MOUSE_POS.y <<endl;
 	}
-	
+
+    // 클리어 영역의 시작점과 끝점 가져오기
+    Vec2 clearStartPos = GetSceneClearStartPos();
+    Vec2 clearEndPos = GetSceneClearEndPos();
+
+    // 플레이어의 현재 월드 위치 가져오기
+    Vec2 playerPos = GetPlayer()->GetWorldPos();
+    if (playerPos.x >= clearStartPos.x && playerPos.x <= clearEndPos.x &&
+        playerPos.y >= clearStartPos.y && playerPos.y <= clearEndPos.y)
+    {
+        // 클리어 조건 만족! 씬 전환
+        ChangeScene(SCENE_TYPE::START); // 예시로 START 씬으로 전환
+    }
 }
 
 void Scene_Stage_01::Render(ID2D1RenderTarget* _pRenderTarget)
@@ -76,11 +88,26 @@ void Scene_Stage_01::Enter()
 	Vec2 vResolution = CCore::GetInst()->GetResolution();
 
 
+    // 백그라운드 설정
+    CBackGround* backGround = new CBackGround;
+    backGround->SetWorldPos(Vec2(0, 0));
+    CTexture* back = CResMgr::GetInst()->LoadTexture(L"TutorialBack", L"texture\\background\\Forest_Mountain2.png");
+    backGround->SetTexture(back);
+    backGround->SetScale(CCore::GetInst()->GetResolution());
+    AddObject((GameObject*)backGround, GROUP_TYPE::BACKGROUND);
+    SetBackGround(backGround);
+
+    
+    // 타일 로딩
+    LoadTile(L"Tile\\test31");
+    // 불러온 타일 정보를 바탕으로 땅 생성
+    CreateGround();
+
 
 	//오브젝트 추가
 	GameObject* player = new SPlayer();
 	player->SetName(L"Player");
-	player->SetWorldPos(Vec2(0.f,0.f)); //700,3000
+	player->SetWorldPos(GetPlayerSpawnPos()); //700,3000
 	AddObject(player, GROUP_TYPE::PLAYER);
 	RegisterPlayer(player);
 
@@ -151,10 +178,7 @@ void Scene_Stage_01::Enter()
 	//CGround* pGround2 = CGroundPrefab::CreateGround(GROUND_TYPE::GROUND, Vec2(400.f, 500.f), Vec2(600.f, 600.f));
 	//AddObject((GameObject*)pGround2, GROUP_TYPE::GROUND);
 
-	// 타일 로딩
-	LoadTile(L"Tile\\NewTest7");
-    // 불러온 타일 정보를 바탕으로 땅 생성
-    CreateGround();
+	
 
 	//그룹간 충돌 체크
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::MONSTER);
@@ -163,26 +187,10 @@ void Scene_Stage_01::Enter()
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::MONSTER, GROUP_TYPE::HOOK);
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::MONSTER, GROUP_TYPE::GROUND);
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::GROUND, GROUP_TYPE::HOOK);
-
-
-	//카메라 위치 지정
-	CCamera::GetInst()->SetLookAt(vResolution/2.f);
-	CCamera::GetInst()->SetTarget(player);
-
-
-
-    // 백그라운드 설정
-	CBackGround* backGround = new CBackGround;
-	backGround->SetWorldPos(Vec2(0, 0));
-	CTexture* back = CResMgr::GetInst()->LoadTexture(L"TutorialBack", L"texture\\background\\Forest_Mountain2.png");
-	
-	backGround->SetTexture(back);
-	
-	backGround->SetScale(CCore::GetInst()->GetResolution());
-	AddObject((GameObject*)backGround, GROUP_TYPE::BACKGROUND);
-
-	SetBackGround(backGround);
-
+    
+    //카메라 위치 지정
+    CCamera::GetInst()->SetLookAt(vResolution/2.f);
+    CCamera::GetInst()->SetTarget(player);
 
 	//스타트 함수 호출
 	Start();
