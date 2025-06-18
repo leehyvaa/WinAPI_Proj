@@ -1,6 +1,8 @@
 ﻿#include "pch.h"
 #include "CScene_Tool.h"
 
+#include "CAnimation.h"
+#include "CAnimator.h"
 #include "CKeyMgr.h"
 #include "CTile.h"
 
@@ -16,8 +18,8 @@
 #include "CTextUI.h"
 #include "CGround.h"
 #include "CBackGround.h"
+#include "CMonster.h"
 #include "resource.h"
-
 
 
 CScene_Tool::CScene_Tool()
@@ -52,8 +54,6 @@ CScene_Tool::~CScene_Tool()
 
 void CScene_Tool::Enter()
 {
- 
-   
     
 	//메뉴 장착
 	CCore::GetInst()->DockMenu();
@@ -81,7 +81,7 @@ void CScene_Tool::Enter()
 	pPanelUI->AddChild(pBtnTileTex);
 
 	m_pTexUI = pBtnTileTex;
-	LoadTileTexUI();
+	LoadTileTexUI(L"texture\\tile");
 
 	CBtnUI* pBtnPrev = new CBtnUI;
 	pBtnPrev->SetName(L"ChildUI");
@@ -170,7 +170,7 @@ void CScene_Tool::Enter()
         L"2 - 전경 레이어",
         L"BACK - 지우기",
         L"좌클릭 - 타일 배치",
-        L"우클릭 - 타일 복사", 
+        L"우클릭 - 타일 복사",
     };
 
     m_groundHelp = {
@@ -185,6 +185,14 @@ void CScene_Tool::Enter()
         L"ENTER - 좌우 클릭으로 지정한 지형을 완성시키기",
     };
 
+    m_monsterHelp = {
+        L"[몬스터 모드]",
+        L"좌클릭 - 몬스터 배치 (지도 캔버스 영역)",
+        L"우측 상단 - 몬스터 타입 선택 UI",
+        L"CTRL+S - 몬스터 데이터 저장",
+        L"CTRL+L - 몬스터 데이터 로드",
+    };
+
     m_spawnHelp = {
         L"[스폰 모드]",
         L"1 - 플레이어 시작 위치 설정",
@@ -197,16 +205,15 @@ void CScene_Tool::Enter()
 
     m_commonHelp = {
         L"[조작법]",
-        L"F1 - 텍스처 모드",
-        L"F2 - 지형 모드",
-        L"F3 - 트리거 모드",
-        L"F4 - 프리팹 모드",
-        L"F5 - 플레이어 스폰,클리어 모드",
+        L"F1 - 텍스처 그리기",
+        L"F2 - 지형 생성",
+        L"F3 - 트리거 생성",
+        L"F4 - 몬스터 생성",
+        L"F5 - 플레이어 스폰,클리어 영역",
         L"",
         L"F8 - 타일 그리드 표시",
         L"F9 - 그라운드 타입 표시",
         L"F10 - 그라운드 완성 처리 디버깅",
-        L"",
         L"",
         L"CTRL - 타일맵 불러오기",
         L"ESC - 시작 화면으로"
@@ -265,6 +272,9 @@ void CScene_Tool::Update()
                 break;
             case GROUND_MODE:
                 m_pHelpSubText->AddLines(m_groundHelp);
+                break;
+            case MONSTER_MODE:
+                m_pHelpSubText->AddLines(m_monsterHelp);
                 break;
             case SPAWN_MODE:
                 m_pHelpSubText->AddLines(m_spawnHelp);
@@ -343,70 +353,77 @@ void CScene_Tool::Update()
 
  
     }
-	break;
-	case SPAWN_MODE:
-    {
-        mode = L"SpawnMode";
-
-        static bool bSpawnMode = true; // true: 플레이어 스폰, false: 씬 클리어
-
-        if (KEY_TAP(KEY::KEY_1))
-        {
-            subMode = L"PlayerSpawn";
-            bSpawnMode = true;
-        }
-        if (KEY_TAP(KEY::KEY_2))
-        {
-            subMode = L"SceneClear";
-            bSpawnMode = false;
-        }
-
-        if (!m_pPanelUI->IsMouseOn())
-        {
-            if (bSpawnMode)
-            {
-                // 플레이어 스폰 위치는 클릭으로 설정
-                if (KEY_TAP(KEY::LBUTTON))
-                {
-                    SetPlayerSpawnPos();
-                }
-            }
-            else
-            {
-                // 씬 클리어 위치는 드래그로 영역 설정
-                if (KEY_TAP(KEY::LBUTTON))
-                {
-                    // 드래그 시작
-                    Vec2 vMousePos = CKeyMgr::GetInst()->GetMousePos();
-                    Vec2 vCamLook = CCamera::GetInst()->GetLookAt();
-                    Vec2 vResolution = CCore::GetInst()->GetResolution();
-                    m_vSceneClearStartPos = vMousePos + vCamLook - vResolution / 2.f;
-                    m_bDraggingClearArea = true;
-                }
-
-                if (KEY_HOLD(KEY::LBUTTON) && m_bDraggingClearArea)
-                {
-                    // 드래그 중
-                    Vec2 vMousePos = CKeyMgr::GetInst()->GetMousePos();
-                    Vec2 vCamLook = CCamera::GetInst()->GetLookAt();
-                    Vec2 vResolution = CCore::GetInst()->GetResolution();
-                    m_vSceneClearEndPos = vMousePos + vCamLook - vResolution / 2.f;
-                }
-
-                if (KEY_AWAY(KEY::LBUTTON) && m_bDraggingClearArea)
-                {
-                    // 드래그 완료
-                    SetSceneClearPos();
-                    m_bDraggingClearArea = false;
-                }
-            }
-        }
-
-
-    }
     break;
-	case PREFAB_MODE:
-		break;
+    case MONSTER_MODE:
+       {
+           mode = L"MonsterMode";
+   
+           if (!m_pPanelUI->IsMouseOn())
+           {
+               // 몬스터 배치 처리
+               HandleMonsterPlacement();
+           }
+       }
+       break;
+    case SPAWN_MODE:
+       {
+           mode = L"SpawnMode";
+   
+           static bool bSpawnMode = true; // true: 플레이어 스폰, false: 씬 클리어
+   
+           if (KEY_TAP(KEY::KEY_1))
+           {
+               subMode = L"PlayerSpawn";
+               bSpawnMode = true;
+           }
+           if (KEY_TAP(KEY::KEY_2))
+           {
+               subMode = L"SceneClear";
+               bSpawnMode = false;
+           }
+   
+           if (!m_pPanelUI->IsMouseOn())
+           {
+               if (bSpawnMode)
+               {
+                   // 플레이어 스폰 위치는 클릭으로 설정
+                   if (KEY_TAP(KEY::LBUTTON))
+                   {
+                       SetPlayerSpawnPos();
+                   }
+               }
+               else
+               {
+                   // 씬 클리어 위치는 드래그로 영역 설정
+                   if (KEY_TAP(KEY::LBUTTON))
+                   {
+                       // 드래그 시작
+                       Vec2 vMousePos = CKeyMgr::GetInst()->GetMousePos();
+                       Vec2 vCamLook = CCamera::GetInst()->GetLookAt();
+                       Vec2 vResolution = CCore::GetInst()->GetResolution();
+                       m_vSceneClearStartPos = vMousePos + vCamLook - vResolution / 2.f;
+                       m_bDraggingClearArea = true;
+                   }
+   
+                   if (KEY_HOLD(KEY::LBUTTON) && m_bDraggingClearArea)
+                   {
+                       // 드래그 중
+                       Vec2 vMousePos = CKeyMgr::GetInst()->GetMousePos();
+                       Vec2 vCamLook = CCamera::GetInst()->GetLookAt();
+                       Vec2 vResolution = CCore::GetInst()->GetResolution();
+                       m_vSceneClearEndPos = vMousePos + vCamLook - vResolution / 2.f;
+                   }
+   
+                   if (KEY_AWAY(KEY::LBUTTON) && m_bDraggingClearArea)
+                   {
+                       // 드래그 완료
+                       SetSceneClearPos();
+                       m_bDraggingClearArea = false;
+                   }
+               }
+           }
+       }
+       break;
 	case TRIGGER_MODE:
 		break;
 	default:
@@ -438,13 +455,21 @@ void CScene_Tool::Update()
     }
 
 	if (KEY_TAP(KEY::F1))
+	{
 		m_eToolMode = TOOL_MODE::TEXTURE_MODE;
+	    m_strCurTexFolder = L"texture\\tile";
+		LoadTileTexUI(L"texture\\tile");
+	}
 	if (KEY_TAP(KEY::F2))
 		m_eToolMode = TOOL_MODE::GROUND_MODE;
 	if (KEY_TAP(KEY::F3))
 		m_eToolMode = TOOL_MODE::TRIGGER_MODE;
 	if (KEY_TAP(KEY::F4))
-		m_eToolMode = TOOL_MODE::PREFAB_MODE;
+	{
+		m_eToolMode = TOOL_MODE::MONSTER_MODE;
+	    m_strCurTexFolder = L"texture\\enemySample";
+		LoadTileTexUI(L"texture\\enemySample");
+	}
 	if (KEY_TAP(KEY::F5))
 		m_eToolMode = TOOL_MODE::SPAWN_MODE;
 
@@ -458,7 +483,7 @@ void CScene_Tool::Update()
    m_pModeText->AddLines(modeText);
 }
 
-// 클릭 시 현재 마우스 위치를 계산하여 해당 타일에 지정된 텍스처를 입히도록 요청하는 함수
+// 클릭 시 현재 마우스 위치를 계산하여 해당 타일에 지정된 텍스처를 입히도록 요청한다.
 void CScene_Tool::SetTileIdx()
 {
 	if (KEY_HOLD(KEY::RBUTTON))
@@ -529,7 +554,7 @@ void CScene_Tool::SetTileIdx()
 
 
 
-// 마우스 위치의 타일을 계산하고 해당 타일의 텍스처 변경 함수를 실행하는 함수
+// 마우스 위치의 타일을 계산하고 해당 타일의 텍스처 변경 함수를 실행한다.
 void CScene_Tool::DrawSelectTile()
 {
     int iCol = 0;
@@ -726,6 +751,18 @@ void CScene_Tool::SaveTile(const wstring& _strFilePath)
 	fprintf(pFile, "%.1f\n", m_vSceneClearEndPos.y);
 	fprintf(pFile, "%d\n", m_bSceneClearSet ? 1 : 0);
 
+	// 몬스터 스폰 데이터 저장
+	fprintf(pFile, "[MonsterSpawn]\n");
+	fprintf(pFile, "%zu\n", m_vecMonsterSpawnData.size());
+	
+	// for (size_t i = 0; i < m_vecMonsterSpawnData.size(); ++i)
+	// {
+	// 	const MonsterSpawnData monsterData = m_vecMonsterSpawnData[i];
+	// 	fprintf(pFile, "%.1f\n", monsterData.position.x);
+	// 	fprintf(pFile, "%.1f\n", monsterData.position.y);
+	// 	fprintf(pFile, "%d\n", monsterData.monsterType);
+	// }
+
 	fclose(pFile);
 }
 
@@ -804,89 +841,90 @@ void CScene_Tool::LoadTileData()
 
 
 // 폴더에서 타일 텍스처 파일들을 불러와서 저장하고 첫 번째 텍스처를 UI에 띄우는 함수
-void CScene_Tool::LoadTileTexUI()
+void CScene_Tool::LoadTileTexUI(const wstring& folderPath)
 {
-	WIN32_FIND_DATAA  data;
+    m_vecTile_list.clear(); 
+    m_iImgIndex = 0;        
 
+    WIN32_FIND_DATAA  data;
 
-	wstring path = CPathMgr::GetInst()->GetContentPath();
-	path += L"texture\\tile\\*";
-
-
-
-	string path2 = string().assign(path.begin(), path.end());
+    // 동적 경로 사용
+    wstring path = CPathMgr::GetInst()->GetContentPath();
+    path += folderPath + L"\\*";
+    
+    string path2 = string().assign(path.begin(), path.end());
     
     //m_vecTile_list에 텍스처파일들의 이름을 전부 넣기
-	try {
-		HANDLE hFind = FindFirstFileA(path2.c_str(), &data); //첫번째 파일 찾아 핸들 리턴
-		if (hFind == INVALID_HANDLE_VALUE)
-			throw std::runtime_error("FindFirstFile 실패"); //예외처리 
+    try {
+        HANDLE hFind = FindFirstFileA(path2.c_str(), &data); // 첫번째 파일 찾아 핸들 리턴
+        if (hFind == INVALID_HANDLE_VALUE)
+            throw std::runtime_error("FindFirstFile 실패"); // 예외처리 
 
-		while (FindNextFileA(hFind, &data))
-		{
+        while (FindNextFileA(hFind, &data))
+        {
+            if ((data.dwFileAttributes & FILE_ATTRIBUTE_ARCHIVE) &&  // 파일이라면
+                !(data.dwFileAttributes & FILE_ATTRIBUTE_SYSTEM)) // 시스템파일은 제외
+            {
+                // PNG 파일만 필터링
+                std::string fileName = std::string(data.cFileName);
+                if (fileName.find(".png") != std::string::npos || fileName.find(".PNG") != std::string::npos)
+                {
+                    m_vecTile_list.push_back(fileName);
+                }
+            }
+        }
+        FindClose(hFind); //핸들 닫아주기 
+    }
+    catch (std::runtime_error e)
+    {
+        std::cerr << e.what() << "\n";
+        cout << "툴 에러";
+    }
 
-			if ((data.dwFileAttributes & FILE_ATTRIBUTE_ARCHIVE) &&  //파일이라면
-				!(data.dwFileAttributes & FILE_ATTRIBUTE_SYSTEM)) //시스템파일은 제외
-			{
-				// PNG 파일만 필터링 (BMP에서 PNG로 마이그레이션)
-				std::string fileName = std::string(data.cFileName);
-				if (fileName.find(".png") != std::string::npos || fileName.find(".PNG") != std::string::npos)
-				{
-					m_vecTile_list.push_back(fileName);
-				}
-			}
-		}
-		FindClose(hFind); //핸들 닫아주기 
-	}
-	catch (std::runtime_error e)
-	{
-		std::cerr << e.what() << "\n";
-		cout << "툴 에러";
-	}
+    //출력으로 확인하기 
+    std::cout << "파일리스트" << "\n";
+    for (std::string str : m_vecTile_list)
+    {
+        std::cout << str << "\n";
+    }
 
-	//출력으로 확인하기 
-	std::cout << "파일리스트" << "\n";
-	for (std::string str : m_vecTile_list)
-	{
-		std::cout << str << "\n";
-	}
+    //불러올 타일이 없으면 중지
+    if (m_vecTile_list.empty())
+    {
+        m_pTexUI->SetTexture(nullptr); // 목록이 비었으면 텍스처를 null로 설정
+        return;
+    }
 
+    path = CPathMgr::GetInst()->GetRelativePath(path.c_str());
+    path.pop_back();
+    path2 = m_vecTile_list[m_iImgIndex];
+    path += wstring().assign(path2.begin(), path2.end());
 
-	path = CPathMgr::GetInst()->GetRelativePath(path.c_str());
-	path.pop_back();
-	path2 = m_vecTile_list[m_iImgIndex];
-	path += wstring().assign(path2.begin(), path2.end());
+    CTexture* pTileTexture = CResMgr::GetInst()->LoadTexture(L"TILE0", path.c_str());
+    m_pTexUI->SetTexture(pTileTexture);
 
-	//불러올 타일이 없으면 중지
-	if (m_vecTile_list.size() == 0)
-		assert(nullptr);
-
-	CTexture* pTileTexture = CResMgr::GetInst()->LoadTexture(L"TILE0", path.c_str());
-	m_pTexUI->SetTexture(pTileTexture);
-
-
+    ChangeTileTexUI();
 }
 
-// 현재 인덱스에 해당하는 텍스처 파일을 UI에 띄우도록 요청하는 함수
+// 현재 인덱스에 해당하는 텍스처 파일을 UI에 띄우도록 요청한다.
 void CScene_Tool::ChangeTileTexUI()
 {
-	wstring path = CPathMgr::GetInst()->GetContentPath();
-	path += L"texture\\tile\\*";
+    // 현재 모드에 맞는 폴더 경로를 가져오기
+    wstring fullPath = CPathMgr::GetInst()->GetContentPath() + m_strCurTexFolder + L"\\";
 
+    // 목록에서 현재 인덱스에 해당하는 파일 이름을 가져오기
+    string strFileName = m_vecTile_list[m_iImgIndex];
+    wstring wstrFileName(strFileName.begin(), strFileName.end());
+    fullPath += wstrFileName;
 
-	path = CPathMgr::GetInst()->GetRelativePath(path.c_str());
-	path.pop_back();
-	string path2 = m_vecTile_list[m_iImgIndex];
-	path += wstring().assign(path2.begin(), path2.end());
+    // 리소스 매니저에 등록할 고유한 키를 생성
+    wstring resKey = m_strCurTexFolder + L"\\" + wstrFileName;
 
-	wstring fileName = L"TILE";
-	fileName += to_wstring(m_iImgIndex);
-
-	CTexture* pTileTexture = CResMgr::GetInst()->LoadTexture(fileName.c_str(), path.c_str());
-	m_pTexUI->SetTexture(pTileTexture);
+    // 상대 경로로 텍스처를 로드
+    wstring relativePath = CPathMgr::GetInst()->GetRelativePath(fullPath.c_str());
+    CTexture* pTileTexture = CResMgr::GetInst()->LoadTexture(resKey, relativePath);
+    m_pTexUI->SetTexture(pTileTexture);
 }
-
-
 
 
 
@@ -897,7 +935,6 @@ void CScene_Tool::PrevTileUI()
 		m_iImgIndex = static_cast<UINT>(m_vecTile_list.size()) - 1;
 
 	ChangeTileTexUI();
-
 }
 
 
@@ -909,61 +946,11 @@ void CScene_Tool::NextTileUI()
 		m_iImgIndex = 0;
 
 	ChangeTileTexUI();
-
 }
 
 
-// 스크린샷 기능
-// void CScene_Tool::SaveBmp()
-// {
-// 	HDC hdcScreen = CCore::GetInst()->GetMainDC();
-//
-//
-// 	int screenX =TILE_SIZE*GetTileX();
-// 	int screenY = TILE_SIZE * GetTileY();
-//
-//
-// 	HDC hdcMem = CreateCompatibleDC(hdcScreen);
-// 	HBITMAP hBitmap = CreateCompatibleBitmap(hdcScreen, screenX, screenY);
-// 	SelectObject(hdcMem, hBitmap);
-//
-// 	//화면 캡처
-// 	BitBlt(hdcMem, 0, 0, screenX, screenY, hdcScreen, 0, 0, SRCCOPY);
-//
-// 	//비트맵 저장
-// 	BITMAPINFOHEADER bi;
-// 	bi.biSize = sizeof(BITMAPINFOHEADER);
-// 	bi.biWidth = screenX;
-// 	bi.biHeight = screenY;
-// 	bi.biPlanes = 1;
-// 	bi.biBitCount = 24;
-// 	bi.biCompression = BI_RGB;
-// 	bi.biSizeImage = 0;
-// 	bi.biXPelsPerMeter = 0;
-// 	bi.biYPelsPerMeter = 0;
-// 	bi.biClrUsed = 0;
-// 	bi.biClrImportant = 0;
-//
-// 	HANDLE hFile = CreateFile(L"content\\texture\\map\\screenshot.bmp", GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-// 	DWORD dwWritten = 0;
-// 	DWORD dwSizeofDIB = screenX * screenY * 3 + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
-// 	BITMAPFILEHEADER bmfHeader;
-// 	bmfHeader.bfOffBits = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
-// 	bmfHeader.bfSize = dwSizeofDIB + sizeof(BITMAPFILEHEADER);
-// 	bmfHeader.bfType = 0x4D42;
-// 	WriteFile(hFile, (LPSTR)&bmfHeader, sizeof(BITMAPFILEHEADER), &dwWritten, NULL);
-// 	WriteFile(hFile, (LPSTR)&bi, sizeof(BITMAPINFOHEADER), &dwWritten, NULL);
-// 	LPSTR lpBits = new char[dwSizeofDIB];
-// 	GetDIBits(hdcScreen, hBitmap, 0, static_cast<UINT>(screenY), lpBits, (BITMAPINFO*)&bi, DIB_RGB_COLORS);
-// 	WriteFile(hFile, lpBits, dwSizeofDIB, &dwWritten, NULL);
-//
-//
-// 	delete[] lpBits;
-// 	CloseHandle(hFile);
-// 	DeleteObject(hBitmap);
-// 	DeleteDC(hdcMem);
-// 	ReleaseDC(NULL, hdcScreen);
-//  }
+
+
 
 bool CScene_Tool::CalculateTileIndex(int& iCol, int& iRow,int& iTileX)
 {
@@ -1157,3 +1144,43 @@ void CScene_Tool::Render(ID2D1RenderTarget* _pRenderTarget)
         }
     }
 }
+
+// 몬스터 배치 처리 함수
+void CScene_Tool::HandleMonsterPlacement()
+{
+    // UI 패널 영역이 아닌 곳에서만 몬스터 배치 처리
+    if (m_pPanelUI->IsMouseOn())
+        return;
+    
+    // 좌클릭 시 몬스터 배치
+    if (KEY_TAP(KEY::LBUTTON))
+    {
+        // 마우스 위치를 월드 좌표로 변환
+        Vec2 vMousePos = CKeyMgr::GetInst()->GetMousePos();
+        Vec2 vCamLook = CCamera::GetInst()->GetLookAt();
+        Vec2 vResolution = CCore::GetInst()->GetResolution();
+        Vec2 vWorldPos = vMousePos + vCamLook - vResolution / 2.f;
+        SettingSampleMonster(vWorldPos);
+    }
+}
+
+
+
+
+
+void CScene_Tool::SettingSampleMonster(Vec2 pos)
+{
+    GameObject* obj = new CMonster();
+    obj->SetWorldPos(pos);
+    obj->CreateAnimator();
+    CTexture * pCursor = CResMgr::GetInst()->LoadTexture(L"Cursor_Tex", L"texture\\enemy\\rifleman\\RifleMan.png");
+	
+	AddObject(obj, GROUP_TYPE::MONSTER);
+	
+    obj->GetAnimator()->CreateAnimation(L"sample1", pCursor,
+        Vec2(0.f, 0.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 1, 2.f, Vec2(0.f, -64.f));
+    obj->GetAnimator()->FindAnimation(L"sample1")->Save(L"animation\\sample1.anim");
+    obj->GetAnimator()->Play(L"sample1", true);
+}
+
+

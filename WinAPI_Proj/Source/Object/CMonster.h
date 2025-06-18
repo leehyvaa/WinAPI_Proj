@@ -1,9 +1,7 @@
 ﻿#pragma once
 #include "GameObject.h"
 
-// Direct2D 전방 선언
 struct ID2D1RenderTarget;
-
 class CShooterHead;
 class AI;
 

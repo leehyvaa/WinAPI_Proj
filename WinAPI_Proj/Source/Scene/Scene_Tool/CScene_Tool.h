@@ -9,12 +9,16 @@ enum TOOL_MODE
 {
 	TEXTURE_MODE,
 	GROUND_MODE,
-	PREFAB_MODE,
 	TRIGGER_MODE,
+	MONSTER_MODE,
 	SPAWN_MODE,
 };
 
-
+struct MonsterSpawnData
+{
+    Vec2 position;
+    int monsterType;
+};
 
 class CScene_Tool : public CScene
 {
@@ -25,7 +29,7 @@ private:
 	CTextUI* m_pHelpText;  // 설명서 텍스트 UI
     CTextUI* m_pHelpSubText; // 세부 설명서 텍스트 UI
 
-
+    wstring m_strCurTexFolder; 
 	vector<std::string> m_vecTile_list;
 
 	Vec2 m_vTilePos;
@@ -53,9 +57,13 @@ private:
     bool m_bSceneClearSet;
     bool m_bDraggingClearArea;   // 클리어 영역 드래그 중인지
 
+    // 몬스터 스폰 정보
+    vector<vector<MonsterSpawnData>> m_vecMonsterSpawnData; 
+ 
     // 모드별 설명 텍스트 저장용
     vector<wstring> m_textureHelp;
     vector<wstring> m_groundHelp;
+    vector<wstring> m_monsterHelp;
     vector<wstring> m_spawnHelp;
     vector<wstring> m_commonHelp;
     
@@ -79,11 +87,12 @@ public:
 	void SaveTileData();
 	void LoadTileData();
 
-	void LoadTileTexUI();
+	void LoadTileTexUI(const wstring& folderPath);
 	void ChangeTileTexUI();
 	void NextTileUI();
 	void PrevTileUI();
-
+    
+    void SettingSampleMonster(Vec2 pos);
 
 	void SettingTopLeftGround();
     void SettingBotRightGround();
@@ -92,11 +101,11 @@ public:
     void SetPlayerSpawnPos();
     void SetSceneClearPos();
 
-	void SaveBmp();
-    void UpdateTextBox();
+    // 몬스터 배치 관련 함수들
+    void HandleMonsterPlacement();  // 몬스터 배치 처리
 
 
-
+    
 
 	CScene_Tool();
 	virtual ~CScene_Tool();
