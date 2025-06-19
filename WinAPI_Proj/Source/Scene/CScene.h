@@ -70,6 +70,7 @@ public:
 
 public:
 	void AddObject(GameObject* _pObj, GROUP_TYPE _eType);
+	GameObject* FindObjectByName(const wstring& _strName); // ADDED
 	void RegisterPlayer(GameObject* _pPlayer) { m_pPlayer = _pPlayer; }
 
 

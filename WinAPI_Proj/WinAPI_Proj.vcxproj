@@ -171,6 +171,7 @@
     <ClInclude Include="Source\Object\CBullet.h" />
     <ClInclude Include="Source\Object\Monster\CShooterHead.h" />
     <ClInclude Include="Source\Object\Monster\CShooterMonster.h" />
+    <ClInclude Include="Source\Object\Trigger\CTrigger.h" />
     <ClInclude Include="Source\Object\UI\ChatUI\CTextUI.h" />
     <ClInclude Include="Source\CHook.h" />
     <ClInclude Include="Source\Component\Animator\Animation\CAnimation.h" />
@@ -324,6 +325,7 @@
     <ClCompile Include="Source\Object\CBullet.cpp" />
     <ClCompile Include="Source\Object\Monster\CShooterHead.cpp" />
     <ClCompile Include="Source\Object\Monster\CShooterMonster.cpp" />
+    <ClCompile Include="Source\Object\Trigger\CTrigger.cpp" />
     <ClCompile Include="Source\Object\UI\ChatUI\CTextUI.cpp" />
     <ClCompile Include="Source\CHook.cpp" />
     <ClCompile Include="Source\Component\Animator\Animation\CAnimation.cpp" />

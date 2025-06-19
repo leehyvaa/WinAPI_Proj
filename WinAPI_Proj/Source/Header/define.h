@@ -36,14 +36,15 @@ enum class GROUP_TYPE
 	TILE,
 	GROUND,
     NON_GROUND,
-    
-	PLAYER,
-	MONSTER,
-	PLAYER_ARM,
+       
+    PLAYER,
+    PLAYER_WEAPON,
+    MONSTER,
+    PLAYER_ARM,
     MONSTER_HEAD,
 	HOOK,
 	PROJ_MONSTER,
-    
+    TRIGGER,
 	Ray = 30,
 	UI = 31,
 	END = 32,
@@ -100,9 +101,10 @@ enum class MON_STATE
 	PATROL,
     AIMING,
 	TRACE,
+    EXECUTED,
+    
+    SUBDUED,
 	ATTACK,
-	SUBDUED,
-	EXECUTED,
 	DEAD,
 	END,
 };

@@ -1,5 +1,7 @@
 ﻿#pragma once
 #include "CScene.h"
+#include "Object/Trigger/CTrigger.h" // CTrigger 헤더 포함
+#include <array>
 
 class CTextUI;
 class CBtnUI;
@@ -10,14 +12,7 @@ enum TOOL_MODE
 	TEXTURE_MODE,
 	GROUND_MODE,
 	TRIGGER_MODE,
-	MONSTER_MODE,
 	SPAWN_MODE,
-};
-
-struct MonsterSpawnData
-{
-    Vec2 position;
-    int monsterType;
 };
 
 class CScene_Tool : public CScene
@@ -27,9 +22,21 @@ private:
 	CPanelUI* m_pPanelUI;
 	CTextUI* m_pModeText;  // 모드 표시용 텍스트 UI
 	CTextUI* m_pHelpText;  // 설명서 텍스트 UI
-    CTextUI* m_pHelpSubText; // 세부 설명서 텍스트 UI
+	CTextUI* m_pHelpSubText; // 세부 설명서 텍스트 UI
 
-    wstring m_strCurTexFolder; 
+	// 트리거 모드 관련 변수
+	std::array<CTrigger*, 5> m_arrTriggers;
+	int m_iCurrentTriggerIndex;
+	int m_iTriggerAreaClickCount;
+	Vec2 m_vTriggerAreaP1;
+	int m_iWallAreaClickCount; // A counter for wall creation clicks
+	int m_iWallAreaP1_TileIdx; // Stores the index of the first tile clicked for wall creation
+	MON_TYPE m_eCurrentMonsterType;
+	vector<GameObject*> m_vecSampleMonsters;
+
+
+
+	wstring m_strCurTexFolder;
 	vector<std::string> m_vecTile_list;
 
 	Vec2 m_vTilePos;
@@ -45,7 +52,7 @@ private:
 	bool m_bSecondTex;
 	TOOL_MODE m_eToolMode;
 	GROUND_TYPE m_eGroundType;
-  
+   
     int m_iLastBotRightTileIdx;
     int m_iLastTopLeftTileIdx;
 
@@ -56,14 +63,11 @@ private:
     bool m_bPlayerSpawnSet;
     bool m_bSceneClearSet;
     bool m_bDraggingClearArea;   // 클리어 영역 드래그 중인지
-
-    // 몬스터 스폰 정보
-    vector<vector<MonsterSpawnData>> m_vecMonsterSpawnData; 
  
     // 모드별 설명 텍스트 저장용
     vector<wstring> m_textureHelp;
     vector<wstring> m_groundHelp;
-    vector<wstring> m_monsterHelp;
+    vector<wstring> m_triggerHelp; // 트리거 모드 설명 추가
     vector<wstring> m_spawnHelp;
     vector<wstring> m_commonHelp;
     
@@ -91,8 +95,8 @@ public:
 	void ChangeTileTexUI();
 	void NextTileUI();
 	void PrevTileUI();
-    
-    void SettingSampleMonster(Vec2 pos);
+	   
+	void SettingSampleMonster(Vec2 pos, MON_TYPE eType, CTrigger* pOwnerTrigger);
 
 	void SettingTopLeftGround();
     void SettingBotRightGround();
@@ -100,14 +104,8 @@ public:
     // 스폰 및 클리어 위치 설정
     void SetPlayerSpawnPos();
     void SetSceneClearPos();
-
-    // 몬스터 배치 관련 함수들
-    void HandleMonsterPlacement();  // 몬스터 배치 처리
-
-
     
 
 	CScene_Tool();
 	virtual ~CScene_Tool();
 };
-

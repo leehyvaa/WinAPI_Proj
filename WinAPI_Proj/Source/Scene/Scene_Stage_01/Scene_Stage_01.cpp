@@ -27,6 +27,7 @@
 #include "MouseCursor.h"
 #include "Monster/CShooterMonster.h"
 #include "Object/UI/DamageEffect/CDamageEffectUI.h"
+#include "Object/Trigger/CTrigger.h" // ADDED
 
 Scene_Stage_01::Scene_Stage_01()
     : m_bPlayerDeathMode(false)
@@ -147,8 +148,21 @@ void Scene_Stage_01::Enter()
     // 불러온 타일 정보를 바탕으로 땅 생성
     CreateGround();
 
+    // ================== 트리거 데이터 해석 단계 ================== // ADDED START
+    // 맵의 모든 오브젝트(타일, 벽 등)가 로드된 후, 트리거가 참조할 데이터를 해석합니다.
+    const vector<GameObject*>& vecTriggers = GetGroupObject(GROUP_TYPE::TRIGGER);
+    for (GameObject* pObj : vecTriggers)
+    {
+        CTrigger* pTrigger = dynamic_cast<CTrigger*>(pObj);
+        if (pTrigger)
+        {
+            pTrigger->ResolveData();
+        }
+    }
+    // ========================================================== // ADDED END
 
-	//오브젝트 추가
+
+ //오브젝트 추가
 	GameObject* player = new SPlayer();
 	player->SetName(L"Player");
 	player->SetWorldPos(GetPlayerSpawnPos()); //700,3000
@@ -241,11 +255,12 @@ void Scene_Stage_01::Enter()
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::MONSTER);
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::GROUND);
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::PROJ_MONSTER);
+	   CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::TRIGGER); // 플레이어와 트리거 충돌 체크 // ADDED
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::MONSTER, GROUP_TYPE::HOOK);
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::MONSTER, GROUP_TYPE::GROUND);
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::GROUND, GROUP_TYPE::HOOK);
-    
-    // 카메라 위치 지정
+	   
+	   // 카메라 위치 지정
     CCamera::GetInst()->SetLookAt(vResolution/2.f);
     CCamera::GetInst()->SetTarget(player);
 

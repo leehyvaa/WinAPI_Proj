@@ -47,23 +47,23 @@ void CGround::Render(ID2D1RenderTarget* _pRenderTarget)
     if (CSceneMgr::GetInst()->GetCurScene()->GetDrawGroundType())
     {
         D2D1_COLOR_F color = D2D1::ColorF(D2D1::ColorF::Blue);
-        //
-        // if (GetGroundType() == GROUND_TYPE::NORMAL)
-        // {
-        //     color = D2D1::ColorF::Blue;
-        // }
-        // else if (GetGroundType() == GROUND_TYPE::UNWALKABLE)
-        // {
-        //     color = D2D1::ColorF::Purple;
-        // }
-        // else if (GetGroundType() == GROUND_TYPE::DAMAGEZONE)
-        // {
-        //     color = D2D1::ColorF::Orange;
-        // }
-        // else if (GetGroundType() == GROUND_TYPE::DEADZONE)
-        // {
-        //     color = D2D1::ColorF::Red;
-        // }
+        
+        if (GetGroundType() == GROUND_TYPE::NORMAL)
+        {
+            color = D2D1::ColorF(D2D1::ColorF::Blue);
+        }
+        else if (GetGroundType() == GROUND_TYPE::UNWALKABLE)
+        {
+            color = D2D1::ColorF(D2D1::ColorF::Purple);
+        }
+        else if (GetGroundType() == GROUND_TYPE::DAMAGEZONE)
+        {
+            color = D2D1::ColorF(D2D1::ColorF::Orange);
+        }
+        else if (GetGroundType() == GROUND_TYPE::DEADZONE)
+        {
+            color = D2D1::ColorF(D2D1::ColorF::Red);
+        }
 
         // 정적 브러시 캐싱
         static ID2D1SolidColorBrush* s_pGroundBrush = nullptr;

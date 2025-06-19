@@ -19,6 +19,7 @@
 #include "CUI.h"
 #include "CTimeMgr.h"
 #include "SPlayer.h"
+#include "Object/Trigger/CTrigger.h" // ADDED
 
 CScene::CScene()
 	:m_iTileX(0)
@@ -108,6 +109,19 @@ void CScene::Exit()
 void CScene::Update()
 {
     CTimeMgr::StartTimer(L"Scene_Update");
+
+    for (UINT i = 0; i < static_cast<UINT>(GROUP_TYPE::END); ++i)
+    {
+        vector<GameObject*>& group = m_arrObj[i];
+        for (int j = (int)group.size() - 1; j >= 0; --j)
+        {
+            if (group[j]->IsDead())
+            {
+                group.erase(group.begin() + j);
+            }
+        }
+    }
+
     // 씬 내의 오브젝트들 Update
 	for (UINT i = 0; i < static_cast<UINT>(GROUP_TYPE::END); i++)
 	{
@@ -122,16 +136,16 @@ void CScene::Update()
  
 
     // 맵 그리드 확인
-    if (KEY_TAP(KEY::F8))
+    if (KEY_TAP(KEY::F6))
         bDrawGrid= !bDrawGrid;
     // 그라운드 타입 디버깅 
-	if (KEY_TAP(KEY::F9))
+	if (KEY_TAP(KEY::F7))
 		bDrawGroundType = !bDrawGroundType;
     // 그라운드 완성 처리 디버깅
-    if (KEY_TAP(KEY::F10))
+    if (KEY_TAP(KEY::F8))
         bDrawCompleteGround = !bDrawCompleteGround;
     // 콜라이더 디버깅
-    if (KEY_TAP(KEY::F11))
+    if (KEY_TAP(KEY::F5))
         bDrawCollider = !bDrawCollider;
     // 오브젝트 풀 내의 오브젝트 활성화 여부 디버깅
     if (KEY_TAP(KEY::O))
@@ -158,6 +172,7 @@ void CScene::Update()
 void CScene::FinalUpdate()
 {
     CTimeMgr::StartTimer(L"Scene_FinalUpdate");
+    
 	for (UINT i = 0; i < static_cast<UINT>(GROUP_TYPE::END); i++)
 	{
 		for (size_t j = 0; j < m_arrObj[i].size(); j++)
@@ -207,13 +222,17 @@ void CScene::Render(ID2D1RenderTarget* _pRenderTarget)
 				{
 					pObj->Render(_pRenderTarget);
 				}
+			    else if (static_cast<UINT>(GROUP_TYPE::GROUND) == i)
+				{
+					pObj->Render(_pRenderTarget);
+				}
 				// 다른 그룹은 Animator 렌더링
 				else if (pObj->GetAnimator())
 				{
 					pObj->GetAnimator()->Render(_pRenderTarget);
 				}
 			    
-				// 콜라이더 디버그 렌더링 (F6 키로 토글)
+				// 콜라이더 디버그 렌더링 (F5 키로 토글)
 				if (bDrawCollider && pObj->GetCollider())
 				{
 					pObj->GetCollider()->Render(_pRenderTarget);
@@ -224,7 +243,7 @@ void CScene::Render(ID2D1RenderTarget* _pRenderTarget)
     
     CTimeMgr::EndTimer(L"Scene_D2D_Render");
 
-    // F10 키 - Direct2D 프로파일링 출력
+    // P 키 - Direct2D 프로파일링 출력
     if (KEY_HOLD(KEY::P))
     {
 		CTimeMgr::RenderProfileData(_pRenderTarget, 10);
@@ -234,19 +253,20 @@ void CScene::Render(ID2D1RenderTarget* _pRenderTarget)
     }
 }
 
+
 void CScene::RenderTile(ID2D1RenderTarget* _pRenderTarget)
 {
     if (!_pRenderTarget)
         return;
 
     const vector<GameObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
-    
+
     if (vecTile.empty())
         return;
 
     // 기존 모드 세팅 저장
     D2D1_ANTIALIAS_MODE oldAliasMode = _pRenderTarget->GetAntialiasMode();
-    
+
     // 안티앨리어싱 비활성화
     _pRenderTarget->SetAntialiasMode(D2D1_ANTIALIAS_MODE_ALIASED);
 
@@ -264,7 +284,7 @@ void CScene::RenderTile(ID2D1RenderTarget* _pRenderTarget)
     Vec2 vResolution = CCore::GetInst()->GetResolution();
 
     Vec2 vLeftTop = vCamLook - vResolution / 2.f;
-    
+
     int iTileSize = TILE_SIZE;
 
     int iLTCol = static_cast<int>(vLeftTop.x) / iTileSize;
@@ -272,6 +292,16 @@ void CScene::RenderTile(ID2D1RenderTarget* _pRenderTarget)
 
     int iClientWidth = (static_cast<int>(vResolution.x) / iTileSize) + 2;
     int iClientHeight = (static_cast<int>(vResolution.y) / iTileSize) + 2;
+
+    // 지형 완성선용 브러시 생성
+    static ID2D1SolidColorBrush* s_pCompleteGroundBrush = nullptr;
+    if (bDrawCompleteGround && !s_pCompleteGroundBrush)
+    {
+        _pRenderTarget->CreateSolidColorBrush(
+            D2D1::ColorF(D2D1::ColorF::White, 1.0f), 
+            &s_pCompleteGroundBrush
+        );
+    }
 
     for (int iCurRow = iLTRow; iCurRow < (iLTRow + iClientHeight); iCurRow++)
     {
@@ -284,7 +314,7 @@ void CScene::RenderTile(ID2D1RenderTarget* _pRenderTarget)
             }
 
             int iIdx = (m_iTileX * iCurRow) + iCurCol;
-            
+
             if (iIdx >= 0 && iIdx < static_cast<int>(vecTile.size()))
             {
                 CTile* pTile = static_cast<CTile*>(vecTile[iIdx]);
@@ -309,35 +339,49 @@ void CScene::RenderTile(ID2D1RenderTarget* _pRenderTarget)
                     // 타일 렌더링
                     pTile->Render(_pRenderTarget);
 
-                    // 지형 완성선 그리기
-                    if (bDrawCompleteGround && pTile->GetGroundType() != GROUND_TYPE::NONE)
+                   if (bDrawCompleteGround && s_pCompleteGroundBrush && pTile->GetGroundType() != GROUND_TYPE::NONE && pTile->GetVertexPosition() == VERTEX_POSITION::TOP_LEFT)
                     {
-                        // 지형 완성선용 브러시 생성
-                        static ID2D1SolidColorBrush* s_pCompleteGroundBrush = nullptr;
-                        if (!s_pCompleteGroundBrush)
+                        int botIdx = pTile->GetBotRightTileIdx();
+                        if (botIdx != -1 && botIdx < static_cast<int>(vecTile.size()))
                         {
-                            _pRenderTarget->CreateSolidColorBrush(
-                                D2D1::ColorF(D2D1::ColorF::Green, 1.0f),
-                                &s_pCompleteGroundBrush
+                            // 지형 타입에 따라 색상 결정
+                            D2D1_COLOR_F color;
+                            GROUND_TYPE groundType = pTile->GetGroundType();
+
+                            if (groundType == GROUND_TYPE::NORMAL)
+                                color = D2D1::ColorF(D2D1::ColorF::Blue);
+                            else if (groundType == GROUND_TYPE::UNWALKABLE)
+                                color = D2D1::ColorF(D2D1::ColorF::Purple);
+                            else if (groundType == GROUND_TYPE::DAMAGEZONE)
+                                color = D2D1::ColorF(D2D1::ColorF::Orange);
+                            else if (groundType == GROUND_TYPE::DEADZONE)
+                                color = D2D1::ColorF(D2D1::ColorF::Red);
+                            else 
+                                color = D2D1::ColorF(D2D1::ColorF::White);
+                            
+                            s_pCompleteGroundBrush->SetColor(&color);
+                            
+                            // 사각형 좌표 계산 및 그리기
+                            Vec2 vStartPos = CCamera::GetInst()->GetRenderPos(pTile->GetWorldPos());
+                            CTile* pBotRightTile = static_cast<CTile*>(vecTile[botIdx]);
+                            Vec2 vEndPos = CCamera::GetInst()->GetRenderPos(pBotRightTile->GetWorldPos());
+                            Vec2 vTileScale = pBotRightTile->GetScale();
+
+                            float padding = 2.0f;
+                            float lineThickness = 2.0f;
+
+                            D2D1_RECT_F outlineRect = D2D1::RectF(
+                                vStartPos.x - padding,
+                                vStartPos.y - padding,
+                                vEndPos.x + vTileScale.x + padding,
+                                vEndPos.y + vTileScale.y + padding
                             );
-                        }
 
-                        if (s_pCompleteGroundBrush)
-                        {
-                            int botIdx = pTile->GetBotRightTileIdx();
-                            if (botIdx != -1 && botIdx < static_cast<int>(vecTile.size()))
-                            {
-                                Vec2 vStartPos = CCamera::GetInst()->GetRenderPos(pTile->GetWorldPos());
-                                Vec2 vEndPos = CCamera::GetInst()->GetRenderPos(vecTile[botIdx]->GetWorldPos());
-
-                                // 선 그리기
-                                _pRenderTarget->DrawLine(
-                                    D2D1::Point2F(vStartPos.x, vStartPos.y),
-                                    D2D1::Point2F(vEndPos.x+GetTileX()*2, vEndPos.y+GetTileY()*2),
-                                    s_pCompleteGroundBrush,
-                                    2.0f  // 선 두께
-                                );
-                            }
+                            _pRenderTarget->DrawRectangle(
+                                outlineRect,
+                                s_pCompleteGroundBrush,
+                                lineThickness
+                            );
                         }
                     }
                 }
@@ -381,6 +425,21 @@ void CScene::DeleteGroup(GROUP_TYPE _eTarget)
     vecObjects.clear();
 }
 
+
+GameObject* CScene::FindObjectByName(const wstring& _strName)
+{
+    for (UINT i = 0; i < static_cast<UINT>(GROUP_TYPE::END); ++i)
+    {
+        for (GameObject* pObj : m_arrObj[i])
+        {
+            if (pObj && pObj->GetName() == _strName)
+            {
+                return pObj;
+            }
+        }
+    }
+    return nullptr;
+}
 void CScene::DeleteAll()
 {
     m_pPlayerText = nullptr;
@@ -483,6 +542,8 @@ void CScene::LoadTile(const wstring& _strRelativePath)
         fscanf_s(pFile, "%d", &clearSet);                                
         m_bSceneClearSet = (clearSet == 1);
     }
+
+
 
     fclose(pFile);
 }
@@ -603,7 +664,7 @@ void CScene::UpdatePoolDebugInfo()
 
     
     m_pPoolDebugText->AddLine(L"");
-    m_pPoolDebugText->AddLine(L"Press F9");
+    m_pPoolDebugText->AddLine(L"Press O");
 }
 
 void CScene::TogglePoolDebugDisplay()

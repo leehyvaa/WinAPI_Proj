@@ -20,11 +20,11 @@
 #include "C:\WinAPIProject\WinAPI_Proj\Source\Object\Monster\CShooterMonster.cpp"
 
 
+#include "C:\WinAPIProject\WinAPI_Proj\Source\Object\Trigger\CTrigger.cpp"
+
+
 #include "C:\WinAPIProject\WinAPI_Proj\Source\Object\UI\ChatUI\CTextUI.cpp"
 
 
 #include "C:\WinAPIProject\WinAPI_Proj\Source\CHook.cpp"
-
-
-#include "C:\WinAPIProject\WinAPI_Proj\Source\Component\Animator\Animation\CAnimation.cpp"
 

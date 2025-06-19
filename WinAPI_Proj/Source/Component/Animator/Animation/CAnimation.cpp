@@ -40,7 +40,7 @@ void CAnimation::Update()
 
 		if (m_vecFrm.size() <= m_iCurFrm)
 		{
-			m_iCurFrm = -1;
+			m_iCurFrm = m_vecFrm.size() - 1;
 			m_bFinish = true;
 			m_fAccTime = 0.f;
 		    // 애니메이션이 끝났을 때 콜백 함수 호출

@@ -20,6 +20,7 @@
 #include "CBackGround.h"
 #include "CMonster.h"
 #include "resource.h"
+#include "Object/Trigger/CTrigger.h"
 
 
 CScene_Tool::CScene_Tool()
@@ -37,6 +38,8 @@ CScene_Tool::CScene_Tool()
 	, m_bErase(false)
 	, m_bSecondTex(false)
 	, m_pModeText(nullptr)
+    , m_iCurrentTriggerIndex(-1)
+    , m_eCurrentMonsterType(MON_TYPE::SHOOTER)
     , m_pHelpText(nullptr)
     , m_vPlayerSpawnPos(Vec2(0, 0))
     , m_vSceneClearStartPos(Vec2(0, 0))
@@ -44,7 +47,12 @@ CScene_Tool::CScene_Tool()
     , m_bPlayerSpawnSet(false)
     , m_bSceneClearSet(false)
     , m_bDraggingClearArea(false)
+    , m_iTriggerAreaClickCount(0)
+    , m_iWallAreaClickCount(0)
+    , m_iWallAreaP1_TileIdx(-1)
 {
+    for (int i = 0; i < 5; ++i)
+        m_arrTriggers[i] = nullptr;
 }
 
 CScene_Tool::~CScene_Tool()
@@ -54,7 +62,13 @@ CScene_Tool::~CScene_Tool()
 
 void CScene_Tool::Enter()
 {
-    
+    for (int i = 0; i < 5; ++i)
+    {
+        if (m_arrTriggers[i] == nullptr)
+        {
+            m_arrTriggers[i] = new CTrigger;
+        }
+    }
 	//메뉴 장착
 	CCore::GetInst()->DockMenu();
 
@@ -124,6 +138,7 @@ void CScene_Tool::Enter()
     // 텍스트 UI 초기화
     m_textureHelp.clear();
     m_groundHelp.clear();
+    m_triggerHelp.clear();
     m_spawnHelp.clear();
     m_commonHelp.clear();
     
@@ -185,14 +200,13 @@ void CScene_Tool::Enter()
         L"ENTER - 좌우 클릭으로 지정한 지형을 완성시키기",
     };
 
-    m_monsterHelp = {
-        L"[몬스터 모드]",
-        L"좌클릭 - 몬스터 배치 (지도 캔버스 영역)",
-        L"우측 상단 - 몬스터 타입 선택 UI",
-        L"CTRL+S - 몬스터 데이터 저장",
-        L"CTRL+L - 몬스터 데이터 로드",
+    m_triggerHelp = {
+        L"[트리거 모드]",
+        L"좌클릭 드래그 - 트리거 영역 생성/조절",
+        L"우클릭(벽 위) - 선택된 트리거에 벽 연결/해제",
+        L"우클릭(빈 공간) - 선택된 트리거에 몬스터 스폰 위치 추가",
+        L"휠클릭(트리거 위) - 트리거 선택",
     };
-
     m_spawnHelp = {
         L"[스폰 모드]",
         L"1 - 플레이어 시작 위치 설정",
@@ -208,12 +222,11 @@ void CScene_Tool::Enter()
         L"F1 - 텍스처 그리기",
         L"F2 - 지형 생성",
         L"F3 - 트리거 생성",
-        L"F4 - 몬스터 생성",
-        L"F5 - 플레이어 스폰,클리어 영역",
+        L"F4 - 플레이어 스폰,클리어 영역",
         L"",
-        L"F8 - 타일 그리드 표시",
-        L"F9 - 그라운드 타입 표시",
-        L"F10 - 그라운드 완성 처리 디버깅",
+        L"F6 - 타일 그리드 표시",
+        L"F7 - 그라운드 타입 표시",
+        L"F8 - 그라운드 완성 처리 디버깅",
         L"",
         L"CTRL - 타일맵 불러오기",
         L"ESC - 시작 화면으로"
@@ -273,8 +286,8 @@ void CScene_Tool::Update()
             case GROUND_MODE:
                 m_pHelpSubText->AddLines(m_groundHelp);
                 break;
-            case MONSTER_MODE:
-                m_pHelpSubText->AddLines(m_monsterHelp);
+            case TRIGGER_MODE:
+                m_pHelpSubText->AddLines(m_triggerHelp);
                 break;
             case SPAWN_MODE:
                 m_pHelpSubText->AddLines(m_spawnHelp);
@@ -354,17 +367,108 @@ void CScene_Tool::Update()
  
     }
     break;
-    case MONSTER_MODE:
-       {
-           mode = L"MonsterMode";
-   
-           if (!m_pPanelUI->IsMouseOn())
-           {
-               // 몬스터 배치 처리
-               HandleMonsterPlacement();
-           }
-       }
-       break;
+	case TRIGGER_MODE:
+        mode = L"TriggerMode";
+        subMode = L"Trigger " + to_wstring(m_iCurrentTriggerIndex + 1);
+
+        if (m_iCurrentTriggerIndex != -1)
+        {
+            CTrigger* pCurrentTrigger = m_arrTriggers[m_iCurrentTriggerIndex];
+            if (!pCurrentTrigger) break;
+
+            // LBUTTON: 트리거 영역 설정
+            if (KEY_TAP(KEY::LBUTTON) && !m_pPanelUI->IsMouseOn())
+            {
+                Vec2 vMousePos = CCamera::GetInst()->GetRealPos(MOUSE_POS);
+                if (m_iTriggerAreaClickCount == 0)
+                {
+                    m_vTriggerAreaP1 = vMousePos;
+                    m_iTriggerAreaClickCount = 1;
+                }
+                else
+                {
+                    Vec2 vTopLeft(min(m_vTriggerAreaP1.x, vMousePos.x), min(m_vTriggerAreaP1.y, vMousePos.y));
+                    Vec2 vBotRight(max(m_vTriggerAreaP1.x, vMousePos.x), max(m_vTriggerAreaP1.y, vMousePos.y));
+                    pCurrentTrigger->SetWorldPos(vTopLeft);
+                    pCurrentTrigger->SetScale(vBotRight - vTopLeft);
+                    m_iTriggerAreaClickCount = 0;
+                }
+            }
+
+            // RBUTTON: 벽 생성
+            if (KEY_TAP(KEY::RBUTTON) && !m_pPanelUI->IsMouseOn()) // 벽 생성 로직
+            {
+                int iCol, iRow, iTileX;
+                if (CalculateTileIndex(iCol, iRow, iTileX))
+                {
+                    int iCurrentTileIdx = iRow * iTileX + iCol;
+                    const vector<GameObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
+
+                    if (m_iWallAreaClickCount % 2 == 0)
+                    {
+                        // 첫 번째 클릭: 타일 인덱스 저장
+                        m_iWallAreaP1_TileIdx = iCurrentTileIdx;
+                    }
+                    else
+                    {
+                        // 두 번째 클릭: 벽 생성
+                        if (m_iWallAreaP1_TileIdx != -1)
+                        {
+                            Vec2 vPos1 = vecTile[m_iWallAreaP1_TileIdx]->GetWorldPos();
+                            Vec2 vPos2 = vecTile[iCurrentTileIdx]->GetWorldPos();
+                            Vec2 vTopLeft(min(vPos1.x, vPos2.x), min(vPos1.y, vPos2.y));
+                            Vec2 vBotRight(max(vPos1.x, vPos2.x) + TILE_SIZE, max(vPos1.y, vPos2.y) + TILE_SIZE);
+
+                            CGround* pWall = new CGround();
+                            pWall->SetWorldPos(vTopLeft);
+                            pWall->SetScale(vBotRight - vTopLeft);
+                            pWall->SetCollideType(TILE_COLLIDE_TYPE::SOLID);
+                            pWall->SetGroundType(GROUND_TYPE::UNWALKABLE);
+                            wstring wallName = L"TriggerWall_" + to_wstring(m_iCurrentTriggerIndex) + L"_" + to_wstring(m_iWallAreaClickCount / 2);
+                            pWall->SetName(wallName);
+                            AddObject(pWall, GROUP_TYPE::GROUND);
+                            pCurrentTrigger->AddWallName(wallName);
+                            m_iWallAreaP1_TileIdx = -1; // 다음 생성을 위해 리셋
+                        }
+                    }
+                    m_iWallAreaClickCount++;
+                }
+            }
+
+            // M Key: 몬스터 스폰 위치 지정
+            if (KEY_TAP(KEY::M) && !m_pPanelUI->IsMouseOn())
+            {
+                Vec2 vMousePos = CCamera::GetInst()->GetRealPos(MOUSE_POS);
+                MonsterSpawnInfo info;
+                info.vPos = vMousePos;
+                info.eType = m_eCurrentMonsterType;
+                pCurrentTrigger->AddMonsterSpawnInfo(info);
+                SettingSampleMonster(vMousePos, m_eCurrentMonsterType, pCurrentTrigger);
+            }
+
+            // ENTER Key: 트리거 완성
+            if (KEY_TAP(KEY::ENTER))
+            {
+                m_iCurrentTriggerIndex = -1;
+            }
+
+            // BACKSPACE Key: 트리거 데이터 삭제
+            if (KEY_TAP(KEY::BACK))
+            {
+                // 1. 트리거에 등록된 벽(Ground) 오브젝트를 씬에서 삭제
+                  const vector<wstring>& wallNames = pCurrentTrigger->GetWallNames();
+                  for (const auto& name : wallNames)
+                  {
+                      GameObject* pWall = FindObjectByName(name);
+                      if (pWall)
+                      {
+                          DeleteObject(pWall);
+                      }
+                  }
+                  pCurrentTrigger->ClearData();
+            }
+        }
+		break;
     case SPAWN_MODE:
        {
            mode = L"SpawnMode";
@@ -424,12 +528,9 @@ void CScene_Tool::Update()
            }
        }
        break;
-	case TRIGGER_MODE:
-		break;
 	default:
 		break;
 	}
-
 
 
 
@@ -459,19 +560,33 @@ void CScene_Tool::Update()
 		m_eToolMode = TOOL_MODE::TEXTURE_MODE;
 	    m_strCurTexFolder = L"texture\\tile";
 		LoadTileTexUI(L"texture\\tile");
+        m_pPanelUI->SetActive(true);
 	}
 	if (KEY_TAP(KEY::F2))
 		m_eToolMode = TOOL_MODE::GROUND_MODE;
 	if (KEY_TAP(KEY::F3))
+    {
 		m_eToolMode = TOOL_MODE::TRIGGER_MODE;
-	if (KEY_TAP(KEY::F4))
-	{
-		m_eToolMode = TOOL_MODE::MONSTER_MODE;
 	    m_strCurTexFolder = L"texture\\enemySample";
 		LoadTileTexUI(L"texture\\enemySample");
-	}
-	if (KEY_TAP(KEY::F5))
+        m_pPanelUI->SetActive(true);
+    }
+	if (KEY_TAP(KEY::F4))
 		m_eToolMode = TOOL_MODE::SPAWN_MODE;
+
+    if (KEY_TAP(KEY::KEY_1) || KEY_TAP(KEY::KEY_2) || KEY_TAP(KEY::KEY_3) || KEY_TAP(KEY::KEY_4) || KEY_TAP(KEY::KEY_5))
+    {
+        if (m_eToolMode == TOOL_MODE::TRIGGER_MODE)
+        {
+            if (KEY_TAP(KEY::KEY_1)) m_iCurrentTriggerIndex = 0;
+            if (KEY_TAP(KEY::KEY_2)) m_iCurrentTriggerIndex = 1;
+            if (KEY_TAP(KEY::KEY_3)) m_iCurrentTriggerIndex = 2;
+            if (KEY_TAP(KEY::KEY_4)) m_iCurrentTriggerIndex = 3;
+            if (KEY_TAP(KEY::KEY_5)) m_iCurrentTriggerIndex = 4;
+            m_iTriggerAreaClickCount = 0;
+            m_iWallAreaClickCount = 0;
+        }
+    }
 
     vector<wstring> modeText =
         {
@@ -549,7 +664,6 @@ void CScene_Tool::SetTileIdx()
 	}
     
 }
-
 
 
 
@@ -681,7 +795,19 @@ void CScene_Tool::SetTileUIIdx()
 		int iCol = static_cast<int>(vMousePos.x) / TILE_SIZE;
 		int iRow = static_cast<int>(vMousePos.y) / TILE_SIZE;
 
-		if (vMousePos.x < 0.f || m_iImgTileX <= iCol
+        if (m_eToolMode == TOOL_MODE::TRIGGER_MODE)
+        {
+            if (m_iImgTileIdx == 0)
+            {
+                m_eCurrentMonsterType = MON_TYPE::SHOOTER;
+            }
+            else if (m_iImgTileIdx == 1)
+            {
+                m_eCurrentMonsterType = MON_TYPE::DEFENDER;
+            }
+        }
+
+		else if (vMousePos.x < 0.f || m_iImgTileX <= iCol
 			|| vMousePos.y < 0.f || m_iImgTileX <= iRow)
 			return;
 
@@ -744,24 +870,30 @@ void CScene_Tool::SaveTile(const wstring& _strFilePath)
 	fprintf(pFile, "%d\n", m_bPlayerSpawnSet ? 1 : 0);
 
 	// 씬 클리어 영역 저장
-	fprintf(pFile, "[SceneClear]\n");
-	fprintf(pFile, "%.1f\n", m_vSceneClearStartPos.x);
-	fprintf(pFile, "%.1f\n", m_vSceneClearStartPos.y);
-	fprintf(pFile, "%.1f\n", m_vSceneClearEndPos.x);
-	fprintf(pFile, "%.1f\n", m_vSceneClearEndPos.y);
-	fprintf(pFile, "%d\n", m_bSceneClearSet ? 1 : 0);
-
-	// 몬스터 스폰 데이터 저장
-	fprintf(pFile, "[MonsterSpawn]\n");
-	fprintf(pFile, "%zu\n", m_vecMonsterSpawnData.size());
+	fprintf(pFile, "[SceneClear]\n");	fprintf(pFile, "%.1f\n", m_vSceneClearStartPos.x);	fprintf(pFile, "%.1f\n", m_vSceneClearStartPos.y);	fprintf(pFile, "%.1f\n", m_vSceneClearEndPos.x);	fprintf(pFile, "%.1f\n", m_vSceneClearEndPos.y);	fprintf(pFile, "%d\n", m_bSceneClearSet ? 1 : 0);
 	
 	// for (size_t i = 0; i < m_vecMonsterSpawnData.size(); ++i)
 	// {
-	// 	const MonsterSpawnData monsterData = m_vecMonsterSpawnData[i];
-	// 	fprintf(pFile, "%.1f\n", monsterData.position.x);
-	// 	fprintf(pFile, "%.1f\n", monsterData.position.y);
-	// 	fprintf(pFile, "%d\n", monsterData.monsterType);
+	// 	fprintf(pFile, "%d %f %f\n",
+	// 		static_cast<int>(m_vecMonsterSpawnData[i].eType),
+	// 		m_vecMonsterSpawnData[i].vPos.x,
+	// 		m_vecMonsterSpawnData[i].vPos.y);
 	// }
+
+    // Trigger 데이터 저장
+    fprintf(pFile, "[TriggerCount]\n");
+    fprintf(pFile, "%d\n", 5);
+
+    for (int i = 0; i < 5; ++i)
+    {
+        CTrigger* pTrigger = m_arrTriggers[i];
+        // 항상 5개의 트리거를 저장 (비어있더라도)
+        if (pTrigger) 
+        {
+            pTrigger->Save(pFile);
+        }
+    }
+
 
 	fclose(pFile);
 }
@@ -835,6 +967,32 @@ void CScene_Tool::LoadTileData()
 	if (GetOpenFileName(&ofn))
 	{
 		wstring strRelativePath = CPathMgr::GetInst()->GetRelativePath(szName);
+
+        // 기존 트리거 정리
+        for (int i = 0; i < 5; ++i)
+        {
+            if (m_arrTriggers[i])
+            {
+                DeleteObject(m_arrTriggers[i]);
+                m_arrTriggers[i] = nullptr;
+            }
+        }
+        DeleteGroup(GROUP_TYPE::TRIGGER);
+
+        // 파일에서 트리거 로드
+        FILE* pFile = nullptr;
+        _wfopen_s(&pFile, szName, L"rb");
+
+        if (pFile)
+        {
+            LoadTile(strRelativePath); // 타일과 기타 데이터 로드
+            // 트리거 로딩은 여기에 추가
+
+            fclose(pFile);
+        }
+
+
+
 		LoadTile(strRelativePath);
 	}
 }
@@ -1145,42 +1303,20 @@ void CScene_Tool::Render(ID2D1RenderTarget* _pRenderTarget)
     }
 }
 
-// 몬스터 배치 처리 함수
-void CScene_Tool::HandleMonsterPlacement()
+void CScene_Tool::SettingSampleMonster(Vec2 pos, MON_TYPE eType, CTrigger* pOwnerTrigger)
 {
-    // UI 패널 영역이 아닌 곳에서만 몬스터 배치 처리
-    if (m_pPanelUI->IsMouseOn())
-        return;
-    
-    // 좌클릭 시 몬스터 배치
-    if (KEY_TAP(KEY::LBUTTON))
-    {
-        // 마우스 위치를 월드 좌표로 변환
-        Vec2 vMousePos = CKeyMgr::GetInst()->GetMousePos();
-        Vec2 vCamLook = CCamera::GetInst()->GetLookAt();
-        Vec2 vResolution = CCore::GetInst()->GetResolution();
-        Vec2 vWorldPos = vMousePos + vCamLook - vResolution / 2.f;
-        SettingSampleMonster(vWorldPos);
-    }
-}
-
-
-
-
-
-void CScene_Tool::SettingSampleMonster(Vec2 pos)
-{
-    GameObject* obj = new CMonster();
+    CMonster* obj = new CMonster();
     obj->SetWorldPos(pos);
     obj->CreateAnimator();
-    CTexture * pCursor = CResMgr::GetInst()->LoadTexture(L"Cursor_Tex", L"texture\\enemy\\rifleman\\RifleMan.png");
-	
-	AddObject(obj, GROUP_TYPE::MONSTER);
-	
-    obj->GetAnimator()->CreateAnimation(L"sample1", pCursor,
-        Vec2(0.f, 0.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 1, 2.f, Vec2(0.f, -64.f));
-    obj->GetAnimator()->FindAnimation(L"sample1")->Save(L"animation\\sample1.anim");
-    obj->GetAnimator()->Play(L"sample1", true);
+
+    if (eType == MON_TYPE::SHOOTER)
+    {
+        CTexture* pTex = CResMgr::GetInst()->LoadTexture(L"RifleManTex", L"texture\\enemy\\rifleman\\RifleMan.png");
+        obj->GetAnimator()->CreateAnimation(L"RIFLEMAN_IDLE_SAMPLE", pTex, Vec2(0.f, 0.f), Vec2(200.f, 200.f), Vec2(200.f, 0.f), 0.25f, 15, 2.f, Vec2(0.f, -64.f));
+        obj->GetAnimator()->Play(L"RIFLEMAN_IDLE_SAMPLE", true);
+    }
+
+    obj->SetName(L"SampleMonster");
+    AddObject(obj, GROUP_TYPE::MONSTER);
+    pOwnerTrigger->AddSampleMonster(obj);
 }
-
-

@@ -1,4 +1,7 @@
 
+#include "C:\WinAPIProject\WinAPI_Proj\Source\Scene\Scene_Tool\CScene_Tool.cpp"
+
+
 #include "C:\WinAPIProject\WinAPI_Proj\Source\Tool\CTool.cpp"
 
 
