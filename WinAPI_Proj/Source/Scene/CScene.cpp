@@ -110,17 +110,11 @@ void CScene::Update()
 {
     CTimeMgr::StartTimer(L"Scene_Update");
 
-    for (UINT i = 0; i < static_cast<UINT>(GROUP_TYPE::END); ++i)
-    {
-        vector<GameObject*>& group = m_arrObj[i];
-        for (int j = (int)group.size() - 1; j >= 0; --j)
-        {
-            if (group[j]->IsDead())
-            {
-                group.erase(group.begin() + j);
-            }
-        }
-    }
+
+
+
+    
+
 
     // 씬 내의 오브젝트들 Update
 	for (UINT i = 0; i < static_cast<UINT>(GROUP_TYPE::END); i++)
@@ -181,7 +175,20 @@ void CScene::FinalUpdate()
 			    m_arrObj[i][j]->FinalUpdate();
 		}
 	}
-    CTimeMgr::EndTimer(L"Scene_FinalUpdate");
+
+	   // Dead 상태인 오브젝트를 제거
+	   for (UINT i = 0; i < static_cast<UINT>(GROUP_TYPE::END); ++i)
+	   {
+	       vector<GameObject*>& vecObjects = m_arrObj[i];
+	       for (int j = (int)vecObjects.size() - 1; j >= 0; --j)
+	       {
+	           if (vecObjects[j]->IsDead())
+	           {
+	               vecObjects.erase(vecObjects.begin() + j);
+	           }
+	       }
+	   }
+	CTimeMgr::EndTimer(L"Scene_FinalUpdate");
 }
 
 
@@ -192,6 +199,7 @@ void CScene::Render(ID2D1RenderTarget* _pRenderTarget)
 	if (!_pRenderTarget)
 		return;
 
+    
 	// 배경 렌더링 (가장 먼저)
 	if (backGround && backGround->IsActive())
 	{
@@ -219,18 +227,14 @@ void CScene::Render(ID2D1RenderTarget* _pRenderTarget)
 						pUI->Render(_pRenderTarget);
 				}
 				else if (static_cast<UINT>(GROUP_TYPE::HOOK) == i)
-				{
 					pObj->Render(_pRenderTarget);
-				}
 			    else if (static_cast<UINT>(GROUP_TYPE::GROUND) == i)
-				{
 					pObj->Render(_pRenderTarget);
-				}
+			    else if (static_cast<UINT>(GROUP_TYPE::TRIGGER) == i)
+					pObj->Render(_pRenderTarget);
 				// 다른 그룹은 Animator 렌더링
 				else if (pObj->GetAnimator())
-				{
 					pObj->GetAnimator()->Render(_pRenderTarget);
-				}
 			    
 				// 콜라이더 디버그 렌더링 (F5 키로 토글)
 				if (bDrawCollider && pObj->GetCollider())

@@ -18,6 +18,7 @@
 #include "CTextUI.h"
 #include "CGround.h"
 #include "CBackGround.h"
+#include "CCollider.h"
 #include "CMonster.h"
 #include "resource.h"
 #include "Object/Trigger/CTrigger.h"
@@ -50,7 +51,9 @@ CScene_Tool::CScene_Tool()
     , m_iTriggerAreaClickCount(0)
     , m_iWallAreaClickCount(0)
     , m_iWallAreaP1_TileIdx(-1)
+    , m_iTriggerAreaP1_TileIdx(-1) // 새로 추가: 초기화
 {
+    // m_vTriggerAreaP1 = Vec2(0,0); // 이 줄은 삭제합니다.
     for (int i = 0; i < 5; ++i)
         m_arrTriggers[i] = nullptr;
 }
@@ -67,6 +70,7 @@ void CScene_Tool::Enter()
         if (m_arrTriggers[i] == nullptr)
         {
             m_arrTriggers[i] = new CTrigger;
+            AddObject(m_arrTriggers[i], GROUP_TYPE::TRIGGER);
         }
     }
 	//메뉴 장착
@@ -202,10 +206,12 @@ void CScene_Tool::Enter()
 
     m_triggerHelp = {
         L"[트리거 모드]",
-        L"좌클릭 드래그 - 트리거 영역 생성/조절",
-        L"우클릭(벽 위) - 선택된 트리거에 벽 연결/해제",
-        L"우클릭(빈 공간) - 선택된 트리거에 몬스터 스폰 위치 추가",
-        L"휠클릭(트리거 위) - 트리거 선택",
+        L"숫자 1~5 - 작업할 트리거 선택",
+        L"좌클릭(두 번) - 트리거 영역 생성/조절",
+        L"우클릭(두 번) - 트리거에 종속될 벽 영역 지정",
+        L"M 키 - 몬스터 스폰 위치 지정",
+        L"ENTER - 작업 완료",
+        L"BACKSPACE - 현재 트리거 데이터 삭제",
     };
     m_spawnHelp = {
         L"[스폰 모드]",
@@ -376,26 +382,48 @@ void CScene_Tool::Update()
             CTrigger* pCurrentTrigger = m_arrTriggers[m_iCurrentTriggerIndex];
             if (!pCurrentTrigger) break;
 
-            // LBUTTON: 트리거 영역 설정
+            // LBUTTON: 트리거 영역 설정 (타일 기반)
             if (KEY_TAP(KEY::LBUTTON) && !m_pPanelUI->IsMouseOn())
             {
-                Vec2 vMousePos = CCamera::GetInst()->GetRealPos(MOUSE_POS);
-                if (m_iTriggerAreaClickCount == 0)
+                int iCol, iRow, iTileX;
+                if (CalculateTileIndex(iCol, iRow, iTileX)) // 마우스 위치의 타일 정보 계산
                 {
-                    m_vTriggerAreaP1 = vMousePos;
-                    m_iTriggerAreaClickCount = 1;
-                }
-                else
-                {
-                    Vec2 vTopLeft(min(m_vTriggerAreaP1.x, vMousePos.x), min(m_vTriggerAreaP1.y, vMousePos.y));
-                    Vec2 vBotRight(max(m_vTriggerAreaP1.x, vMousePos.x), max(m_vTriggerAreaP1.y, vMousePos.y));
-                    pCurrentTrigger->SetWorldPos(vTopLeft);
-                    pCurrentTrigger->SetScale(vBotRight - vTopLeft);
-                    m_iTriggerAreaClickCount = 0;
+                    int iCurrentTileIdx = iRow * iTileX + iCol;
+                    const vector<GameObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
+
+                    if (m_iTriggerAreaClickCount % 2 == 0)
+                    {
+                        // 첫 번째 클릭: 시작 타일 인덱스 저장
+                        m_iTriggerAreaP1_TileIdx = iCurrentTileIdx;
+                    }
+                    else
+                    {
+                        // 두 번째 클릭: 영역 계산 및 트리거 설정
+                        if (m_iTriggerAreaP1_TileIdx != -1)
+                        {
+                            // 두 타일의 월드 좌표를 가져옴
+                            Vec2 vPos1 = vecTile[m_iTriggerAreaP1_TileIdx]->GetWorldPos();
+                            Vec2 vPos2 = vecTile[iCurrentTileIdx]->GetWorldPos();
+
+                            // 영역의 왼쪽 위, 오른쪽 아래 좌표 계산
+                            // 오른쪽 아래 좌표는 타일 크기만큼 더해줘서 전체 타일을 포함하도록 함
+                            Vec2 vTopLeft(min(vPos1.x, vPos2.x), min(vPos1.y, vPos2.y));
+                            Vec2 vBotRight(max(vPos1.x, vPos2.x) + TILE_SIZE, max(vPos1.y, vPos2.y) + TILE_SIZE);
+
+                            // 계산된 값으로 트리거의 위치와 크기 설정
+                            Vec2 vScale = vBotRight - vTopLeft;
+                            pCurrentTrigger->SetWorldPos(vTopLeft);
+                            pCurrentTrigger->SetScale(vScale);
+                            pCurrentTrigger->GetCollider()->SetScale(vScale);
+                            pCurrentTrigger->GetCollider()->SetOffsetPos(vScale / 2.f);
+                            m_iTriggerAreaP1_TileIdx = -1; // 다음 생성을 위해 리셋
+                        }
+                    }
+                    m_iTriggerAreaClickCount++;
                 }
             }
 
-            // RBUTTON: 벽 생성
+            // RBUTTON: 벽 생성 (기존 코드 유지)
             if (KEY_TAP(KEY::RBUTTON) && !m_pPanelUI->IsMouseOn()) // 벽 생성 로직
             {
                 int iCol, iRow, iTileX;

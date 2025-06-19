@@ -116,7 +116,7 @@ public:
 
 	virtual GameObject* Clone() = 0;
 
-	void SetDead(bool _bDead) { m_bAlive = _bDead; }
+	void SetDead(bool _bDead) { m_bAlive = !_bDead; }
 protected:
 
 	friend class CEventMgr;

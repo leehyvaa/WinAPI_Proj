@@ -25,19 +25,19 @@ private:
 	CTextUI* m_pHelpSubText; // 세부 설명서 텍스트 UI
 
 	// 트리거 모드 관련 변수
-	std::array<CTrigger*, 5> m_arrTriggers;
+	array<CTrigger*, 5> m_arrTriggers;
 	int m_iCurrentTriggerIndex;
 	int m_iTriggerAreaClickCount;
-	Vec2 m_vTriggerAreaP1;
-	int m_iWallAreaClickCount; // A counter for wall creation clicks
-	int m_iWallAreaP1_TileIdx; // Stores the index of the first tile clicked for wall creation
+	int m_iTriggerAreaP1_TileIdx; 
+	int m_iWallAreaClickCount; 
+	int m_iWallAreaP1_TileIdx;
 	MON_TYPE m_eCurrentMonsterType;
 	vector<GameObject*> m_vecSampleMonsters;
 
 
 
 	wstring m_strCurTexFolder;
-	vector<std::string> m_vecTile_list;
+	vector<string> m_vecTile_list;
 
 	Vec2 m_vTilePos;
 	UINT m_iImgIndex;

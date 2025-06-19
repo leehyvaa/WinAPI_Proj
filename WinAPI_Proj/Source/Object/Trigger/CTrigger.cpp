@@ -218,6 +218,9 @@ void CTrigger::ClearData()
     // Reset trigger area
     SetWorldPos(Vec2(0, 0));
     SetScale(Vec2(0, 0));
+    GetCollider()->SetScale(Vec2(0, 0));
+    GetCollider()->SetOffsetPos(Vec2(0, 0));
+                           
 }
 
 void CTrigger::Save(FILE* _pFile)
