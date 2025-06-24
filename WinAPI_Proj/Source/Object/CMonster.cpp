@@ -3,6 +3,8 @@
 #include "CTimeMgr.h"
 #include "CCollider.h"
 #include "AI.h"
+#include "func.h"
+#include "Module/AI/State/Subdued/CSubduedState.h"
 
 CMonster::CMonster()
 	:m_tInfo{}
@@ -63,9 +65,29 @@ void CMonster::OnCollisionEnter(CCollider* _pOther)
 
 	if (pOtherObj->GetName() == L"Wire")
 	{
+		// 스폰 중이거나 죽은 상태일 때는 갈고리가 통과하도록 함
+		if (IsDead() || (m_pAI && (m_pAI->GetCurState() == MON_STATE::SPAWNING ||
+		                           m_pAI->GetCurState() == MON_STATE::DEAD)))
+		{
+			return; // 갈고리 충돌 무시
+		}
+
+		// 제압 상태에서 처형 중인 경우에도 갈고리가 통과하도록 함
+		if (m_pAI && m_pAI->GetCurState() == MON_STATE::SUBDUED)
+		{
+			CSubduedState* pSubduedState = static_cast<CSubduedState*>(m_pAI->GetState(MON_STATE::SUBDUED));
+			if (pSubduedState && pSubduedState->IsExecuted())
+			{
+				return; // 처형 중인 몬스터는 갈고리 충돌 무시
+			}
+		}
+
 		m_tInfo.fHP -= 1;
-		if(m_tInfo.fHP <=0)
-			DeleteObject(this);
+		if(m_tInfo.fHP <= 0 && m_pAI && m_pAI->GetCurState() != MON_STATE::DEAD)
+		{
+			// 이벤트 시스템을 통해 안전하게 AI 상태 변경
+			ChangeAIState(m_pAI, MON_STATE::DEAD);
+		}
 	}
 }
 

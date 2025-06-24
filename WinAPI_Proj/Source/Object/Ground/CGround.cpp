@@ -235,17 +235,23 @@ void CGround::OnCollision(CCollider* _pOther)
             if (pOtherObj->GetGroup() == GROUP_TYPE::PLAYER)
             {
                 SPlayer* pPlayer = static_cast<SPlayer*>(pOtherObj);
-                
+
                 // 벽 상호작용 로직 (벽타기 등)
                 float wallClimbTopY = GetWorldPos().y + WALL_CLIMB_TOP_OFFSET;
                 float wallClimbBottomY = GetWorldPos().y + GetScale().y + WALL_CLIMB_BOT_OFFSET;
                 bool canClimb = (vObjPos.y > wallClimbTopY && vObjPos.y < wallClimbBottomY);
 
+                // UNWALKABLE 타입의 벽(트리거 벽 포함)은 벽타기 불가
+                if (m_eGroundType == GROUND_TYPE::UNWALKABLE)
+                {
+                    canClimb = false;
+                }
+
                 if (horizontalDot > 0.5f)
                 { // MTV가 오른쪽을 향함 -> 왼쪽 벽 충돌
                     if (canClimb) pPlayer->SetWallClimbing(true);
                     else pPlayer->SetWallClimbing(false);
-                
+
                     if (pPlayer->GetState() != PLAYER_STATE::SWING)
                         pPlayer->SetIsFacingRight(false);
                 }

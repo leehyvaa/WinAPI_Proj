@@ -18,6 +18,7 @@
 #include "CObjectPool.h"
 #include "CMonster.h"
 #include "AI.h"
+#include "Module/AI/State/Subdued/CSubduedState.h"
 #include "Object/UI/DamageEffect/CDamageEffectUI.h"
 
 
@@ -352,19 +353,44 @@ void SPlayer::Update_State()
     // 와이어 발사 또는 제압 시작
     if (KEY_TAP(KEY::LBUTTON))
     {
+        bool canSubdue = false;
+
         if (m_pRayHitCollider != nullptr && m_pRayHitCollider->GetObj()->GetGroup() == GROUP_TYPE::MONSTER)
         {
             CMonster* pMonster = static_cast<CMonster*>(m_pRayHitCollider->GetObj());
             float distance = (m_vRayHitPos - GetWorldPos()).Length();
-            
-            if (distance <= m_fSubdueRange)
+
+            // 제압 가능한 몬스터인지 확인
+            if (distance <= m_fSubdueRange &&
+                !pMonster->IsDead() &&
+                pMonster->GetAI() &&
+                pMonster->GetAI()->GetCurState() != MON_STATE::DEAD &&
+                pMonster->GetAI()->GetCurState() != MON_STATE::SPAWNING)
+            {
+                // 제압 상태에서 처형 중인 경우도 체크
+                if (pMonster->GetAI()->GetCurState() == MON_STATE::SUBDUED)
+                {
+                    CSubduedState* pSubduedState = static_cast<CSubduedState*>(pMonster->GetAI()->GetState(MON_STATE::SUBDUED));
+                    if (!pSubduedState || !pSubduedState->IsExecuted())
+                    {
+                        canSubdue = true;
+                    }
+                }
+                else
+                {
+                    canSubdue = true;
+                }
+            }
+
+            if (canSubdue)
             {
                 StartSubdue(pMonster);
                 ChangeState(PLAYER_STATE::EXECUTE);
                 return; // 상태 변경 후 즉시 종료
             }
         }
-        // 몬스터가 아니거나, 멀리 있거나, 아무것도 감지되지 않으면 일반 와이어 발사
+
+        // 제압할 수 없는 몬스터이거나, 몬스터가 아니거나, 멀리 있거나, 아무것도 감지되지 않으면 일반 와이어 발사
         CreateHook();
         ChangeState(PLAYER_STATE::SHOT);
         return; // 상태 변경 후 즉시 종료
@@ -1052,9 +1078,20 @@ void SPlayer::StartSubdue(CMonster* _pMonster)
 {
 	if (!_pMonster || m_bIsSubduing)
 		return;
-    
-	if (_pMonster->GetAI() && _pMonster->GetAI()->GetCurState() == MON_STATE::DEAD)
+
+	if (_pMonster->IsDead() || (_pMonster->GetAI() && (_pMonster->GetAI()->GetCurState() == MON_STATE::DEAD ||
+	                                                    _pMonster->GetAI()->GetCurState() == MON_STATE::SPAWNING)))
 		return;
+
+	// 제압 상태에서 처형 중인 경우에도 제압 불가
+	if (_pMonster->GetAI() && _pMonster->GetAI()->GetCurState() == MON_STATE::SUBDUED)
+	{
+		CSubduedState* pSubduedState = static_cast<CSubduedState*>(_pMonster->GetAI()->GetState(MON_STATE::SUBDUED));
+		if (pSubduedState && pSubduedState->IsExecuted())
+		{
+			return; // 처형 중인 몬스터는 제압 불가
+		}
+	}
 		
 	m_pSubduedMonster = _pMonster;
 	m_bIsSubduing = true;

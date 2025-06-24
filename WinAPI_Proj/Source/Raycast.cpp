@@ -106,6 +106,10 @@ void Raycast::CollisionCheck()
 
 			CCollider* collider = vecMonster[j]->GetCollider();
 
+			// 콜라이더가 비활성화된 몬스터는 Ray 충돌 검사에서 제외
+			if (!collider->IsActive())
+				continue;
+
 			if (IsCollision(GetCollider(), collider))
 			{
 			    // Ray에 부딪힌 물체의 충돌체를 저장

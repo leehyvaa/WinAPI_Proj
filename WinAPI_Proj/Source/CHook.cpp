@@ -12,6 +12,8 @@
 #include "CKeyMgr.h"
 #include "CObjectPool.h"
 #include "PlayerArm.h"
+#include "CMonster.h"
+#include "Module/AI/State/Subdued/CSubduedState.h"
 
 #include "CTexture.h"
 
@@ -240,13 +242,13 @@ void CHook::Update()
 void CHook::OnCollisionEnter(CCollider* _pOther)
 {
 	GameObject* pOtherObj = _pOther->GetObj();
-    
+
     if (pOtherObj->GetGroup() == GROUP_TYPE::GROUND)
     {
         if (hookState == HOOK_STATE::FLYING)
         {
             GROUND_TYPE groundType = static_cast<CGround*>(pOtherObj)->GetGroundType();
-            
+
             if (groundType == GROUND_TYPE::NORMAL)
             {
                 hookState = HOOK_STATE::GRAB;
@@ -255,6 +257,33 @@ void CHook::OnCollisionEnter(CCollider* _pOther)
             {
                 hookState = HOOK_STATE::RETURN_WITHOUT;
             }
+        }
+    }
+    else if (pOtherObj->GetGroup() == GROUP_TYPE::MONSTER)
+    {
+        if (hookState == HOOK_STATE::FLYING)
+        {
+            CMonster* pMonster = static_cast<CMonster*>(pOtherObj);
+
+            // 스폰 중이거나 죽은 상태일 때는 갈고리가 통과하도록 함
+            if (pMonster->IsDead() || (pMonster->GetAI() && (pMonster->GetAI()->GetCurState() == MON_STATE::SPAWNING ||
+                                                             pMonster->GetAI()->GetCurState() == MON_STATE::DEAD)))
+            {
+                return; // 갈고리가 통과함 (충돌 무시)
+            }
+
+            // 제압 상태에서 처형 중인 경우에도 갈고리가 통과하도록 함
+            if (pMonster->GetAI() && pMonster->GetAI()->GetCurState() == MON_STATE::SUBDUED)
+            {
+                CSubduedState* pSubduedState = static_cast<CSubduedState*>(pMonster->GetAI()->GetState(MON_STATE::SUBDUED));
+                if (pSubduedState && pSubduedState->IsExecuted())
+                {
+                    return; // 처형 중인 몬스터는 갈고리가 통과함
+                }
+            }
+
+            // 일반 상태의 몬스터와 충돌하면 갈고리가 되돌아감
+            hookState = HOOK_STATE::RETURN_WITHOUT;
         }
     }
 }

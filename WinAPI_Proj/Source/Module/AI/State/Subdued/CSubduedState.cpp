@@ -12,6 +12,7 @@
 #include "CKeyMgr.h"
 #include "CRigidBody.h"
 #include "CTimeMgr.h"
+#include "CCollider.h"
 #include "Monster/CShooterHead.h"
 
 CSubduedState::CSubduedState()
@@ -76,14 +77,24 @@ void CSubduedState::Enter()
     CMonster* pMonster = GetMonster();
     if (pMonster)
     {
-        GetMonster()->GetAnimator()->Play(L"RIFLEMAN_EXC_START", false);
-        GetMonster()->GetAnimator()->FindAnimation(L"RIFLEMAN_EXC_START")->SetEndFrameEvent([this]() {
-                   GetMonster()->GetAnimator()->Play(L"RIFLEMAN_EXC_BACK", true);
-        });
-    
+        // 애니메이터가 존재하는지 확인 후 사용
+        if (pMonster->GetAnimator())
+        {
+            pMonster->GetAnimator()->Play(L"RIFLEMAN_EXC_START", false);
+            pMonster->GetAnimator()->FindAnimation(L"RIFLEMAN_EXC_START")->SetEndFrameEvent([this]() {
+                if (GetMonster() && GetMonster()->GetAnimator())
+                {
+                    GetMonster()->GetAnimator()->Play(L"RIFLEMAN_EXC_BACK", true);
+                }
+            });
+        }
+
         CShooterHead* pHead = pMonster->GetHead();
-        pHead->GetAnimator()->Reset();
-    
+        if (pHead && pHead->GetAnimator())
+        {
+            pHead->GetAnimator()->Reset();
+        }
+
         if (pMonster->GetRigidBody())
             pMonster->GetRigidBody()->SetVelocity(Vec2(0.f, 0.f));
     }
@@ -140,5 +151,11 @@ void CSubduedState::StartExecution()
     {
         pMonster->GetRigidBody()->SetVelocity(Vec2(0.f, 0.f));
         pMonster->GetRigidBody()->SetMaxSpeed(Vec2(0.f, 0.f));
+    }
+
+    // 처형 중인 몬스터의 콜라이더를 비활성화하여 갈고리가 통과하도록 함
+    if (pMonster->GetCollider())
+    {
+        pMonster->GetCollider()->SetActive(false);
     }
 }

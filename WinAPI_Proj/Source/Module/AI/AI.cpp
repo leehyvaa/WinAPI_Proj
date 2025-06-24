@@ -74,7 +74,9 @@ void AI::ChangeState(MON_STATE _eNextState)
 {
 	CState* pNextState = GetState(_eNextState);
 
-	assert(m_pCurState != pNextState);
+	// 같은 상태로 변경하려고 하면 무시
+	if (m_pCurState == pNextState)
+		return;
 
 	m_pCurState->Exit();
 	m_pCurState = pNextState;
