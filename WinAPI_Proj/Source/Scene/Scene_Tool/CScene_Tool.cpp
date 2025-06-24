@@ -922,7 +922,7 @@ void CScene_Tool::SaveTile(const wstring& _strFilePath)
 	UINT xCount = GetTileX();
 	UINT yCount = GetTileY();
 	fprintf(pFile, "[TileCount]\n");
-	fprintf(pFile, "%d\n%d\n\n", xCount, yCount);
+	fprintf(pFile, "%d\n%d\n", xCount, yCount);
 	const vector<GameObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
 	for (size_t i = 0; i < vecTile.size(); i++) {
 		static_cast<CTile*>(vecTile[i])->Save(pFile);
@@ -933,7 +933,7 @@ void CScene_Tool::SaveTile(const wstring& _strFilePath)
 	fprintf(pFile, "[PlayerSpawn]\n");
 	fprintf(pFile, "%f %f %d\n", m_vPlayerSpawnPos.x, m_vPlayerSpawnPos.y, m_bPlayerSpawnSet ? 1 : 0);
 	fprintf(pFile, "[SceneClear]\n");
-	fprintf(pFile, "%f %f %f %f %d\n\n", m_vSceneClearStartPos.x, m_vSceneClearStartPos.y, m_vSceneClearEndPos.x, m_vSceneClearEndPos.y, m_bSceneClearSet ? 1 : 0);
+	fprintf(pFile, "%f %f %f %f %d\n", m_vSceneClearStartPos.x, m_vSceneClearStartPos.y, m_vSceneClearEndPos.x, m_vSceneClearEndPos.y, m_bSceneClearSet ? 1 : 0);
 
 	   // 3. Trigger 데이터 저장 (씬에 있는 모든 트리거 저장)
 	   const vector<GameObject*>& vecTriggers = GetGroupObject(GROUP_TYPE::TRIGGER);
@@ -943,7 +943,6 @@ void CScene_Tool::SaveTile(const wstring& _strFilePath)
 	   for (GameObject* pObj : vecTriggers)
 	   {
 	       static_cast<CTrigger*>(pObj)->Save(pFile);
-	       fprintf(pFile, "\n"); // 트리거 데이터 사이에 공백 라인 추가
 	   }
 
 

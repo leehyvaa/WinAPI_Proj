@@ -144,7 +144,7 @@ void Scene_Stage_01::Enter()
 
     
     // 타일 로딩 (상대 경로 사용)
-    LoadTile(L"Tile\\test0624_2");
+    LoadTile(L"Tile\\0624_11");
     // 불러온 타일 정보를 바탕으로 땅 생성
     CreateGround();
 
