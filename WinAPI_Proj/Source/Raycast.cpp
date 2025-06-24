@@ -140,6 +140,12 @@ void Raycast::CollisionCheck()
 		i++;
 	}
 
+    // Ray가 아무것도 감지하지 못했으면 targetPos와 onCollisionRay 초기화
+    if (onCollisionRay == nullptr)
+    {
+        targetPos = Vec2(0.f, 0.f);
+    }
+
     // 충돌 검사가 끝났으면 Ray의 충돌체 Offset을 시작 위치로 초기화
 	GetCollider()->SetOffsetPos(Vec2(0.f,0.f));
 }

@@ -476,7 +476,8 @@ void SPlayer::Update_State()
 
 	case PLAYER_STATE::SHOT:
 	    if (m_pPlayerHook == nullptr)                                                               { ChangeState(PLAYER_STATE::IDLE); return; }
-        if (m_pRayHitCollider != nullptr && m_pRayHitCollider->GetObj()->GetGroup() == GROUP_TYPE::GROUND) { ChangeState(PLAYER_STATE::SWING); return; }
+        // 갈고리가 실제로 벽에 박혀있을 때만 SWING 상태로 전환
+        if (m_pPlayerHook != nullptr && m_pPlayerHook->GetHookState() == HOOK_STATE::GRAB)          { ChangeState(PLAYER_STATE::SWING); return; }
 		break;
 
 	case PLAYER_STATE::SWING:
