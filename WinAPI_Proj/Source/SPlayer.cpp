@@ -37,6 +37,8 @@ SPlayer::SPlayer()
     , m_fMoveEnergy(0.f)
     , m_fPosEnergy(0.f)
     , m_bCanBooster(false)
+    , m_bIsInitialMoving(false)
+    , m_fInitialMoveTimer(0.f)
     , m_eClimbState(PLAYER_CLIMB_STATE::NONE)
     , m_pSubduedMonster(nullptr)
     , m_bIsSubduing(false)
@@ -187,6 +189,8 @@ void SPlayer::Reset()
     m_fWireRange = -1.f;
     m_fMoveEnergy = 0.f;
     m_fPosEnergy = 0.f;
+    m_bIsInitialMoving = false;
+    m_fInitialMoveTimer = 0.f;
     
     // 제압 시스템 초기화
     m_pSubduedMonster = nullptr;
@@ -929,13 +933,47 @@ void SPlayer::SwingMove()
     // 갈고리가 생성되지 않았으면 리턴
     if (m_pPlayerHook == nullptr)
         return;
-    
-    
+
+    // 초기 이동 타이머 처리
+    if (m_bIsInitialMoving)
+    {
+        m_fInitialMoveTimer -= fDT;
+        if (m_fInitialMoveTimer <= 0.f)
+        {
+            m_bIsInitialMoving = false;
+            // 초기 이동 완료 후 현재 거리보다 짧은 와이어 길이로 설정하여 속도감 있는 진자운동
+            Vec2 hookPos = m_pPlayerHook->GetWorldPos();
+            Vec2 playerPos = GetWorldPos();
+            float currentDistance = (playerPos - hookPos).Length();
+
+            // 거리에 따라 다른 비율 적용
+            if (currentDistance > m_fWireMaxRange * 0.8f) // 먼 거리
+            {
+                m_fWireRange = currentDistance * 0.85f; // 85%로 설정
+            }
+            else if (currentDistance > m_fWireMaxRange * 0.5f) // 중간 거리
+            {
+                m_fWireRange = currentDistance * 0.92f; // 92%로 설정 (덜 당김)
+            }
+            else // 가까운 거리 (60% 미만)
+            {
+                m_fWireRange = currentDistance * 0.75f; // 75%로 설정 (더 짧게 하여 바닥 걸림 방지)
+            }
+
+            // 현재 속도를 그대로 유지하여 자연스러운 진자운동 시작
+        }
+        else
+        {
+            // 초기 이동 중에는 진자운동 로직을 적용하지 않음
+            return;
+        }
+    }
+
     // 이전 에너지 상태 저장
     float prevMoveEnergy = m_fMoveEnergy;
     Vec2 hookPos = m_pPlayerHook->GetWorldPos();
-    
-    
+
+
     // MoveEnergy와 PosEnergy 계산
     UpdateSwingEnergy();
 
@@ -1027,42 +1065,52 @@ void SPlayer::CreateHook()
 		m_bIsFacingRight = true;
 
     
-    // Ray가 아무것도 맞추지 못했을 경우
-	if (m_vRayHitPos.IsZero())
-	{
-		m_pPlayerHook->LookAt(CCamera::GetInst()->GetRealPos(MOUSE_POS));
-	}
-	else // Ray의 거리가 오브젝트에 닿았을 경우
-	{
-		m_pPlayerHook->LookAt(m_vRayHitPos);
+    // 갈고리는 항상 마우스 위치로 발사
+    Vec2 mouseWorldPos = CCamera::GetInst()->GetRealPos(MOUSE_POS);
+    m_pPlayerHook->LookAt(mouseWorldPos);
+
+    // Ray가 GROUND 타입 오브젝트에 닿았을 경우에만 특별한 처리
+    if (!m_vRayHitPos.IsZero() && m_pRayHitCollider && m_pRayHitCollider->GetObj()->GetGroup() == GROUP_TYPE::GROUND)
+    {
         m_pPlayerHook->SetTargetPos(m_vRayHitPos);
-	    // Ray에 충돌한 물체가 GROUND일 경우
-		if (m_pRayHitCollider->GetObj()->GetGroup() == GROUP_TYPE::GROUND)
-		{
-			Vec2 dir = m_vRayHitPos - m_pPlayerArm->GetWorldPos();
-			dir.Normalize();
 
-			float distance = (m_vRayHitPos - m_pPlayerArm->GetWorldPos()).Length();
+        Vec2 dir = m_vRayHitPos - m_pPlayerArm->GetWorldPos();
+        dir.Normalize();
 
-			if (distance > m_fWireMaxRange)
-			{
-				GetRigidBody()->SetVelocity(dir * 500);
-				m_fWireRange = m_fWireMaxRange;
-			}
-			else
-			{
-				m_fWireRange = distance;
-			}
+        float distance = (m_vRayHitPos - m_pPlayerArm->GetWorldPos()).Length();
 
-			if (m_vRayHitPos.x < m_pPlayerArm->GetWorldPos().x)
-				m_fMoveEnergy = -distance * 1.5f;
-			else
-				m_fMoveEnergy = distance * 1.5f;
-		}
-		else if (m_pPlayerRay->GetCollisionRay()->GetObj()->GetGroup() == GROUP_TYPE::MONSTER)
-		{
-		}
-	}
+        if (distance > m_fWireMaxRange)
+        {
+            // 멀리서 갈고리를 박았을 때는 매우 빠르게 벽쪽으로 이동
+            GetRigidBody()->SetVelocity(dir * 1200.f); // 더 빠른 속도로 이동
+            m_fWireRange = m_fWireMaxRange;
+
+            // 매우 짧은 시간 후 진자운동으로 전환
+            m_fInitialMoveTimer = 0.05f; // 0.05초 동안만 빠르게 이동
+            m_bIsInitialMoving = true;
+        }
+        else if (distance > m_fWireMaxRange * 0.6f) // 중간 거리
+        {
+            m_fWireRange = distance;
+            // 중간 거리에서는 적당한 초기 이동
+            GetRigidBody()->SetVelocity(dir * 400.f);
+            m_fInitialMoveTimer = 0.02f; // 0.02초 동안만 이동
+            m_bIsInitialMoving = true;
+        }
+        else // 가까운 거리 (60% 이하)
+        {
+            m_fWireRange = distance * 0.75f; // 가까운 거리에서는 와이어를 더 짧게 설정
+            // 가까운 거리에서는 초기 이동 없이 바로 진자운동
+            m_bIsInitialMoving = false;
+            m_fInitialMoveTimer = 0.f;
+        }
+
+        // MoveEnergy 설정 (진자운동을 위한 에너지)
+        if (m_vRayHitPos.x < m_pPlayerArm->GetWorldPos().x)
+            m_fMoveEnergy = -distance * 0.8f; // 진자운동을 위한 적절한 에너지
+        else
+            m_fMoveEnergy = distance * 0.8f;
+    }
  
 }
 
