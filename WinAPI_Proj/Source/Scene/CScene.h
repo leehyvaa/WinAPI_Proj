@@ -57,7 +57,8 @@ public:
 	Vec2 GetPlayerSpawnPos() const { return m_vPlayerSpawnPos; }
 	Vec2 GetSceneClearStartPos() const { return m_vSceneClearStartPos; }
 	Vec2 GetSceneClearEndPos() const { return m_vSceneClearEndPos; }
-
+    void SetPlayerSpawnPos(const Vec2& pos) { m_vPlayerSpawnPos = pos; m_bPlayerSpawnSet = true; }
+    void SetSceneClearPos(const Vec2& startPos, const Vec2& endPos) { m_vSceneClearStartPos = startPos; m_vSceneClearEndPos = endPos; m_bSceneClearSet = true; }
 
 	virtual void Start();
 	virtual void Update();

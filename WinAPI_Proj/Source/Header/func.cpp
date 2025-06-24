@@ -50,13 +50,14 @@ void FScanf(char* _pOutBuff, FILE* _pFIle)
 	int i = 0;
 	while (true)
 	{
-		char c = static_cast<char>(getc(_pFIle));
-		if (c == '\n')
+		int ch = getc(_pFIle);
+		if (ch == '\n' || ch == EOF)
 		{
-			_pOutBuff[i++] = '\0';
+			_pOutBuff[i] = '\0';
 			break;
 		}
-		_pOutBuff[i++] = c;
+		if (ch != '\r')
+			_pOutBuff[i++] = static_cast<char>(ch);
 	}
 }
 

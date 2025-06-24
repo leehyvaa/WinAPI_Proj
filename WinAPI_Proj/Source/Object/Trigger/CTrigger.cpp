@@ -14,14 +14,19 @@
 // MonsterSpawnInfo 직렬화/역직렬화
 void MonsterSpawnInfo::Save(FILE* _pFile)
 {
-    fwrite(&eType, sizeof(MON_TYPE), 1, _pFile);
-    fwrite(&vPos, sizeof(Vec2), 1, _pFile);
+    fprintf(_pFile, "%d\n", static_cast<int>(eType));
+    fprintf(_pFile, "%f %f\n", vPos.x, vPos.y);
 }
 
 void MonsterSpawnInfo::Load(FILE* _pFile)
 {
-    fread(&eType, sizeof(MON_TYPE), 1, _pFile);
-    fread(&vPos, sizeof(Vec2), 1, _pFile);
+    char buf[256] = {};
+    int type;
+    FScanf(buf, _pFile);
+    sscanf_s(buf, "%d", &type);
+    eType = static_cast<MON_TYPE>(type);
+    FScanf(buf, _pFile);
+    sscanf_s(buf, "%f %f", &vPos.x, &vPos.y);
 }
 
 
@@ -38,7 +43,7 @@ CTrigger::CTrigger()
 CTrigger::CTrigger(const CTrigger& _origin)
     : GameObject(_origin)
     , m_eState(TriggerState::INACTIVE)
-    , m_vecWallNames(_origin.m_vecWallNames)
+    , m_vecWallInfo(_origin.m_vecWallInfo)
     , m_vecMonsterSpawnInfo(_origin.m_vecMonsterSpawnInfo)
     , m_bDataResolved(false) // 복제된 객체는 새로운 씬에서 데이터를 다시 찾아야 함
 {
@@ -112,9 +117,9 @@ void CTrigger::ResolveData()
 
     // 저장된 벽 이름으로 씬에서 실제 벽 오브젝트를 찾아 포인터를 연결합니다.
     m_pWalls.clear();
-    for (const auto& wallName : m_vecWallNames)
+    for (const auto& wallInfo : m_vecWallInfo)
     {
-        GameObject* pWall = pCurScene->FindObjectByName(wallName);
+        GameObject* pWall = pCurScene->FindObjectByName(wallInfo.szName);
         if (pWall)
         {
             m_pWalls.push_back(pWall);
@@ -204,9 +209,7 @@ void CTrigger::Complete()
 
 void CTrigger::ClearData()
 {
-    // Wall names are cleared by the scene tool which holds the wall objects.
-    // The trigger only holds names.
-    m_vecWallNames.clear();
+    m_vecWallInfo.clear();
     m_vecMonsterSpawnInfo.clear();
 
     // Delete sample monsters
@@ -220,30 +223,32 @@ void CTrigger::ClearData()
     SetScale(Vec2(0, 0));
     GetCollider()->SetScale(Vec2(0, 0));
     GetCollider()->SetOffsetPos(Vec2(0, 0));
-                           
 }
 
 void CTrigger::Save(FILE* _pFile)
 {
-    // GameObject 기본 정보 저장
-    SaveWString(GetName(), _pFile);
+    // SaveWString(GetName(), _pFile);
+    string name(GetName().begin(), GetName().end());
+    if (name.empty()) name = "UnnamedTrigger"; // 이름이 비어있으면 기본값 저장
+    fprintf(_pFile, "%s\n", name.c_str());
+    
     Vec2 vPos = GetWorldPos();
     Vec2 vScale = GetScale();
-    fwrite(&vPos, sizeof(Vec2), 1, _pFile);
-    fwrite(&vScale, sizeof(Vec2), 1, _pFile);
-    
-    // 벽 이름 리스트 저장
-    size_t wallCount = m_vecWallNames.size();
-    fwrite(&wallCount, sizeof(size_t), 1, _pFile);
-    for(const auto& name : m_vecWallNames)
+    fprintf(_pFile, "%f %f\n", vPos.x, vPos.y);
+    fprintf(_pFile, "%f %f\n", vScale.x, vScale.y);
+
+    // 벽 정보 리스트 저장
+    size_t wallCount = m_vecWallInfo.size();
+    fprintf(_pFile, "%zu\n", wallCount);
+    for (auto& info : m_vecWallInfo)
     {
-        SaveWString(name, _pFile);
+        info.Save(_pFile);
     }
 
     // 몬스터 스폰 정보 리스트 저장
     size_t monsterCount = m_vecMonsterSpawnInfo.size();
-    fwrite(&monsterCount, sizeof(size_t), 1, _pFile);
-    for(auto& info : m_vecMonsterSpawnInfo)
+    fprintf(_pFile, "%zu\n", monsterCount);
+    for (auto& info : m_vecMonsterSpawnInfo)
     {
         info.Save(_pFile);
     }
@@ -251,34 +256,37 @@ void CTrigger::Save(FILE* _pFile)
 
 void CTrigger::Load(FILE* _pFile)
 {
-    // GameObject 기본 정보 로드
-    wstring name;
-    LoadWString(name, _pFile);
-    SetName(name);
-    
+    char buf[256] = {};
+    FScanf(buf, _pFile);
+    string name(buf);
+    SetName(wstring(name.begin(), name.end()));
+
     Vec2 vPos, vScale;
-    fread(&vPos, sizeof(Vec2), 1, _pFile);
-    fread(&vScale, sizeof(Vec2), 1, _pFile);
+    FScanf(buf, _pFile);
+    sscanf_s(buf, "%f %f", &vPos.x, &vPos.y);
+    FScanf(buf, _pFile);
+    sscanf_s(buf, "%f %f", &vScale.x, &vScale.y);
     SetWorldPos(vPos);
     SetScale(vScale);
     GetCollider()->SetScale(vScale);
     GetCollider()->SetOffsetPos(vScale / 2.f);
 
-    // 벽 이름 리스트 로드
     size_t wallCount = 0;
-    fread(&wallCount, sizeof(size_t), 1, _pFile);
-    m_vecWallNames.resize(wallCount);
-    for(size_t i = 0; i < wallCount; ++i)
+    FScanf(buf, _pFile);
+    sscanf_s(buf, "%zu", &wallCount);
+    m_vecWallInfo.resize(wallCount);
+    for (size_t i = 0; i < wallCount; ++i)
     {
-        LoadWString(m_vecWallNames[i], _pFile);
+        m_vecWallInfo[i].Load(_pFile);
     }
 
-    // 몬스터 스폰 정보 리스트 로드
     size_t monsterCount = 0;
-    fread(&monsterCount, sizeof(size_t), 1, _pFile);
+    FScanf(buf, _pFile);
+    sscanf_s(buf, "%zu", &monsterCount);
     m_vecMonsterSpawnInfo.resize(monsterCount);
-    for(size_t i = 0; i < monsterCount; ++i)
+    for (size_t i = 0; i < monsterCount; ++i)
     {
         m_vecMonsterSpawnInfo[i].Load(_pFile);
     }
+    m_bDataResolved = false; // 로드 후에는 항상 false로 설정하여 다시 Resolve 하도록 함
 }

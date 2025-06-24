@@ -17,6 +17,9 @@ public:
 	virtual void Enter() override;
 	virtual void Exit() override;
 
+private:
+	// void LoadTile(const wstring& _strFilePath); // Use CScene's LoadTile
+    void LoadTile(const wstring& _strRelativePath);
 
 public:
 	Scene_Stage_01();

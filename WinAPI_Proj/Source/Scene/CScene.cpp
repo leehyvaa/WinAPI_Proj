@@ -101,6 +101,10 @@ void CScene::Enter()
 
 void CScene::Exit()
 {
+    SetPlayerSpawnPos(Vec2(0.f,0.f));
+    SetSceneClearPos(Vec2(0.f, 0.f),Vec2( 0.f, 0.f));
+    m_bSceneClearSet = false;
+    m_bPlayerSpawnSet = false;
     // 씬 종료 시 오브젝트 풀 제외한 모든 씬 내의 오브젝트를 삭제
     DeleteAll();
 }
@@ -464,94 +468,86 @@ void CScene::DeleteAll()
     그 만큼 CreateTile을 해서 타일을 만들어 둔다.
     만든 모든 타일에 개별로 Load함수를 사용한다
  */
-void CScene::LoadTile(const wstring& _strRelativePath)
+void CScene::LoadTile(const wstring& _strFilePath)
 {
-	wstring strFilePath = CPathMgr::GetInst()->GetContentPath();
-	strFilePath += _strRelativePath;
-
 	//커널 오브젝트
 	FILE* pFile = nullptr;
 
-	_wfopen_s(&pFile, strFilePath.c_str(), L"rb");
-	assert(pFile);
+	_wfopen_s(&pFile, _strFilePath.c_str(), L"r");
+    if(!pFile) return;
 
-	//타일 가로 세로 개수 불러오기
-	UINT xCount =0;
-	UINT yCount =0;
-
-	//fread(&xCount, sizeof(UINT), 1, pFile);
-	//fread(&yCount, sizeof(UINT), 1, pFile);
-	char szBuff[256] = {};
-
-	FScanf(szBuff, pFile);
-	fscanf_s(pFile, "%d", &xCount);
-	fscanf_s(pFile, "%d", &yCount);
-	FScanf(szBuff, pFile);
-	FScanf(szBuff, pFile);
-
-
-	// 불러온 개수에 맞게 EmptyTile 들 만들어두기
-	CreateTile(xCount, yCount);
-
-
-	// 만들어진 타일 개별로 필요한 정보를 불러옴
-	const vector<GameObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
-
-	for (size_t i = 0; i < vecTile.size(); i++)
-	{
-		static_cast<CTile*>(vecTile[i])->Load(pFile);
-	}
-
-
-
-    // Ground 불러오기
-	// const vector<GameObject*>& vecGround = GetGroupObject(GROUP_TYPE::GROUND);
-	// FScanf(szBuff, pFile); //[GroundCount]
-	// fscanf_s(pFile, "%d", &m_iGroundCount);
-	// FScanf(szBuff, pFile); //[GroundCount]
-	//
-	// //불러온 개수에 맞게 Ground생성
-	// CreateEmptyGround(m_iGroundCount);
-	//
-	// for (size_t i = 0; i < vecGround.size(); i++)
-	// {
-	// 	((CGround*)vecGround[i])->Load(pFile);
-	// }
-    
-    char szSpawnBuff[256] = {};
-
-    // 파일 끝(EOF)에 도달할 때까지 루프를 돌며 "[SpawnData]"를 찾기
-    while (fscanf_s(pFile, "%s", szSpawnBuff, (unsigned)_countof(szSpawnBuff)) != EOF)
-        if (strcmp(szSpawnBuff, "[SpawnData]") == 0)
-            break;
-
-    
-    if (strcmp(szSpawnBuff, "[SpawnData]") == 0)
+    // 맵 파일 로드 시 UI와 배경을 제외한 모든 게임 월드 오브젝트를 삭제합니다.
+    // DeleteAll()은 툴씬의 UI까지 삭제하여 크래시를 유발하므로 사용하지 않습니다.
+    for (UINT i = 0; i < static_cast<UINT>(GROUP_TYPE::UI); ++i)
     {
-        // FScanf 대신 fscanf_s를 직접 사용하여 값을 읽습니다.
-        fscanf_s(pFile, "%s", szSpawnBuff, (unsigned)_countof(szSpawnBuff)); 
-        fscanf_s(pFile, "%f", &m_vPlayerSpawnPos.x);                     
-        fscanf_s(pFile, "%f", &m_vPlayerSpawnPos.y);                     
-        int spawnSet = 0;
-        fscanf_s(pFile, "%d", &spawnSet);                                
-        m_bPlayerSpawnSet = (spawnSet == 1);
+        GROUP_TYPE eType = static_cast<GROUP_TYPE>(i);
+        if (eType != GROUP_TYPE::BACKGROUND)
+        {
+            DeleteGroup(eType);
+        }
+    }
+    m_pPlayer = nullptr;
 
-        // 씬 클리어 영역 로드
-        fscanf_s(pFile, "%s", szSpawnBuff, (unsigned)_countof(szSpawnBuff)); 
-        fscanf_s(pFile, "%f", &m_vSceneClearStartPos.x);                 
-        fscanf_s(pFile, "%f", &m_vSceneClearStartPos.y);                 
-        fscanf_s(pFile, "%f", &m_vSceneClearEndPos.x);                   
-        fscanf_s(pFile, "%f", &m_vSceneClearEndPos.y);                   
-        int clearSet = 0;
-        fscanf_s(pFile, "%d", &clearSet);                                
-        m_bSceneClearSet = (clearSet == 1);
+    char szBuffer[256] = {};
+
+    // 파일 파싱을 라인 단위로 변경하여 안정성 향상
+    while (true)
+    {
+        FScanf(szBuffer, pFile);
+        if (feof(pFile)) break;
+        if (strlen(szBuffer) == 0) continue;
+
+        if (strcmp(szBuffer, "[TileCount]") == 0)
+        {
+            UINT xCount = 0, yCount = 0;
+            FScanf(szBuffer, pFile); sscanf_s(szBuffer, "%u", &xCount);
+            FScanf(szBuffer, pFile); sscanf_s(szBuffer, "%u", &yCount);
+            CreateTile(xCount, yCount);
+
+            const vector<GameObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
+            for (size_t i = 0; i < vecTile.size(); ++i) {
+                static_cast<CTile*>(vecTile[i])->Load(pFile);
+            }
+        }
+        else if (strcmp(szBuffer, "[SpawnData]") == 0)
+        {
+            FScanf(szBuffer, pFile); // [PlayerSpawn]
+            float x, y;
+            int isSet;
+            FScanf(szBuffer, pFile); sscanf_s(szBuffer, "%f %f %d", &x, &y, &isSet);
+            m_vPlayerSpawnPos = Vec2(x, y);
+            m_bPlayerSpawnSet = (isSet != 0);
+
+            FScanf(szBuffer, pFile); // [SceneClear]
+            float startX, startY, endX, endY;
+            FScanf(szBuffer, pFile); sscanf_s(szBuffer, "%f %f %f %f %d", &startX, &startY, &endX, &endY, &isSet);
+            m_vSceneClearStartPos = Vec2(startX, startY);
+            m_vSceneClearEndPos = Vec2(endX, endY);
+            m_bSceneClearSet = (isSet != 0);
+        }
+        else if (strcmp(szBuffer, "[TriggerCount]") == 0)
+        {
+            int triggerCount = 0;
+            FScanf(szBuffer, pFile);
+            sscanf_s(szBuffer, "%d", &triggerCount);
+
+            for (int i = 0; i < triggerCount; ++i)
+            {
+                CTrigger* pTrigger = new CTrigger();
+                try {
+                    pTrigger->Load(pFile);
+                    AddObject(pTrigger, GROUP_TYPE::TRIGGER);
+                }
+                catch (...) {
+                    delete pTrigger;
+                }
+            }
+        }
     }
 
 
-
-    fclose(pFile);
+	fclose(pFile);
 }
-
 /*
     Tile 그룹을 전부 지우고
     매개변수로 해당 씬의 x 타일 개수,y타일 개수를 받아

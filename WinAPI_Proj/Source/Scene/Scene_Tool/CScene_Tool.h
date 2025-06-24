@@ -90,6 +90,7 @@ public:
 	void SaveTile(const wstring& _strFilePath);
 	void SaveTileData();
 	void LoadTileData();
+	void LoadTile(const wstring& _strFilePath);
 
 	void LoadTileTexUI(const wstring& folderPath);
 	void ChangeTileTexUI();

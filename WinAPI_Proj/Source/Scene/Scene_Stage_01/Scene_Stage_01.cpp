@@ -143,23 +143,37 @@ void Scene_Stage_01::Enter()
     SetBackGround(backGround);
 
     
-    // 타일 로딩
-    LoadTile(L"Tile\\test31");
+    // 타일 로딩 (상대 경로 사용)
+    LoadTile(L"Tile\\test0624_2");
     // 불러온 타일 정보를 바탕으로 땅 생성
     CreateGround();
 
-    // ================== 트리거 데이터 해석 단계 ================== // ADDED START
-    // 맵의 모든 오브젝트(타일, 벽 등)가 로드된 후, 트리거가 참조할 데이터를 해석합니다.
+    // ================== 트리거 및 벽 생성/연결 단계 ==================
     const vector<GameObject*>& vecTriggers = GetGroupObject(GROUP_TYPE::TRIGGER);
     for (GameObject* pObj : vecTriggers)
     {
         CTrigger* pTrigger = dynamic_cast<CTrigger*>(pObj);
         if (pTrigger)
         {
+            // 1. 로드된 벽 정보로 실제 CGround 객체 생성
+            const auto& wallInfos = pTrigger->GetWallInfo();
+            for (const auto& info : wallInfos)
+            {
+                CGround* pWall = new CGround();
+                pWall->SetName(info.szName);
+                pWall->SetWorldPos(info.vPos);
+                pWall->SetScale(info.vScale);
+                pWall->SetCollideType(TILE_COLLIDE_TYPE::SOLID);
+                pWall->SetGroundType(GROUND_TYPE::UNWALKABLE);
+                pWall->SetActive(false); // 처음에는 비활성화
+                AddObject(pWall, GROUP_TYPE::GROUND);
+            }
+            
+            // 2. 생성된 벽 객체와 트리거 연결
             pTrigger->ResolveData();
         }
     }
-    // ========================================================== // ADDED END
+    // ==========================================================
 
 
  //오브젝트 추가
@@ -278,3 +292,10 @@ void Scene_Stage_01::Exit()
 
 
 
+// 원본 텍스처의 선택한 위치의 idx를 기억하는 함수
+void Scene_Stage_01::LoadTile(const wstring& _strRelativePath)
+{
+    wstring strFilePath = CPathMgr::GetInst()->GetContentPath();
+    strFilePath += _strRelativePath;
+    CScene::LoadTile(strFilePath);
+}

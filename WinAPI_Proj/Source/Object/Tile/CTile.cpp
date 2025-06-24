@@ -251,12 +251,12 @@ void CTile::Load(FILE* _pFile)
 	string str;
 
 	FScanf(szBuff, _pFile);//[Tile]
-	fscanf_s(_pFile, "%d", &m_iImgIdx);
-	FScanf(szBuff, _pFile);
-	fscanf_s(_pFile, "%d", &m_iImgIdx2);
-	FScanf(szBuff, _pFile);
+	FScanf(szBuff, _pFile); // m_iImgIdx 라인 읽기
+	m_iImgIdx = atoi(szBuff);
+	FScanf(szBuff, _pFile); // m_iImgIdx2 라인 읽기
+	m_iImgIdx2 = atoi(szBuff);
 
-	FScanf(szBuff, _pFile);//[Texture_Name]
+	FScanf(szBuff, _pFile); //[Texture_Name]
 	FScanf(szBuff, _pFile);
 
 	if (strcmp(szBuff, "-1"))
@@ -322,9 +322,8 @@ void CTile::Load(FILE* _pFile)
 	}
 
     FScanf(szBuff, _pFile); // [VertexPosition] 섹션
-    int iVertexType;
-    fscanf_s(_pFile, "%d", &iVertexType);
-    FScanf(szBuff, _pFile);
+    FScanf(szBuff, _pFile); // VertexType 값 라인 읽기
+    int iVertexType = atoi(szBuff);
 
     // VertexType 설정
     switch (iVertexType)
@@ -336,9 +335,8 @@ void CTile::Load(FILE* _pFile)
     
 
     FScanf(szBuff, _pFile); // [GroundType] 섹션
-    int iGroundType;
-    fscanf_s(_pFile, "%d", &iGroundType);
-    FScanf(szBuff, _pFile);
+    FScanf(szBuff, _pFile); // GroundType 값 라인 읽기
+    int iGroundType = atoi(szBuff);
 
     // GroundType 설정
     switch (iGroundType) {
@@ -351,8 +349,8 @@ void CTile::Load(FILE* _pFile)
     }
 
     FScanf(szBuff, _pFile); // [BotRightTileIdx] 섹션
-    fscanf_s(_pFile, "%d", &m_iBotRightTileIdx);
-    FScanf(szBuff, _pFile);
+    FScanf(szBuff, _pFile); // BotRightTileIdx 값 라인 읽기
+    m_iBotRightTileIdx = atoi(szBuff);
 
 	FScanf(szBuff, _pFile);
 }

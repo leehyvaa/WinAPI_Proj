@@ -447,15 +447,25 @@ void CScene_Tool::Update()
                             Vec2 vTopLeft(min(vPos1.x, vPos2.x), min(vPos1.y, vPos2.y));
                             Vec2 vBotRight(max(vPos1.x, vPos2.x) + TILE_SIZE, max(vPos1.y, vPos2.y) + TILE_SIZE);
 
+                            Vec2 vWallPos = vTopLeft;
+                            Vec2 vWallScale = vBotRight - vTopLeft;
+
                             CGround* pWall = new CGround();
-                            pWall->SetWorldPos(vTopLeft);
-                            pWall->SetScale(vBotRight - vTopLeft);
+                            pWall->SetWorldPos(vWallPos);
+                            pWall->SetScale(vWallScale);
                             pWall->SetCollideType(TILE_COLLIDE_TYPE::SOLID);
                             pWall->SetGroundType(GROUND_TYPE::UNWALKABLE);
+                            
                             wstring wallName = L"TriggerWall_" + to_wstring(m_iCurrentTriggerIndex) + L"_" + to_wstring(m_iWallAreaClickCount / 2);
                             pWall->SetName(wallName);
                             AddObject(pWall, GROUP_TYPE::GROUND);
-                            pCurrentTrigger->AddWallName(wallName);
+
+                            tWallInfo info;
+                            info.szName = wallName;
+                            info.vPos = vWallPos;
+                            info.vScale = vWallScale;
+                            pCurrentTrigger->AddWallInfo(info);
+
                             m_iWallAreaP1_TileIdx = -1; // 다음 생성을 위해 리셋
                         }
                     }
@@ -484,16 +494,16 @@ void CScene_Tool::Update()
             if (KEY_TAP(KEY::BACK))
             {
                 // 1. 트리거에 등록된 벽(Ground) 오브젝트를 씬에서 삭제
-                  const vector<wstring>& wallNames = pCurrentTrigger->GetWallNames();
-                  for (const auto& name : wallNames)
-                  {
-                      GameObject* pWall = FindObjectByName(name);
-                      if (pWall)
-                      {
-                          DeleteObject(pWall);
-                      }
-                  }
-                  pCurrentTrigger->ClearData();
+                const vector<tWallInfo>& wallInfos = pCurrentTrigger->GetWallInfo();
+                for (const auto& info : wallInfos)
+                {
+                    GameObject* pWall = FindObjectByName(info.szName);
+                    if (pWall)
+                    {
+                        DeleteObject(pWall);
+                    }
+                }
+                pCurrentTrigger->ClearData();
             }
         }
 		break;
@@ -677,8 +687,10 @@ void CScene_Tool::SetTileIdx()
 				static_cast<CTile*>(vecTile[iIdx])->SetTexture(m_pTexUI->GetTexture());
 				static_cast<CTile*>(vecTile[iIdx])->SetImgIdx(newTileIdx);
 			}
-
+		
 		}
+		
+		
 
 	}
 	if (KEY_TAP(KEY::LBUTTON))
@@ -694,7 +706,51 @@ void CScene_Tool::SetTileIdx()
 }
 
 
-
+// 타일 파일로부터 맵 데이터를 읽어오는 함수
+		void CScene_Tool::LoadTile(const wstring& _strFilePath)
+		{
+		    // 1. 부모 클래스의 표준 로더를 호출하여 모든 데이터를 로드
+		    CScene::LoadTile(_strFilePath);
+		
+		    // 2. 툴씬에서 필요한 시각적 요소(벽, 샘플 몬스터)와 내부 참조 복원
+		    const vector<GameObject*>& vecTriggers = GetGroupObject(GROUP_TYPE::TRIGGER);
+		    
+		    // m_arrTriggers 배열을 새로 로드된 트리거 객체로 다시 채움
+		    for (int i = 0; i < 5; ++i) m_arrTriggers[i] = nullptr;
+		
+		    int idx = 0;
+		    for (GameObject* pObj : vecTriggers)
+		    {
+		        if (idx >= 5) break;
+		        CTrigger* pTrigger = dynamic_cast<CTrigger*>(pObj);
+		        if (pTrigger)
+		        {
+		            m_arrTriggers[idx] = pTrigger;
+		
+		            // 로드된 벽 정보로 실제 CGround 객체 생성 (시각적 표시용)
+		            const auto& wallInfos = pTrigger->GetWallInfo();
+		            for (const auto& info : wallInfos)
+		            {
+		                CGround* pWall = new CGround();
+		                pWall->SetName(info.szName);
+		                pWall->SetWorldPos(info.vPos);
+		                pWall->SetScale(info.vScale);
+		                pWall->SetCollideType(TILE_COLLIDE_TYPE::SOLID);
+		                pWall->SetGroundType(GROUND_TYPE::UNWALKABLE);
+		                AddObject(pWall, GROUP_TYPE::GROUND);
+		                pWall->Start(); // 콜라이더 등 초기화
+		            }
+		
+		            // 로드된 몬스터 정보로 샘플 몬스터 생성 (시각적 표시용)
+		            const auto& monsterInfos = pTrigger->GetMonsterSpawnInfo();
+		            for (const auto& info : monsterInfos)
+		            {
+		                SettingSampleMonster(info.vPos, info.eType, pTrigger);
+		            }
+		            idx++;
+		        }
+		    }
+		}
 
 // 마우스 위치의 타일을 계산하고 해당 타일의 텍스처 변경 함수를 실행한다.
 void CScene_Tool::DrawSelectTile()
@@ -859,68 +915,36 @@ void CScene_Tool::SaveTile(const wstring& _strFilePath)
 {
 
 	FILE* pFile = nullptr;
-	_wfopen_s(&pFile,_strFilePath.c_str(),L"wb");
+	_wfopen_s(&pFile,_strFilePath.c_str(),L"w");
 	assert(pFile);
 
-	//타일 가로세로 개수 저장
+	// 1. 타일 데이터 저장
 	UINT xCount = GetTileX();
 	UINT yCount = GetTileY();
-
 	fprintf(pFile, "[TileCount]\n");
-	fprintf(pFile, "%d\n", static_cast<int>(xCount));
-	fprintf(pFile, "%d\n", static_cast<int>(yCount));
-
-	fprintf(pFile,"\n");
-
-	//모든 타일들을 개별적으로 저장할 데이터를 저장하게 함
+	fprintf(pFile, "%d\n%d\n\n", xCount, yCount);
 	const vector<GameObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
-	//const vector<GameObject*>& vecGround = GetGroupObject(GROUP_TYPE::GROUND);
-
-	for (size_t i = 0; i < vecTile.size(); i++)
-	{
+	for (size_t i = 0; i < vecTile.size(); i++) {
 		static_cast<CTile*>(vecTile[i])->Save(pFile);
 	}
 
-	// fprintf(pFile, "[GroundCount]\n");
-	// fprintf(pFile, "%d\n", static_cast<int>(GetGroundCount()));
-	// for (size_t i = 0; i < vecGround.size(); i++)
-	// {
-	// 	static_cast<CGround*>(vecGround[i])->Save(pFile);
-	// }
-
-	// 스폰 데이터 저장 추가
+	// 2. 스폰 데이터 저장
 	fprintf(pFile, "[SpawnData]\n");
-
-	// 플레이어 스폰 위치 저장
 	fprintf(pFile, "[PlayerSpawn]\n");
-	fprintf(pFile, "%.1f\n", m_vPlayerSpawnPos.x);
-	fprintf(pFile, "%.1f\n", m_vPlayerSpawnPos.y);
-	fprintf(pFile, "%d\n", m_bPlayerSpawnSet ? 1 : 0);
+	fprintf(pFile, "%f %f %d\n", m_vPlayerSpawnPos.x, m_vPlayerSpawnPos.y, m_bPlayerSpawnSet ? 1 : 0);
+	fprintf(pFile, "[SceneClear]\n");
+	fprintf(pFile, "%f %f %f %f %d\n\n", m_vSceneClearStartPos.x, m_vSceneClearStartPos.y, m_vSceneClearEndPos.x, m_vSceneClearEndPos.y, m_bSceneClearSet ? 1 : 0);
 
-	// 씬 클리어 영역 저장
-	fprintf(pFile, "[SceneClear]\n");	fprintf(pFile, "%.1f\n", m_vSceneClearStartPos.x);	fprintf(pFile, "%.1f\n", m_vSceneClearStartPos.y);	fprintf(pFile, "%.1f\n", m_vSceneClearEndPos.x);	fprintf(pFile, "%.1f\n", m_vSceneClearEndPos.y);	fprintf(pFile, "%d\n", m_bSceneClearSet ? 1 : 0);
-	
-	// for (size_t i = 0; i < m_vecMonsterSpawnData.size(); ++i)
-	// {
-	// 	fprintf(pFile, "%d %f %f\n",
-	// 		static_cast<int>(m_vecMonsterSpawnData[i].eType),
-	// 		m_vecMonsterSpawnData[i].vPos.x,
-	// 		m_vecMonsterSpawnData[i].vPos.y);
-	// }
+	   // 3. Trigger 데이터 저장 (씬에 있는 모든 트리거 저장)
+	   const vector<GameObject*>& vecTriggers = GetGroupObject(GROUP_TYPE::TRIGGER);
+	   fprintf(pFile, "[TriggerCount]\n");
+	   fprintf(pFile, "%d\n", (int)vecTriggers.size());
 
-    // Trigger 데이터 저장
-    fprintf(pFile, "[TriggerCount]\n");
-    fprintf(pFile, "%d\n", 5);
-
-    for (int i = 0; i < 5; ++i)
-    {
-        CTrigger* pTrigger = m_arrTriggers[i];
-        // 항상 5개의 트리거를 저장 (비어있더라도)
-        if (pTrigger) 
-        {
-            pTrigger->Save(pFile);
-        }
-    }
+	   for (GameObject* pObj : vecTriggers)
+	   {
+	       static_cast<CTrigger*>(pObj)->Save(pFile);
+	       fprintf(pFile, "\n"); // 트리거 데이터 사이에 공백 라인 추가
+	   }
 
 
 	fclose(pFile);
@@ -994,34 +1018,7 @@ void CScene_Tool::LoadTileData()
 	//Modal 방식
 	if (GetOpenFileName(&ofn))
 	{
-		wstring strRelativePath = CPathMgr::GetInst()->GetRelativePath(szName);
-
-        // 기존 트리거 정리
-        for (int i = 0; i < 5; ++i)
-        {
-            if (m_arrTriggers[i])
-            {
-                DeleteObject(m_arrTriggers[i]);
-                m_arrTriggers[i] = nullptr;
-            }
-        }
-        DeleteGroup(GROUP_TYPE::TRIGGER);
-
-        // 파일에서 트리거 로드
-        FILE* pFile = nullptr;
-        _wfopen_s(&pFile, szName, L"rb");
-
-        if (pFile)
-        {
-            LoadTile(strRelativePath); // 타일과 기타 데이터 로드
-            // 트리거 로딩은 여기에 추가
-
-            fclose(pFile);
-        }
-
-
-
-		LoadTile(strRelativePath);
+		LoadTile(szName);
 	}
 }
 
@@ -1029,87 +1026,52 @@ void CScene_Tool::LoadTileData()
 // 폴더에서 타일 텍스처 파일들을 불러와서 저장하고 첫 번째 텍스처를 UI에 띄우는 함수
 void CScene_Tool::LoadTileTexUI(const wstring& folderPath)
 {
-    m_vecTile_list.clear(); 
-    m_iImgIndex = 0;        
+	m_vecTile_list.clear();
+	m_iImgIndex = 0;
+	m_strCurTexFolder = folderPath;
 
-    WIN32_FIND_DATAA  data;
+	WIN32_FIND_DATAA  data;
+	wstring searchPath = CPathMgr::GetInst()->GetContentPath() + folderPath + L"\\*";
+	string searchPathA = string(searchPath.begin(), searchPath.end());
 
-    // 동적 경로 사용
-    wstring path = CPathMgr::GetInst()->GetContentPath();
-    path += folderPath + L"\\*";
-    
-    string path2 = string().assign(path.begin(), path.end());
-    
-    //m_vecTile_list에 텍스처파일들의 이름을 전부 넣기
-    try {
-        HANDLE hFind = FindFirstFileA(path2.c_str(), &data); // 첫번째 파일 찾아 핸들 리턴
-        if (hFind == INVALID_HANDLE_VALUE)
-            throw std::runtime_error("FindFirstFile 실패"); // 예외처리 
+	HANDLE hFind = FindFirstFileA(searchPathA.c_str(), &data);
+	if (hFind != INVALID_HANDLE_VALUE)
+	{
+		do
+		{
+			string fileName = data.cFileName;
+			if (fileName != "." && fileName != ".." && (fileName.find(".png") != string::npos || fileName.find(".PNG") != string::npos))
+			{
+				m_vecTile_list.push_back(fileName);
+			}
+		} while (FindNextFileA(hFind, &data));
+		FindClose(hFind);
+	}
 
-        while (FindNextFileA(hFind, &data))
-        {
-            if ((data.dwFileAttributes & FILE_ATTRIBUTE_ARCHIVE) &&  // 파일이라면
-                !(data.dwFileAttributes & FILE_ATTRIBUTE_SYSTEM)) // 시스템파일은 제외
-            {
-                // PNG 파일만 필터링
-                std::string fileName = std::string(data.cFileName);
-                if (fileName.find(".png") != std::string::npos || fileName.find(".PNG") != std::string::npos)
-                {
-                    m_vecTile_list.push_back(fileName);
-                }
-            }
-        }
-        FindClose(hFind); //핸들 닫아주기 
-    }
-    catch (std::runtime_error e)
-    {
-        std::cerr << e.what() << "\n";
-        cout << "툴 에러";
-    }
-
-    //출력으로 확인하기 
-    std::cout << "파일리스트" << "\n";
-    for (std::string str : m_vecTile_list)
-    {
-        std::cout << str << "\n";
-    }
-
-    //불러올 타일이 없으면 중지
-    if (m_vecTile_list.empty())
-    {
-        m_pTexUI->SetTexture(nullptr); // 목록이 비었으면 텍스처를 null로 설정
-        return;
-    }
-
-    path = CPathMgr::GetInst()->GetRelativePath(path.c_str());
-    path.pop_back();
-    path2 = m_vecTile_list[m_iImgIndex];
-    path += wstring().assign(path2.begin(), path2.end());
-
-    CTexture* pTileTexture = CResMgr::GetInst()->LoadTexture(L"TILE0", path.c_str());
-    m_pTexUI->SetTexture(pTileTexture);
-
+	if (m_vecTile_list.empty()) {
+		m_pTexUI->SetTexture(nullptr);
+		return;
+	}
     ChangeTileTexUI();
 }
 
 // 현재 인덱스에 해당하는 텍스처 파일을 UI에 띄우도록 요청한다.
 void CScene_Tool::ChangeTileTexUI()
 {
-    // 현재 모드에 맞는 폴더 경로를 가져오기
-    wstring fullPath = CPathMgr::GetInst()->GetContentPath() + m_strCurTexFolder + L"\\";
+	if (m_vecTile_list.empty() || m_iImgIndex >= m_vecTile_list.size())
+		return;
 
-    // 목록에서 현재 인덱스에 해당하는 파일 이름을 가져오기
-    string strFileName = m_vecTile_list[m_iImgIndex];
-    wstring wstrFileName(strFileName.begin(), strFileName.end());
-    fullPath += wstrFileName;
+	string strFileName = m_vecTile_list[m_iImgIndex];
+	wstring wstrFileName(strFileName.begin(), strFileName.end());
 
-    // 리소스 매니저에 등록할 고유한 키를 생성
-    wstring resKey = m_strCurTexFolder + L"\\" + wstrFileName;
+	// 올바른 상대 경로 생성 (예: "texture\\tile\\mytile.png")
+	wstring relativePath = m_strCurTexFolder + L"\\" + wstrFileName;
 
-    // 상대 경로로 텍스처를 로드
-    wstring relativePath = CPathMgr::GetInst()->GetRelativePath(fullPath.c_str());
-    CTexture* pTileTexture = CResMgr::GetInst()->LoadTexture(resKey, relativePath);
-    m_pTexUI->SetTexture(pTileTexture);
+	// 리소스 매니저에 등록할 고유한 키를 생성 (상대경로 자체를 키로 사용하면 고유성 보장)
+	wstring resKey = relativePath;
+
+	CTexture* pTileTexture = CResMgr::GetInst()->LoadTexture(resKey, relativePath);
+	m_pTexUI->SetTexture(pTileTexture);
 }
 
 
@@ -1248,29 +1210,49 @@ void CScene_Tool::SetSceneClearPos()
 
 void CScene_Tool::Render(ID2D1RenderTarget* _pRenderTarget)
 {
-    CScene::Render(_pRenderTarget);
-
     if (!_pRenderTarget)
         return;
+
+    // 1. 배경 렌더링
+    CBackGround* bg = GetBackGround();
+    if (bg) bg->Render(_pRenderTarget);
+
+    // 2. 타일 및 그리드 렌더링 (RenderTile 함수 호출)
+    RenderTile(_pRenderTarget);
+
+    // 3. 툴씬 전용 오브젝트 렌더링
+    for (UINT i = 0; i < static_cast<UINT>(GROUP_TYPE::END); ++i)
+    {
+        GROUP_TYPE eType = static_cast<GROUP_TYPE>(i);
+        // 타일은 RenderTile에서 이미 그렸으므로 건너뜀
+        if (eType == GROUP_TYPE::TILE || eType == GROUP_TYPE::BACKGROUND) continue;
+
+        const vector<GameObject*>& vecObjects = GetGroupObject(eType);
+        for (GameObject* pObj : vecObjects)
+        {
+            if (!pObj || pObj->IsDead()) continue;
+
+            // 툴씬에서는 GROUND, TRIGGER, MONSTER를 항상 렌더링 (IsActive 무시)
+            if (eType == GROUP_TYPE::GROUND || eType == GROUP_TYPE::TRIGGER || eType == GROUP_TYPE::MONSTER) {}
+            else if (!pObj->IsActive()) continue; // 나머지 그룹은 Active일 때만
+
+            // 실제 렌더링 로직
+            pObj->Render(_pRenderTarget);
+            pObj->Component_Render(_pRenderTarget);
+        }
+    }
 
     // 스폰 위치 표시 (빨간 원)
     if (m_bPlayerSpawnSet)
     {
         Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(m_vPlayerSpawnPos);
-
-        ID2D1SolidColorBrush* pBrush = nullptr;
-        _pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Red, 0.7f), &pBrush);
-
+        ID2D1SolidColorBrush* pBrush = CCore::GetInst()->GetBrush(BrushType::RED);
         if (pBrush)
         {
             D2D1_ELLIPSE ellipse = D2D1::Ellipse(D2D1::Point2F(vRenderPos.x, vRenderPos.y), 20.0f, 20.0f);
             _pRenderTarget->FillEllipse(ellipse, pBrush);
-
-            // 테두리
-            _pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::DarkRed), &pBrush);
-            _pRenderTarget->DrawEllipse(ellipse, pBrush, 2.0f);
-
-            pBrush->Release();
+            ID2D1SolidColorBrush* pOutlineBrush = CCore::GetInst()->GetCustomBrush(0.5f, 0, 0);
+            if(pOutlineBrush) _pRenderTarget->DrawEllipse(ellipse, pOutlineBrush, 2.0f);
         }
     }
 
@@ -1279,9 +1261,7 @@ void CScene_Tool::Render(ID2D1RenderTarget* _pRenderTarget)
     {
         Vec2 vRenderStartPos = CCamera::GetInst()->GetRenderPos(m_vSceneClearStartPos);
         Vec2 vRenderEndPos = CCamera::GetInst()->GetRenderPos(m_vSceneClearEndPos);
-
-        ID2D1SolidColorBrush* pBrush = nullptr;
-        _pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Blue, 0.3f), &pBrush);
+        ID2D1SolidColorBrush* pBrush = CCore::GetInst()->GetCustomBrush(0, 0, 1, 0.3f);
 
         if (pBrush)
         {
@@ -1292,13 +1272,8 @@ void CScene_Tool::Render(ID2D1RenderTarget* _pRenderTarget)
                 vRenderEndPos.y
             );
             _pRenderTarget->FillRectangle(rect, pBrush);
-
-            // 테두리
-            pBrush->Release();
-            _pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::DarkBlue), &pBrush);
-            _pRenderTarget->DrawRectangle(rect, pBrush, 2.0f);
-
-            pBrush->Release();
+            ID2D1SolidColorBrush* pOutlineBrush = CCore::GetInst()->GetBrush(BrushType::BLUE);
+            if(pOutlineBrush) _pRenderTarget->DrawRectangle(rect, pOutlineBrush, 2.0f);
         }
     }
 
@@ -1307,28 +1282,25 @@ void CScene_Tool::Render(ID2D1RenderTarget* _pRenderTarget)
     {
         Vec2 vRenderStartPos = CCamera::GetInst()->GetRenderPos(m_vSceneClearStartPos);
         Vec2 vRenderEndPos = CCamera::GetInst()->GetRenderPos(m_vSceneClearEndPos);
-
-        ID2D1SolidColorBrush* pBrush = nullptr;
-        _pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Yellow, 0.3f), &pBrush);
+        ID2D1SolidColorBrush* pBrush = CCore::GetInst()->GetCustomBrush(1, 1, 0, 0.3f);
 
         if (pBrush)
         {
             D2D1_RECT_F rect = D2D1::RectF(
-                vRenderStartPos.x,
-                vRenderStartPos.y,
-                vRenderEndPos.x,
-                vRenderEndPos.y
+                min(vRenderStartPos.x, vRenderEndPos.x),
+                min(vRenderStartPos.y, vRenderEndPos.y),
+                max(vRenderStartPos.x, vRenderEndPos.x),
+                max(vRenderStartPos.y, vRenderEndPos.y)
             );
             _pRenderTarget->FillRectangle(rect, pBrush);
-
-            // 테두리
-            pBrush->Release();
-            _pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Orange), &pBrush);
-            _pRenderTarget->DrawRectangle(rect, pBrush, 2.0f);
-
-            pBrush->Release();
+            ID2D1SolidColorBrush* pOutlineBrush = CCore::GetInst()->GetCustomBrush(1, 0.65f, 0); // Orange
+            if(pOutlineBrush) _pRenderTarget->DrawRectangle(rect, pOutlineBrush, 2.0f);
         }
     }
+
+    // 마지막으로 UI 렌더링
+    const auto& uiGroup = GetUIGroup();
+    for(auto* pUI : uiGroup) if(pUI && !pUI->IsDead() && pUI->IsActive()) pUI->Render(_pRenderTarget);
 }
 
 void CScene_Tool::SettingSampleMonster(Vec2 pos, MON_TYPE eType, CTrigger* pOwnerTrigger)
