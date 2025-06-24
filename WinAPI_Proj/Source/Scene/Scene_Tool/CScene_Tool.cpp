@@ -39,23 +39,18 @@ CScene_Tool::CScene_Tool()
 	, m_bErase(false)
 	, m_bSecondTex(false)
 	, m_pModeText(nullptr)
-    , m_iCurrentTriggerIndex(-1)
-    , m_eCurrentMonsterType(MON_TYPE::SHOOTER)
-    , m_pHelpText(nullptr)
-    , m_vPlayerSpawnPos(Vec2(0, 0))
-    , m_vSceneClearStartPos(Vec2(0, 0))
-    , m_vSceneClearEndPos(Vec2(0, 0))
-    , m_bPlayerSpawnSet(false)
-    , m_bSceneClearSet(false)
-    , m_bDraggingClearArea(false)
-    , m_iTriggerAreaClickCount(0)
-    , m_iWallAreaClickCount(0)
-    , m_iWallAreaP1_TileIdx(-1)
-    , m_iTriggerAreaP1_TileIdx(-1) // 새로 추가: 초기화
+	, m_iCurrentTriggerIndex(-1)
+	, m_eCurrentMonsterType(MON_TYPE::SHOOTER)
+	, m_pHelpText(nullptr)
+	, m_bDraggingClearArea(false)
+	, m_iTriggerAreaClickCount(0)
+	, m_iWallAreaClickCount(0)
+	, m_iWallAreaP1_TileIdx(-1)
+	, m_iTriggerAreaP1_TileIdx(-1)
 {
-    // m_vTriggerAreaP1 = Vec2(0,0); // 이 줄은 삭제합니다.
-    for (int i = 0; i < 5; ++i)
-        m_arrTriggers[i] = nullptr;
+	   // m_vTriggerAreaP1 = Vec2(0,0); // 이 줄은 삭제합니다.
+	   for (int i = 0; i < 5; ++i)
+	       m_arrTriggers[i] = nullptr;
 }
 
 CScene_Tool::~CScene_Tool()
@@ -1171,38 +1166,35 @@ INT_PTR CALLBACK TileCountProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 // 플레이어 스폰 위치 설정
 void CScene_Tool::SetPlayerSpawnPos()
 {
-    Vec2 vMousePos = CKeyMgr::GetInst()->GetMousePos();
-    Vec2 vCamLook = CCamera::GetInst()->GetLookAt();
-    Vec2 vResolution = CCore::GetInst()->GetResolution();
-    Vec2 vWorldPos = vMousePos + vCamLook - vResolution / 2.f;
+	Vec2 vMousePos = CKeyMgr::GetInst()->GetMousePos();
+	Vec2 vCamLook = CCamera::GetInst()->GetLookAt();
+	Vec2 vResolution = CCore::GetInst()->GetResolution();
+	Vec2 vWorldPos = vMousePos + vCamLook - vResolution / 2.f;
 
-    m_vPlayerSpawnPos = vWorldPos;
-    m_bPlayerSpawnSet = true;
+	CScene::SetPlayerSpawnPos(vWorldPos);
 
-    // 디버그 메시지
-    wchar_t szBuffer[256];
-    swprintf_s(szBuffer, L"플레이어 스폰 위치 설정: (%.1f, %.1f)", vWorldPos.x, vWorldPos.y);
-    MessageBox(nullptr, szBuffer, L"스폰 위치 설정", MB_OK);
+	// 디버그 메시지
+	wchar_t szBuffer[256];
+	swprintf_s(szBuffer, L"플레이어 스폰 위치 설정: (%.1f, %.1f)", vWorldPos.x, vWorldPos.y);
+	MessageBox(nullptr, szBuffer, L"스폰 위치 설정", MB_OK);
 }
 
 // 씬 클리어 위치 설정 (드래그 영역)
 void CScene_Tool::SetSceneClearPos()
 {
-    // 시작점과 끝점을 정규화 (왼쪽 위가 시작점, 오른쪽 아래가 끝점이 되도록)
-    float minX = min(m_vSceneClearStartPos.x, m_vSceneClearEndPos.x);
-    float minY = min(m_vSceneClearStartPos.y, m_vSceneClearEndPos.y);
-    float maxX = max(m_vSceneClearStartPos.x, m_vSceneClearEndPos.x);
-    float maxY = max(m_vSceneClearStartPos.y, m_vSceneClearEndPos.y);
+	// 시작점과 끝점을 정규화 (왼쪽 위가 시작점, 오른쪽 아래가 끝점이 되도록)
+	float minX = min(m_vSceneClearStartPos.x, m_vSceneClearEndPos.x);
+	float minY = min(m_vSceneClearStartPos.y, m_vSceneClearEndPos.y);
+	float maxX = max(m_vSceneClearStartPos.x, m_vSceneClearEndPos.x);
+	float maxY = max(m_vSceneClearStartPos.y, m_vSceneClearEndPos.y);
 
-    m_vSceneClearStartPos = Vec2(minX, minY);
-    m_vSceneClearEndPos = Vec2(maxX, maxY);
-    m_bSceneClearSet = true;
+	CScene::SetSceneClearPos(Vec2(minX, minY), Vec2(maxX, maxY));
 
-    // 디버그 메시지
-    wchar_t szBuffer[256];
-    swprintf_s(szBuffer, L"씬 클리어 영역 설정: (%.1f, %.1f) ~ (%.1f, %.1f)",
-               minX, minY, maxX, maxY);
-    MessageBox(nullptr, szBuffer, L"클리어 영역 설정", MB_OK);
+	// 디버그 메시지
+	wchar_t szBuffer[256];
+	swprintf_s(szBuffer, L"씬 클리어 영역 설정: (%.1f, %.1f) ~ (%.1f, %.1f)",
+		minX, minY, maxX, maxY);
+	MessageBox(nullptr, szBuffer, L"클리어 영역 설정", MB_OK);
 }
 
 

@@ -56,13 +56,7 @@ private:
     int m_iLastBotRightTileIdx;
     int m_iLastTopLeftTileIdx;
 
-    // 플레이어 스폰 및 클리어 위치
-    Vec2 m_vPlayerSpawnPos;
-    Vec2 m_vSceneClearStartPos;  // 클리어 영역 시작점 (드래그 시작)
-    Vec2 m_vSceneClearEndPos;    // 클리어 영역 끝점 (드래그 끝)
-    bool m_bPlayerSpawnSet;
-    bool m_bSceneClearSet;
-    bool m_bDraggingClearArea;   // 클리어 영역 드래그 중인지
+ bool m_bDraggingClearArea;   // 클리어 영역 드래그 중인지
  
     // 모드별 설명 텍스트 저장용
     vector<wstring> m_textureHelp;
@@ -76,30 +70,30 @@ private:
     
 public:
 
-	virtual void Update();
-	virtual void Enter();
-	virtual void Exit();
-	virtual void Render(ID2D1RenderTarget* _pRenderTarget);
+ virtual void Update();
+ virtual void Enter();
+ virtual void Exit();
+ virtual void Render(ID2D1RenderTarget* _pRenderTarget);
 
 public:
-	void SetTileIdx();
-	void SetTileUIIdx();
-	void DrawSelectTile();
+ void SetTileIdx();
+ void SetTileUIIdx();
+ void DrawSelectTile();
 
     
-	void SaveTile(const wstring& _strFilePath);
-	void SaveTileData();
-	void LoadTileData();
-	void LoadTile(const wstring& _strFilePath);
+ void SaveTile(const wstring& _strFilePath);
+ void SaveTileData();
+ void LoadTileData();
+ void LoadTile(const wstring& _strFilePath);
 
-	void LoadTileTexUI(const wstring& folderPath);
-	void ChangeTileTexUI();
-	void NextTileUI();
-	void PrevTileUI();
-	   
-	void SettingSampleMonster(Vec2 pos, MON_TYPE eType, CTrigger* pOwnerTrigger);
+ void LoadTileTexUI(const wstring& folderPath);
+ void ChangeTileTexUI();
+ void NextTileUI();
+ void PrevTileUI();
+    
+ void SettingSampleMonster(Vec2 pos, MON_TYPE eType, CTrigger* pOwnerTrigger);
 
-	void SettingTopLeftGround();
+ void SettingTopLeftGround();
     void SettingBotRightGround();
 
     // 스폰 및 클리어 위치 설정

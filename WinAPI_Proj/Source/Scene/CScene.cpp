@@ -101,10 +101,10 @@ void CScene::Enter()
 
 void CScene::Exit()
 {
-    SetPlayerSpawnPos(Vec2(0.f,0.f));
-    SetSceneClearPos(Vec2(0.f, 0.f),Vec2( 0.f, 0.f));
-    m_bSceneClearSet = false;
-    m_bPlayerSpawnSet = false;
+	m_vPlayerSpawnPos = Vec2(0.f, 0.f);
+	m_vSceneClearStartPos = Vec2(0.f, 0.f);	m_vSceneClearEndPos = Vec2(0.f, 0.f);
+	m_bSceneClearSet = false;
+	m_bPlayerSpawnSet = false;
     // 씬 종료 시 오브젝트 풀 제외한 모든 씬 내의 오브젝트를 삭제
     DeleteAll();
 }
@@ -776,6 +776,19 @@ void CScene::UpdateDebugUI()
             if (m_pPlayerText) m_pPlayerText->AddLines(Texts);
         }
     }
+}
+
+void CScene::SetPlayerSpawnPos(const Vec2& pos)
+{
+	m_vPlayerSpawnPos = pos;
+	m_bPlayerSpawnSet = true;
+}
+
+void CScene::SetSceneClearPos(const Vec2& startPos, const Vec2& endPos)
+{
+	m_vSceneClearStartPos = startPos;
+	m_vSceneClearEndPos = endPos;
+	m_bSceneClearSet = true;
 }
 
 

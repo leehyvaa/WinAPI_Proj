@@ -30,6 +30,7 @@ private:
 	GameObject* m_pPlayer;
 	CBackGround* backGround;
 
+protected:
 	// 스폰, 클리어 데이터
 	Vec2 m_vPlayerSpawnPos;
 	Vec2 m_vSceneClearStartPos;
@@ -57,8 +58,8 @@ public:
 	Vec2 GetPlayerSpawnPos() const { return m_vPlayerSpawnPos; }
 	Vec2 GetSceneClearStartPos() const { return m_vSceneClearStartPos; }
 	Vec2 GetSceneClearEndPos() const { return m_vSceneClearEndPos; }
-    void SetPlayerSpawnPos(const Vec2& pos) { m_vPlayerSpawnPos = pos; m_bPlayerSpawnSet = true; }
-    void SetSceneClearPos(const Vec2& startPos, const Vec2& endPos) { m_vSceneClearStartPos = startPos; m_vSceneClearEndPos = endPos; m_bSceneClearSet = true; }
+	void SetPlayerSpawnPos(const Vec2& pos);
+	void SetSceneClearPos(const Vec2& startPos, const Vec2& endPos);
 
 	virtual void Start();
 	virtual void Update();
