@@ -10,6 +10,10 @@
 #include "CRigidBody.h"
 #include "CCamera.h"
 #include <d2d1.h>
+
+#include "CAnimation.h"
+#include "CAnimator.h"
+#include "CResMgr.h"
 const float COLLISION_TOP_THRESHOLD = 20.f;
 const float COLLISION_BOT_THRESHOLD = 15.f;
 const float COLLISION_SIDE_THRESHOLD = 20.f;
@@ -23,6 +27,67 @@ CGround::CGround()
 {
     CreateCollider();
     SetGroup(GROUP_TYPE::GROUND);
+    CreateAnimator();
+
+    CTexture *pTex_Gate1_Horizontal = CResMgr::GetInst()->LoadTexture(L"Gate1Tex_Horizontal", L"texture\\gate\\Gate1_Horizontal.png");
+    CTexture *pTex_Gate1_Vertical = CResMgr::GetInst()->LoadTexture(L"Gate1Tex_Vertical", L"texture\\gate\\Gate1_Vertical.png");
+    CTexture *pTex_Gate2_Horizontal = CResMgr::GetInst()->LoadTexture(L"Gate2Tex_Horizontal", L"texture\\gate\\Gate2_Horizontal.png");
+    CTexture *pTex_Gate2_Vertical = CResMgr::GetInst()->LoadTexture(L"Gate2Tex_Vertical", L"texture\\gate\\Gate2_Vertical.png");
+
+    GetAnimator()->CreateAnimation(L"Gate1_Horizontal_Closed", pTex_Gate1_Horizontal,
+                                                   Vec2(0.f, 0.f), Vec2(600.f, 100.f), Vec2(0.f, 100.f), 0.25f, 2, 2.f, Vec2(0.f, 0.f));
+    GetAnimator()->CreateAnimation(L"Gate1_Horizontal_Closing", pTex_Gate1_Horizontal,
+                                                       Vec2(600.f, 0.f), Vec2(600.f, 100.f), Vec2(0.f, 100.f), 0.25f, 7, 2.f, Vec2(0.f, 0.f));
+    GetAnimator()->CreateAnimation(L"Gate1_Horizontal_Opening", pTex_Gate1_Horizontal,
+                                                       Vec2(1200.f, 0.f), Vec2(600.f, 100.f), Vec2(0.f, 100.f), 0.25f, 7, 2.f, Vec2(0.f, 0.f));
+
+
+    GetAnimator()->CreateAnimation(L"Gate2_Horizontal_Closed", pTex_Gate2_Horizontal,
+                                                       Vec2(0.f, 0.f), Vec2(600.f, 100.f), Vec2(600.f, 0.f), 0.25f, 5, 2.f, Vec2(0.f, 0.f));
+    GetAnimator()->CreateAnimation(L"Gate2_Horizontal_Closing", pTex_Gate2_Horizontal,
+                                                           Vec2(0.f, 100.f), Vec2(600.f, 100.f), Vec2(600.f, 0.f), 0.25f, 9, 2.f, Vec2(0.f, 0.f));
+    GetAnimator()->CreateAnimation(L"Gate2_Horizontal_Opening", pTex_Gate2_Horizontal,
+                                                           Vec2(0.f, 200.f), Vec2(600.f, 100.f), Vec2(600.f, 0.f), 0.25f, 7, 2.f, Vec2(0.f, 0.f));
+
+
+    GetAnimator()->CreateAnimation(L"Gate1_Vertical_Closed", pTex_Gate1_Vertical,
+                                                       Vec2(0.f, 0.f), Vec2(100.f, 600.f), Vec2(100.f, 0.f), 0.25f, 2, 2.f, Vec2(0.f, 0.f));
+    GetAnimator()->CreateAnimation(L"Gate1_Vertical_Closing", pTex_Gate1_Vertical,
+                                                           Vec2(0.f, 600.f), Vec2(100.f, 600.f), Vec2(100.f, 0.f), 0.25f, 7, 2.f, Vec2(0.f, 0.f));
+    GetAnimator()->CreateAnimation(L"Gate1_Vertical_Opened", pTex_Gate1_Vertical,
+                                                                   Vec2(0.f, 1200.f), Vec2(100.f, 600.f), Vec2(100.f, 0.f), 0.25f, 1, 2.f, Vec2(0.f, 0.f));
+    GetAnimator()->CreateAnimation(L"Gate1_Vertical_Opening", pTex_Gate1_Vertical,
+                                                           Vec2(0.f, 1800.f), Vec2(100.f, 600.f), Vec2(100.f, 0.f), 0.25f, 7, 2.f, Vec2(0.f, 0.f));
+    
+
+    GetAnimator()->CreateAnimation(L"Gate2_Vertical_Closed", pTex_Gate2_Vertical,
+                                                      Vec2(0.f, 0.f), Vec2(100.f, 600.f), Vec2(100.f, 0.f), 0.25f, 5, 2.f, Vec2(0.f, 0.f));
+    GetAnimator()->CreateAnimation(L"Gate2_Vertical_Closing", pTex_Gate2_Vertical,
+                                                           Vec2(0.f, 600.f), Vec2(100.f, 600.f), Vec2(100.f, 0.f), 0.25f, 9, 2.f, Vec2(0.f, 0.f));
+    GetAnimator()->CreateAnimation(L"Gate2_Vertical_Opening", pTex_Gate2_Vertical,
+                                                           Vec2(0.f, 1200.f), Vec2(100.f, 600.f), Vec2(100.f, 0.f), 0.25f, 7, 2.f, Vec2(0.f, 0.f));
+
+
+
+    GetAnimator()->FindAnimation(L"Gate1_Horizontal_Closed")->Save(L"animation\\Gate1_Horizontal_Closed.anim");
+    GetAnimator()->FindAnimation(L"Gate1_Horizontal_Closing")->Save(L"animation\\Gate1_Horizontal_Closing.anim");
+    GetAnimator()->FindAnimation(L"Gate1_Horizontal_Opened")->Save(L"animation\\Gate1_Horizontal_Opened.anim");
+    GetAnimator()->FindAnimation(L"Gate1_Horizontal_Opening")->Save(L"animation\\Gate1_Horizontal_Opening.anim");
+    GetAnimator()->FindAnimation(L"Gate2_Horizontal_Closed")->Save(L"animation\\Gate2_Horizontal_Closed.anim");
+    GetAnimator()->FindAnimation(L"Gate2_Horizontal_Closing")->Save(L"animation\\Gate2_Horizontal_Closing.anim");
+    GetAnimator()->FindAnimation(L"Gate2_Horizontal_Opened")->Save(L"animation\\Gate2_Horizontal_Opened.anim");
+    GetAnimator()->FindAnimation(L"Gate2_Horizontal_Opening")->Save(L"animation\\Gate2_Horizontal_Opening.anim");
+    GetAnimator()->FindAnimation(L"Gate1_Vertical_Closed")->Save(L"animation\\Gate1_Vertical_Closed.anim");
+    GetAnimator()->FindAnimation(L"Gate1_Vertical_Closing")->Save(L"animation\\Gate1_Vertical_Closing.anim");
+    GetAnimator()->FindAnimation(L"Gate1_Vertical_Opened")->Save(L"animation\\Gate1_Vertical_Opened.anim");
+    GetAnimator()->FindAnimation(L"Gate1_Vertical_Opening")->Save(L"animation\\Gate1_Vertical_Opening.anim");
+    GetAnimator()->FindAnimation(L"Gate2_Vertical_Closed")->Save(L"animation\\Gate2_Vertical_Closed.anim");
+    GetAnimator()->FindAnimation(L"Gate2_Vertical_Closing")->Save(L"animation\\Gate2_Vertical_Closing.anim");
+    GetAnimator()->FindAnimation(L"Gate2_Vertical_Opened")->Save(L"animation\\Gate2_Vertical_Opened.anim");
+    GetAnimator()->FindAnimation(L"Gate2_Vertical_Opening")->Save(L"animation\\Gate2_Vertical_Opening.anim");
+    
+    
+    
 }
 
 CGround::~CGround()
