@@ -148,7 +148,7 @@ void Scene_Stage_01::Enter()
     // 불러온 타일 정보를 바탕으로 땅 생성
     CreateGround();
 
-    // ================== 트리거 및 벽 생성/연결 단계 ==================
+    // 트리거 및 벽 생성, 연결
     const vector<GameObject*>& vecTriggers = GetGroupObject(GROUP_TYPE::TRIGGER);
     for (GameObject* pObj : vecTriggers)
     {
@@ -173,8 +173,7 @@ void Scene_Stage_01::Enter()
             pTrigger->ResolveData();
         }
     }
-    // ==========================================================
-
+   
 
  //오브젝트 추가
 	GameObject* player = new SPlayer();

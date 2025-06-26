@@ -23,7 +23,7 @@ const float WALL_CLIMB_BOT_OFFSET = 85.f;
 
 
 CGround::CGround()
-    : m_eCollideType(TILE_COLLIDE_TYPE::NONE), m_eGroundType(GROUND_TYPE::NORMAL)
+    : m_eCollideType(TILE_COLLIDE_TYPE::NONE), m_eGroundType(GROUND_TYPE::NORMAL), m_eWallType(WallType::NONE)
 {
     CreateCollider();
     SetGroup(GROUP_TYPE::GROUND);
@@ -98,6 +98,21 @@ void CGround::Start()
 {
     GetCollider()->SetScale(Vec2(GetScale()));
     GetCollider()->SetOffsetPos(Vec2(GetScale().x / 2, GetScale().y / 2));
+
+
+    if (GetGroundType() == GROUND_TYPE::UNWALKABLE)
+    {
+        if (GetScale().x > GetScale().y)
+        {
+            GetAnimator()->Play(L"Gate1_Horizontal_Closed", true);
+            m_eWallType = WallType::HORIZONTAL;
+        }
+        else
+        {
+            GetAnimator()->Play(L"Gate1_Vertical_Closed", true);
+            m_eWallType = WallType::VERTICAL;
+        }
+    }
 }
 
 void CGround::Update()

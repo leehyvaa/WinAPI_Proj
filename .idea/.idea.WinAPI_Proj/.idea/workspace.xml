@@ -10,6 +10,9 @@
     <list default="true" id="e174ba9b-dad2-4293-bc5f-8669e5f5e6a8" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.WinAPI_Proj/.idea/AugmentWebviewStateStore.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.WinAPI_Proj/.idea/AugmentWebviewStateStore.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.WinAPI_Proj/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.WinAPI_Proj/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/Ground/CGround.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/Ground/CGround.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/Ground/CGround.h" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/Ground/CGround.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Scene/Scene_Stage_01/Scene_Stage_01.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Scene/Scene_Stage_01/Scene_Stage_01.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/자료/2D 일정.txt" beforeDir="false" afterPath="$PROJECT_DIR$/자료/2D 일정.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -225,6 +228,10 @@
       <workItem from="1750683571574" duration="9615000" />
       <workItem from="1750849372787" duration="180000" />
       <workItem from="1750849577247" duration="3407000" />
+      <workItem from="1750859049034" duration="5163000" />
+      <workItem from="1750893194676" duration="45000" />
+      <workItem from="1750893271879" duration="908000" />
+      <workItem from="1750978599578" duration="1874000" />
     </task>
     <servers />
   </component>
