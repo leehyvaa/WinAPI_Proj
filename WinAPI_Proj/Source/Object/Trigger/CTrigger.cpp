@@ -9,6 +9,7 @@
 #include "CKeyMgr.h"
 #include "CCamera.h"
 #include "CResMgr.h"
+#include "CWall.h"
 #include "func.h" // For SaveWString, LoadWString
 
 // MonsterSpawnInfo 직렬화/역직렬화
@@ -156,10 +157,20 @@ void CTrigger::Activate()
     if (m_eState != TriggerState::INACTIVE) return;
     m_eState = TriggerState::ACTIVE;
 
-    // 1. 벽을 활성화하여 길을 막습니다.
+    // 1. 벽을 활성화하고 닫힌 상태로 설정하여 길을 막습니다.
     for (GameObject* pWall : m_pWalls)
     {
-        if (pWall) pWall->SetActive(true);
+        if (pWall)
+        {
+            pWall->SetActive(true);
+
+            // CWall인지 확인하고 상태를 닫힌 상태로 설정
+            CWall* pWallObj = dynamic_cast<CWall*>(pWall);
+            if (pWallObj)
+            {
+                pWallObj->CloseWall(); // 벽을 닫힌 상태로 설정
+            }
+        }
     }
 
     // 2. 몬스터를 스폰합니다.
@@ -200,10 +211,23 @@ void CTrigger::Complete()
     if (m_eState != TriggerState::ACTIVE) return;
     m_eState = TriggerState::COMPLETED;
 
-    // 벽을 비활성화하여 길을 엽니다.
+    // 벽을 열린 상태로 설정하여 길을 엽니다.
     for (GameObject* pWall : m_pWalls)
     {
-        if (pWall) pWall->SetActive(false);
+        if (pWall)
+        {
+            // CWall인지 확인하고 상태를 열린 상태로 설정
+            CWall* pWallObj = dynamic_cast<CWall*>(pWall);
+            if (pWallObj)
+            {
+                pWallObj->OpenWall(); // 벽을 열린 상태로 설정
+            }
+            else
+            {
+                // 일반 CGround인 경우 기존 방식대로 비활성화
+                pWall->SetActive(false);
+            }
+        }
     }
 }
 

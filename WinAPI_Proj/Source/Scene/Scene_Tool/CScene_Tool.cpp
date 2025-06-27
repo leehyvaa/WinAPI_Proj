@@ -17,6 +17,7 @@
 #include "CTexture.h"
 #include "CTextUI.h"
 #include "CGround.h"
+#include "CWall.h"
 #include "CBackGround.h"
 #include "CCollider.h"
 #include "CMonster.h"
@@ -445,11 +446,13 @@ void CScene_Tool::Update()
                             Vec2 vWallPos = vTopLeft;
                             Vec2 vWallScale = vBotRight - vTopLeft;
 
-                            CGround* pWall = new CGround();
+                            CWall* pWall = new CWall();
                             pWall->SetWorldPos(vWallPos);
                             pWall->SetScale(vWallScale);
-                            pWall->SetCollideType(TILE_COLLIDE_TYPE::SOLID);
-                            pWall->SetGroundType(GROUND_TYPE::UNWALKABLE);
+
+                            // 벽 타입과 방향 설정
+                            pWall->SetWallType(L"Gate1"); // 기본값
+                            pWall->SetHorizontal(vWallScale.x > vWallScale.y); // 가로가 더 길면 수평
                             
                             wstring wallName = L"TriggerWall_" + to_wstring(m_iCurrentTriggerIndex) + L"_" + to_wstring(m_iWallAreaClickCount / 2);
                             pWall->SetName(wallName);
@@ -702,50 +705,50 @@ void CScene_Tool::SetTileIdx()
 
 
 // 타일 파일로부터 맵 데이터를 읽어오는 함수
-		void CScene_Tool::LoadTile(const wstring& _strFilePath)
-		{
-		    // 1. 부모 클래스의 표준 로더를 호출하여 모든 데이터를 로드
-		    CScene::LoadTile(_strFilePath);
-		
-		    // 2. 툴씬에서 필요한 시각적 요소(벽, 샘플 몬스터)와 내부 참조 복원
-		    const vector<GameObject*>& vecTriggers = GetGroupObject(GROUP_TYPE::TRIGGER);
-		    
-		    // m_arrTriggers 배열을 새로 로드된 트리거 객체로 다시 채움
-		    for (int i = 0; i < 5; ++i) m_arrTriggers[i] = nullptr;
-		
-		    int idx = 0;
-		    for (GameObject* pObj : vecTriggers)
-		    {
-		        if (idx >= 5) break;
-		        CTrigger* pTrigger = dynamic_cast<CTrigger*>(pObj);
-		        if (pTrigger)
-		        {
-		            m_arrTriggers[idx] = pTrigger;
-		
-		            // 로드된 벽 정보로 실제 CGround 객체 생성 (시각적 표시용)
-		            const auto& wallInfos = pTrigger->GetWallInfo();
-		            for (const auto& info : wallInfos)
-		            {
-		                CGround* pWall = new CGround();
-		                pWall->SetName(info.szName);
-		                pWall->SetWorldPos(info.vPos);
-		                pWall->SetScale(info.vScale);
-		                pWall->SetCollideType(TILE_COLLIDE_TYPE::SOLID);
-		                pWall->SetGroundType(GROUND_TYPE::UNWALKABLE);
-		                AddObject(pWall, GROUP_TYPE::GROUND);
-		                pWall->Start(); // 콜라이더 등 초기화
-		            }
-		
-		            // 로드된 몬스터 정보로 샘플 몬스터 생성 (시각적 표시용)
-		            const auto& monsterInfos = pTrigger->GetMonsterSpawnInfo();
-		            for (const auto& info : monsterInfos)
-		            {
-		                SettingSampleMonster(info.vPos, info.eType, pTrigger);
-		            }
-		            idx++;
-		        }
-		    }
-		}
+void CScene_Tool::LoadTile(const wstring& _strFilePath)
+{
+    // 1. 부모 클래스의 표준 로더를 호출하여 모든 데이터를 로드
+    CScene::LoadTile(_strFilePath);
+
+    // 2. 툴씬에서 필요한 시각적 요소(벽, 샘플 몬스터)와 내부 참조 복원
+    const vector<GameObject*>& vecTriggers = GetGroupObject(GROUP_TYPE::TRIGGER);
+
+    // m_arrTriggers 배열을 새로 로드된 트리거 객체로 다시 채움
+    for (int i = 0; i < 5; ++i) m_arrTriggers[i] = nullptr;
+
+    int idx = 0;
+    for (GameObject* pObj : vecTriggers)
+    {
+        if (idx >= 5) break;
+        CTrigger* pTrigger = dynamic_cast<CTrigger*>(pObj);
+        if (pTrigger)
+        {
+            m_arrTriggers[idx] = pTrigger;
+
+            // 로드된 벽 정보로 실제 CGround 객체 생성 (시각적 표시용)
+            const auto& wallInfos = pTrigger->GetWallInfo();
+            for (const auto& info : wallInfos)
+            {
+                CGround* pWall = new CGround();
+                pWall->SetName(info.szName);
+                pWall->SetWorldPos(info.vPos);
+                pWall->SetScale(info.vScale);
+                pWall->SetCollideType(TILE_COLLIDE_TYPE::SOLID);
+                pWall->SetGroundType(GROUND_TYPE::UNWALKABLE);
+                AddObject(pWall, GROUP_TYPE::GROUND);
+                pWall->Start(); // 콜라이더 등 초기화
+            }
+
+            // 로드된 몬스터 정보로 샘플 몬스터 생성 (시각적 표시용)
+            const auto& monsterInfos = pTrigger->GetMonsterSpawnInfo();
+            for (const auto& info : monsterInfos)
+            {
+                SettingSampleMonster(info.vPos, info.eType, pTrigger);
+            }
+            idx++;
+        }
+    }
+}
 
 // 마우스 위치의 타일을 계산하고 해당 타일의 텍스처 변경 함수를 실행한다.
 void CScene_Tool::DrawSelectTile()

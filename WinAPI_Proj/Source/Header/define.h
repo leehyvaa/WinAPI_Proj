@@ -158,3 +158,12 @@ enum class PLAYER_CLIMB_STATE
     DOWN,
     END,
 };
+
+enum class WALL_STATE
+{
+    CLOSE,
+    OPENING,
+    OPEN,
+    CLOSING,
+    END,
+};

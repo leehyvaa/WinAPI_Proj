@@ -14,17 +14,11 @@
 #include "C:\WinAPIProject\WinAPI_Proj\Source\Object\CBullet.cpp"
 
 
+#include "C:\WinAPIProject\WinAPI_Proj\Source\Object\Ground\CWall.cpp"
+
+
 #include "C:\WinAPIProject\WinAPI_Proj\Source\Object\Monster\CShooterHead.cpp"
 
 
 #include "C:\WinAPIProject\WinAPI_Proj\Source\Object\Monster\CShooterMonster.cpp"
-
-
-#include "C:\WinAPIProject\WinAPI_Proj\Source\Object\Trigger\CTrigger.cpp"
-
-
-#include "C:\WinAPIProject\WinAPI_Proj\Source\Object\UI\ChatUI\CTextUI.cpp"
-
-
-#include "C:\WinAPIProject\WinAPI_Proj\Source\CHook.cpp"
 

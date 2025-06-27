@@ -1,5 +1,7 @@
 ﻿#include "pch.h"
 #include "CHook.h"
+
+#include "AI.h"
 #include "CTimeMgr.h"
 #include "CGround.h"
 #include "CCollider.h"

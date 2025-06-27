@@ -21,6 +21,7 @@
 #include "CRigidBody.h"
 #include "CTimeMgr.h"
 #include "CGround.h"
+#include "CWall.h"
 #include "CBackGround.h"
 #include "CObjectPool.h"
 #include "CResMgr.h"
@@ -144,7 +145,7 @@ void Scene_Stage_01::Enter()
 
     
     // 타일 로딩 (상대 경로 사용)
-    LoadTile(L"Tile\\0624_11");
+    LoadTile(L"Tile\\0627_1");
     // 불러온 타일 정보를 바탕으로 땅 생성
     CreateGround();
 
@@ -155,17 +156,20 @@ void Scene_Stage_01::Enter()
         CTrigger* pTrigger = dynamic_cast<CTrigger*>(pObj);
         if (pTrigger)
         {
-            // 1. 로드된 벽 정보로 실제 CGround 객체 생성
+            // 1. 로드된 벽 정보로 실제 CWall 객체 생성
             const auto& wallInfos = pTrigger->GetWallInfo();
             for (const auto& info : wallInfos)
             {
-                CGround* pWall = new CGround();
+                CWall* pWall = new CWall();
                 pWall->SetName(info.szName);
                 pWall->SetWorldPos(info.vPos);
                 pWall->SetScale(info.vScale);
-                pWall->SetCollideType(TILE_COLLIDE_TYPE::SOLID);
-                pWall->SetGroundType(GROUND_TYPE::UNWALKABLE);
-                pWall->SetActive(false); // 처음에는 비활성화
+
+                // 벽 타입과 방향 설정 (이름에서 추출하거나 기본값 사용)
+                pWall->SetWallType(L"Gate1"); // 기본값, 필요시 info.szName에서 추출
+                pWall->SetHorizontal(info.vScale.x > info.vScale.y); // 가로가 더 길면 수평
+
+                pWall->SetActive(false); // 처음에는 비활성화 (닫힌 상태)
                 AddObject(pWall, GROUP_TYPE::GROUND);
             }
             

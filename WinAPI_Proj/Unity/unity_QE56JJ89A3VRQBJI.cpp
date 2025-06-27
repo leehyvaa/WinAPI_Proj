@@ -1,13 +1,4 @@
 
-#include "C:\WinAPIProject\WinAPI_Proj\Source\Manager\CSoundMgr\CSoundMgr.cpp"
-
-
-#include "C:\WinAPIProject\WinAPI_Proj\Source\Manager\EventMgr\CEventMgr.cpp"
-
-
-#include "C:\WinAPIProject\WinAPI_Proj\Source\Manager\KeyMgr\CKeyMgr.cpp"
-
-
 #include "C:\WinAPIProject\WinAPI_Proj\Source\Manager\PathMgr\CPathMgr.cpp"
 
 
@@ -27,4 +18,7 @@
 
 
 #include "C:\WinAPIProject\WinAPI_Proj\Source\Module\AI\State\CState.cpp"
+
+
+#include "C:\WinAPIProject\WinAPI_Proj\Source\Module\AI\State\Idle\CIdleState.cpp"
 
