@@ -99,6 +99,10 @@ public:
     // 스폰 및 클리어 위치 설정
     void SetPlayerSpawnPos();
     void SetSceneClearPos();
+
+    // Update 함수에서 분리된 모드별 처리 함수들
+    void UpdateTriggerMode();
+    wstring UpdateSpawnMode();
     
 
 	CScene_Tool();

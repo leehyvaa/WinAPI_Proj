@@ -43,6 +43,9 @@ private:
     // 애니메이션 설정 메서드
     void SetupAnimations();
 
+    // 오프셋 계산 메서드
+    Vec2 CalculateAnimationOffset();
+
 public:
     CLONE(CWall)
 };

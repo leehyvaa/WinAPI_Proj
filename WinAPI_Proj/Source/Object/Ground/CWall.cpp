@@ -19,7 +19,7 @@ CWall::CWall()
     SetGroundType(GROUND_TYPE::UNWALKABLE);
     SetCollideType(TILE_COLLIDE_TYPE::SOLID);
 
-    SetupAnimations();
+    // SetupAnimations()는 Start()에서 호출 (스케일 설정 후)
 }
 
 CWall::~CWall()
@@ -34,44 +34,50 @@ void CWall::SetupAnimations()
     CTexture* pTex_Gate2_Horizontal = CResMgr::GetInst()->LoadTexture(L"Gate2Tex_Horizontal", L"texture\\gate\\Gate2_Horizontal.png");
     CTexture* pTex_Gate2_Vertical = CResMgr::GetInst()->LoadTexture(L"Gate2Tex_Vertical", L"texture\\gate\\Gate2_Vertical.png");
 
+    // 오프셋 계산
+    Vec2 vOffset = CalculateAnimationOffset();
+
     // Gate1 Horizontal 애니메이션
     GetAnimator()->CreateAnimation(L"Gate1_Horizontal_Closed", pTex_Gate1_Horizontal,
-        Vec2(0.f, 0.f), Vec2(600.f, 100.f), Vec2(0.f, 100.f), 0.25f, 2, 2.f, Vec2(0.f, 0.f));
+        Vec2(0.f, 0.f), Vec2(600.f, 100.f), Vec2(0.f, 100.f), 0.25f, 2, 0.7f, vOffset);
     GetAnimator()->CreateAnimation(L"Gate1_Horizontal_Closing", pTex_Gate1_Horizontal,
-        Vec2(600.f, 0.f), Vec2(600.f, 100.f), Vec2(0.f, 100.f), 0.25f, 7, 2.f, Vec2(0.f, 0.f));
+        Vec2(600.f, 0.f), Vec2(600.f, 100.f), Vec2(0.f, 100.f), 0.25f, 7, 0.7f, vOffset);
     GetAnimator()->CreateAnimation(L"Gate1_Horizontal_Opening", pTex_Gate1_Horizontal,
-        Vec2(1200.f, 0.f), Vec2(600.f, 100.f), Vec2(0.f, 100.f), 0.25f, 7, 2.f, Vec2(0.f, 0.f));
+        Vec2(1200.f, 0.f), Vec2(600.f, 100.f), Vec2(0.f, 100.f), 0.25f, 7, 0.7f, vOffset);
 
     // Gate2 Horizontal 애니메이션
     GetAnimator()->CreateAnimation(L"Gate2_Horizontal_Closed", pTex_Gate2_Horizontal,
-        Vec2(0.f, 0.f), Vec2(600.f, 100.f), Vec2(600.f, 0.f), 0.25f, 5, 2.f, Vec2(0.f, 0.f));
+        Vec2(0.f, 0.f), Vec2(600.f, 100.f), Vec2(600.f, 0.f), 0.25f, 5, 0.7f, vOffset);
     GetAnimator()->CreateAnimation(L"Gate2_Horizontal_Closing", pTex_Gate2_Horizontal,
-        Vec2(0.f, 100.f), Vec2(600.f, 100.f), Vec2(600.f, 0.f), 0.25f, 9, 2.f, Vec2(0.f, 0.f));
+        Vec2(0.f, 100.f), Vec2(600.f, 100.f), Vec2(600.f, 0.f), 0.25f, 9, 0.7f, vOffset);
     GetAnimator()->CreateAnimation(L"Gate2_Horizontal_Opening", pTex_Gate2_Horizontal,
-        Vec2(0.f, 200.f), Vec2(600.f, 100.f), Vec2(600.f, 0.f), 0.25f, 7, 2.f, Vec2(0.f, 0.f));
+        Vec2(0.f, 200.f), Vec2(600.f, 100.f), Vec2(600.f, 0.f), 0.25f, 7, 0.7f, vOffset);
 
     // Gate1 Vertical 애니메이션
     GetAnimator()->CreateAnimation(L"Gate1_Vertical_Closed", pTex_Gate1_Vertical,
-        Vec2(0.f, 0.f), Vec2(100.f, 600.f), Vec2(100.f, 0.f), 0.25f, 2, 2.f, Vec2(0.f, 0.f));
+        Vec2(0.f, 0.f), Vec2(100.f, 600.f), Vec2(100.f, 0.f), 0.25f, 2, 0.7f, vOffset);
     GetAnimator()->CreateAnimation(L"Gate1_Vertical_Closing", pTex_Gate1_Vertical,
-        Vec2(0.f, 600.f), Vec2(100.f, 600.f), Vec2(100.f, 0.f), 0.25f, 7, 2.f, Vec2(0.f, 0.f));
+        Vec2(0.f, 600.f), Vec2(100.f, 600.f), Vec2(100.f, 0.f), 0.25f, 7, 0.7f, vOffset);
     GetAnimator()->CreateAnimation(L"Gate1_Vertical_Opened", pTex_Gate1_Vertical,
-        Vec2(0.f, 1200.f), Vec2(100.f, 600.f), Vec2(100.f, 0.f), 0.25f, 1, 2.f, Vec2(0.f, 0.f));
+        Vec2(0.f, 1200.f), Vec2(100.f, 600.f), Vec2(100.f, 0.f), 0.25f, 1, 0.7f, vOffset);
     GetAnimator()->CreateAnimation(L"Gate1_Vertical_Opening", pTex_Gate1_Vertical,
-        Vec2(0.f, 1800.f), Vec2(100.f, 600.f), Vec2(100.f, 0.f), 0.25f, 7, 2.f, Vec2(0.f, 0.f));
+        Vec2(0.f, 1800.f), Vec2(100.f, 600.f), Vec2(100.f, 0.f), 0.25f, 7, 0.7f, vOffset);
 
     // Gate2 Vertical 애니메이션
     GetAnimator()->CreateAnimation(L"Gate2_Vertical_Closed", pTex_Gate2_Vertical,
-        Vec2(0.f, 0.f), Vec2(100.f, 600.f), Vec2(100.f, 0.f), 0.25f, 5, 2.f, Vec2(0.f, 0.f));
+        Vec2(0.f, 0.f), Vec2(100.f, 600.f), Vec2(100.f, 0.f), 0.25f, 5, 0.7f, vOffset);
     GetAnimator()->CreateAnimation(L"Gate2_Vertical_Closing", pTex_Gate2_Vertical,
-        Vec2(0.f, 600.f), Vec2(100.f, 600.f), Vec2(100.f, 0.f), 0.25f, 9, 2.f, Vec2(0.f, 0.f));
+        Vec2(0.f, 600.f), Vec2(100.f, 600.f), Vec2(100.f, 0.f), 0.25f, 9, 0.7f, vOffset);
     GetAnimator()->CreateAnimation(L"Gate2_Vertical_Opening", pTex_Gate2_Vertical,
-        Vec2(0.f, 1200.f), Vec2(100.f, 600.f), Vec2(100.f, 0.f), 0.25f, 7, 2.f, Vec2(0.f, 0.f));
+        Vec2(0.f, 1200.f), Vec2(100.f, 600.f), Vec2(100.f, 0.f), 0.25f, 7, 0.7f, vOffset);
 }
 
 void CWall::Start()
 {
     CGround::Start();
+
+    // 스케일이 설정된 후 애니메이션 설정
+    SetupAnimations();
 
     // 초기 상태 설정
     Enter_State(m_eCurState);
@@ -208,4 +214,14 @@ void CWall::CloseWall()
     {
         ChangeState(WALL_STATE::CLOSING);
     }
+}
+
+Vec2 CWall::CalculateAnimationOffset()
+{
+    // 벽의 현재 스케일 가져오기
+    Vec2 vWallScale = GetScale();
+    Vec2 vOffset;
+    vOffset.x = vWallScale.x/2  ;
+    vOffset.y = vWallScale.y/2 ;
+    return vOffset;
 }

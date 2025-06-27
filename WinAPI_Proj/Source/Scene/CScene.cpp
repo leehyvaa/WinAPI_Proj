@@ -233,7 +233,10 @@ void CScene::Render(ID2D1RenderTarget* _pRenderTarget)
 				else if (static_cast<UINT>(GROUP_TYPE::HOOK) == i)
 					pObj->Render(_pRenderTarget);
 			    else if (static_cast<UINT>(GROUP_TYPE::GROUND) == i)
+			    {
 					pObj->Render(_pRenderTarget);
+					pObj->Component_Render(_pRenderTarget); // 애니메이터 렌더링 추가
+			    }
 			    else if (static_cast<UINT>(GROUP_TYPE::TRIGGER) == i)
 					pObj->Render(_pRenderTarget);
 				// 다른 그룹은 Animator 렌더링

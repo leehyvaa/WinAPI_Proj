@@ -372,196 +372,12 @@ void CScene_Tool::Update()
 	case TRIGGER_MODE:
         mode = L"TriggerMode";
         subMode = L"Trigger " + to_wstring(m_iCurrentTriggerIndex + 1);
-
-        if (m_iCurrentTriggerIndex != -1)
-        {
-            CTrigger* pCurrentTrigger = m_arrTriggers[m_iCurrentTriggerIndex];
-            if (!pCurrentTrigger) break;
-
-            // LBUTTON: 트리거 영역 설정 (타일 기반)
-            if (KEY_TAP(KEY::LBUTTON) && !m_pPanelUI->IsMouseOn())
-            {
-                int iCol, iRow, iTileX;
-                if (CalculateTileIndex(iCol, iRow, iTileX)) // 마우스 위치의 타일 정보 계산
-                {
-                    int iCurrentTileIdx = iRow * iTileX + iCol;
-                    const vector<GameObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
-
-                    if (m_iTriggerAreaClickCount % 2 == 0)
-                    {
-                        // 첫 번째 클릭: 시작 타일 인덱스 저장
-                        m_iTriggerAreaP1_TileIdx = iCurrentTileIdx;
-                    }
-                    else
-                    {
-                        // 두 번째 클릭: 영역 계산 및 트리거 설정
-                        if (m_iTriggerAreaP1_TileIdx != -1)
-                        {
-                            // 두 타일의 월드 좌표를 가져옴
-                            Vec2 vPos1 = vecTile[m_iTriggerAreaP1_TileIdx]->GetWorldPos();
-                            Vec2 vPos2 = vecTile[iCurrentTileIdx]->GetWorldPos();
-
-                            // 영역의 왼쪽 위, 오른쪽 아래 좌표 계산
-                            // 오른쪽 아래 좌표는 타일 크기만큼 더해줘서 전체 타일을 포함하도록 함
-                            Vec2 vTopLeft(min(vPos1.x, vPos2.x), min(vPos1.y, vPos2.y));
-                            Vec2 vBotRight(max(vPos1.x, vPos2.x) + TILE_SIZE, max(vPos1.y, vPos2.y) + TILE_SIZE);
-
-                            // 계산된 값으로 트리거의 위치와 크기 설정
-                            Vec2 vScale = vBotRight - vTopLeft;
-                            pCurrentTrigger->SetWorldPos(vTopLeft);
-                            pCurrentTrigger->SetScale(vScale);
-                            pCurrentTrigger->GetCollider()->SetScale(vScale);
-                            pCurrentTrigger->GetCollider()->SetOffsetPos(vScale / 2.f);
-                            m_iTriggerAreaP1_TileIdx = -1; // 다음 생성을 위해 리셋
-                        }
-                    }
-                    m_iTriggerAreaClickCount++;
-                }
-            }
-
-            // RBUTTON: 벽 생성 (기존 코드 유지)
-            if (KEY_TAP(KEY::RBUTTON) && !m_pPanelUI->IsMouseOn()) // 벽 생성 로직
-            {
-                int iCol, iRow, iTileX;
-                if (CalculateTileIndex(iCol, iRow, iTileX))
-                {
-                    int iCurrentTileIdx = iRow * iTileX + iCol;
-                    const vector<GameObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
-
-                    if (m_iWallAreaClickCount % 2 == 0)
-                    {
-                        // 첫 번째 클릭: 타일 인덱스 저장
-                        m_iWallAreaP1_TileIdx = iCurrentTileIdx;
-                    }
-                    else
-                    {
-                        // 두 번째 클릭: 벽 생성
-                        if (m_iWallAreaP1_TileIdx != -1)
-                        {
-                            Vec2 vPos1 = vecTile[m_iWallAreaP1_TileIdx]->GetWorldPos();
-                            Vec2 vPos2 = vecTile[iCurrentTileIdx]->GetWorldPos();
-                            Vec2 vTopLeft(min(vPos1.x, vPos2.x), min(vPos1.y, vPos2.y));
-                            Vec2 vBotRight(max(vPos1.x, vPos2.x) + TILE_SIZE, max(vPos1.y, vPos2.y) + TILE_SIZE);
-
-                            Vec2 vWallPos = vTopLeft;
-                            Vec2 vWallScale = vBotRight - vTopLeft;
-
-                            CWall* pWall = new CWall();
-                            pWall->SetWorldPos(vWallPos);
-                            pWall->SetScale(vWallScale);
-
-                            // 벽 타입과 방향 설정
-                            pWall->SetWallType(L"Gate1"); // 기본값
-                            pWall->SetHorizontal(vWallScale.x > vWallScale.y); // 가로가 더 길면 수평
-                            
-                            wstring wallName = L"TriggerWall_" + to_wstring(m_iCurrentTriggerIndex) + L"_" + to_wstring(m_iWallAreaClickCount / 2);
-                            pWall->SetName(wallName);
-                            AddObject(pWall, GROUP_TYPE::GROUND);
-
-                            tWallInfo info;
-                            info.szName = wallName;
-                            info.vPos = vWallPos;
-                            info.vScale = vWallScale;
-                            pCurrentTrigger->AddWallInfo(info);
-
-                            m_iWallAreaP1_TileIdx = -1; // 다음 생성을 위해 리셋
-                        }
-                    }
-                    m_iWallAreaClickCount++;
-                }
-            }
-
-            // M Key: 몬스터 스폰 위치 지정
-            if (KEY_TAP(KEY::M) && !m_pPanelUI->IsMouseOn())
-            {
-                Vec2 vMousePos = CCamera::GetInst()->GetRealPos(MOUSE_POS);
-                MonsterSpawnInfo info;
-                info.vPos = vMousePos;
-                info.eType = m_eCurrentMonsterType;
-                pCurrentTrigger->AddMonsterSpawnInfo(info);
-                SettingSampleMonster(vMousePos, m_eCurrentMonsterType, pCurrentTrigger);
-            }
-
-            // ENTER Key: 트리거 완성
-            if (KEY_TAP(KEY::ENTER))
-            {
-                m_iCurrentTriggerIndex = -1;
-            }
-
-            // BACKSPACE Key: 트리거 데이터 삭제
-            if (KEY_TAP(KEY::BACK))
-            {
-                // 1. 트리거에 등록된 벽(Ground) 오브젝트를 씬에서 삭제
-                const vector<tWallInfo>& wallInfos = pCurrentTrigger->GetWallInfo();
-                for (const auto& info : wallInfos)
-                {
-                    GameObject* pWall = FindObjectByName(info.szName);
-                    if (pWall)
-                    {
-                        DeleteObject(pWall);
-                    }
-                }
-                pCurrentTrigger->ClearData();
-            }
-        }
+        UpdateTriggerMode();
 		break;
     case SPAWN_MODE:
        {
            mode = L"SpawnMode";
-   
-           static bool bSpawnMode = true; // true: 플레이어 스폰, false: 씬 클리어
-   
-           if (KEY_TAP(KEY::KEY_1))
-           {
-               subMode = L"PlayerSpawn";
-               bSpawnMode = true;
-           }
-           if (KEY_TAP(KEY::KEY_2))
-           {
-               subMode = L"SceneClear";
-               bSpawnMode = false;
-           }
-   
-           if (!m_pPanelUI->IsMouseOn())
-           {
-               if (bSpawnMode)
-               {
-                   // 플레이어 스폰 위치는 클릭으로 설정
-                   if (KEY_TAP(KEY::LBUTTON))
-                   {
-                       SetPlayerSpawnPos();
-                   }
-               }
-               else
-               {
-                   // 씬 클리어 위치는 드래그로 영역 설정
-                   if (KEY_TAP(KEY::LBUTTON))
-                   {
-                       // 드래그 시작
-                       Vec2 vMousePos = CKeyMgr::GetInst()->GetMousePos();
-                       Vec2 vCamLook = CCamera::GetInst()->GetLookAt();
-                       Vec2 vResolution = CCore::GetInst()->GetResolution();
-                       m_vSceneClearStartPos = vMousePos + vCamLook - vResolution / 2.f;
-                       m_bDraggingClearArea = true;
-                   }
-   
-                   if (KEY_HOLD(KEY::LBUTTON) && m_bDraggingClearArea)
-                   {
-                       // 드래그 중
-                       Vec2 vMousePos = CKeyMgr::GetInst()->GetMousePos();
-                       Vec2 vCamLook = CCamera::GetInst()->GetLookAt();
-                       Vec2 vResolution = CCore::GetInst()->GetResolution();
-                       m_vSceneClearEndPos = vMousePos + vCamLook - vResolution / 2.f;
-                   }
-   
-                   if (KEY_AWAY(KEY::LBUTTON) && m_bDraggingClearArea)
-                   {
-                       // 드래그 완료
-                       SetSceneClearPos();
-                       m_bDraggingClearArea = false;
-                   }
-               }
-           }
+           subMode = UpdateSpawnMode();
        }
        break;
 	default:
@@ -1313,4 +1129,199 @@ void CScene_Tool::SettingSampleMonster(Vec2 pos, MON_TYPE eType, CTrigger* pOwne
     obj->SetName(L"SampleMonster");
     AddObject(obj, GROUP_TYPE::MONSTER);
     pOwnerTrigger->AddSampleMonster(obj);
+}
+
+void CScene_Tool::UpdateTriggerMode()
+{
+    if (m_iCurrentTriggerIndex != -1)
+    {
+        CTrigger* pCurrentTrigger = m_arrTriggers[m_iCurrentTriggerIndex];
+        if (!pCurrentTrigger) return;
+
+        // LBUTTON: 트리거 영역 설정 (타일 기반)
+        if (KEY_TAP(KEY::LBUTTON) && !m_pPanelUI->IsMouseOn())
+        {
+            int iCol, iRow, iTileX;
+            if (CalculateTileIndex(iCol, iRow, iTileX)) // 마우스 위치의 타일 정보 계산
+            {
+                int iCurrentTileIdx = iRow * iTileX + iCol;
+                const vector<GameObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
+
+                if (m_iTriggerAreaClickCount % 2 == 0)
+                {
+                    // 첫 번째 클릭: 시작 타일 인덱스 저장
+                    m_iTriggerAreaP1_TileIdx = iCurrentTileIdx;
+                }
+                else
+                {
+                    // 두 번째 클릭: 영역 계산 및 트리거 설정
+                    if (m_iTriggerAreaP1_TileIdx != -1)
+                    {
+                        // 두 타일의 월드 좌표를 가져옴
+                        Vec2 vPos1 = vecTile[m_iTriggerAreaP1_TileIdx]->GetWorldPos();
+                        Vec2 vPos2 = vecTile[iCurrentTileIdx]->GetWorldPos();
+
+                        // 영역의 왼쪽 위, 오른쪽 아래 좌표 계산
+                        // 오른쪽 아래 좌표는 타일 크기만큼 더해줘서 전체 타일을 포함하도록 함
+                        Vec2 vTopLeft(min(vPos1.x, vPos2.x), min(vPos1.y, vPos2.y));
+                        Vec2 vBotRight(max(vPos1.x, vPos2.x) + TILE_SIZE, max(vPos1.y, vPos2.y) + TILE_SIZE);
+
+                        // 계산된 값으로 트리거의 위치와 크기 설정
+                        Vec2 vScale = vBotRight - vTopLeft;
+                        pCurrentTrigger->SetWorldPos(vTopLeft);
+                        pCurrentTrigger->SetScale(vScale);
+                        pCurrentTrigger->GetCollider()->SetScale(vScale);
+                        pCurrentTrigger->GetCollider()->SetOffsetPos(vScale / 2.f);
+                        m_iTriggerAreaP1_TileIdx = -1; // 다음 생성을 위해 리셋
+                    }
+                }
+                m_iTriggerAreaClickCount++;
+            }
+        }
+
+        // RBUTTON: 벽 생성 (기존 코드 유지)
+        if (KEY_TAP(KEY::RBUTTON) && !m_pPanelUI->IsMouseOn()) // 벽 생성 로직
+        {
+            int iCol, iRow, iTileX;
+            if (CalculateTileIndex(iCol, iRow, iTileX))
+            {
+                int iCurrentTileIdx = iRow * iTileX + iCol;
+                const vector<GameObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
+
+                if (m_iWallAreaClickCount % 2 == 0)
+                {
+                    // 첫 번째 클릭: 타일 인덱스 저장
+                    m_iWallAreaP1_TileIdx = iCurrentTileIdx;
+                }
+                else
+                {
+                    // 두 번째 클릭: 벽 생성
+                    if (m_iWallAreaP1_TileIdx != -1)
+                    {
+                        Vec2 vPos1 = vecTile[m_iWallAreaP1_TileIdx]->GetWorldPos();
+                        Vec2 vPos2 = vecTile[iCurrentTileIdx]->GetWorldPos();
+                        Vec2 vTopLeft(min(vPos1.x, vPos2.x), min(vPos1.y, vPos2.y));
+                        Vec2 vBotRight(max(vPos1.x, vPos2.x) + TILE_SIZE, max(vPos1.y, vPos2.y) + TILE_SIZE);
+
+                        Vec2 vWallPos = vTopLeft;
+                        Vec2 vWallScale = vBotRight - vTopLeft;
+
+                        CWall* pWall = new CWall();
+                        pWall->SetWorldPos(vWallPos);
+                        pWall->SetScale(vWallScale);
+
+                        // 벽 타입과 방향 설정
+                        pWall->SetWallType(L"Gate1"); // 기본값
+                        pWall->SetHorizontal(vWallScale.x > vWallScale.y); // 가로가 더 길면 수평
+
+                        wstring wallName = L"TriggerWall_" + to_wstring(m_iCurrentTriggerIndex) + L"_" + to_wstring(m_iWallAreaClickCount / 2);
+                        pWall->SetName(wallName);
+                        AddObject(pWall, GROUP_TYPE::GROUND);
+
+                        tWallInfo info;
+                        info.szName = wallName;
+                        info.vPos = vWallPos;
+                        info.vScale = vWallScale;
+                        pCurrentTrigger->AddWallInfo(info);
+
+                        m_iWallAreaP1_TileIdx = -1; // 다음 생성을 위해 리셋
+                    }
+                }
+                m_iWallAreaClickCount++;
+            }
+        }
+
+        // M Key: 몬스터 스폰 위치 지정
+        if (KEY_TAP(KEY::M) && !m_pPanelUI->IsMouseOn())
+        {
+            Vec2 vMousePos = CCamera::GetInst()->GetRealPos(MOUSE_POS);
+            MonsterSpawnInfo info;
+            info.vPos = vMousePos;
+            info.eType = m_eCurrentMonsterType;
+            pCurrentTrigger->AddMonsterSpawnInfo(info);
+            SettingSampleMonster(vMousePos, m_eCurrentMonsterType, pCurrentTrigger);
+        }
+
+        // ENTER Key: 트리거 완성
+        if (KEY_TAP(KEY::ENTER))
+        {
+            m_iCurrentTriggerIndex = -1;
+        }
+
+        // BACKSPACE Key: 트리거 데이터 삭제
+        if (KEY_TAP(KEY::BACK))
+        {
+            // 1. 트리거에 등록된 벽(Ground) 오브젝트를 씬에서 삭제
+            const vector<tWallInfo>& wallInfos = pCurrentTrigger->GetWallInfo();
+            for (const auto& info : wallInfos)
+            {
+                GameObject* pWall = FindObjectByName(info.szName);
+                if (pWall)
+                {
+                    DeleteObject(pWall);
+                }
+            }
+            pCurrentTrigger->ClearData();
+        }
+    }
+}
+
+wstring CScene_Tool::UpdateSpawnMode()
+{
+    static bool bSpawnMode = true; // true: 플레이어 스폰, false: 씬 클리어
+    static wstring subMode = L"PlayerSpawn";
+
+    if (KEY_TAP(KEY::KEY_1))
+    {
+        subMode = L"PlayerSpawn";
+        bSpawnMode = true;
+    }
+    if (KEY_TAP(KEY::KEY_2))
+    {
+        subMode = L"SceneClear";
+        bSpawnMode = false;
+    }
+
+    if (!m_pPanelUI->IsMouseOn())
+    {
+        if (bSpawnMode)
+        {
+            // 플레이어 스폰 위치는 클릭으로 설정
+            if (KEY_TAP(KEY::LBUTTON))
+            {
+                SetPlayerSpawnPos();
+            }
+        }
+        else
+        {
+            // 씬 클리어 위치는 드래그로 영역 설정
+            if (KEY_TAP(KEY::LBUTTON))
+            {
+                // 드래그 시작
+                Vec2 vMousePos = CKeyMgr::GetInst()->GetMousePos();
+                Vec2 vCamLook = CCamera::GetInst()->GetLookAt();
+                Vec2 vResolution = CCore::GetInst()->GetResolution();
+                m_vSceneClearStartPos = vMousePos + vCamLook - vResolution / 2.f;
+                m_bDraggingClearArea = true;
+            }
+
+            if (KEY_HOLD(KEY::LBUTTON) && m_bDraggingClearArea)
+            {
+                // 드래그 중
+                Vec2 vMousePos = CKeyMgr::GetInst()->GetMousePos();
+                Vec2 vCamLook = CCamera::GetInst()->GetLookAt();
+                Vec2 vResolution = CCore::GetInst()->GetResolution();
+                m_vSceneClearEndPos = vMousePos + vCamLook - vResolution / 2.f;
+            }
+
+            if (KEY_AWAY(KEY::LBUTTON) && m_bDraggingClearArea)
+            {
+                // 드래그 완료
+                SetSceneClearPos();
+                m_bDraggingClearArea = false;
+            }
+        }
+    }
+
+    return subMode;
 }
