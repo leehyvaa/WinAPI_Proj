@@ -22,3 +22,6 @@
 
 #include "C:\WinAPIProject\WinAPI_Proj\Source\Manager\KeyMgr\CKeyMgr.cpp"
 
+
+#include "C:\WinAPIProject\WinAPI_Proj\Source\Manager\PathMgr\CPathMgr.cpp"
+

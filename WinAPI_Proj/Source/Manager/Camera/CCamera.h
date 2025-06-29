@@ -13,15 +13,15 @@ enum class CAM_EFFECT
 
 struct tCamEffect
 {
-	CAM_EFFECT eEffect;//카메라 효과
-	float fDuration;//효과 진행 시간
-	float fCurTime;//효과가 진행된 시간
+	CAM_EFFECT eEffect;   // 카메라 효과
+	float fDuration;      // 효과 진행 시간
+	float fCurTime;       // 효과가 진행된 시간
 };
 
 
 class CCamera
 {
-	SINGLE(CCamera);
+	SINGLE(CCamera)
 
 private:
 	Vec2 m_vLookAt;

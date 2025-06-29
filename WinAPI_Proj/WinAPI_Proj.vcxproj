@@ -164,11 +164,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Source\Manager\CObjectPool.h" />
+    <ClInclude Include="Source\Manager\EffectMgr\CEffectMgr.h" />
     <ClInclude Include="Source\Module\AI\State\Dead\CDeadState.h" />
     <ClInclude Include="Source\Module\AI\State\Shooter\CAimingState.h" />
     <ClInclude Include="Source\Module\AI\State\Spawning\CSpawningState.h" />
     <ClInclude Include="Source\Module\AI\State\Subdued\CSubduedState.h" />
     <ClInclude Include="Source\Object\CBullet.h" />
+    <ClInclude Include="Source\Object\CEffect.h" />
     <ClInclude Include="Source\Object\Ground\CWall.h" />
     <ClInclude Include="Source\Object\Monster\CShooterHead.h" />
     <ClInclude Include="Source\Object\Monster\CShooterMonster.h" />
@@ -319,11 +321,13 @@
       <AdditionalIncludeDirectories>C:\WinAPIProject\WinAPI_Proj\Source\Object\UI\ChatUI;C:\WinAPIProject\WinAPI_Proj\;C:\WinAPIProject\WinAPI_Proj\Source;C:\WinAPIProject\WinAPI_Proj\Source\Component;C:\WinAPIProject\WinAPI_Proj\Source\Core;C:\WinAPIProject\WinAPI_Proj\Source\Header;C:\WinAPIProject\WinAPI_Proj\Source\Manager;C:\WinAPIProject\WinAPI_Proj\Source\Module;C:\WinAPIProject\WinAPI_Proj\Source\Object;C:\WinAPIProject\WinAPI_Proj\Source\Prefab;C:\WinAPIProject\WinAPI_Proj\Source\Resource;C:\WinAPIProject\WinAPI_Proj\Source\Scene;C:\WinAPIProject\WinAPI_Proj\Source\Tool;C:\WinAPIProject\WinAPI_Proj\Source\Component\Animator;C:\WinAPIProject\WinAPI_Proj\Source\Component\Collider;C:\WinAPIProject\WinAPI_Proj\Source\Component\Gravity;C:\WinAPIProject\WinAPI_Proj\Source\Component\RigidBody;C:\WinAPIProject\WinAPI_Proj\Source\Component\Animator\Animation;C:\WinAPIProject\WinAPI_Proj\Source\Manager\Camera;C:\WinAPIProject\WinAPI_Proj\Source\Manager\CollisionMgr;C:\WinAPIProject\WinAPI_Proj\Source\Manager\CSoundMgr;C:\WinAPIProject\WinAPI_Proj\Source\Manager\EventMgr;C:\WinAPIProject\WinAPI_Proj\Source\Manager\KeyMgr;C:\WinAPIProject\WinAPI_Proj\Source\Manager\PathMgr;C:\WinAPIProject\WinAPI_Proj\Source\Manager\ResMgr;C:\WinAPIProject\WinAPI_Proj\Source\Manager\SceneMgr;C:\WinAPIProject\WinAPI_Proj\Source\Manager\TimeMgr;C:\WinAPIProject\WinAPI_Proj\Source\Manager\UIMgr;C:\WinAPIProject\WinAPI_Proj\Source\Module\AI;C:\WinAPIProject\WinAPI_Proj\Source\Module\AI\State;C:\WinAPIProject\WinAPI_Proj\Source\Module\AI\State\Idle;C:\WinAPIProject\WinAPI_Proj\Source\Module\AI\State\Trace;C:\WinAPIProject\WinAPI_Proj\Source\Object\Ground;C:\WinAPIProject\WinAPI_Proj\Source\Object\Tile;C:\WinAPIProject\WinAPI_Proj\Source\Object\UI;C:\WinAPIProject\WinAPI_Proj\Source\Object\UI\BtnUI;C:\WinAPIProject\WinAPI_Proj\Source\Object\UI\PanelUI;C:\WinAPIProject\WinAPI_Proj\Source\Resource\Sound;C:\WinAPIProject\WinAPI_Proj\Source\Resource\Texture;C:\WinAPIProject\WinAPI_Proj\Source\Scene\Scene_Stage_01;C:\WinAPIProject\WinAPI_Proj\Source\Scene\Scene_Title;C:\WinAPIProject\WinAPI_Proj\Source\Scene\Scene_Tool</AdditionalIncludeDirectories>
       <LinkCompiled>true</LinkCompiled>
     </ClCompile>
+    <ClCompile Include="Source\Manager\EffectMgr\CEffectMgr.cpp" />
     <ClCompile Include="Source\Module\AI\State\Dead\CDeadState.cpp" />
     <ClCompile Include="Source\Module\AI\State\Shooter\CAimingState.cpp" />
     <ClCompile Include="Source\Module\AI\State\Spawning\CSpawningState.cpp" />
     <ClCompile Include="Source\Module\AI\State\Subdued\CSubduedState.cpp" />
     <ClCompile Include="Source\Object\CBullet.cpp" />
+    <ClCompile Include="Source\Object\CEffect.cpp" />
     <ClCompile Include="Source\Object\Ground\CWall.cpp" />
     <ClCompile Include="Source\Object\Monster\CShooterHead.cpp" />
     <ClCompile Include="Source\Object\Monster\CShooterMonster.cpp" />

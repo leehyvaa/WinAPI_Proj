@@ -45,6 +45,7 @@ enum class GROUP_TYPE
 	HOOK,
 	PROJ_MONSTER,
     TRIGGER,
+    EFFECT = 29,
 	Ray = 30,
 	UI = 31,
 	END = 32,

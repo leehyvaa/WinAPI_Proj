@@ -1,4 +1,7 @@
 
+#include "C:\WinAPIProject\WinAPI_Proj\Source\Object\Monster\CShooterMonster.cpp"
+
+
 #include "C:\WinAPIProject\WinAPI_Proj\Source\Object\Trigger\CTrigger.cpp"
 
 
