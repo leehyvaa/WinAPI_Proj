@@ -450,7 +450,7 @@ void SPlayer::Update_State()
 		HorizontalMove();
 		if (!m_bOnGround && GetRigidBody()->GetVelocity().y > 0.f) { ChangeState(PLAYER_STATE::FALL); return; }
 		if (KEY_TAP(KEY::SPACE) && m_bOnGround)                   { ChangeState(PLAYER_STATE::JUMP); return; }
-		if (0.f == GetRigidBody()->GetSpeed() && m_bOnGround)     { ChangeState(PLAYER_STATE::IDLE); return; }
+		if (abs(GetRigidBody()->GetVelocity().x) < 1.f && m_bOnGround) { ChangeState(PLAYER_STATE::IDLE); return; }
 		break;
 
 	case PLAYER_STATE::EXECUTE:
