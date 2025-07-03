@@ -20,6 +20,8 @@
 #include "AI.h"
 #include "Module/AI/State/Subdued/CSubduedState.h"
 #include "Object/UI/DamageEffect/CDamageEffectUI.h"
+#include "Object/Ground/CSkylineCar.h"
+#include "Object/Ground/CSkylineCar.h"
 
 
 SPlayer::SPlayer()
@@ -278,8 +280,10 @@ void SPlayer::Enter_State(PLAYER_STATE _eState)
 	switch (_eState)
 	{
 	case PLAYER_STATE::IDLE:
-	    // 이거 지워야 자연스러울지도
-		GetRigidBody()->SetVelocity(Vec2(0.f, 0.f));
+	    // IDLE 상태가 될 때, 플레이어가 직접 움직이는 X축 속도만 0으로 설정합니다.
+	    // Y축 속도는 중력이나, 착지한 발판의 움직임에 의해 결정되므로 여기서 건드리지 않습니다.
+	    // 이렇게 해야 움직이는 발판 위에서 Y축 속도가 0으로 초기화되어 튕기는 버그를 막을 수 있습니다.
+		GetRigidBody()->SetVelocityX(0.f);
 		break;
 	case PLAYER_STATE::RUN:
 	    GetRigidBody()->SetMaxSpeed(Vec2(850.f, 1000.f));
@@ -313,6 +317,19 @@ void SPlayer::Enter_State(PLAYER_STATE _eState)
 	    else
 	        m_pPlayerArm->SetLocalRotation(90.f);
 	    GetGravity()->SetApplyGravity(false);
+
+	    // 갈고리가 스카이라인 카에 박혔다면, 플레이어를 카의 자식으로 설정
+	    if (m_pPlayerHook && m_pPlayerHook->GetParent())
+	    {
+	        if (dynamic_cast<CSkylineCar*>(m_pPlayerHook->GetParent()))
+	        {
+	            if (GetParent() != m_pPlayerHook->GetParent()) {
+	                Vec2 worldPos = GetWorldPos();
+	                SetParent(m_pPlayerHook->GetParent());
+	                SetWorldPos(worldPos);
+	            }
+	        }
+	    }
 	    GetRigidBody()->SetMaxSpeed(Vec2(1000.f, 1000.f));
 		break;
 	case PLAYER_STATE::DAMAGED:
@@ -485,6 +502,10 @@ void SPlayer::Update_State()
 		break;
 
 	case PLAYER_STATE::SWING:
+		if (m_pPlayerHook == nullptr) {
+			ChangeState(PLAYER_STATE::FALL);
+			return;
+		}
 		SwingMove();
 		if (KEY_AWAY(KEY::LBUTTON)) { ChangeState(PLAYER_STATE::FALL); return; }
 		break;
@@ -533,7 +554,16 @@ void SPlayer::Exit_State(PLAYER_STATE _eState)
 		break;
 	case PLAYER_STATE::SWING:
 	    GetGravity()->SetApplyGravity(true);
-        SetLocalRotation(0.f);
+
+	       // 스윙이 끝나면 부모-자식 관계 해제
+	       if (GetParent() && dynamic_cast<CSkylineCar*>(GetParent()))
+	       {
+	           Vec2 worldPos = GetWorldPos();
+	           SetParent(nullptr);
+	           SetWorldPos(worldPos);
+	       }
+
+	       SetLocalRotation(0.f);
 	    m_pPlayerArm->SetLocalRotation(0.f);
 		break;
 	case PLAYER_STATE::DAMAGED:

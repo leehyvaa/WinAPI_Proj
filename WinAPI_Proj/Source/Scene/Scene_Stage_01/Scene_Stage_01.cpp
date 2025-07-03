@@ -29,6 +29,7 @@
 #include "Monster/CShooterMonster.h"
 #include "Object/UI/DamageEffect/CDamageEffectUI.h"
 #include "Object/Trigger/CTrigger.h" // ADDED
+#include "Object/Ground/CSkylineCar.h"
 
 Scene_Stage_01::Scene_Stage_01()
     : m_bPlayerDeathMode(false)
@@ -214,6 +215,17 @@ void Scene_Stage_01::Enter()
     // 몬스터 오브젝트 풀 생성
     CObjectPool::GetInst()->CreatePool<CShooterHead>(L"ShooterHeadPool", 5);
     CObjectPool::GetInst()->CreatePool<CShooterMonster>(L"ShooterMonsterPool", 5);
+
+    // 스카이라인 카 생성 및 설정
+    CSkylineCar* pCar = new CSkylineCar();
+    pCar->SetWorldPos(Vec2(0.f, 500.f));
+    vector<Vec2> vecPath;
+    vecPath.push_back(Vec2(0.f, 500.f)); // 시작점
+    vecPath.push_back(Vec2(0.f, 2500.f)); // 경유지 1
+    vecPath.push_back(Vec2(2000.f, 2500.f)); // 경유지 2
+    vecPath.push_back(Vec2(2500.f, 2500.f)); // 종착점
+    pCar->SetPath(vecPath);
+    AddObject(pCar, GROUP_TYPE::GROUND);
 
 
 	//클론함수 없이 만든 오브젝트 복사 만약 플레이어를 복사한다면 아래와 같이 사용

@@ -137,10 +137,11 @@ public:
 	   
 	virtual void Update() override;
 	virtual void Render(ID2D1RenderTarget* _pRenderTarget) override;
-    virtual void Reset() override;
+	   virtual void Reset() override;
+
+	   void ChangeState(PLAYER_STATE _eNextState);
 
 private:
-    void ChangeState(PLAYER_STATE _eNextState);
 	void Enter_State(PLAYER_STATE _eState);
 	void Update_State();
 	void Exit_State(PLAYER_STATE _eState);

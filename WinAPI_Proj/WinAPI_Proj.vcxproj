@@ -171,6 +171,7 @@
     <ClInclude Include="Source\Module\AI\State\Subdued\CSubduedState.h" />
     <ClInclude Include="Source\Object\CBullet.h" />
     <ClInclude Include="Source\Object\CEffect.h" />
+    <ClInclude Include="Source\Object\Ground\CSkylineCar.h" />
     <ClInclude Include="Source\Object\Ground\CWall.h" />
     <ClInclude Include="Source\Object\Monster\CShooterHead.h" />
     <ClInclude Include="Source\Object\Monster\CShooterMonster.h" />
@@ -328,6 +329,7 @@
     <ClCompile Include="Source\Module\AI\State\Subdued\CSubduedState.cpp" />
     <ClCompile Include="Source\Object\CBullet.cpp" />
     <ClCompile Include="Source\Object\CEffect.cpp" />
+    <ClCompile Include="Source\Object\Ground\CSkylineCar.cpp" />
     <ClCompile Include="Source\Object\Ground\CWall.cpp" />
     <ClCompile Include="Source\Object\Monster\CShooterHead.cpp" />
     <ClCompile Include="Source\Object\Monster\CShooterMonster.cpp" />
