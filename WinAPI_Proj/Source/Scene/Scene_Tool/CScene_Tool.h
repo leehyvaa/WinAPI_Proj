@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "CScene.h"
 #include "Object/Trigger/CTrigger.h" // CTrigger 헤더 포함
+#include "Object/Ground/CSkylineCar.h"
 #include <array>
 
 class CTextUI;
@@ -12,6 +13,7 @@ enum TOOL_MODE
 	TEXTURE_MODE,
 	GROUND_MODE,
 	TRIGGER_MODE,
+	CAR_MODE,
 	SPAWN_MODE,
 };
 
@@ -34,6 +36,9 @@ private:
 	MON_TYPE m_eCurrentMonsterType;
 	vector<GameObject*> m_vecSampleMonsters;
 
+	// Car 모드 관련 변수
+	array<CSkylineCar*, 10> m_arrCars;
+	int m_iCurrentCarIndex;
 
 
 	wstring m_strCurTexFolder;
@@ -62,6 +67,7 @@ private:
     vector<wstring> m_textureHelp;
     vector<wstring> m_groundHelp;
     vector<wstring> m_triggerHelp; // 트리거 모드 설명 추가
+    vector<wstring> m_carHelp;
     vector<wstring> m_spawnHelp;
     vector<wstring> m_commonHelp;
     
@@ -102,6 +108,7 @@ public:
 
     // Update 함수에서 분리된 모드별 처리 함수들
     void UpdateTriggerMode();
+    void UpdateCarMode();
     wstring UpdateSpawnMode();
     
 

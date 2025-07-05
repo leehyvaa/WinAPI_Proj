@@ -64,6 +64,9 @@ int g_arrVK[static_cast<int>(KEY::LAST)] =
 	'6',
 	'7',
 	'8',
+    '9',
+    '0'
+    
 	//
 	//LAST,
 };

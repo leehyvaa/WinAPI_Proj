@@ -13,6 +13,7 @@
 #include "CCollisionMgr.h"
 #include "CGravity.h"
 #include "CRigidBody.h"
+#include "func.h"
 
 CSkylineCar::CSkylineCar()
     : m_eState(SKYLINE_CAR_STATE::IDLE)
@@ -329,4 +330,57 @@ void CSkylineCar::SetPath(const std::vector<Vec2>& _path)
     {
         SetStartPos(_path.front());
     }
+}
+
+void CSkylineCar::ClearPath()
+{
+    m_vecPath.clear();
+    m_iCurrentPathIndex = 0;
+    if (GetAnimator()) GetAnimator()->Play(L"SKYLINE_IDLE", true);
+    SetWorldPos(Vec2(0, 0));
+    
+}
+
+void CSkylineCar::Save(FILE* _pFile)
+{
+    // 경로 포인트 개수 저장
+    size_t pathCount = m_vecPath.size();
+    fprintf(_pFile, "%zu\n", pathCount);
+
+    // 각 경로 포인트 저장
+    for (const auto& point : m_vecPath)
+    {
+        fprintf(_pFile, "%f %f\n", point.x, point.y);
+    }
+}
+
+void CSkylineCar::Load(FILE* _pFile)
+{
+    char buf[256] = {};
+
+    // 경로 포인트 개수 로드
+    size_t pathCount = 0;
+    FScanf(buf, _pFile);
+    sscanf_s(buf, "%zu", &pathCount);
+
+    m_vecPath.clear();
+    m_vecPath.reserve(pathCount);
+
+    // 각 경로 포인트 로드
+    for (size_t i = 0; i < pathCount; ++i)
+    {
+        Vec2 point;
+        FScanf(buf, _pFile);
+        sscanf_s(buf, "%f %f", &point.x, &point.y);
+        m_vecPath.push_back(point);
+    }
+
+    // 경로가 있으면 시작 위치 설정
+    if (!m_vecPath.empty())
+    {
+        SetStartPos(m_vecPath[0]);
+    }
+    m_iCurrentPathIndex = 0;
+    m_eState = SKYLINE_CAR_STATE::IDLE;
+    GetCollider()->SetActive(true);
 }

@@ -18,6 +18,7 @@
 #include "CTextUI.h"
 #include "CUI.h"
 #include "CTimeMgr.h"
+#include "Object/Ground/CSkylineCar.h"
 #include "SPlayer.h"
 #include "Object/Trigger/CTrigger.h" // ADDED
 
@@ -546,10 +547,24 @@ void CScene::LoadTile(const wstring& _strFilePath)
                 }
             }
         }
+  else if (strcmp(szBuffer, "[CarCount]") == 0)
+  {
+   int carCount = 0;
+   FScanf(szBuffer, pFile);
+   sscanf_s(szBuffer, "%d", &carCount);
+
+   for (int i = 0; i < carCount; ++i)
+   {
+    CSkylineCar* pCar = new CSkylineCar();
+    pCar->Load(pFile);
+    pCar->SetName(L"SkylineCar_" + to_wstring(i));
+    AddObject(pCar, GROUP_TYPE::GROUND);
+   }
+  }
     }
 
 
-	fclose(pFile);
+ fclose(pFile);
 }
 /*
     Tile 그룹을 전부 지우고

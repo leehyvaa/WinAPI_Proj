@@ -22,6 +22,7 @@
 #include "CCollider.h"
 #include "CMonster.h"
 #include "resource.h"
+#include "Object/Ground/CSkylineCar.h"
 #include "Object/Trigger/CTrigger.h"
 
 
@@ -48,10 +49,12 @@ CScene_Tool::CScene_Tool()
 	, m_iWallAreaClickCount(0)
 	, m_iWallAreaP1_TileIdx(-1)
 	, m_iTriggerAreaP1_TileIdx(-1)
+	, m_iCurrentCarIndex(-1)
 {
-	   // m_vTriggerAreaP1 = Vec2(0,0); // 이 줄은 삭제합니다.
-	   for (int i = 0; i < 5; ++i)
-	       m_arrTriggers[i] = nullptr;
+    for (int i = 0; i < 5; ++i)
+        m_arrTriggers[i] = nullptr;
+    for (int i = 0; i < 10; ++i)
+        m_arrCars[i] = nullptr;
 }
 
 CScene_Tool::~CScene_Tool()
@@ -61,6 +64,16 @@ CScene_Tool::~CScene_Tool()
 
 void CScene_Tool::Enter()
 {
+    for (int i = 0; i < 10; ++i)
+    {
+        if (m_arrCars[i] == nullptr)
+        {
+            m_arrCars[i] = new CSkylineCar;
+			m_arrCars[i]->SetName(L"SkylineCar_" + to_wstring(i));
+            m_arrCars[i]->SetWorldPos(Vec2(0.f, 5000.f));
+            AddObject(m_arrCars[i], GROUP_TYPE::GROUND);
+        }
+    }
     for (int i = 0; i < 5; ++i)
     {
         if (m_arrTriggers[i] == nullptr)
@@ -209,6 +222,14 @@ void CScene_Tool::Enter()
         L"ENTER - 작업 완료",
         L"BACKSPACE - 현재 트리거 데이터 삭제",
     };
+
+    m_carHelp = {
+        L"[스카이라인 카 모드]",
+        L"숫자 1-9, 0 - 작업할 카 선택",
+        L"좌클릭 - 카 이동 경로 지정",
+        L"ENTER - 경로 지정 완료",
+        L"BACKSPACE - 현재 카 경로 데이터 삭제",
+    };
     m_spawnHelp = {
         L"[스폰 모드]",
         L"1 - 플레이어 시작 위치 설정",
@@ -224,7 +245,8 @@ void CScene_Tool::Enter()
         L"F1 - 텍스처 그리기",
         L"F2 - 지형 생성",
         L"F3 - 트리거 생성",
-        L"F4 - 플레이어 스폰,클리어 영역",
+        L"F4 - 스카이라인 카 생성",
+  L"F9 - 플레이어 스폰,클리어 영역",
         L"",
         L"F6 - 타일 그리드 표시",
         L"F7 - 그라운드 타입 표시",
@@ -290,6 +312,9 @@ void CScene_Tool::Update()
                 break;
             case TRIGGER_MODE:
                 m_pHelpSubText->AddLines(m_triggerHelp);
+                break;
+            case CAR_MODE:
+                m_pHelpSubText->AddLines(m_carHelp);
                 break;
             case SPAWN_MODE:
                 m_pHelpSubText->AddLines(m_spawnHelp);
@@ -370,11 +395,16 @@ void CScene_Tool::Update()
     }
     break;
 	case TRIGGER_MODE:
-        mode = L"TriggerMode";
-        subMode = L"Trigger " + to_wstring(m_iCurrentTriggerIndex + 1);
-        UpdateTriggerMode();
+	       mode = L"TriggerMode";
+	       subMode = L"Trigger " + to_wstring(m_iCurrentTriggerIndex + 1);
+	       UpdateTriggerMode();
 		break;
-    case SPAWN_MODE:
+	   case CAR_MODE:
+	       mode = L"CarMode";
+	       subMode = L"Car " + to_wstring(m_iCurrentCarIndex);
+	       UpdateCarMode();
+	       break;
+	   case SPAWN_MODE:
        {
            mode = L"SpawnMode";
            subMode = UpdateSpawnMode();
@@ -423,22 +453,34 @@ void CScene_Tool::Update()
 		LoadTileTexUI(L"texture\\enemySample");
         m_pPanelUI->SetActive(true);
     }
-	if (KEY_TAP(KEY::F4))
+	if (KEY_TAP(KEY::F4)) {
+		m_eToolMode = TOOL_MODE::CAR_MODE;
+		m_pPanelUI->SetActive(false);
+	}
+	if (KEY_TAP(KEY::F9))
 		m_eToolMode = TOOL_MODE::SPAWN_MODE;
 
-    if (KEY_TAP(KEY::KEY_1) || KEY_TAP(KEY::KEY_2) || KEY_TAP(KEY::KEY_3) || KEY_TAP(KEY::KEY_4) || KEY_TAP(KEY::KEY_5))
-    {
-        if (m_eToolMode == TOOL_MODE::TRIGGER_MODE)
-        {
-            if (KEY_TAP(KEY::KEY_1)) m_iCurrentTriggerIndex = 0;
-            if (KEY_TAP(KEY::KEY_2)) m_iCurrentTriggerIndex = 1;
-            if (KEY_TAP(KEY::KEY_3)) m_iCurrentTriggerIndex = 2;
-            if (KEY_TAP(KEY::KEY_4)) m_iCurrentTriggerIndex = 3;
-            if (KEY_TAP(KEY::KEY_5)) m_iCurrentTriggerIndex = 4;
-            m_iTriggerAreaClickCount = 0;
-            m_iWallAreaClickCount = 0;
-        }
-    }
+	   if (m_eToolMode == TOOL_MODE::CAR_MODE)
+	   {
+	       if (KEY_TAP(KEY::KEY_1)) m_iCurrentCarIndex = 1; if (KEY_TAP(KEY::KEY_2)) m_iCurrentCarIndex = 2;
+	       if (KEY_TAP(KEY::KEY_3)) m_iCurrentCarIndex = 3; if (KEY_TAP(KEY::KEY_4)) m_iCurrentCarIndex = 4;
+	       if (KEY_TAP(KEY::KEY_5)) m_iCurrentCarIndex = 5; if (KEY_TAP(KEY::KEY_6)) m_iCurrentCarIndex = 6;
+	       if (KEY_TAP(KEY::KEY_7)) m_iCurrentCarIndex = 7; if (KEY_TAP(KEY::KEY_8)) m_iCurrentCarIndex = 8;
+	       if (KEY_TAP(KEY::KEY_9)) m_iCurrentCarIndex = 9; if (KEY_TAP(KEY::KEY_0)) m_iCurrentCarIndex = 0;
+	   }
+	   else if (m_eToolMode == TOOL_MODE::TRIGGER_MODE)
+	   {
+	       if (KEY_TAP(KEY::KEY_1)) m_iCurrentTriggerIndex = 0;
+	       if (KEY_TAP(KEY::KEY_2)) m_iCurrentTriggerIndex = 1;
+	       if (KEY_TAP(KEY::KEY_3)) m_iCurrentTriggerIndex = 2;
+	       if (KEY_TAP(KEY::KEY_4)) m_iCurrentTriggerIndex = 3;
+	       if (KEY_TAP(KEY::KEY_5)) m_iCurrentTriggerIndex = 4;
+
+	       if (KEY_TAP(KEY::KEY_1) || KEY_TAP(KEY::KEY_2) || KEY_TAP(KEY::KEY_3) || KEY_TAP(KEY::KEY_4) || KEY_TAP(KEY::KEY_5))
+	       {
+	           m_iTriggerAreaClickCount = 0, m_iWallAreaClickCount = 0;
+	       }
+	   }
 
     vector<wstring> modeText =
         {
@@ -528,6 +570,21 @@ void CScene_Tool::LoadTile(const wstring& _strFilePath)
 
     // 2. 툴씬에서 필요한 시각적 요소(벽, 샘플 몬스터)와 내부 참조 복원
     const vector<GameObject*>& vecTriggers = GetGroupObject(GROUP_TYPE::TRIGGER);
+
+    // 3. 자동차 로드
+    const vector<GameObject*>& vecCars = GetGroupObject(GROUP_TYPE::GROUND);
+    int carIdx = 0;
+    for (GameObject* pObj : vecCars)
+    {
+        if (carIdx >= 10) break;
+        CSkylineCar* pCar = dynamic_cast<CSkylineCar*>(pObj);
+        if (pCar)
+        {
+            m_arrCars[carIdx] = pCar;
+            carIdx++;
+        }
+    }
+
 
     // m_arrTriggers 배열을 새로 로드된 트리거 객체로 다시 채움
     for (int i = 0; i < 5; ++i) m_arrTriggers[i] = nullptr;
@@ -748,6 +805,21 @@ void CScene_Tool::SaveTile(const wstring& _strFilePath)
 	fprintf(pFile, "%f %f %d\n", m_vPlayerSpawnPos.x, m_vPlayerSpawnPos.y, m_bPlayerSpawnSet ? 1 : 0);
 	fprintf(pFile, "[SceneClear]\n");
 	fprintf(pFile, "%f %f %f %f %d\n", m_vSceneClearStartPos.x, m_vSceneClearStartPos.y, m_vSceneClearEndPos.x, m_vSceneClearEndPos.y, m_bSceneClearSet ? 1 : 0);
+
+	// 3. Car 데이터 저장
+	const vector<GameObject*>& vecCars = GetGroupObject(GROUP_TYPE::GROUND);
+	fprintf(pFile, "[CarCount]\n");
+	fprintf(pFile, "%d\n", (int)vecCars.size());
+
+	for (GameObject* pObj : vecCars)
+	{
+		CSkylineCar* pCar = dynamic_cast<CSkylineCar*>(pObj);
+		if (pCar)
+		{
+			pCar->Save(pFile);
+		}
+	}
+
 
 	   // 3. Trigger 데이터 저장 (씬에 있는 모든 트리거 저장)
 	   const vector<GameObject*>& vecTriggers = GetGroupObject(GROUP_TYPE::TRIGGER);
@@ -1042,13 +1114,37 @@ void CScene_Tool::Render(ID2D1RenderTarget* _pRenderTarget)
         {
             if (!pObj || pObj->IsDead()) continue;
 
-            // 툴씬에서는 GROUND, TRIGGER, MONSTER를 항상 렌더링 (IsActive 무시)
-            if (eType == GROUP_TYPE::GROUND || eType == GROUP_TYPE::TRIGGER || eType == GROUP_TYPE::MONSTER) {}
+            // 툴씬에서는 GROUND, TRIGGER, MONSTER, CAR를 항상 렌더링 (IsActive 무시)
+            if (eType == GROUP_TYPE::GROUND || eType == GROUP_TYPE::TRIGGER || eType == GROUP_TYPE::MONSTER || eType == GROUP_TYPE::GROUND) {}
             else if (!pObj->IsActive()) continue; // 나머지 그룹은 Active일 때만
 
             // 실제 렌더링 로직
             pObj->Render(_pRenderTarget);
             pObj->Component_Render(_pRenderTarget);
+        }
+    }
+
+    // 자동차 경로 렌더링
+    for (int i = 0; i < 10; ++i)
+    {
+        CSkylineCar* pCar = m_arrCars[i];
+        if (pCar && !pCar->GetPath().empty())
+        {
+            const auto& path = pCar->GetPath();
+            ID2D1SolidColorBrush* pBrush = (i == m_iCurrentCarIndex) ? CCore::GetInst()->GetBrush(BrushType::GREEN) : CCore::GetInst()->GetBrush(BrushType::RED);
+
+            for (size_t j = 0; j < path.size(); ++j)
+            {
+                Vec2 p1_render = CCamera::GetInst()->GetRenderPos(path[j]);
+                D2D1_ELLIPSE ellipse = D2D1::Ellipse(D2D1::Point2F(p1_render.x, p1_render.y), 5.f, 5.f);
+                _pRenderTarget->FillEllipse(ellipse, pBrush);
+
+                if (j + 1 < path.size())
+                {
+                    Vec2 p2_render = CCamera::GetInst()->GetRenderPos(path[j + 1]);
+                    _pRenderTarget->DrawLine(D2D1::Point2F(p1_render.x, p1_render.y), D2D1::Point2F(p2_render.x, p2_render.y), pBrush, 2.f);
+                }
+            }
         }
     }
 
@@ -1264,6 +1360,33 @@ void CScene_Tool::UpdateTriggerMode()
             pCurrentTrigger->ClearData();
         }
     }
+}
+
+void CScene_Tool::UpdateCarMode()
+{
+	if (m_iCurrentCarIndex == -1) return;
+
+	CSkylineCar* currentCar = m_arrCars[m_iCurrentCarIndex];
+	if (!currentCar) return;
+
+	// 좌클릭으로 경로 포인트 추가
+	if (KEY_TAP(KEY::LBUTTON) && !m_pPanelUI->IsMouseOn())
+	{
+		Vec2 mousePos = CCamera::GetInst()->GetRealPos(MOUSE_POS);
+		currentCar->AddPathPoint(mousePos);
+	}
+
+	// Enter로 경로 지정 완료
+	if (KEY_TAP(KEY::ENTER))
+	{
+		m_iCurrentCarIndex = -1; // 선택 해제
+	}
+
+	// Backspace로 현재 선택된 차의 경로 삭제
+	if (KEY_TAP(KEY::BACK))
+	{
+		currentCar->ClearPath();
+	}
 }
 
 wstring CScene_Tool::UpdateSpawnMode()
