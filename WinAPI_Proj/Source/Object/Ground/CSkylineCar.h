@@ -49,7 +49,7 @@ public:
     SKYLINE_CAR_STATE GetState() const { return m_eState; }
 
     // Scene_Tool에서 사용할 함수
-    void AddPathPoint(const Vec2& point) { m_vecPath.push_back(point); }
+    void AddPathPoint(const Vec2& point);
     void ClearPath();
     const vector<Vec2>& GetPath() const { return m_vecPath; }
 

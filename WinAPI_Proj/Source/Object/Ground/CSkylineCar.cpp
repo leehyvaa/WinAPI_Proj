@@ -20,8 +20,10 @@ CSkylineCar::CSkylineCar()
     , m_iCurrentPathIndex(0)
     , m_fSpeed(300.f) // 이동 속도
     , m_vVelocity(Vec2(0.f, 0.f))
-{
-    SetName(L"SkylineCar");
+    , m_vStartPos(Vec2(-10000.f, -10000.f)) // 눈에 안보이는 위치로 초기화
+    {
+        SetActive(false); // 기본적으로 비활성화
+        SetName(L"SkylineCar");
     SetGroup(GROUP_TYPE::GROUND);
     CreateCollider();
     SetScale(Vec2(400.f, 200.f));
@@ -37,6 +39,7 @@ CSkylineCar::CSkylineCar()
 
     // 초기 애니메이션 재생
     GetAnimator()->Play(L"SKYLINE_IDLE", true);
+    SetWorldPos(m_vStartPos);
 }
 
 CSkylineCar::~CSkylineCar()
@@ -332,13 +335,18 @@ void CSkylineCar::SetPath(const std::vector<Vec2>& _path)
     }
 }
 
+void CSkylineCar::AddPathPoint(const Vec2& point)
+{
+	m_vecPath.push_back(point);
+}
+
 void CSkylineCar::ClearPath()
 {
     m_vecPath.clear();
     m_iCurrentPathIndex = 0;
     if (GetAnimator()) GetAnimator()->Play(L"SKYLINE_IDLE", true);
-    SetWorldPos(Vec2(0, 0));
-    
+    SetStartPos(Vec2(-10000.f, -10000.f)); // 눈에 안보이는 곳으로 이동
+    SetActive(false);
 }
 
 void CSkylineCar::Save(FILE* _pFile)
@@ -379,8 +387,12 @@ void CSkylineCar::Load(FILE* _pFile)
     if (!m_vecPath.empty())
     {
         SetStartPos(m_vecPath[0]);
+        SetActive(true);
+    }
+    else
+    {
+        SetActive(false);
     }
     m_iCurrentPathIndex = 0;
     m_eState = SKYLINE_CAR_STATE::IDLE;
-    GetCollider()->SetActive(true);
 }

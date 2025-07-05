@@ -70,7 +70,6 @@ void CScene_Tool::Enter()
         {
             m_arrCars[i] = new CSkylineCar;
 			m_arrCars[i]->SetName(L"SkylineCar_" + to_wstring(i));
-            m_arrCars[i]->SetWorldPos(Vec2(0.f, 5000.f));
             AddObject(m_arrCars[i], GROUP_TYPE::GROUND);
         }
     }
@@ -1114,8 +1113,8 @@ void CScene_Tool::Render(ID2D1RenderTarget* _pRenderTarget)
         {
             if (!pObj || pObj->IsDead()) continue;
 
-            // 툴씬에서는 GROUND, TRIGGER, MONSTER, CAR를 항상 렌더링 (IsActive 무시)
-            if (eType == GROUP_TYPE::GROUND || eType == GROUP_TYPE::TRIGGER || eType == GROUP_TYPE::MONSTER || eType == GROUP_TYPE::GROUND) {}
+            // 툴씬에서는 GROUND, TRIGGER, MONSTER를 항상 렌더링 (IsActive 무시)
+            if (eType == GROUP_TYPE::GROUND || eType == GROUP_TYPE::TRIGGER || eType == GROUP_TYPE::MONSTER) {}
             else if (!pObj->IsActive()) continue; // 나머지 그룹은 Active일 때만
 
             // 실제 렌더링 로직
@@ -1369,16 +1368,28 @@ void CScene_Tool::UpdateCarMode()
 	CSkylineCar* currentCar = m_arrCars[m_iCurrentCarIndex];
 	if (!currentCar) return;
 
-	// 좌클릭으로 경로 포인트 추가
+	// 좌클릭으로 경로 포인트 추가 (타일 중앙에)
 	if (KEY_TAP(KEY::LBUTTON) && !m_pPanelUI->IsMouseOn())
 	{
-		Vec2 mousePos = CCamera::GetInst()->GetRealPos(MOUSE_POS);
-		currentCar->AddPathPoint(mousePos);
+		int iCol, iRow, iTileX;
+		if (CalculateTileIndex(iCol, iRow, iTileX))
+		{
+			const vector<GameObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
+			int iCurrentTileIdx = iRow * iTileX + iCol;
+			Vec2 tileCenterPos = vecTile[iCurrentTileIdx]->GetWorldPos() + Vec2(TILE_SIZE / 2.f, TILE_SIZE / 2.f);
+			currentCar->AddPathPoint(tileCenterPos);
+		}
 	}
 
-	// Enter로 경로 지정 완료
+	// Enter로 경로 지정 완료 및 차량 활성화
 	if (KEY_TAP(KEY::ENTER))
 	{
+		const auto& path = currentCar->GetPath();
+		if (!path.empty())
+		{
+			currentCar->SetWorldPos(path.front());
+			currentCar->SetActive(true);
+		}
 		m_iCurrentCarIndex = -1; // 선택 해제
 	}
 
