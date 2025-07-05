@@ -597,8 +597,22 @@ void CScene::CreateTile(UINT _iXCount, UINT _iYCount)
 // 지형의 맨 왼쪽 위 꼭짓점과 오른쪽 아래 꼭짓점의 위치를 받아와서 사각형 지형을 생성
 void CScene::CreateGround()
 {
+	// DeleteGroup(GROUP_TYPE::GROUND)는 CSkylineCar와 같은 특수 Ground 객체를 삭제하므로,
+	// 일반 CGround 객체만 선별적으로 삭제하고 다시 생성합니다.
+	vector<GameObject*>& vecGround = m_arrObj[static_cast<UINT>(GROUP_TYPE::GROUND)];
+	vector<GameObject*> objectsToKeep; // 보존할 객체들 (예: CSkylineCar)
 
-	DeleteGroup(GROUP_TYPE::GROUND);
+	for (GameObject* pObj : vecGround)
+	{
+		// CSkylineCar는 보존하고, 그 외의 Ground 객체(CGround, CWall 등)는 삭제합니다.
+		if (dynamic_cast<CSkylineCar*>(pObj)) {
+			objectsToKeep.push_back(pObj);
+		} else {
+			delete pObj;
+		}
+	}
+	vecGround = objectsToKeep; // 보존할 객체들로 벡터를 갱신합니다.
+
     const vector<GameObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
 
     vector<pair<Vec2, Vec2>> vNormalGround;

@@ -806,17 +806,19 @@ void CScene_Tool::SaveTile(const wstring& _strFilePath)
 	fprintf(pFile, "%f %f %f %f %d\n", m_vSceneClearStartPos.x, m_vSceneClearStartPos.y, m_vSceneClearEndPos.x, m_vSceneClearEndPos.y, m_bSceneClearSet ? 1 : 0);
 
 	// 3. Car 데이터 저장
-	const vector<GameObject*>& vecCars = GetGroupObject(GROUP_TYPE::GROUND);
-	fprintf(pFile, "[CarCount]\n");
-	fprintf(pFile, "%d\n", (int)vecCars.size());
-
-	for (GameObject* pObj : vecCars)
-	{
-		CSkylineCar* pCar = dynamic_cast<CSkylineCar*>(pObj);
-		if (pCar)
-		{
-			pCar->Save(pFile);
+	vector<CSkylineCar*> cars;
+	const vector<GameObject*>& groundObjects = GetGroupObject(GROUP_TYPE::GROUND);
+	for (GameObject* obj : groundObjects) {
+		if (CSkylineCar* car = dynamic_cast<CSkylineCar*>(obj)) {
+			cars.push_back(car);
 		}
+	}
+	fprintf(pFile, "[CarCount]\n");
+	fprintf(pFile, "%d\n", (int)cars.size());
+
+	for (CSkylineCar* pCar : cars)
+	{
+		pCar->Save(pFile);
 	}
 
 
