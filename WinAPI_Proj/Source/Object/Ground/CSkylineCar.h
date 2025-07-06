@@ -22,6 +22,8 @@ private:
     Vec2 m_vStartPos;
     Vec2 m_vVelocity;
     float m_fSpeed;
+    bool m_bIsSlowMoving;
+    float m_fSlowMoveTimer;
 
 private:
     void SetupAnimations();

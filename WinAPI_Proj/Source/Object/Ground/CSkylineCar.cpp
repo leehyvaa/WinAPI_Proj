@@ -21,6 +21,8 @@ CSkylineCar::CSkylineCar()
     , m_fSpeed(300.f) // 이동 속도
     , m_vVelocity(Vec2(0.f, 0.f))
     , m_vStartPos(Vec2(-10000.f, -10000.f)) // 눈에 안보이는 위치로 초기화
+    , m_bIsSlowMoving(false)
+    , m_fSlowMoveTimer(0.f)
     {
         SetActive(false); // 기본적으로 비활성화
         SetName(L"SkylineCar");
@@ -133,6 +135,19 @@ void CSkylineCar::Update_Moving()
         return;
     }
 
+    // 현재 속도 결정
+    float currentSpeed = m_fSpeed;
+    if (m_bIsSlowMoving)
+    {
+        m_fSlowMoveTimer += fDT;
+        currentSpeed = m_fSpeed * 0.5f;
+        if (m_fSlowMoveTimer >= 1.f)
+        {
+            m_bIsSlowMoving = false;
+            m_fSlowMoveTimer = 0.f; // 타이머 리셋
+        }
+    }
+
     // 목표 지점
     Vec2 vTargetPos = m_vecPath[m_iCurrentPathIndex];
     Vec2 vPos = GetWorldPos();
@@ -143,7 +158,7 @@ void CSkylineCar::Update_Moving()
     vDir.Normalize();
 
     // 이동
-    Vec2 vMoveDelta = vDir * m_fSpeed * fDT;
+    Vec2 vMoveDelta = vDir * currentSpeed * fDT;
     vPos += vMoveDelta;
     SetWorldPos(vPos);
 
@@ -153,7 +168,7 @@ void CSkylineCar::Update_Moving()
         m_vVelocity = Vec2(0.f, 0.f);
 
     // 목표 지점 도착 체크 (다음 프레임에 지나칠 경우 도착으로 간주)
-    if (dist < m_fSpeed * fDT)
+    if (dist < currentSpeed * fDT)
     {
         SetWorldPos(vTargetPos); // 정확한 위치로 보정
         m_iCurrentPathIndex++;
@@ -203,8 +218,11 @@ void CSkylineCar::Update_Spawning()
     m_vVelocity = Vec2(0.f, 0.f);
     if (GetAnimator()->GetCurAnimation() && GetAnimator()->GetCurAnimation()->IsFinish())
     {
+        m_iCurrentPathIndex = 0;
         m_eState = SKYLINE_CAR_STATE::IDLE;
         GetCollider()->SetActive(true);
+        m_bIsSlowMoving = false;
+        m_fSlowMoveTimer = 0.f;
     }
 }
 
@@ -307,6 +325,8 @@ void CSkylineCar::OnCollisionEnter(CCollider* _pOther)
     if (m_eState == SKYLINE_CAR_STATE::IDLE && (eOtherGroup == GROUP_TYPE::PLAYER || eOtherGroup == GROUP_TYPE::HOOK))
     {
         m_eState = SKYLINE_CAR_STATE::MOVING;
+        m_bIsSlowMoving = true;
+        m_fSlowMoveTimer = 0.f;
     }
 }
 
@@ -322,6 +342,8 @@ void CSkylineCar::Reset()
     {
         GetAnimator()->Play(L"SKYLINE_IDLE", true);
     }
+    m_bIsSlowMoving = false;
+    m_fSlowMoveTimer = 0.f;
 }
 
 void CSkylineCar::SetPath(const std::vector<Vec2>& _path)
