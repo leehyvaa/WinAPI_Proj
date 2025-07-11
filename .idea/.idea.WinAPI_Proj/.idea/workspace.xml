@@ -8,11 +8,966 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e174ba9b-dad2-4293-bc5f-8669e5f5e6a8" name="변경" comment="">
+      <change afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/Ground/CDamagedGround.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/Ground/CDamagedGround.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.WinAPI_Proj/.idea/AugmentWebviewStateStore.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.WinAPI_Proj/.idea/AugmentWebviewStateStore.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.WinAPI_Proj/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.WinAPI_Proj/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Output/bin_debug/WinAPI_Proj.exe" beforeDir="false" afterPath="$PROJECT_DIR$/Output/bin_debug/WinAPI_Proj.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/Ground/CSkylineCar.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/Ground/CSkylineCar.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/Ground/CSkylineCar.h" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Object/Ground/CSkylineCar.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Source/Scene/CScene_Start.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/Source/Scene/CScene_Start.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Unity/unity_3409V10SI3W5EKA6.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Unity/unity_60ZQQ5S4R2K2N1XU.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Unity/unity_L2N0ZKMP2L5T3TLK.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Unity/unity_M11EHFJ9W2U2N9G2.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Unity/unity_M59E4CJ9XP5GFCFW.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Unity/unity_NJ3O57DU40WIN7OT.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/Unity/unity_VB9K8I1JPU838G6I.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/WinAPI_Proj.vcxproj" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/WinAPI_Proj.vcxproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WinAPI_Proj/WinAPI_Proj.vcxproj.filters" beforeDir="false" afterPath="$PROJECT_DIR$/WinAPI_Proj/WinAPI_Proj.vcxproj.filters" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/자료/2D 일정.txt" beforeDir="false" afterPath="$PROJECT_DIR$/자료/2D 일정.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/Output.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/WinAPI_Proj.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/bomb/excholded_back/Spr_FloatingBomb_Excholded_Back (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/bomb/excholded_back/Spr_FloatingBomb_Excholded_Back (lp) (10) #27065.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/bomb/excholded_back/Spr_FloatingBomb_Excholded_Back (lp) (11) #26153.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/bomb/excholded_back/Spr_FloatingBomb_Excholded_Back (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/bomb/excholded_back/Spr_FloatingBomb_Excholded_Back (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/bomb/excholded_back/Spr_FloatingBomb_Excholded_Back (lp) (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/bomb/excholded_back/Spr_FloatingBomb_Excholded_Back (lp) (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/bomb/excholded_back/Spr_FloatingBomb_Excholded_Back (lp) (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/bomb/excholded_back/Spr_FloatingBomb_Excholded_Back (lp) (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/bomb/excholded_back/Spr_FloatingBomb_Excholded_Back (lp) (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/bomb/excholded_back/Spr_FloatingBomb_Excholded_Back (lp) (9).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/bomb/idle/Spr_FloatingBomb_Idle (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/bomb/idle/Spr_FloatingBomb_Idle (lp) (10).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/bomb/idle/Spr_FloatingBomb_Idle (lp) (11).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/bomb/idle/Spr_FloatingBomb_Idle (lp) (12).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/bomb/idle/Spr_FloatingBomb_Idle (lp) (13).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/bomb/idle/Spr_FloatingBomb_Idle (lp) (14).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/bomb/idle/Spr_FloatingBomb_Idle (lp) (15).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/bomb/idle/Spr_FloatingBomb_Idle (lp) (16).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/bomb/idle/Spr_FloatingBomb_Idle (lp) (17).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/bomb/idle/Spr_FloatingBomb_Idle (lp) (18).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/bomb/idle/Spr_FloatingBomb_Idle (lp) (19).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/bomb/idle/Spr_FloatingBomb_Idle (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/bomb/idle/Spr_FloatingBomb_Idle (lp) (20).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/bomb/idle/Spr_FloatingBomb_Idle (lp) (21).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/bomb/idle/Spr_FloatingBomb_Idle (lp) (22).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/bomb/idle/Spr_FloatingBomb_Idle (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/bomb/idle/Spr_FloatingBomb_Idle (lp) (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/bomb/idle/Spr_FloatingBomb_Idle (lp) (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/bomb/idle/Spr_FloatingBomb_Idle (lp) (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/bomb/idle/Spr_FloatingBomb_Idle (lp) (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/bomb/idle/Spr_FloatingBomb_Idle (lp) (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/bomb/idle/Spr_FloatingBomb_Idle (lp) (9).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/boss_bomb/Spr_BOSS_FirebirdVFX_Bomb_Appear (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/boss_bomb/Spr_BOSS_FirebirdVFX_Bomb_Appear (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/boss_bomb/Spr_BOSS_FirebirdVFX_Bomb_Appear (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/boss_bomb/Spr_BOSS_FirebirdVFX_Bomb_Appear (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/boss_bomb/Spr_BOSS_FirebirdVFX_Bomb_Explode (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/boss_bomb/Spr_BOSS_FirebirdVFX_Bomb_Explode (10).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/boss_bomb/Spr_BOSS_FirebirdVFX_Bomb_Explode (11).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/boss_bomb/Spr_BOSS_FirebirdVFX_Bomb_Explode (12).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/boss_bomb/Spr_BOSS_FirebirdVFX_Bomb_Explode (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/boss_bomb/Spr_BOSS_FirebirdVFX_Bomb_Explode (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/boss_bomb/Spr_BOSS_FirebirdVFX_Bomb_Explode (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/boss_bomb/Spr_BOSS_FirebirdVFX_Bomb_Explode (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/boss_bomb/Spr_BOSS_FirebirdVFX_Bomb_Explode (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/boss_bomb/Spr_BOSS_FirebirdVFX_Bomb_Explode (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/boss_bomb/Spr_BOSS_FirebirdVFX_Bomb_Explode (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/boss_bomb/Spr_BOSS_FirebirdVFX_Bomb_Explode (9).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/boss_bomb/Spr_BOSS_FirebirdVFX_Bomb_Falling (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/boss_bomb/Spr_BOSS_FirebirdVFX_Bomb_Falling (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/boss_bomb/Spr_BOSS_FirebirdVFX_Bomb_Falling (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/boss_bomb/Spr_BOSS_FirebirdVFX_Bomb_Falling (lp) (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/idle/Spr_BOSS_Firebird_Body_Idle (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/idle/Spr_BOSS_Firebird_Body_Idle (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/idle/Spr_BOSS_Firebird_Body_Idle (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/idle/Spr_BOSS_Firebird_Body_Idle (lp) (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/platform/Spr_UnstableKnockbackPlatformA_BoosterLoop (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/platform/Spr_UnstableKnockbackPlatformA_BoosterLoop (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/platform/Spr_UnstableKnockbackPlatformA_BoosterLoop (lp) (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/platform/Spr_UnstableKnockbackPlatformA_BoosterLoop (lp) (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/platform/Spr_UnstableKnockbackPlatformA_BoosterLoop (lp) (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/platform/Spr_UnstableKnockbackPlatformA_Idle (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/platform/Spr_UnstableKnockbackPlatformA_Idle (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/platform/Spr_UnstableKnockbackPlatformA_Idle (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/platform/Spr_UnstableKnockbackPlatformA_Idle (lp) (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/wing up/Spr_BOSS_Firebird_Wing_UpLoop01 (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/wing up/Spr_BOSS_Firebird_Wing_UpLoop01 (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/wing up/Spr_BOSS_Firebird_Wing_UpLoop01 (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/c4boss2/wing up/Spr_BOSS_Firebird_Wing_UpLoop01 (lp) (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/Left/10_Rifleman_AimingBody_Left.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/Left/11_Rifleman_AimingHead_TopLeft.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/Left/12_Rifleman_Spawn_Left.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/Left/1_Rifleman_Idle_Left.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/Left/2_Rifleman_ExcStart_Left.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/Left/3_Rifleman_ExcBack_Left.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/Left/4_Rifleman_Dead_Left.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/Left/5_Rifleman_DeadPart_Left.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/Left/6_Rifleman_Bullet_Left.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/Left/7_Rifleman_ShotBody_Left.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/Left/8_Rifleman_ShotHead_TopLeft.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/Left/9_Rifleman_ShotHead_Left.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/RifleMan_Left.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/RifleMan_Right.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/Right/10_Rifleman_AimingBody_Right.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/Right/11_Rifleman_AimingHead_TopRight.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/Right/12_Rifleman_Spawn_Right.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/Right/1_Rifleman_Idle_Right.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/Right/2_Rifleman_ExcStart_Right.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/Right/3_Rifleman_ExcBack_Right.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/Right/4_Rifleman_Dead_Right.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/Right/5_Rifleman_DeadPart_Right.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/Right/6_Rifleman_Bullet_Right.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/Right/7_Rifleman_ShotBody_Right.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/Right/8_Rifleman_ShotHead_TopRight.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/Right/9_Rifleman_ShotHead_Right.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Aiming/Spr_ENE_RiflemanArm_Aiming (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Aiming/Spr_ENE_RiflemanArm_Aiming (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Aiming/Spr_ENE_RiflemanArm_Aiming (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Aiming/Spr_ENE_Rifleman_Aiming (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Aiming/Spr_ENE_Rifleman_Aiming (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Aiming/Spr_ENE_Rifleman_Aiming (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Aiming/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Bullet/Spr_Bullet_Rifleman (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Bullet/Spr_Bullet_Rifleman (lp) (10).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Bullet/Spr_Bullet_Rifleman (lp) (11).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Bullet/Spr_Bullet_Rifleman (lp) (12).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Bullet/Spr_Bullet_Rifleman (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Bullet/Spr_Bullet_Rifleman (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Bullet/Spr_Bullet_Rifleman (lp) (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Bullet/Spr_Bullet_Rifleman (lp) (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Bullet/Spr_Bullet_Rifleman (lp) (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Bullet/Spr_Bullet_Rifleman (lp) (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Bullet/Spr_Bullet_Rifleman (lp) (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Bullet/Spr_Bullet_Rifleman (lp) (9).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Bullet/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ComaEnd/Spr_ENE_Rifleman_ComaEnd (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ComaEnd/Spr_ENE_Rifleman_ComaEnd (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ComaEnd/Spr_ENE_Rifleman_ComaEnd (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ComaEnd/Spr_ENE_Rifleman_ComaEnd (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ComaEnd/Spr_ENE_Rifleman_ComaEnd (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ComaEnd/Spr_ENE_Rifleman_ComaEnd (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ComaEnd/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ComaLoop/Spr_ENE_Rifleman_ComaLoop (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ComaLoop/Spr_ENE_Rifleman_ComaLoop (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ComaLoop/Spr_ENE_Rifleman_ComaLoop (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ComaLoop/Spr_ENE_Rifleman_ComaLoop (lp) (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ComaLoop/Spr_ENE_Rifleman_ComaLoop (lp) (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ComaLoop/Spr_ENE_Rifleman_ComaLoop (lp) (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ComaLoop/Spr_ENE_Rifleman_ComaLoop (lp) (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ComaLoop/Spr_ENE_Rifleman_ComaLoop (lp) (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ComaLoop/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ComaStart/Spr_ENE_Rifleman_ComaStart (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ComaStart/Spr_ENE_Rifleman_ComaStart (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ComaStart/Spr_ENE_Rifleman_ComaStart (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ComaStart/Spr_ENE_Rifleman_ComaStart (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ComaStart/Spr_ENE_Rifleman_ComaStart (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ComaStart/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Dead/Spr_ENE_Rifleman_Dead (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Dead/Spr_ENE_Rifleman_Dead (10).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Dead/Spr_ENE_Rifleman_Dead (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Dead/Spr_ENE_Rifleman_Dead (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Dead/Spr_ENE_Rifleman_Dead (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Dead/Spr_ENE_Rifleman_Dead (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Dead/Spr_ENE_Rifleman_Dead (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Dead/Spr_ENE_Rifleman_Dead (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Dead/Spr_ENE_Rifleman_Dead (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Dead/Spr_ENE_Rifleman_Dead (9).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Dead/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/DeadPart/Spr_ENE_Rifleman_Deadparts_0.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/DeadPart/Spr_ENE_Rifleman_Deadparts_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/DeadPart/Spr_ENE_Rifleman_Deadparts_10.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/DeadPart/Spr_ENE_Rifleman_Deadparts_2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/DeadPart/Spr_ENE_Rifleman_Deadparts_3.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/DeadPart/Spr_ENE_Rifleman_Deadparts_4.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/DeadPart/Spr_ENE_Rifleman_Deadparts_5.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/DeadPart/Spr_ENE_Rifleman_Deadparts_6.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/DeadPart/Spr_ENE_Rifleman_Deadparts_7.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/DeadPart/Spr_ENE_Rifleman_Deadparts_8.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/DeadPart/Spr_ENE_Rifleman_Deadparts_9.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/DeadPart/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ExcHoldedStart/Spr_ENE_Rifleman_ExcHoldedStart (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ExcHoldedStart/Spr_ENE_Rifleman_ExcHoldedStart (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ExcHoldedStart/Spr_ENE_Rifleman_ExcHoldedStart (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ExcHoldedStart/Spr_ENE_Rifleman_ExcHoldedStart (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ExcHoldedStart/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ExcHolded_Back/Spr_ENE_Rifleman_ExcHolded_Back (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ExcHolded_Back/Spr_ENE_Rifleman_ExcHolded_Back (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ExcHolded_Back/Spr_ENE_Rifleman_ExcHolded_Back (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ExcHolded_Back/Spr_ENE_Rifleman_ExcHolded_Back (lp) (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ExcHolded_Back/Spr_ENE_Rifleman_ExcHolded_Back (lp) (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ExcHolded_Back/Spr_ENE_Rifleman_ExcHolded_Back (lp) (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ExcHolded_Back/Spr_ENE_Rifleman_ExcHolded_Back (lp) (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ExcHolded_Back/Spr_ENE_Rifleman_ExcHolded_Back (lp) (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ExcHolded_Back/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ExcHolded_Front/Spr_ENE_Rifleman_ExcHolded_Front (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ExcHolded_Front/Spr_ENE_Rifleman_ExcHolded_Front (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ExcHolded_Front/Spr_ENE_Rifleman_ExcHolded_Front (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ExcHolded_Front/Spr_ENE_Rifleman_ExcHolded_Front (lp) (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ExcHolded_Front/Spr_ENE_Rifleman_ExcHolded_Front (lp) (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ExcHolded_Front/Spr_ENE_Rifleman_ExcHolded_Front (lp) (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ExcHolded_Front/Spr_ENE_Rifleman_ExcHolded_Front (lp) (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ExcHolded_Front/Spr_ENE_Rifleman_ExcHolded_Front (lp) (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/ExcHolded_Front/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Idle/Spr_ENE_Rifleman_Idle (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Idle/Spr_ENE_Rifleman_Idle (lp) (10).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Idle/Spr_ENE_Rifleman_Idle (lp) (11).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Idle/Spr_ENE_Rifleman_Idle (lp) (12).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Idle/Spr_ENE_Rifleman_Idle (lp) (13).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Idle/Spr_ENE_Rifleman_Idle (lp) (14).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Idle/Spr_ENE_Rifleman_Idle (lp) (15).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Idle/Spr_ENE_Rifleman_Idle (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Idle/Spr_ENE_Rifleman_Idle (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Idle/Spr_ENE_Rifleman_Idle (lp) (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Idle/Spr_ENE_Rifleman_Idle (lp) (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Idle/Spr_ENE_Rifleman_Idle (lp) (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Idle/Spr_ENE_Rifleman_Idle (lp) (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Idle/Spr_ENE_Rifleman_Idle (lp) (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Idle/Spr_ENE_Rifleman_Idle (lp) (9).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Idle/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/RunStart/Spr_ENE_Rifleman_RunStart (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/RunStart/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/RunStop/Spr_ENE_Rifleman_RunStop (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/RunStop/Spr_ENE_Rifleman_RunStop (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/RunStop/Spr_ENE_Rifleman_RunStop (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/RunStop/Spr_ENE_Rifleman_RunStop (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/RunStop/Spr_ENE_Rifleman_RunStop (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/RunStop/Spr_ENE_Rifleman_RunStop (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/RunStop/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Running/Spr_ENE_Rifleman_Running (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Running/Spr_ENE_Rifleman_Running (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Running/Spr_ENE_Rifleman_Running (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Running/Spr_ENE_Rifleman_Running (lp) (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Running/Spr_ENE_Rifleman_Running (lp) (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Running/Spr_ENE_Rifleman_Running (lp) (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Running/Spr_ENE_Rifleman_Running (lp) (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Running/Spr_ENE_Rifleman_Running (lp) (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Running/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Spawning/Spr_ENE_Rifleman_Spawning (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Spawning/Spr_ENE_Rifleman_Spawning (10).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Spawning/Spr_ENE_Rifleman_Spawning (11).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Spawning/Spr_ENE_Rifleman_Spawning (12).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Spawning/Spr_ENE_Rifleman_Spawning (13).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Spawning/Spr_ENE_Rifleman_Spawning (14).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Spawning/Spr_ENE_Rifleman_Spawning (15).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Spawning/Spr_ENE_Rifleman_Spawning (16).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Spawning/Spr_ENE_Rifleman_Spawning (17).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Spawning/Spr_ENE_Rifleman_Spawning (18).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Spawning/Spr_ENE_Rifleman_Spawning (19).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Spawning/Spr_ENE_Rifleman_Spawning (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Spawning/Spr_ENE_Rifleman_Spawning (20).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Spawning/Spr_ENE_Rifleman_Spawning (21).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Spawning/Spr_ENE_Rifleman_Spawning (22).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Spawning/Spr_ENE_Rifleman_Spawning (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Spawning/Spr_ENE_Rifleman_Spawning (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Spawning/Spr_ENE_Rifleman_Spawning (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Spawning/Spr_ENE_Rifleman_Spawning (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Spawning/Spr_ENE_Rifleman_Spawning (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Spawning/Spr_ENE_Rifleman_Spawning (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Spawning/Spr_ENE_Rifleman_Spawning (9).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Spawning/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/Spr_ENE_Rifleman_Stunned (lp).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/excHolded_neu/Spr_ENE_Rifleman_ExcHolded_Neu (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/excHolded_neu/Spr_ENE_Rifleman_ExcHolded_Neu (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/excHolded_neu/Spr_ENE_Rifleman_ExcHolded_Neu (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/excHolded_neu/Spr_ENE_Rifleman_ExcHolded_Neu (lp) (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/excHolded_neu/Spr_ENE_Rifleman_ExcHolded_Neu (lp) (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/excHolded_neu/Spr_ENE_Rifleman_ExcHolded_Neu (lp) (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/excHolded_neu/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/shooting/Spr_ENE_RiflemanArm_Ready2Shot.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/shooting/Spr_ENE_RiflemanArm_Shot (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/shooting/Spr_ENE_RiflemanArm_Shot (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/shooting/Spr_ENE_RiflemanArm_Shot (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/shooting/Spr_ENE_Rifleman_Ready2Shot (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/shooting/Spr_ENE_Rifleman_Shooting (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/shooting/Spr_ENE_Rifleman_Shooting (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/shooting/Spr_ENE_Rifleman_Shooting (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/enemy/rifleMan/원본파일 및 후보/shooting/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/갈고리/Grab_Left.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/갈고리/Grab_Right.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/갈고리/Left/Left_Grab.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/갈고리/Left/Left_Grabbing.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/갈고리/Left/Left_Return_WithGrab.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/갈고리/Left/Left_Return_WitoutGrab.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/갈고리/Left/Spr_SNBGrab_Flying (lp).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/갈고리/Right/Right_Grab.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/갈고리/Right/Right_Grabbing.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/갈고리/Right/Right_Return_WithGrab.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/갈고리/Right/Right_Return_WithoutGrab.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/갈고리/Right/Spr_SNBGrab_Flying (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Damaged/Spr_SNBArm_Damaged (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Damaged/Spr_SNBArm_Damaged (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Damaged/Spr_SNBArm_Damaged (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Damaged/Spr_SNBArm_Damaged (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Damaged/Spr_SNBArm_Damaged (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Damaged/Spr_SNB_Damaged (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Damaged/Spr_SNB_Damaged (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Damaged/Spr_SNB_Damaged (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Damaged/Spr_SNB_Damaged (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Damaged/Spr_SNB_Damaged (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Damaged/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Dash/Spr_SNB_Dash (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Dash/Spr_SNB_Dash (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Dash/Spr_SNB_Dash (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Dash/Spr_SNB_Dash (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Dash/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/DashEndGround/Spr_SNBArm_DashEndGround (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/DashEndGround/Spr_SNBArm_DashEndGround (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/DashEndGround/Spr_SNBArm_DashEndGround (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/DashEndGround/Spr_SNBArm_DashEndGround (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/DashEndGround/Spr_SNBArm_DashEndGround (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/DashEndGround/Spr_SNBArm_DashEndGround (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/DashEndGround/Spr_SNBArm_DashEndGround (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/DashEndGround/Spr_SNBArm_DashEndGround (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/DashEndGround/Spr_SNB_DashEndGround (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/DashEndGround/Spr_SNB_DashEndGround (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/DashEndGround/Spr_SNB_DashEndGround (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/DashEndGround/Spr_SNB_DashEndGround (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/DashEndGround/Spr_SNB_DashEndGround (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/DashEndGround/Spr_SNB_DashEndGround (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/DashEndGround/Spr_SNB_DashEndGround (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/DashEndGround/Spr_SNB_DashEndGround (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/DashEndGround/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Death/Spr_SNB_Death (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Death/Spr_SNB_Death (10).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Death/Spr_SNB_Death (11).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Death/Spr_SNB_Death (12).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Death/Spr_SNB_Death (13).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Death/Spr_SNB_Death (14).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Death/Spr_SNB_Death (15).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Death/Spr_SNB_Death (16).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Death/Spr_SNB_Death (17).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Death/Spr_SNB_Death (18).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Death/Spr_SNB_Death (19).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Death/Spr_SNB_Death (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Death/Spr_SNB_Death (20).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Death/Spr_SNB_Death (21).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Death/Spr_SNB_Death (22).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Death/Spr_SNB_Death (23).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Death/Spr_SNB_Death (24).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Death/Spr_SNB_Death (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Death/Spr_SNB_Death (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Death/Spr_SNB_Death (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Death/Spr_SNB_Death (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Death/Spr_SNB_Death (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Death/Spr_SNB_Death (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Death/Spr_SNB_Death (9).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Death/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcDash/Spr_SNBArm_ExcDash (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcDash/Spr_SNBArm_ExcDash (10).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcDash/Spr_SNBArm_ExcDash (11).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcDash/Spr_SNBArm_ExcDash (12).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcDash/Spr_SNBArm_ExcDash (13).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcDash/Spr_SNBArm_ExcDash (14).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcDash/Spr_SNBArm_ExcDash (15).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcDash/Spr_SNBArm_ExcDash (16).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcDash/Spr_SNBArm_ExcDash (17).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcDash/Spr_SNBArm_ExcDash (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcDash/Spr_SNBArm_ExcDash (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcDash/Spr_SNBArm_ExcDash (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcDash/Spr_SNBArm_ExcDash (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcDash/Spr_SNBArm_ExcDash (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcDash/Spr_SNBArm_ExcDash (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcDash/Spr_SNBArm_ExcDash (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcDash/Spr_SNBArm_ExcDash (9).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcDash/Spr_SNB_ExcDash (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcDash/Spr_SNB_ExcDash (10).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcDash/Spr_SNB_ExcDash (11).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcDash/Spr_SNB_ExcDash (12).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcDash/Spr_SNB_ExcDash (13).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcDash/Spr_SNB_ExcDash (14).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcDash/Spr_SNB_ExcDash (15).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcDash/Spr_SNB_ExcDash (16).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcDash/Spr_SNB_ExcDash (17).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcDash/Spr_SNB_ExcDash (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcDash/Spr_SNB_ExcDash (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcDash/Spr_SNB_ExcDash (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcDash/Spr_SNB_ExcDash (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcDash/Spr_SNB_ExcDash (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcDash/Spr_SNB_ExcDash (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcDash/Spr_SNB_ExcDash (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcDash/Spr_SNB_ExcDash (9).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcDash/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcWinding/Spr_SNBArm_Winding (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcWinding/Spr_SNBArm_Winding (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcWinding/Spr_SNBArm_Winding (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcWinding/Spr_SNBArm_Winding (lp) (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcWinding/Spr_SNBArm_Winding (lp) (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcWinding/Spr_SNBArm_Winding (lp) (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcWinding/Spr_SNB_ExcWinding (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcWinding/Spr_SNB_ExcWinding (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/ExcWinding/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/FallStart/Spr_SNBArm_FallStart (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/FallStart/Spr_SNBArm_FallStart (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/FallStart/Spr_SNBArm_FallStart (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/FallStart/Spr_SNB_FallStart (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/FallStart/Spr_SNB_FallStart (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/FallStart/Spr_SNB_FallStart (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/FallStart/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Falling/Spr_SNBArm_Falling (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Falling/Spr_SNBArm_Falling (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Falling/Spr_SNBArm_Falling (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Falling/Spr_SNB_Falling (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Falling/Spr_SNB_Falling (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Falling/Spr_SNB_Falling (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Falling/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Holding_Back/Spr_SNBArm_ExcHolding_Back (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Holding_Back/Spr_SNBArm_ExcHolding_Back (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Holding_Back/Spr_SNBArm_ExcHolding_Back (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Holding_Back/Spr_SNBArm_ExcHolding_Back (lp) (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Holding_Back/Spr_SNBArm_ExcHolding_Back (lp) (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Holding_Back/Spr_SNBArm_ExcHolding_Back (lp) (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Holding_Back/Spr_SNBArm_ExcHolding_Back (lp) (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Holding_Back/Spr_SNBArm_ExcHolding_Back (lp) (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Holding_Back/Spr_SNB_ExcHolding_Back (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Holding_Back/Spr_SNB_ExcHolding_Back (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Holding_Back/Spr_SNB_ExcHolding_Back (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Holding_Back/Spr_SNB_ExcHolding_Back (lp) (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Holding_Back/Spr_SNB_ExcHolding_Back (lp) (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Holding_Back/Spr_SNB_ExcHolding_Back (lp) (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Holding_Back/Spr_SNB_ExcHolding_Back (lp) (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Holding_Back/Spr_SNB_ExcHolding_Back (lp) (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Holding_Back/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Idle/SNB_Idle(1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Idle/SNB_Idle(2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Idle/SNB_Idle(3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Idle/SNB_Idle(4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Idle/SNB_Idle(5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Idle/SNB_Idle(6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Idle/SNB_Idle(7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Idle/SNB_Idle(8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Idle/Spr_SNBArm_Idle (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Idle/Spr_SNBArm_Idle (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Idle/Spr_SNBArm_Idle (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Idle/Spr_SNBArm_Idle (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Idle/Spr_SNBArm_Idle (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Idle/Spr_SNBArm_Idle (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Idle/Spr_SNBArm_Idle (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Idle/Spr_SNBArm_Idle (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Idle/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Jumping/Spr_SNBArm_Jumping (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Jumping/Spr_SNBArm_Jumping (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Jumping/Spr_SNBArm_Jumping (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Jumping/Spr_SNBArm_Jumping (lp) (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Jumping/Spr_SNBArm_Jumping (lp) (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Jumping/Spr_SNBArm_Jumping (lp) (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Jumping/Spr_SNB_Jumping (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Jumping/Spr_SNB_Jumping (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Jumping/Spr_SNB_Jumping (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Jumping/Spr_SNB_Jumping (lp) (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Jumping/Spr_SNB_Jumping (lp) (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Jumping/Spr_SNB_Jumping (lp) (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Jumping/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Landing/Spr_SNBArm_Landing (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Landing/Spr_SNBArm_Landing (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Landing/Spr_SNBArm_Landing (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Landing/Spr_SNB_Landing (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Landing/Spr_SNB_Landing (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Landing/Spr_SNB_Landing (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Landing/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/RollFall/Spr_SNBArm_Roll2Fall (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/RollFall/Spr_SNBArm_Roll2Fall (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/RollFall/Spr_SNBArm_Roll2Fall (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/RollFall/Spr_SNBArm_Roll2Fall (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/RollFall/Spr_SNBArm_Roll2Fall (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/RollFall/Spr_SNBArm_Roll2Fall (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/RollFall/Spr_SNBArm_Roll2Fall (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/RollFall/Spr_SNBArm_Roll2Fall (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/RollFall/Spr_SNB_Roll2Fall (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/RollFall/Spr_SNB_Roll2Fall (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/RollFall/Spr_SNB_Roll2Fall (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/RollFall/Spr_SNB_Roll2Fall (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/RollFall/Spr_SNB_Roll2Fall (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/RollFall/Spr_SNB_Roll2Fall (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/RollFall/Spr_SNB_Roll2Fall (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/RollFall/Spr_SNB_Roll2Fall (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/RollFall/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Rolling/Spr_SNBArm_Rolling (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Rolling/Spr_SNBArm_Rolling (lp) (10).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Rolling/Spr_SNBArm_Rolling (lp) (11).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Rolling/Spr_SNBArm_Rolling (lp) (12).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Rolling/Spr_SNBArm_Rolling (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Rolling/Spr_SNBArm_Rolling (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Rolling/Spr_SNBArm_Rolling (lp) (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Rolling/Spr_SNBArm_Rolling (lp) (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Rolling/Spr_SNBArm_Rolling (lp) (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Rolling/Spr_SNBArm_Rolling (lp) (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Rolling/Spr_SNBArm_Rolling (lp) (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Rolling/Spr_SNBArm_Rolling (lp) (9).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Rolling/Spr_SNB_Rolling (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Rolling/Spr_SNB_Rolling (lp) (10).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Rolling/Spr_SNB_Rolling (lp) (11).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Rolling/Spr_SNB_Rolling (lp) (12).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Rolling/Spr_SNB_Rolling (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Rolling/Spr_SNB_Rolling (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Rolling/Spr_SNB_Rolling (lp) (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Rolling/Spr_SNB_Rolling (lp) (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Rolling/Spr_SNB_Rolling (lp) (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Rolling/Spr_SNB_Rolling (lp) (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Rolling/Spr_SNB_Rolling (lp) (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Rolling/Spr_SNB_Rolling (lp) (9).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Rolling/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/RunStop/Spr_SNBArm_RunStop (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/RunStop/Spr_SNBArm_RunStop (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/RunStop/Spr_SNBArm_RunStop (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/RunStop/Spr_SNBArm_RunStop (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/RunStop/Spr_SNBArm_RunStop (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/RunStop/Spr_SNBArm_RunStop (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/RunStop/Spr_SNB_RunStop (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/RunStop/Spr_SNB_RunStop (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/RunStop/Spr_SNB_RunStop (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/RunStop/Spr_SNB_RunStop (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/RunStop/Spr_SNB_RunStop (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/RunStop/Spr_SNB_RunStop (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/RunStop/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Running/Spr_SNBArm_Running (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Running/Spr_SNBArm_Running (lp) (10).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Running/Spr_SNBArm_Running (lp) (11).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Running/Spr_SNBArm_Running (lp) (12).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Running/Spr_SNBArm_Running (lp) (13).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Running/Spr_SNBArm_Running (lp) (14).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Running/Spr_SNBArm_Running (lp) (15).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Running/Spr_SNBArm_Running (lp) (16).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Running/Spr_SNBArm_Running (lp) (17).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Running/Spr_SNBArm_Running (lp) (18).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Running/Spr_SNBArm_Running (lp) (19).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Running/Spr_SNBArm_Running (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Running/Spr_SNBArm_Running (lp) (20).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Running/Spr_SNBArm_Running (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Running/Spr_SNBArm_Running (lp) (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Running/Spr_SNBArm_Running (lp) (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Running/Spr_SNBArm_Running (lp) (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Running/Spr_SNBArm_Running (lp) (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Running/Spr_SNBArm_Running (lp) (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Running/Spr_SNBArm_Running (lp) (9).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Running/Spr_SNB_Running (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Running/Spr_SNB_Running (lp) (10).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Running/Spr_SNB_Running (lp) (11).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Running/Spr_SNB_Running (lp) (12).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Running/Spr_SNB_Running (lp) (13).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Running/Spr_SNB_Running (lp) (14).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Running/Spr_SNB_Running (lp) (15).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Running/Spr_SNB_Running (lp) (16).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Running/Spr_SNB_Running (lp) (17).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Running/Spr_SNB_Running (lp) (18).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Running/Spr_SNB_Running (lp) (19).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Running/Spr_SNB_Running (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Running/Spr_SNB_Running (lp) (20).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Running/Spr_SNB_Running (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Running/Spr_SNB_Running (lp) (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Running/Spr_SNB_Running (lp) (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Running/Spr_SNB_Running (lp) (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Running/Spr_SNB_Running (lp) (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Running/Spr_SNB_Running (lp) (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Running/Spr_SNB_Running (lp) (9).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Running/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Runstart/Spr_SNBArm_RunStart (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Runstart/Spr_SNBArm_RunStart (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Runstart/Spr_SNB_RunStart (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Runstart/Spr_SNB_RunStart (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Runstart/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Shot_Air_Down/Spr_SNBArm_Shoot (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Shot_Air_Down/Spr_SNBArm_Shoot (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Shot_Air_Down/Spr_SNBArm_Shoot (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Shot_Air_Down/Spr_SNBArm_Shoot (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Shot_Air_Down/Spr_SNBArm_Shoot (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Shot_Air_Down/Spr_SNBArm_Shoot (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Shot_Air_Down/Spr_SNB_ShotAIRDown (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Shot_Air_Down/Spr_SNB_ShotAIRDown (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Shot_Air_Down/Spr_SNB_ShotAIRDown (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Shot_Air_Front/Spr_SNB_ShotAIRFront (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Shot_Air_Front/Spr_SNB_ShotAIRFront (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Shot_Air_Front/Spr_SNB_ShotAIRFront (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Shot_Air_Up/Spr_SNB_ShotAIRUp (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Shot_Air_Up/Spr_SNB_ShotAIRUp (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Shot_Air_Up/Spr_SNB_ShotAIRUp (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Shot_GND_Down/Spr_SNB_ShotGNDDown (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Shot_GND_Down/Spr_SNB_ShotGNDDown (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Shot_GND_Down/Spr_SNB_ShotGNDDown (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Shot_GND_Down/Spr_SNB_ShotGNDDown (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Shot_GND_Front/Spr_SNB_ShotGNDFront (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Shot_GND_Front/Spr_SNB_ShotGNDFront (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Shot_GND_Front/Spr_SNB_ShotGNDFront (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Shot_GND_Front/Spr_SNB_ShotGNDFront (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Shot_GND_Up/Spr_SNB_ShotGNDUp (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Shot_GND_Up/Spr_SNB_ShotGNDUp (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Shot_GND_Up/Spr_SNB_ShotGNDUp (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Shot_GND_Up/Spr_SNB_ShotGNDUp (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Swing/Spr_SNB_Swing (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Swing/Spr_SNB_Swing (10).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Swing/Spr_SNB_Swing (11).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Swing/Spr_SNB_Swing (12).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Swing/Spr_SNB_Swing (13).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Swing/Spr_SNB_Swing (14).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Swing/Spr_SNB_Swing (15).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Swing/Spr_SNB_Swing (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Swing/Spr_SNB_Swing (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Swing/Spr_SNB_Swing (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Swing/Spr_SNB_Swing (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Swing/Spr_SNB_Swing (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Swing/Spr_SNB_Swing (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Swing/Spr_SNB_Swing (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Swing/Spr_SNB_Swing (9).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Swing/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/SwingJump/Spr_SNBArm_SwingJump (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/SwingJump/Spr_SNBArm_SwingJump (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/SwingJump/Spr_SNBArm_SwingJump (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/SwingJump/Spr_SNBArm_SwingJump (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/SwingJump/Spr_SNBArm_SwingJump (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/SwingJump/Spr_SNBArm_SwingJump (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/SwingJump/Spr_SNBArm_SwingJump (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/SwingJump/Spr_SNBArm_SwingJump (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/SwingJump/Spr_SNBArm_SwingJump (9).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/SwingJump/Spr_SNB_SwingJump (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/SwingJump/Spr_SNB_SwingJump (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/SwingJump/Spr_SNB_SwingJump (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/SwingJump/Spr_SNB_SwingJump (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/SwingJump/Spr_SNB_SwingJump (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/SwingJump/Spr_SNB_SwingJump (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/SwingJump/Spr_SNB_SwingJump (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/SwingJump/Spr_SNB_SwingJump (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/SwingJump/Spr_SNB_SwingJump (9).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/SwingJump/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Swing_Jump_Up/Spr_SNBArm_SwingJumpUp (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Swing_Jump_Up/Spr_SNBArm_SwingJumpUp (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Swing_Jump_Up/Spr_SNBArm_SwingJumpUp (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Swing_Jump_Up/Spr_SNBArm_SwingJumpUp (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Swing_Jump_Up/Spr_SNBArm_SwingJumpUp (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Swing_Jump_Up/Spr_SNB_SwingJumpUp (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Swing_Jump_Up/Spr_SNB_SwingJumpUp (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Swing_Jump_Up/Spr_SNB_SwingJumpUp (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Swing_Jump_Up/Spr_SNB_SwingJumpUp (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Swing_Jump_Up/Spr_SNB_SwingJumpUp (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Swing_Jump_Up/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Walking/Spr_SNBArm_Walking (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Walking/Spr_SNBArm_Walking (lp) (10).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Walking/Spr_SNBArm_Walking (lp) (11).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Walking/Spr_SNBArm_Walking (lp) (12).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Walking/Spr_SNBArm_Walking (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Walking/Spr_SNBArm_Walking (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Walking/Spr_SNBArm_Walking (lp) (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Walking/Spr_SNBArm_Walking (lp) (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Walking/Spr_SNBArm_Walking (lp) (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Walking/Spr_SNBArm_Walking (lp) (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Walking/Spr_SNBArm_Walking (lp) (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Walking/Spr_SNBArm_Walking (lp) (9).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Walking/Spr_SNB_Walking (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Walking/Spr_SNB_Walking (lp) (10).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Walking/Spr_SNB_Walking (lp) (11).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Walking/Spr_SNB_Walking (lp) (12).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Walking/Spr_SNB_Walking (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Walking/Spr_SNB_Walking (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Walking/Spr_SNB_Walking (lp) (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Walking/Spr_SNB_Walking (lp) (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Walking/Spr_SNB_Walking (lp) (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Walking/Spr_SNB_Walking (lp) (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Walking/Spr_SNB_Walking (lp) (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Walking/Spr_SNB_Walking (lp) (9).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/Walking/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallClimbDown/Spr_SNBArm_WallClimbDown (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallClimbDown/Spr_SNBArm_WallClimbDown (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallClimbDown/Spr_SNBArm_WallClimbDown (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallClimbDown/Spr_SNBArm_WallClimbDown (lp) (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallClimbDown/Spr_SNBArm_WallClimbDown (lp) (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallClimbDown/Spr_SNBArm_WallClimbDown (lp) (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallClimbDown/Spr_SNBArm_WallClimbDown (lp) (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallClimbDown/Spr_SNB_WallClimbDown (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallClimbDown/Spr_SNB_WallClimbDown (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallClimbDown/Spr_SNB_WallClimbDown (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallClimbDown/Spr_SNB_WallClimbDown (lp) (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallClimbDown/Spr_SNB_WallClimbDown (lp) (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallClimbDown/Spr_SNB_WallClimbDown (lp) (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallClimbDown/Spr_SNB_WallClimbDown (lp) (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallClimbDown/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallClimbUp/Spr_SNBArm_WallClimbUp (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallClimbUp/Spr_SNBArm_WallClimbUp (lp) (10).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallClimbUp/Spr_SNBArm_WallClimbUp (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallClimbUp/Spr_SNBArm_WallClimbUp (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallClimbUp/Spr_SNBArm_WallClimbUp (lp) (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallClimbUp/Spr_SNBArm_WallClimbUp (lp) (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallClimbUp/Spr_SNBArm_WallClimbUp (lp) (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallClimbUp/Spr_SNBArm_WallClimbUp (lp) (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallClimbUp/Spr_SNBArm_WallClimbUp (lp) (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallClimbUp/Spr_SNBArm_WallClimbUp (lp) (9).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallClimbUp/Spr_SNB_WallClimbUp (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallClimbUp/Spr_SNB_WallClimbUp (lp) (10).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallClimbUp/Spr_SNB_WallClimbUp (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallClimbUp/Spr_SNB_WallClimbUp (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallClimbUp/Spr_SNB_WallClimbUp (lp) (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallClimbUp/Spr_SNB_WallClimbUp (lp) (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallClimbUp/Spr_SNB_WallClimbUp (lp) (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallClimbUp/Spr_SNB_WallClimbUp (lp) (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallClimbUp/Spr_SNB_WallClimbUp (lp) (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallClimbUp/Spr_SNB_WallClimbUp (lp) (9).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallClimbUp/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding/Spr_SNBArm_WallSliding (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding/Spr_SNBArm_WallSliding (lp) (10).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding/Spr_SNBArm_WallSliding (lp) (11).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding/Spr_SNBArm_WallSliding (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding/Spr_SNBArm_WallSliding (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding/Spr_SNBArm_WallSliding (lp) (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding/Spr_SNBArm_WallSliding (lp) (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding/Spr_SNBArm_WallSliding (lp) (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding/Spr_SNBArm_WallSliding (lp) (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding/Spr_SNBArm_WallSliding (lp) (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding/Spr_SNBArm_WallSliding (lp) (9).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding/Spr_SNB_WallSliding (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding/Spr_SNB_WallSliding (lp) (10).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding/Spr_SNB_WallSliding (lp) (11).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding/Spr_SNB_WallSliding (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding/Spr_SNB_WallSliding (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding/Spr_SNB_WallSliding (lp) (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding/Spr_SNB_WallSliding (lp) (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding/Spr_SNB_WallSliding (lp) (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding/Spr_SNB_WallSliding (lp) (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding/Spr_SNB_WallSliding (lp) (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding/Spr_SNB_WallSliding (lp) (9).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding_Start/Spr_SNBArm_WallSlideStart (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding_Start/Spr_SNBArm_WallSlideStart (10).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding_Start/Spr_SNBArm_WallSlideStart (11).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding_Start/Spr_SNBArm_WallSlideStart (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding_Start/Spr_SNBArm_WallSlideStart (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding_Start/Spr_SNBArm_WallSlideStart (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding_Start/Spr_SNBArm_WallSlideStart (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding_Start/Spr_SNBArm_WallSlideStart (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding_Start/Spr_SNBArm_WallSlideStart (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding_Start/Spr_SNBArm_WallSlideStart (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding_Start/Spr_SNBArm_WallSlideStart (9).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding_Start/Spr_SNB_WallSlideStart (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding_Start/Spr_SNB_WallSlideStart (10).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding_Start/Spr_SNB_WallSlideStart (11).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding_Start/Spr_SNB_WallSlideStart (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding_Start/Spr_SNB_WallSlideStart (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding_Start/Spr_SNB_WallSlideStart (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding_Start/Spr_SNB_WallSlideStart (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding_Start/Spr_SNB_WallSlideStart (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding_Start/Spr_SNB_WallSlideStart (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding_Start/Spr_SNB_WallSlideStart (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding_Start/Spr_SNB_WallSlideStart (9).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/1순위/WallSliding_Start/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_Idle/Spr_SNB_CeilingStick_Idle (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_Idle/Spr_SNB_CeilingStick_Idle (lp) (10).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_Idle/Spr_SNB_CeilingStick_Idle (lp) (11).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_Idle/Spr_SNB_CeilingStick_Idle (lp) (12).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_Idle/Spr_SNB_CeilingStick_Idle (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_Idle/Spr_SNB_CeilingStick_Idle (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_Idle/Spr_SNB_CeilingStick_Idle (lp) (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_Idle/Spr_SNB_CeilingStick_Idle (lp) (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_Idle/Spr_SNB_CeilingStick_Idle (lp) (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_Idle/Spr_SNB_CeilingStick_Idle (lp) (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_Idle/Spr_SNB_CeilingStick_Idle (lp) (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_Idle/Spr_SNB_CeilingStick_Idle (lp) (9).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_Idle/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_MoveEnd/Spr_SNB_CeilingStick_MoveEnd (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_MoveEnd/Spr_SNB_CeilingStick_MoveEnd (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_MoveEnd/Spr_SNB_CeilingStick_MoveEnd (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_MoveEnd/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_MoveStart/Spr_SNB_CeilingStick_MoveStart (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_MoveStart/Spr_SNB_CeilingStick_MoveStart (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_MoveStart/Spr_SNB_CeilingStick_MoveStart (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_MoveStart/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_Moving/Spr_SNB_CeilingStick_Moving (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_Moving/Spr_SNB_CeilingStick_Moving (lp) (10).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_Moving/Spr_SNB_CeilingStick_Moving (lp) (11).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_Moving/Spr_SNB_CeilingStick_Moving (lp) (12).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_Moving/Spr_SNB_CeilingStick_Moving (lp) (13).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_Moving/Spr_SNB_CeilingStick_Moving (lp) (14).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_Moving/Spr_SNB_CeilingStick_Moving (lp) (15).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_Moving/Spr_SNB_CeilingStick_Moving (lp) (16).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_Moving/Spr_SNB_CeilingStick_Moving (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_Moving/Spr_SNB_CeilingStick_Moving (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_Moving/Spr_SNB_CeilingStick_Moving (lp) (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_Moving/Spr_SNB_CeilingStick_Moving (lp) (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_Moving/Spr_SNB_CeilingStick_Moving (lp) (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_Moving/Spr_SNB_CeilingStick_Moving (lp) (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_Moving/Spr_SNB_CeilingStick_Moving (lp) (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_Moving/Spr_SNB_CeilingStick_Moving (lp) (9).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_Moving/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_Start/Spr_SNB_CeilingStick_Start (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_Start/Spr_SNB_CeilingStick_Start (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_Start/Spr_SNB_CeilingStick_Start (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_Start/Spr_SNB_CeilingStick_Start (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_Start/Spr_SNB_CeilingStick_Start (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Ceiling_Stick_Start/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Stick_Jump/Spr_SNB_CeilingStick_Jump (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Stick_Jump/Spr_SNB_CeilingStick_Jump (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Stick_Jump/Spr_SNB_CeilingStick_Jump (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Stick_Jump/Spr_SNB_CeilingStick_Jump (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Stick_Jump/Spr_SNB_CeilingStick_Jump (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Stick_Jump/Spr_SNB_CeilingStick_Jump (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Stick_Jump/Spr_SNB_CeilingStick_Jump (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Stick_Jump/Spr_SNB_CeilingStick_Jump (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Stick_Jump/Spr_SNB_CeilingStick_Jump (9).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/2순위/Stick_Jump/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/Chain01.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/Chain02.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/Holding_Front/Spr_SNB_ExcHolding_Front (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/Holding_Front/Spr_SNB_ExcHolding_Front (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/Holding_Front/Spr_SNB_ExcHolding_Front (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/Holding_Front/Spr_SNB_ExcHolding_Front (lp) (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/Holding_Front/Spr_SNB_ExcHolding_Front (lp) (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/Holding_Front/Spr_SNB_ExcHolding_Front (lp) (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/Holding_Front/Spr_SNB_ExcHolding_Front (lp) (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/Holding_Front/Spr_SNB_ExcHolding_Front (lp) (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/Holding_Front/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/IdleRand/Spr_SNB_IdleRand1 (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/IdleRand/Spr_SNB_IdleRand1 (10).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/IdleRand/Spr_SNB_IdleRand1 (11).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/IdleRand/Spr_SNB_IdleRand1 (12).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/IdleRand/Spr_SNB_IdleRand1 (13).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/IdleRand/Spr_SNB_IdleRand1 (14).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/IdleRand/Spr_SNB_IdleRand1 (15).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/IdleRand/Spr_SNB_IdleRand1 (16).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/IdleRand/Spr_SNB_IdleRand1 (17).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/IdleRand/Spr_SNB_IdleRand1 (18).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/IdleRand/Spr_SNB_IdleRand1 (19).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/IdleRand/Spr_SNB_IdleRand1 (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/IdleRand/Spr_SNB_IdleRand1 (20).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/IdleRand/Spr_SNB_IdleRand1 (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/IdleRand/Spr_SNB_IdleRand1 (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/IdleRand/Spr_SNB_IdleRand1 (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/IdleRand/Spr_SNB_IdleRand1 (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/IdleRand/Spr_SNB_IdleRand1 (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/IdleRand/Spr_SNB_IdleRand1 (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/IdleRand/Spr_SNB_IdleRand1 (9).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/IdleRand/Spr_SNB_IdleRand2 (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/IdleRand/Spr_SNB_IdleRand2 (10).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/IdleRand/Spr_SNB_IdleRand2 (11).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/IdleRand/Spr_SNB_IdleRand2 (12).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/IdleRand/Spr_SNB_IdleRand2 (13).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/IdleRand/Spr_SNB_IdleRand2 (14).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/IdleRand/Spr_SNB_IdleRand2 (15).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/IdleRand/Spr_SNB_IdleRand2 (16).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/IdleRand/Spr_SNB_IdleRand2 (17).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/IdleRand/Spr_SNB_IdleRand2 (18).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/IdleRand/Spr_SNB_IdleRand2 (19).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/IdleRand/Spr_SNB_IdleRand2 (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/IdleRand/Spr_SNB_IdleRand2 (20).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/IdleRand/Spr_SNB_IdleRand2 (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/IdleRand/Spr_SNB_IdleRand2 (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/IdleRand/Spr_SNB_IdleRand2 (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/IdleRand/Spr_SNB_IdleRand2 (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/IdleRand/Spr_SNB_IdleRand2 (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/IdleRand/Spr_SNB_IdleRand2 (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/IdleRand/Spr_SNB_IdleRand2 (9).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/IdleRand/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/Rappelling/Spr_SNB_Rappelling (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/Rappelling/Spr_SNB_Rappelling (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/Rappelling/Spr_SNB_Rappelling (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/Rappelling/Spr_SNB_Rappelling (lp) (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/Rappelling/Spr_SNB_Rappelling (lp) (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/Rappelling/Spr_SNB_Rappelling (lp) (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/Rappelling/Spr_SNB_Rappelling (lp) (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/Rappelling/Spr_SNB_Rappelling (lp) (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/Rappelling/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/ExcHolding_back/Spr_SNBArm_ExcHolding_Back (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/ExcHolding_back/Spr_SNBArm_ExcHolding_Back (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/ExcHolding_back/Spr_SNBArm_ExcHolding_Back (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/ExcHolding_back/Spr_SNBArm_ExcHolding_Back (lp) (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/ExcHolding_back/Spr_SNBArm_ExcHolding_Back (lp) (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/ExcHolding_back/Spr_SNBArm_ExcHolding_Back (lp) (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/ExcHolding_back/Spr_SNBArm_ExcHolding_Back (lp) (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/ExcHolding_back/Spr_SNBArm_ExcHolding_Back (lp) (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/ExcHolding_front/Spr_SNBArm_ExcHolding_Front (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/ExcHolding_front/Spr_SNBArm_ExcHolding_Front (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/ExcHolding_front/Spr_SNBArm_ExcHolding_Front (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/ExcHolding_front/Spr_SNBArm_ExcHolding_Front (lp) (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/ExcHolding_front/Spr_SNBArm_ExcHolding_Front (lp) (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/ExcHolding_front/Spr_SNBArm_ExcHolding_Front (lp) (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/ExcHolding_front/Spr_SNBArm_ExcHolding_Front (lp) (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/ExcHolding_front/Spr_SNBArm_ExcHolding_Front (lp) (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/ExcHolding_front/Spr_SNBArm_ExcHolding_Neu (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/ExcHolding_front/Spr_SNBArm_ExcHolding_Neu (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/ExcHolding_front/Spr_SNBArm_ExcHolding_Neu (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/ExcHolding_front/Spr_SNBArm_ExcHolding_Neu (lp) (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/ExcHolding_front/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/Grab상태 arm/Spr_SNBArm_Grabbed (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/Grab상태 arm/Spr_SNBArm_Grabbed (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/Grab상태 arm/Spr_SNBArm_Grabbed (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/Grab상태 arm/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/Swing_Cape_Back/Spr_SNBCape_SwingBack (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/Swing_Cape_Back/Spr_SNBCape_SwingBack (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/Swing_Cape_Back/Spr_SNBCape_SwingBack (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/Swing_Cape_Back/Spr_SNBCape_SwingBack (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/Swing_Cape_Back/Spr_SNBCape_SwingBack (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/Swing_Cape_Back/Spr_SNBCape_SwingBack (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/Swing_Cape_Back/Spr_SNBCape_SwingBack (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/Swing_Cape_Back/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/Swing_Cape_Front/Spr_SNBCape_SwingFront (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/Swing_Cape_Front/Spr_SNBCape_SwingFront (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/Swing_Cape_Front/Spr_SNBCape_SwingFront (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/Swing_Cape_Front/Spr_SNBCape_SwingFront (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/Swing_Cape_Front/Spr_SNBCape_SwingFront (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/Swing_Cape_Front/Spr_SNBCape_SwingFront (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/Swing_Cape_Front/Spr_SNBCape_SwingFront (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/Swing_Cape_Front/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/Swing_Cape_HalfBack/Spr_SNBCape_SwingHalfBack (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/Swing_Cape_HalfBack/Spr_SNBCape_SwingHalfBack (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/Swing_Cape_HalfBack/Spr_SNBCape_SwingHalfBack (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/Swing_Cape_HalfBack/Spr_SNBCape_SwingHalfBack (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/Swing_Cape_HalfBack/Spr_SNBCape_SwingHalfBack (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/Swing_Cape_HalfBack/Spr_SNBCape_SwingHalfBack (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/Swing_Cape_HalfBack/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/Swing_Cape_Middle/Spr_SNBCape_SwingMiddle (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/Swing_Cape_Middle/Spr_SNBCape_SwingMiddle (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/Swing_Cape_Middle/Spr_SNBCape_SwingMiddle (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/Swing_Cape_Middle/Spr_SNBCape_SwingMiddle (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/Swing_Cape_Middle/Spr_SNBCape_SwingMiddle (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/Swing_Cape_Middle/Spr_SNBCape_SwingMiddle (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/Swing_Cape_Middle/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/Winding/Spr_SNBArm_Winding (lp) (1) #267472.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/Winding/Spr_SNBArm_Winding (lp) (2) #267295.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/Winding/Spr_SNBArm_Winding (lp) (3) #267422.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/Winding/Spr_SNBArm_Winding (lp) (4) #267243.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/Winding/Spr_SNBArm_Winding (lp) (5) #266587.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/Winding/Spr_SNBArm_Winding (lp) (6) #267309.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/Winding/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/WindingStuck/Spr_SNBArm_WindingStuck (lp) (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/WindingStuck/Spr_SNBArm_WindingStuck (lp) (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/WindingStuck/Spr_SNBArm_WindingStuck (lp) (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/WindingStuck/Spr_SNBArm_WindingStuck (lp) (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/WindingStuck/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/갈고리/Grab_Flying/Spr_SNBGrab_Flying (lp).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/갈고리/Grab_Flying/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/갈고리/Grab_Return_WithGrab/Spr_SNBGrab_ReturnWithGrabbed (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/갈고리/Grab_Return_WithGrab/Spr_SNBGrab_ReturnWithGrabbed (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/갈고리/Grab_Return_WithGrab/Spr_SNBGrab_ReturnWithGrabbed (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/갈고리/Grab_Return_WithGrab/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/갈고리/Grab_Return_WitoutGrab/Spr_SNBGrab_ReturnWithoutGrabbed (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/갈고리/Grab_Return_WitoutGrab/Spr_SNBGrab_ReturnWithoutGrabbed (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/갈고리/Grab_Return_WitoutGrab/Spr_SNBGrab_ReturnWithoutGrabbed (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/갈고리/Grab_Return_WitoutGrab/desktop.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/갈고리/Grabbing 갈고리/Spr_SNBGrab_Grabbing (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/갈고리/Grabbing 갈고리/Spr_SNBGrab_Grabbing (10).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/갈고리/Grabbing 갈고리/Spr_SNBGrab_Grabbing (11).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/갈고리/Grabbing 갈고리/Spr_SNBGrab_Grabbing (12).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/갈고리/Grabbing 갈고리/Spr_SNBGrab_Grabbing (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/갈고리/Grabbing 갈고리/Spr_SNBGrab_Grabbing (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/갈고리/Grabbing 갈고리/Spr_SNBGrab_Grabbing (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/갈고리/Grabbing 갈고리/Spr_SNBGrab_Grabbing (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/갈고리/Grabbing 갈고리/Spr_SNBGrab_Grabbing (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/갈고리/Grabbing 갈고리/Spr_SNBGrab_Grabbing (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/갈고리/Grabbing 갈고리/Spr_SNBGrab_Grabbing (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/갈고리/Grabbing 갈고리/Spr_SNBGrab_Grabbing (9).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/갈고리/Spr_SNBGrab_Grabed (lp).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/그랩로어/GrabLowerGrabbing/Spr_SNBGrabLower_Grabbing (1).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/그랩로어/GrabLowerGrabbing/Spr_SNBGrabLower_Grabbing (10).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/그랩로어/GrabLowerGrabbing/Spr_SNBGrabLower_Grabbing (11).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/그랩로어/GrabLowerGrabbing/Spr_SNBGrabLower_Grabbing (12).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/그랩로어/GrabLowerGrabbing/Spr_SNBGrabLower_Grabbing (2).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/그랩로어/GrabLowerGrabbing/Spr_SNBGrabLower_Grabbing (3).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/그랩로어/GrabLowerGrabbing/Spr_SNBGrabLower_Grabbing (4).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/그랩로어/GrabLowerGrabbing/Spr_SNBGrabLower_Grabbing (5).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/그랩로어/GrabLowerGrabbing/Spr_SNBGrabLower_Grabbing (6).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/그랩로어/GrabLowerGrabbing/Spr_SNBGrabLower_Grabbing (7).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/그랩로어/GrabLowerGrabbing/Spr_SNBGrabLower_Grabbing (8).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/그랩로어/GrabLowerGrabbing/Spr_SNBGrabLower_Grabbing (9).png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/자료/산나비 플레이어/팔/그랩로어/Spr_SNBGrabLower_Grabbed (lp).png" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,9 +981,6 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="cidr-memory-view://22" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../Program Files (x86)/Windows Kits/10/Include/10.0.22621.0/shared/windef.h" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../Program Files (x86)/Windows Kits/10/Include/10.0.22621.0/ucrt/stdio.h" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../Program Files (x86)/Windows Kits/10/Include/10.0.22621.0/um/WinUser.h" root0="SKIP_HIGHLIGHTING" />
@@ -234,6 +1186,9 @@
       <workItem from="1751428781836" duration="2528000" />
       <workItem from="1751432773940" duration="1523000" />
       <workItem from="1751506016279" duration="5760000" />
+      <workItem from="1751869934964" duration="2392000" />
+      <workItem from="1752206657945" duration="583000" />
+      <workItem from="1752207269190" duration="2243000" />
     </task>
     <servers />
   </component>

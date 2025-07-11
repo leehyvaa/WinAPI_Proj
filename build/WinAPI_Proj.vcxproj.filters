@@ -1,0 +1,205 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\CHook.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Component\Animator\Animation\CAnimation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Component\Animator\CAnimator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Component\Collider\CCollider.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Component\Gravity\CGravity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Component\RigidBody\CRigidBody.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Core\CCore.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Header\func.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Manager\BrushMgr\CBrushManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Manager\CObjectPool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Manager\CSoundMgr\CSoundMgr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Manager\Camera\CCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Manager\CollisionMgr\CCollisionMgr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Manager\EffectMgr\CEffectMgr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Manager\EventMgr\CEventMgr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Manager\KeyMgr\CKeyMgr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Manager\PathMgr\CPathMgr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Manager\ResMgr\CResMgr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Manager\SceneMgr\CSceneMgr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Manager\TimeMgr\CTimeMgr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Manager\UIMgr\CUIMgr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Module\AI\AI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Module\AI\State\CState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Module\AI\State\Dead\CDeadState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Module\AI\State\Idle\CIdleState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Module\AI\State\Shooter\CAimingState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Module\AI\State\Spawning\CSpawningState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Module\AI\State\Subdued\CSubduedState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Module\AI\State\Trace\CTraceState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\MouseCursor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Object\CBullet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Object\CEffect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Object\CMonster.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Object\GameObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Object\Ground\CGround.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Object\Ground\CNormalGround.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Object\Ground\CSkylineCar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Object\Ground\CWall.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Object\Monster\CShooterHead.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Object\Monster\CShooterMonster.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Object\Tile\CBackGround.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Object\Tile\CTile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Object\Trigger\CTrigger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Object\UI\BtnUI\CBtnUI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Object\UI\CUI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Object\UI\ChatUI\CTextUI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Object\UI\DamageEffect\CDamageEffectUI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Object\UI\PanelUI\CPanelUI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\PlayerArm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Prefab\CGroundPrefab.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Prefab\CMonPrefab.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Raycast.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Resource\CRes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Resource\Sound\CSound.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Resource\Texture\CTexture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\SPlayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Scene\CScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Scene\CScene_Start.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Scene\Scene_Stage_01\Scene_Stage_01.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Scene\Scene_Title\CScene_Title.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Scene\Scene_Tool\CScene_Tool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Tool\CTool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\WinAPIProject\WinAPI_Proj\Source\Tool\Vec2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\WinAPIProject\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{ABD32BCF-B5D6-322F-B18C-6D492BD2E50E}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

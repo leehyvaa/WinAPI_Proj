@@ -1,0 +1,3 @@
+C:/WinAPIProject/build/CMakeFiles/WinAPI_Proj.dir
+C:/WinAPIProject/build/CMakeFiles/edit_cache.dir
+C:/WinAPIProject/build/CMakeFiles/rebuild_cache.dir

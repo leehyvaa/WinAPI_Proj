@@ -1,8 +1,8 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "CScene_Start.h"
 #include "GameObject.h"
 #include "CMonster.h"
-#include "Player.h"
+#include "SPlayer.h"
 #include "CCore.h"
 CScene_Start::CScene_Start()
 {
@@ -16,7 +16,7 @@ CScene_Start::~CScene_Start()
 void CScene_Start::Enter()
 {
 	//오브젝트 추가
-	/*GameObject* pObj = new Player;
+	/*GameObject* pObj = new SPlayer;
 	pObj->SetPos(Vec2(640.f,384.f));
 	pObj->SetScale(Vec2(100.f, 100.f));
 	AddObject(pObj, GROUP_TYPE::DEFAULT);
@@ -31,7 +31,7 @@ void CScene_Start::Enter()
 	{
 		pMonsterObj = new CMonster;
 		pMonsterObj->SetPos(Vec2(50.f + (float)i*fTerm, 50.f));
-		pMonsterObj->SetCenterPos(pMonsterObj->GetPos());
+		//pMonsterObj->SetCenterPos(pMonsterObj->GetPos());
 		pMonsterObj->SetScale(Vec2(50, 50));
 		AddObject(pMonsterObj, GROUP_TYPE::DEFAULT);
 	}*/
@@ -40,4 +40,3 @@ void CScene_Start::Enter()
 void CScene_Start::Exit()
 {
 }
-
