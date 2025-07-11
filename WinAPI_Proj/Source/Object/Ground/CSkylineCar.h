@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "CGround.h"
+#include "CNormalGround.h"
 #include <vector>
 
 
@@ -13,7 +13,7 @@ enum class SKYLINE_CAR_STATE
     SPAWNING,
 };
 
-class CSkylineCar : public CGround
+class CSkylineCar : public CNormalGround
 {
 private:
     SKYLINE_CAR_STATE m_eState;

@@ -1,9 +1,9 @@
 ﻿#pragma once
-#include "CGround.h"
+#include "CNormalGround.h"
 
 struct ID2D1RenderTarget;
 
-class CWall : public CGround
+class CWall : public CNormalGround
 {
 private:
     WALL_STATE m_eCurState;      // 현재 벽 상태

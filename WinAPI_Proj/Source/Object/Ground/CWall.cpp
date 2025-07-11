@@ -11,7 +11,7 @@ CWall::CWall()
     , m_strWallType(L"Gate1")
     , m_bIsHorizontal(true)
 {
-    CreateCollider();
+    // CNormalGround에서 이미 CreateCollider() 호출됨
     SetGroup(GROUP_TYPE::GROUND);
     CreateAnimator();
 
@@ -74,7 +74,7 @@ void CWall::SetupAnimations()
 
 void CWall::Start()
 {
-    CGround::Start();
+    CNormalGround::Start();
 
     // 스케일이 설정된 후 애니메이션 설정
     SetupAnimations();

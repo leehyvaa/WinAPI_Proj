@@ -13,6 +13,8 @@
 #include "CGravity.h"
 #include "CKeyMgr.h"
 #include "CGround.h"
+#include "CNormalGround.h"
+#include "CDamagedGround.h"
 #include "CObjectPool.h"
 #include "CRigidBody.h"
 #include "CTextUI.h"
@@ -633,17 +635,26 @@ void CScene::CreateGround()
             
              if (groundType == GROUND_TYPE::NORMAL)
              {
-                 CGround* pGround = new CGround();
+                 CNormalGround* pGround = new CNormalGround();
                  pGround->SetWorldPos(vPos1);
                  pGround->SetGroundType(groundType);
                  pGround->SetScale(vPos2 - vPos1);
                  pGround->SetCollideType(TILE_COLLIDE_TYPE::SOLID);
                  AddObject(pGround, GROUP_TYPE::GROUND);
-                 
+
              }
-             else // 이동불가/데미지/즉사 지형
+             else if (groundType == GROUND_TYPE::DAMAGEZONE)
              {
-                 CGround* pGround = new CGround();
+                 CDamagedGround* pGround = new CDamagedGround();
+                 pGround->SetWorldPos(vPos1);
+                 pGround->SetGroundType(groundType);
+                 pGround->SetScale(vPos2 - vPos1);
+                 pGround->SetCollideType(TILE_COLLIDE_TYPE::SOLID);
+                 AddObject(pGround, GROUP_TYPE::GROUND);
+             }
+             else // 이동불가/즉사 지형
+             {
+                 CNormalGround* pGround = new CNormalGround();
                  pGround->SetWorldPos(vPos1);
                  pGround->SetGroundType(groundType);
                  pGround->SetScale(vPos2 - vPos1);

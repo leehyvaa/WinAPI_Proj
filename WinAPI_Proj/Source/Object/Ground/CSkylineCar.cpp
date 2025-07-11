@@ -27,9 +27,9 @@ CSkylineCar::CSkylineCar()
         SetActive(false); // 기본적으로 비활성화
         SetName(L"SkylineCar");
     SetGroup(GROUP_TYPE::GROUND);
-    CreateCollider();
+    // CNormalGround에서 이미 CreateCollider() 호출됨
     SetScale(Vec2(400.f, 200.f));
-    // CGround는 기본적으로 애니메이터가 없으므로 생성
+    // CNormalGround는 기본적으로 애니메이터가 없으므로 생성
     CreateAnimator();
 
     // 충돌 판정은 Ground와 동일하게 설정
@@ -50,7 +50,7 @@ CSkylineCar::~CSkylineCar()
 
 void CSkylineCar::Start()
 {
-    CGround::Start();
+    CNormalGround::Start();
 }
 
 void CSkylineCar::SetupAnimations()
@@ -228,9 +228,9 @@ void CSkylineCar::Update_Spawning()
 
 void CSkylineCar::OnCollision(CCollider* _pOther)
 {
-    // 1. CGround의 기본 충돌 로직을 먼저 수행합니다.
+    // 1. CNormalGround의 기본 충돌 로직을 먼저 수행합니다.
     //    - 물리적 밀어내기(MTV) 및 벽타기(SetWallClimbing) 로직이 여기서 처리됩니다.
-    CGround::OnCollision(_pOther);
+    CNormalGround::OnCollision(_pOther);
 
     // 2. 충돌한 객체가 플레이어일 경우, CSkylineCar만의 특별한 로직을 추가합니다.
     GameObject* pOtherObj = _pOther->GetObj();
@@ -289,23 +289,13 @@ void CSkylineCar::OnCollision(CCollider* _pOther)
                     pPlayer->SetWorldPos(worldPos);
                 }
             }
-            // 플레이어가 위에 있지 않고 이 차의 벽에 매달려 있다면 자식으로 설정합니다.
-            else if (pPlayer->IsWallClimbing())
-            {
-                if (pPlayer->GetParent() != this)
-                {
-                    Vec2 worldPos = pPlayer->GetWorldPos();
-                    pPlayer->SetParent(this);
-                    pPlayer->SetWorldPos(worldPos);
-                }
-            }
         }
     }
 }
 
 void CSkylineCar::OnCollisionExit(CCollider* _pOther)
 {
-    CGround::OnCollisionExit(_pOther);
+    CNormalGround::OnCollisionExit(_pOther);
     GameObject* pOtherObj = _pOther->GetObj();
     if (pOtherObj->GetParent() == this)
     {
@@ -317,7 +307,7 @@ void CSkylineCar::OnCollisionExit(CCollider* _pOther)
 
 void CSkylineCar::OnCollisionEnter(CCollider* _pOther)
 {
-    CGround::OnCollisionEnter(_pOther);
+    CNormalGround::OnCollisionEnter(_pOther);
 
     GameObject* pOtherObj = _pOther->GetObj();
     GROUP_TYPE eOtherGroup = pOtherObj->GetGroup();
@@ -332,7 +322,7 @@ void CSkylineCar::OnCollisionEnter(CCollider* _pOther)
 
 void CSkylineCar::Reset()
 {
-    CGround::Reset();
+    CNormalGround::Reset();
 
     m_eState = SKYLINE_CAR_STATE::IDLE;
     m_iCurrentPathIndex = 0;

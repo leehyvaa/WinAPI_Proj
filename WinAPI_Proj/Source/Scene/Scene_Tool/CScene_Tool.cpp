@@ -17,6 +17,8 @@
 #include "CTexture.h"
 #include "CTextUI.h"
 #include "CGround.h"
+#include "CNormalGround.h"
+#include "CDamagedGround.h"
 #include "CWall.h"
 #include "CBackGround.h"
 #include "CCollider.h"
@@ -597,11 +599,11 @@ void CScene_Tool::LoadTile(const wstring& _strFilePath)
         {
             m_arrTriggers[idx] = pTrigger;
 
-            // 로드된 벽 정보로 실제 CGround 객체 생성 (시각적 표시용)
+            // 로드된 벽 정보로 실제 CNormalGround 객체 생성 (시각적 표시용)
             const auto& wallInfos = pTrigger->GetWallInfo();
             for (const auto& info : wallInfos)
             {
-                CGround* pWall = new CGround();
+                CNormalGround* pWall = new CNormalGround();
                 pWall->SetName(info.szName);
                 pWall->SetWorldPos(info.vPos);
                 pWall->SetScale(info.vScale);
