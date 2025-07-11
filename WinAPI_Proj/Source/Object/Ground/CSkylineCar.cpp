@@ -109,7 +109,7 @@ void CSkylineCar::Update_Animation()
     case SKYLINE_CAR_STATE::MOVING:
         state_name = L"MOVING";
         break;
-    case SKYLINE_CAR_STATE::EXPLODING: // 'Dead' 애니메이션에 해당
+    case SKYLINE_CAR_STATE::EXPLODING: 
         state_name = L"DEAD";
         bRepeat = true;
         break;
@@ -214,6 +214,13 @@ void CSkylineCar::Update_Exploding()
             Vec2 playerWorldPos = pPlayer->GetWorldPos();
             pPlayer->SetParent(nullptr);
             pPlayer->SetWorldPos(playerWorldPos);
+
+            // [BUG FIX] 플레이어가 더 이상 땅 위에 있지 않다고 명시적으로 알려줍니다.
+            pPlayer->SetOnGround(false);
+            if (pPlayer->GetGravity())
+            {
+                pPlayer->GetGravity()->SetApplyGravity(true);
+            }
         }
 
         // 물리 효과 적용
