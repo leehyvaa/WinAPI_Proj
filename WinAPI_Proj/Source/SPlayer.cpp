@@ -1109,37 +1109,49 @@ void SPlayer::CreateHook()
 
         float distance = (m_vRayHitPos - m_pPlayerArm->GetWorldPos()).Length();
 
-        if (distance > m_fWireMaxRange)
+        // 거리에 따른 AddForce 적용 로직 수정
+        if (distance <= m_fWireMaxRange)
         {
-            // 멀리서 갈고리를 박았을 때는 매우 빠르게 벽쪽으로 이동
-            GetRigidBody()->SetVelocity(dir * 1200.f); // 더 빠른 속도로 이동
+            // HookRange보다 짧으면 AddForce를 하지 않음
+            if (distance > m_fWireMaxRange * 0.6f) // 중간 거리
+            {
+                m_fWireRange = distance;
+                // 중간 거리에서는 적당한 초기 이동
+                //GetRigidBody()->SetVelocity(dir * 400.f);
+                m_fInitialMoveTimer = 0.00f; // 0.02초 동안만 이동
+                m_bIsInitialMoving = true;
+            }
+            else // 가까운 거리 (60% 이하)
+            {
+                m_fWireRange = distance * 0.75f; // 가까운 거리에서는 와이어를 더 짧게 설정
+                // 가까운 거리에서는 초기 이동 없이 바로 진자운동
+                m_bIsInitialMoving = false;
+                m_fInitialMoveTimer = 0.f;
+            }
+        }
+        else if (distance <= m_fWireMaxRange + 700.f)
+        {
+            // Range보다 멀지만 Range + 500 이내면 AddForce를 줌
+            GetRigidBody()->SetVelocity(dir * 1500.f); // 빠른 속도로 이동
             m_fWireRange = m_fWireMaxRange;
 
             // 매우 짧은 시간 후 진자운동으로 전환
-            m_fInitialMoveTimer = 0.05f; // 0.05초 동안만 빠르게 이동
+            m_fInitialMoveTimer = 0.1f; // 0.05초 동안만 빠르게 이동
             m_bIsInitialMoving = true;
         }
-        else if (distance > m_fWireMaxRange * 0.6f) // 중간 거리
+        else
         {
-            m_fWireRange = distance;
-            // 중간 거리에서는 적당한 초기 이동
-            GetRigidBody()->SetVelocity(dir * 400.f);
-            m_fInitialMoveTimer = 0.02f; // 0.02초 동안만 이동
-            m_bIsInitialMoving = true;
-        }
-        else // 가까운 거리 (60% 이하)
-        {
-            m_fWireRange = distance * 0.75f; // 가까운 거리에서는 와이어를 더 짧게 설정
-            // 가까운 거리에서는 초기 이동 없이 바로 진자운동
+            // Range + 500보다 멀면 AddForce를 주지 않음 (기본 와이어 설정만)
+            m_fWireRange = m_fWireMaxRange;
             m_bIsInitialMoving = false;
             m_fInitialMoveTimer = 0.f;
         }
 
         // MoveEnergy 설정 (진자운동을 위한 에너지)
         if (m_vRayHitPos.x < m_pPlayerArm->GetWorldPos().x)
-            m_fMoveEnergy = -distance * 0.8f; // 진자운동을 위한 적절한 에너지
+            m_fMoveEnergy = -distance * 1.9f; // 진자운동을 위한 적절한 에너지
         else
-            m_fMoveEnergy = distance * 0.8f;
+            m_fMoveEnergy = distance * 1.9f;
     }
  
 }
