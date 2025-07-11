@@ -24,6 +24,7 @@ private:
     float m_fSpeed;
     bool m_bIsSlowMoving;
     float m_fSlowMoveTimer;
+    bool m_bIsVertical;        // 수직/수평 여부
 
 private:
     void SetupAnimations();
@@ -49,6 +50,9 @@ public:
     void SetPath(const std::vector<Vec2>& _path);
     void SetStartPos(const Vec2& _pos) { m_vStartPos = _pos; SetWorldPos(_pos); }
     SKYLINE_CAR_STATE GetState() const { return m_eState; }
+
+    void SetVertical(bool _bVertical) { m_bIsVertical = _bVertical; }
+    bool IsVertical() const { return m_bIsVertical; }
 
     // Scene_Tool에서 사용할 함수
     void AddPathPoint(const Vec2& point);

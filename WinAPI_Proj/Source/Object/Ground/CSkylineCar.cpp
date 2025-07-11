@@ -1,4 +1,5 @@
-﻿#include "CSkylineCar.h"
+﻿// WinAPI_Proj\Source\Object\Ground\CSkylineCar.cpp
+#include "CSkylineCar.h"
 #include "pch.h"
 
 #include "CAnimator.h"
@@ -23,12 +24,13 @@ CSkylineCar::CSkylineCar()
     , m_vStartPos(Vec2(-10000.f, -10000.f)) // 눈에 안보이는 위치로 초기화
     , m_bIsSlowMoving(false)
     , m_fSlowMoveTimer(0.f)
-    {
-        SetActive(false); // 기본적으로 비활성화
-        SetName(L"SkylineCar");
+    , m_bIsVertical(false) // 수직/수평 상태. 기본값은 수평(false)입니다.
+{
+    SetActive(false); // 기본적으로 비활성화
+    SetName(L"SkylineCar");
     SetGroup(GROUP_TYPE::GROUND);
     // CNormalGround에서 이미 CreateCollider() 호출됨
-    SetScale(Vec2(400.f, 200.f));
+    SetScale(Vec2(400.f, 100.f));
     // CNormalGround는 기본적으로 애니메이터가 없으므로 생성
     CreateAnimator();
 
@@ -39,8 +41,8 @@ CSkylineCar::CSkylineCar()
     // 애니메이션 설정
     SetupAnimations();
 
-    // 초기 애니메이션 재생
-    GetAnimator()->Play(L"SKYLINE_IDLE", true);
+    // 초기 애니메이션 재생 (기본은 수평 IDLE)
+    GetAnimator()->Play(L"SKYLINE_WIDE_IDLE", true);
     SetWorldPos(m_vStartPos);
 }
 
@@ -55,50 +57,69 @@ void CSkylineCar::Start()
 
 void CSkylineCar::SetupAnimations()
 {
-    // 예시: 실제 프로젝트에서는 전용 텍스처를 사용해야 합니다.
-    // 여기서는 플레이어 텍스처를 임시로 사용합니다.
-    CTexture* pTex = CResMgr::GetInst()->LoadTexture(L"Gate2Tex_Horizontal", L"texture\\gate\\Gate2_Horizontal.png");
+    // 텍스처 로드 
+    CTexture* pTexWide = CResMgr::GetInst()->LoadTexture(L"SkylineCarTex_Wide", L"texture\\car\\SkylineCar_Wide.png");
+    CTexture* pTexVert = CResMgr::GetInst()->LoadTexture(L"SkylineCarTex_Vert", L"texture\\car\\SkylineCar_Vert.png");
 
-    // 애니메이션 생성 (프레임 정보는 예시입니다)
-    //GetAnimator()->CreateAnimation(L"SKYLINE_IDLE", pTex, Vec2(0, 900), Vec2(100, 100), Vec2(100, 0), 0.5f, 2, 2.f, Vec2(0, -50));
-    GetAnimator()->CreateAnimation(L"SKYLINE_MOVING", pTex, Vec2(0, 1400), Vec2(100, 100), Vec2(100, 0), 0.2f, 4, 2.f, Vec2(0, -50));
-    GetAnimator()->CreateAnimation(L"SKYLINE_EXPLODE", pTex, Vec2(0, 300), Vec2(100, 100), Vec2(100, 0), 0.1f, 8, 2.f, Vec2(0, -50));
-    GetAnimator()->CreateAnimation(L"SKYLINE_SPAWN", pTex, Vec2(0, 2800), Vec2(100, 100), Vec2(100, 0), 0.1f, 8, 2.f, Vec2(0, -50));
+    float fMultiple = 2.05f;
+    float fDuration = 0.1f; 
+    Vec2 vOffset = Vec2(200.f, 15.f); // 기본 오프셋. 필요 시 조정합니다.
 
-    GetAnimator()->CreateAnimation(L"SKYLINE_IDLE", pTex,
-            Vec2(0.f, 0.f), Vec2(600.f, 100.f), Vec2(600.f, 0.f), 0.25f, 5, 0.7f, Vec2(GetScale().x/2, GetScale().y/2));
-   
+    // Wide (수평) 애니메이션
+    GetAnimator()->CreateAnimation(L"SKYLINE_WIDE_SPAWNING", pTexWide,
+        Vec2(0.f, 0.f), Vec2(200.f, 90.f), Vec2(200.f, 0.f), fDuration, 9, fMultiple, vOffset);
+    GetAnimator()->CreateAnimation(L"SKYLINE_WIDE_IDLE", pTexWide,
+        Vec2(0.f, 90.f), Vec2(200.f, 90.f), Vec2(200.f, 0.f), fDuration, 6, fMultiple, vOffset);
+    GetAnimator()->CreateAnimation(L"SKYLINE_WIDE_MOVING", pTexWide,
+        Vec2(0.f, 180.f), Vec2(200.f, 90.f), Vec2(200.f, 0.f), fDuration, 5, fMultiple, vOffset);
+    GetAnimator()->CreateAnimation(L"SKYLINE_WIDE_DEAD", pTexWide,
+        Vec2(0.f, 270.f), Vec2(200.f, 90.f), Vec2(200.f, 0.f), fDuration, 1, fMultiple, vOffset);
 
+    // Vert (수직) 애니메이션
+    GetAnimator()->CreateAnimation(L"SKYLINE_VERT_SPAWNING", pTexVert,
+        Vec2(0.f, 0.f), Vec2(100.f, 250.f), Vec2(100.f, 0.f), fDuration, 9, fMultiple, vOffset);
+    GetAnimator()->CreateAnimation(L"SKYLINE_VERT_IDLE", pTexVert,
+        Vec2(0.f, 250.f), Vec2(100.f, 250.f), Vec2(100.f, 0.f), fDuration, 6, fMultiple, vOffset);
+    GetAnimator()->CreateAnimation(L"SKYLINE_VERT_MOVING", pTexVert,
+        Vec2(0.f, 500.f), Vec2(100.f, 250.f), Vec2(100.f, 0.f), fDuration, 5, fMultiple, vOffset);
+    GetAnimator()->CreateAnimation(L"SKYLINE_VERT_DEAD", pTexVert,
+        Vec2(0.f, 750.f), Vec2(100.f, 250.f), Vec2(100.f, 0.f), fDuration, 1, fMultiple, vOffset);
 }
+
 
 void CSkylineCar::Update_Animation()
 {
     CAnimator* pAnimator = GetAnimator();
     if (!pAnimator) return;
 
-    wstring nextAnimName;
-    bool bRepeat = false;
+    // 수직/수평 상태에 따라 애니메이션 이름의 접두사를 결정
+    wstring prefix = m_bIsVertical ? L"SKYLINE_VERT_" : L"SKYLINE_WIDE_";
+    wstring state_name;
+    bool bRepeat = true;
 
     switch (m_eState)
     {
     case SKYLINE_CAR_STATE::IDLE:
-        nextAnimName = L"SKYLINE_IDLE";
-        bRepeat = true;
+        state_name = L"IDLE";
         break;
     case SKYLINE_CAR_STATE::MOVING:
-        nextAnimName = L"SKYLINE_MOVING";
-        bRepeat = true;
+        state_name = L"MOVING";
         break;
-    case SKYLINE_CAR_STATE::EXPLODING:
-        nextAnimName = L"SKYLINE_EXPLODE";
+    case SKYLINE_CAR_STATE::EXPLODING: // 'Dead' 애니메이션에 해당
+        state_name = L"DEAD";
         bRepeat = false;
         break;
     case SKYLINE_CAR_STATE::SPAWNING:
-        nextAnimName = L"SKYLINE_SPAWN";
+        state_name = L"SPAWNING";
         bRepeat = false;
         break;
+    default:
+        return; 
     }
+    
+    wstring nextAnimName = prefix + state_name;
 
+    // 현재 재생 중인 애니메이션이 다음에 재생할 애니메이션과 다를 경우에만 변경
     if (pAnimator->GetCurAnimation() == nullptr || pAnimator->GetCurAnimation()->GetName() != nextAnimName)
     {
         pAnimator->Play(nextAnimName, bRepeat);
@@ -330,7 +351,9 @@ void CSkylineCar::Reset()
     GetCollider()->SetActive(true);
     if (GetAnimator())
     {
-        GetAnimator()->Play(L"SKYLINE_IDLE", true);
+        // Reset 시에도 방향에 맞는 IDLE 애니메이션을 재생해야 합니다.
+        wstring initialAnim = m_bIsVertical ? L"SKYLINE_VERT_IDLE" : L"SKYLINE_WIDE_IDLE";
+        GetAnimator()->Play(initialAnim, true);
     }
     m_bIsSlowMoving = false;
     m_fSlowMoveTimer = 0.f;
@@ -356,7 +379,12 @@ void CSkylineCar::ClearPath()
 {
     m_vecPath.clear();
     m_iCurrentPathIndex = 0;
-    if (GetAnimator()) GetAnimator()->Play(L"SKYLINE_IDLE", true);
+    if (GetAnimator())
+    {
+        // 클리어 시에도 방향에 맞는 IDLE 애니메이션으로 설정합니다.
+        wstring initialAnim = m_bIsVertical ? L"SKYLINE_VERT_IDLE" : L"SKYLINE_WIDE_IDLE";
+        GetAnimator()->Play(initialAnim, true);
+    }
     SetStartPos(Vec2(-10000.f, -10000.f)); // 눈에 안보이는 곳으로 이동
     SetActive(false);
 }
