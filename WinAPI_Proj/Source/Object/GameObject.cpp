@@ -274,8 +274,12 @@ void GameObject::FinalUpdate()
         }
         else
         {
-            // 부모가 없는 경우, 로컬 위치가 월드 위치
-            m_vPos = m_vLocalPos;
+            // 부모가 없는 경우, 물리 효과를 받는 오브젝트는
+            // RigidBody가 m_vPos를 직접 갱신했을 것이므로 덮어쓰지 않습니다.
+            if (!m_pRigidBody)
+            {
+                m_vPos = m_vLocalPos;
+            }
         }
 
     if (m_pAnimator)

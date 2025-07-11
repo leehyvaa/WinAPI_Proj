@@ -21,10 +21,11 @@ private:
     int m_iCurrentPathIndex;
     Vec2 m_vStartPos;
     Vec2 m_vVelocity;
-    float m_fSpeed;
-    bool m_bIsSlowMoving;
-    float m_fSlowMoveTimer;
+    float m_fSpeed;             // This will be the max speed
+    float m_fCurrentSpeed;      // Current speed, used for acceleration
+    float m_fAccelerationTime;  // Timer for acceleration
     bool m_bIsVertical;        // 수직/수평 여부
+    float m_fExplosionTimer;    // Timer for explosion sequence
 
 private:
     void SetupAnimations();

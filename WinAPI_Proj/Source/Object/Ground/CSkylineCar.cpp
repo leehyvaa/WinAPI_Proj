@@ -20,10 +20,11 @@ CSkylineCar::CSkylineCar()
     : m_eState(SKYLINE_CAR_STATE::IDLE)
     , m_iCurrentPathIndex(0)
     , m_fSpeed(300.f) // 이동 속도
+    , m_fCurrentSpeed(0.f)
+    , m_fAccelerationTime(0.f)
     , m_vVelocity(Vec2(0.f, 0.f))
     , m_vStartPos(Vec2(-10000.f, -10000.f)) // 눈에 안보이는 위치로 초기화
-    , m_bIsSlowMoving(false)
-    , m_fSlowMoveTimer(0.f)
+    , m_fExplosionTimer(0.f)
     , m_bIsVertical(false) // 수직/수평 상태. 기본값은 수평(false)입니다.
 {
     SetActive(false); // 기본적으로 비활성화
@@ -33,6 +34,9 @@ CSkylineCar::CSkylineCar()
     SetScale(Vec2(400.f, 100.f));
     // CNormalGround는 기본적으로 애니메이터가 없으므로 생성
     CreateAnimator();
+    CreateRigidBody();
+    CreateGravity();
+    GetGravity()->SetApplyGravity(false);
 
     // 충돌 판정은 Ground와 동일하게 설정
     SetGroundType(GROUND_TYPE::NORMAL);
@@ -107,7 +111,7 @@ void CSkylineCar::Update_Animation()
         break;
     case SKYLINE_CAR_STATE::EXPLODING: // 'Dead' 애니메이션에 해당
         state_name = L"DEAD";
-        bRepeat = false;
+        bRepeat = true;
         break;
     case SKYLINE_CAR_STATE::SPAWNING:
         state_name = L"SPAWNING";
@@ -152,51 +156,47 @@ void CSkylineCar::Update_Moving()
     if (m_vecPath.empty() || m_iCurrentPathIndex >= m_vecPath.size())
     {
         m_eState = SKYLINE_CAR_STATE::EXPLODING; // 경로가 없으면 바로 폭발
+        m_fExplosionTimer = 0.f; // 폭발 타이머 초기화
         m_vVelocity = Vec2(0.f, 0.f);
         return;
     }
 
-    // 현재 속도 결정
-    float currentSpeed = m_fSpeed;
-    if (m_bIsSlowMoving)
+    // 가속 처리
+    const float ACCELERATION_DURATION = 2.0f;
+    if (m_fAccelerationTime < ACCELERATION_DURATION)
     {
-        m_fSlowMoveTimer += fDT;
-        currentSpeed = m_fSpeed * 0.5f;
-        if (m_fSlowMoveTimer >= 1.f)
-        {
-            m_bIsSlowMoving = false;
-            m_fSlowMoveTimer = 0.f; // 타이머 리셋
-        }
+        m_fAccelerationTime += fDT;
+        // Lerp를 이용한 부드러운 가속
+        m_fCurrentSpeed = m_fSpeed * (m_fAccelerationTime / ACCELERATION_DURATION);
+        if (m_fCurrentSpeed > m_fSpeed) m_fCurrentSpeed = m_fSpeed;
+    }
+    else
+    {
+        m_fCurrentSpeed = m_fSpeed;
     }
 
     // 목표 지점
     Vec2 vTargetPos = m_vecPath[m_iCurrentPathIndex];
     Vec2 vPos = GetWorldPos();
 
-    // 방향 벡터
     Vec2 vDir = vTargetPos - vPos;
     float dist = vDir.Length();
     vDir.Normalize();
 
-    // 이동
-    Vec2 vMoveDelta = vDir * currentSpeed * fDT;
+    Vec2 vMoveDelta = vDir * m_fCurrentSpeed * fDT;
     vPos += vMoveDelta;
     SetWorldPos(vPos);
 
-    if (fDT > 0.f)
-        m_vVelocity = vMoveDelta / fDT;
-    else
-        m_vVelocity = Vec2(0.f, 0.f);
+    m_vVelocity = (fDT > 0.f) ? vMoveDelta / fDT : Vec2(0.f, 0.f);
 
-    // 목표 지점 도착 체크 (다음 프레임에 지나칠 경우 도착으로 간주)
-    if (dist < currentSpeed * fDT)
+    if (dist < m_fCurrentSpeed * fDT)
     {
         SetWorldPos(vTargetPos); // 정확한 위치로 보정
         m_iCurrentPathIndex++;
-        // 모든 경로를 다 돌았는지 확인
         if (m_iCurrentPathIndex >= m_vecPath.size())
         {
             m_eState = SKYLINE_CAR_STATE::EXPLODING;
+            m_fExplosionTimer = 0.f; // 폭발 타이머 초기화
             m_vVelocity = Vec2(0.f, 0.f);
         }
     }
@@ -204,33 +204,45 @@ void CSkylineCar::Update_Moving()
 
 void CSkylineCar::Update_Exploding()
 {
-    m_vVelocity = Vec2(0.f, 0.f);
-    if (GetAnimator()->GetCurAnimation() && GetAnimator()->GetCurAnimation()->IsFinish())
+    // 폭발 시작 시 한 번만 실행
+    if (m_fExplosionTimer == 0.f)
     {
-        // 자식 관계 해제: 텔레포트 직전에 모든 자식(플레이어, 갈고리 등)을 분리합니다.
-        CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
-        if (pCurScene)
+        // 자식으로 등록된 플레이어가 있다면 부모-자식 관계를 해제합니다.
+        SPlayer* pPlayer = dynamic_cast<SPlayer*>(CSceneMgr::GetInst()->GetCurScene()->GetPlayer());
+        if (pPlayer && pPlayer->GetParent() == this)
         {
-            // 모든 게임 오브젝트 그룹을 순회합니다.
-            for (UINT i = 0; i < (UINT)GROUP_TYPE::END; ++i)
-            {
-                const vector<GameObject*>& group = pCurScene->GetGroupObject((GROUP_TYPE)i);
-                for (GameObject* pObj : group)
-                {
-                    // 이 차를 부모로 가진 오브젝트를 찾아 관계를 끊습니다.
-                    if (pObj && pObj->GetParent() == this)
-                    {
-                        Vec2 worldPos = pObj->GetWorldPos();
-                        pObj->SetParent(nullptr);
-                        pObj->SetWorldPos(worldPos);
-                    }
-                }
-            }
+            Vec2 playerWorldPos = pPlayer->GetWorldPos();
+            pPlayer->SetParent(nullptr);
+            pPlayer->SetWorldPos(playerWorldPos);
         }
 
+        // 물리 효과 적용
+        if (GetRigidBody() && GetGravity())
+        {
+            GetCollider()->SetActive(false); // 더 이상 충돌하지 않도록 비활성화
+            SetLocalRotation(30.f); // 옆으로 30도 회전
+            GetRigidBody()->SetVelocity(Vec2(0.f, 0.f));
+            GetRigidBody()->AddForce(Vec2(0.f, -50000.f)); // 위로 힘을 가함
+            GetGravity()->SetApplyGravity(true); // 중력 적용하여 떨어지게 함
+        }
+    }
+
+    m_fExplosionTimer += fDT;
+
+    // 2초 후 리스폰 시작
+    if (m_fExplosionTimer >= 3.f)
+    {
         m_eState = SKYLINE_CAR_STATE::SPAWNING;
+
+        // 물리 상태 초기화 후 스폰 위치로 이동
+        if (GetRigidBody() && GetGravity())
+        {
+            GetRigidBody()->SetVelocity(Vec2(0.f, 0.f));
+            GetGravity()->SetApplyGravity(false);
+        }
+        SetLocalRotation(0.f);
         SetWorldPos(m_vStartPos);
-        GetCollider()->SetActive(false);
+        m_fExplosionTimer = 0.f; // 타이머 리셋
     }
 }
 
@@ -239,11 +251,7 @@ void CSkylineCar::Update_Spawning()
     m_vVelocity = Vec2(0.f, 0.f);
     if (GetAnimator()->GetCurAnimation() && GetAnimator()->GetCurAnimation()->IsFinish())
     {
-        m_iCurrentPathIndex = 0;
-        m_eState = SKYLINE_CAR_STATE::IDLE;
-        GetCollider()->SetActive(true);
-        m_bIsSlowMoving = false;
-        m_fSlowMoveTimer = 0.f;
+        Reset(); // 리스폰 애니메이션 완료 후 전체 상태 초기화
     }
 }
 
@@ -336,8 +344,8 @@ void CSkylineCar::OnCollisionEnter(CCollider* _pOther)
     if (m_eState == SKYLINE_CAR_STATE::IDLE && (eOtherGroup == GROUP_TYPE::PLAYER || eOtherGroup == GROUP_TYPE::HOOK))
     {
         m_eState = SKYLINE_CAR_STATE::MOVING;
-        m_bIsSlowMoving = true;
-        m_fSlowMoveTimer = 0.f;
+        m_fCurrentSpeed = 0.f;
+        m_fAccelerationTime = 0.f;
     }
 }
 
@@ -347,16 +355,25 @@ void CSkylineCar::Reset()
 
     m_eState = SKYLINE_CAR_STATE::IDLE;
     m_iCurrentPathIndex = 0;
+    m_fCurrentSpeed = 0.f;
+    m_fAccelerationTime = 0.f;
+    m_fExplosionTimer = 0.f;
+
     SetWorldPos(m_vStartPos);
+    SetLocalRotation(0.f);
     GetCollider()->SetActive(true);
+
+    if (GetRigidBody() && GetGravity())
+    {
+        GetRigidBody()->SetVelocity(Vec2(0.f, 0.f));
+        GetGravity()->SetApplyGravity(false);
+    }
+
     if (GetAnimator())
     {
-        // Reset 시에도 방향에 맞는 IDLE 애니메이션을 재생해야 합니다.
         wstring initialAnim = m_bIsVertical ? L"SKYLINE_VERT_IDLE" : L"SKYLINE_WIDE_IDLE";
         GetAnimator()->Play(initialAnim, true);
     }
-    m_bIsSlowMoving = false;
-    m_fSlowMoveTimer = 0.f;
 }
 
 void CSkylineCar::SetPath(const std::vector<Vec2>& _path)
