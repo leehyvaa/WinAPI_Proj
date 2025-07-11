@@ -168,7 +168,7 @@ void CTrigger::Activate()
             CWall* pWallObj = dynamic_cast<CWall*>(pWall);
             if (pWallObj)
             {
-                pWallObj->CloseWall(); // 벽을 닫힌 상태로 설정
+                pWallObj->ChangeState(WALL_STATE::CLOSING);
             }
         }
     }
