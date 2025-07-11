@@ -16,6 +16,7 @@ public:
     CDamagedGround();
     virtual ~CDamagedGround();
 
+ virtual void Start() override;
     virtual void Update() override;
     virtual void OnCollisionEnter(CCollider* _pOther) override;
     virtual void OnCollision(CCollider* _pOther) override;
@@ -26,4 +27,6 @@ public:
 private:
     void DamageAndPushPlayer();
     Vec2 CalculatePushDirection(SPlayer* _pPlayer);
+    
+    Vec2 CalculateAnimationOffset();
 };

@@ -5,6 +5,9 @@
 #include "SPlayer.h"
 #include "CRigidBody.h"
 #include "CTimeMgr.h"
+#include "CAnimator.h"
+#include "CResMgr.h"
+#include "CTexture.h"
 
 CDamagedGround::CDamagedGround()
     : m_pPlayerInside(nullptr)
@@ -15,10 +18,29 @@ CDamagedGround::CDamagedGround()
 {
     // CGround에서 이미 CreateCollider() 호출됨
     SetGroundType(GROUND_TYPE::DAMAGEZONE);
+    CreateAnimator();
+
+   
 }
 
 CDamagedGround::~CDamagedGround()
 {
+}
+
+void CDamagedGround::Start()
+{
+CGround::Start();
+
+    Vec2 vOffset = CalculateAnimationOffset();
+    // 396x396 크기의 38프레임 애니메이션 텍스처를 로드합니다.
+    CTexture* pTex = CResMgr::GetInst()->LoadTexture(L"DamagedGroundTex", L"texture/damagezone/damaged_ground.png");
+    GetAnimator()->CreateAnimation(L"DAMAGED_GROUND_ANIM", pTex,
+                                   Vec2(0.f, 0.f), Vec2(396.f, 396.f), Vec2(396.f, 0.f), 0.04f, 38, 1.f,
+                                   vOffset);
+    if (GetAnimator())
+    {
+	    GetAnimator()->Play(L"DAMAGED_GROUND_ANIM", true);
+    }
 }
 
 void CDamagedGround::Update()
@@ -105,4 +127,14 @@ Vec2 CDamagedGround::CalculatePushDirection(SPlayer* _pPlayer)
 
     direction.Normalize();
     return direction;
+}
+
+Vec2 CDamagedGround::CalculateAnimationOffset()
+{
+    // 벽의 현재 스케일 가져오기
+    Vec2 vWallScale = GetScale();
+    Vec2 vOffset;
+    vOffset.x = vWallScale.x/2  ;
+    vOffset.y = vWallScale.y/2 ;
+    return vOffset;
 }
